@@ -1,0 +1,86 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownImgChar
+   dir: {
+      shortName: ImgChar
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "triggerImgCharEvent"
+      stagePolicy: @010-imageInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.datarel.VisitMetadataStage.VisitMetadataStage"
+      eventTopic: "None"
+      stagePolicy: @020-visitMetadata.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.BackgroundEstimationStage.BackgroundEstimationStage"
+      eventTopic: "None"
+      stagePolicy: @030-backgroundEstimation.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.StarDetectMeasureStage.StarDetectMeasureStage"
+      eventTopic: "None"
+      stagePolicy: @040-starDetectMeasure.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.PsfDeterminationStage.PsfDeterminationStage"
+      eventTopic: "None"
+      stagePolicy: @050-psfDetermination.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.WcsDeterminationStage.WcsDeterminationStage"
+      eventTopic: "None"
+      stagePolicy: @060-wcsDetermination.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.PhotoCalStage.PhotoCalStage"
+      eventTopic: "None"
+      stagePolicy: @070-photoCal.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.ExposureGenerationStage.ExposureGenerationStage"
+      eventTopic: "None"
+      stagePolicy: @080-exposureGeneration.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @090-calibratedExposureOutput.paf
+   }
+}

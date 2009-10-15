@@ -1,0 +1,68 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownTemplateGen
+   dir: {
+      shortName: TemplateGen
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
+      eventTopic: "triggerTemplateGenEvent"
+      stagePolicy: @010-skyTileMetadata.paf
+   }
+
+   appStage: {
+      stageName: "lsst.datarel.ExposureStackStage.ExposureStackStage"
+      eventTopic: "None"
+      stagePolicy: @020-exposureStack.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @030-exposureStackInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @040-psfMatchKernelsInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.coadd.pipeline.TemplateGenerationStage.TemplateGenerationStage"
+      eventTopic: "None"
+      stagePolicy: @050-templateGeneration.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @060-templateTileOutput.paf
+   }
+}

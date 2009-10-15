@@ -1,0 +1,56 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownAstroCal
+   dir: {
+      shortName: AstroCal
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
+      eventTopic: "triggerAstroCalEvent"
+      stagePolicy: @010-skyTileMetadata.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @020-sourceInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.astrocal.pipeline.AstroCalStage.AstroCalStage"
+      eventTopic: "None"
+      stagePolicy: @030-backgroundEstimation.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @040-astroModelOutput.paf
+   }
+}

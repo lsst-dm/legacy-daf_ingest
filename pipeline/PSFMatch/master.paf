@@ -1,0 +1,56 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownPSFMatch
+   dir: {
+      shortName: PSFMatch
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "triggerPSFMatchEvent"
+      stagePolicy: @010-referenceExposureInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @020-calibratedExposureInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.coadd.pipeline.PsfMatchStage.PsfMatchStage"
+      eventTopic: "None"
+      stagePolicy: @030-psfMatch.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @040-psfMatchKernelOutput.paf
+   }
+}

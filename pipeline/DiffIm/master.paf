@@ -1,0 +1,86 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownDiffIm
+   dir: {
+      shortName: DiffIm
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "triggerDiffImEvent"
+      stagePolicy: @010-imageInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.datarel.VisitMetadataStage.VisitMetadataStage"
+      eventTopic: "None"
+      stagePolicy: @020-visitMetadata.paf
+   }
+
+   appStage: {
+      stageName: "lsst.coadd.pipeline.IdentifyTemplateStage.IdentifyTemplateStage"
+      eventTopic: "None"
+      stagePolicy: @030-identifyTemplate.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @040-templateInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.DiffImStage.DiffImStage"
+      eventTopic: "None"
+      stagePolicy: @050-diffIm.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @060-diffImageOutput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.DifferenceDetectionStage.DifferenceDetectionStage"
+      eventTopic: "None"
+      stagePolicy: @070-differenceDetection.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.SourceMeasurementStage.SourceMeasurementStage"
+      eventTopic: "None"
+      stagePolicy: @080-sourceMeasurement.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @090-diaSourceOutput.paf
+   }
+}

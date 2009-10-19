@@ -1,0 +1,68 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownMOPS
+   dir: {
+      shortName: MOPS
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "triggerMOPSEvent"
+      stagePolicy: @010-nightlyDiaSourcesInput.paf
+   }
+
+   appStage: { 
+      stageName: "lsst.mops.daymops.SetupStage" 
+      eventTopic: "None" 
+      stagePolicy: @020-setup.paf
+   }
+
+   appStage: { 
+      stageName: "lsst.mops.daymops.IntraNightLinkingStage" 
+      eventTopic: "None" 
+      stagePolicy: @030-intraNightLinking.paf
+   }
+
+   appStage: { 
+      stageName: "lsst.mops.daymops.InterNightLinkingStage" 
+      eventTopic: "None" 
+      stagePolicy: @040-interNightLinking.paf
+   }
+
+   appStage: { 
+      stageName: "lsst.mops.daymops.OrbitDeterminationStage" 
+      eventTopic: "None" 
+      stagePolicy: @050-orbitDetermination.paf
+   }
+
+   appStage: { 
+      stageName: "lsst.mops.daymops.OrbitManagementStage" 
+      eventTopic: "None" 
+      stagePolicy: @060-orbitManagement.paf
+   }
+}

@@ -1,0 +1,75 @@
+#<?cfg paf policy ?>
+
+requires: {
+   database: {
+      type: MySQL
+   }
+   platform: {
+      minCoreCount: 1
+   }
+}
+
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/etc/setup.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+}
+
+execute: {
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownDeepDet
+   dir: {
+      shortName: DeepDet
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      stageName: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
+      eventTopic: "triggerDeepDetEvent"
+      stagePolicy: @010-skyTileMetadata.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @020-coaddTilesInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.coadd.pipeline.ChiSquareStage.ChiSquareStage"
+      eventTopic: "None"
+      stagePolicy: @030-chiSquare.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @040-deepChiSquareTileOutput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.SourceDetectionStage.SourceDetectionStage"
+      eventTopic: "None"
+      stagePolicy: @050-deepDetection.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.SourceMeasurementStage.SourceMeasurementStage"
+      eventTopic: "None"
+      stagePolicy: @050-deepMeasurement.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @060-deepDetectionsOutput.paf
+   }
+
+}

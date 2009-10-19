@@ -18,9 +18,9 @@ framework: {
 execute: {
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-   shutdownTopic: shutdownPSFMatch
+   shutdownTopic: shutdownCoaddGen
    dir: {
-      shortName: PSFMatch
+      shortName: CoaddGen
       defaultRoot: .
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
@@ -31,32 +31,38 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
-      eventTopic: "triggerPSFMatchEvent"
-      stagePolicy: @010-templateReferenceExposureInput.paf
-   }
-
-   appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
-      eventTopic: "triggerPSFMatchEvent"
-      stagePolicy: @020-deepReferenceExposureInput.paf
+      stageName: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
+      eventTopic: "triggerCoaddGenEvent"
+      stagePolicy: @010-skyTileMetadata.paf
    }
 
    appStage: {
       stageName: "lsst.pex.harness.IOStage.InputStage"
       eventTopic: "None"
-      stagePolicy: @030-calibratedExposureInput.paf
+      stagePolicy: @020-maskedExposureInput.paf
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.PsfMatchStage.PsfMatchStage"
+      stageName: "lsst.pex.harness.IOStage.InputStage"
       eventTopic: "None"
-      stagePolicy: @040-psfMatch.paf
+      stagePolicy: @030-psfMatchKernelsInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IOStage.InputStage"
+      eventTopic: "None"
+      stagePolicy: @040-coaddTileInput.paf
+   }
+
+   appStage: {
+      stageName: "lsst.coadd.pipeline.CoaddGenerationStage.CoaddGenerationStage"
+      eventTopic: "None"
+      stagePolicy: @050-coaddGeneration.paf
    }
 
    appStage: {
       stageName: "lsst.pex.harness.IOStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @050-psfMatchKernelsOutput.paf
+      stagePolicy: @060-coaddTileOutput.paf
    }
 }

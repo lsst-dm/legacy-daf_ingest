@@ -31,9 +31,10 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.datarel.ExposureStackStage.ExposureStackStage"
+      name: "TransformDetectionStage"
+      parallelClass: "lsst.meas.pipeline.TransformDetectionStageParallel"
       eventTopic: "triggerMultifitEvent"
-      stagePolicy: @010-exposureStack.paf
+      stagePolicy: @010-transformDetection.paf
    }
 
    appStage: {
@@ -49,7 +50,8 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.MultifitStage.MultifitStage"
+      name: "MultifitStage"
+      parallelClass: "lsst.meas.pipeline.MultifitStageParallel"
       eventTopic: "None"
       stagePolicy: @040-multifit.paf
    }

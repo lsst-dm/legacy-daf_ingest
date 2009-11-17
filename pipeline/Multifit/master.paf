@@ -63,7 +63,8 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.ForcedPhotomStage.ForcedPhotomStage"
+   	  name: "ForcedPhotometryStage"
+      parallelClass: "lsst.meas.pipeline.ForcedPhotometryStageParallel"
       eventTopic: "None"
       stagePolicy: @060-forcedPhotom.paf
    }

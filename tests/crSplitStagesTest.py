@@ -30,6 +30,7 @@ try:
     type(display)
 except NameError:
     display = False
+    display = True
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -40,6 +41,9 @@ class CrRejectStageTestCase(unittest.TestCase):
         filename = os.path.join(eups.productDir("afwdata"), "CFHT", "D4", "cal-53535-i-797722_1")
         bbox = afwImage.BBox(afwImage.PointI(32,32), 512, 512)
         self.exposure = afwImage.ExposureF(filename, 0,bbox)        
+
+        if display:
+            ds9.mtv(self.exposure, frame=0, title="Input")
 
     def tearDown(self):
         del self.exposure        
@@ -54,16 +58,18 @@ class CrRejectStageTestCase(unittest.TestCase):
         stage = measPipe.BackgroundEstimationStage(policy.get("backgroundEstimationStage"))
         tester = SimpleStageTester(stage)
 
-        clipboard = pexClipboard.Clipboard()         
-        clipboard.put(policy.get("backgroundEstimationStage.inputKeys.exposure"), self.exposure)
-
-        if display:
-            ds9.mtv(self.exposure, frame=0, title="Input")
+        stage = ipPipe.CrRejectStage(policy.get("crRejectStage"))
+        tester.addStage(stage)
         #
         # Do the work
         #
-        outClipboard = tester.runWorker(clipboard)
+        clipboard = pexClipboard.Clipboard()         
+        clipboard.put(policy.get("backgroundEstimationStage.inputKeys.exposure"), self.exposure)
 
+        outClipboard = tester.runWorker(clipboard)
+        #
+        # See if we got it right
+        #
         outPolicy = policy.get("backgroundEstimationStage.outputKeys")
         assert(outClipboard.contains(outPolicy.get("backgroundSubtractedExposure")))
         assert(outClipboard.contains(outPolicy.get("background")))
@@ -72,27 +78,12 @@ class CrRejectStageTestCase(unittest.TestCase):
             ds9.mtv(outClipboard.get(outPolicy.get("backgroundSubtractedExposure")),
                     frame=1, title="Subtracted")
 
-        #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-        stage = ipPipe.CrRejectStage(policy.get("crRejectStage"))
-        tester = SimpleStageTester(stage)
-
-        clipboard = pexClipboard.Clipboard()         
-        clipboard.put(policy.get("crRejectStage.inputKeys.exposure"), self.exposure)
-
-        if display:
-            ds9.mtv(self.exposure, frame=0, title="Input")
-        #
-        # Do the work
-        #
-        outClipboard = tester.runWorker(clipboard)
-
         outPolicy = policy.get("crRejectStage.outputKeys")
         self.assertTrue(outClipboard.contains(outPolicy.get("exposure")))
         self.assertEqual(outClipboard.get("nCR"), 25)
 
         if display:
-            ds9.mtv(outClipboard.get(outPolicy.get("exposure")), frame=1, title="CR removed")
+            ds9.mtv(outClipboard.get(outPolicy.get("exposure")), frame=2, title="CR removed")
 
 def suite():
     """Returns a suite containing all the test cases in this module."""

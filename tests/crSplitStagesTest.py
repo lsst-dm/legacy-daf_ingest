@@ -42,10 +42,10 @@ class CrRejectStageTestCase(unittest.TestCase):
     def tearDown(self):
         del self.exposure        
 
-    def XXXtestSingleExposure(self):
+    def testSingleExposure(self):
         
-        file = pexPolicy.DefaultPolicyFile("ip_pipeline", 
-                                           "crReject_policy.paf", "tests")
+        file = pexPolicy.DefaultPolicyFile("datarel", 
+                                           "crSplitStages_policy.paf", "tests")
         policy = pexPolicy.Policy.createPolicy(file)
 
         stage = ipPipe.CrRejectStage(policy)
@@ -63,11 +63,11 @@ class CrRejectStageTestCase(unittest.TestCase):
         outWorker = tester.runWorker(clipboard)
 
         outPolicy = policy.get("outputKeys")
-        self.assertTrue(outWorker.contains(outPolicy.get("crSubtractedExposure")))
+        self.assertTrue(outWorker.contains(outPolicy.get("exposure")))
         self.assertEqual(outWorker.get("nCR"), 25)
 
         if display:
-            ds9.mtv(outWorker.get(outPolicy.get("crSubtractedExposure")), frame=1, title="CR removed")
+            ds9.mtv(outWorker.get(outPolicy.get("exposure")), frame=1, title="CR removed")
 
 def suite():
     """Returns a suite containing all the test cases in this module."""

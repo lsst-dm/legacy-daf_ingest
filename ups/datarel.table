@@ -1,0 +1,2 @@
+setupRequired(meas_pipeline)
+setupRequired(ip_pipeline)

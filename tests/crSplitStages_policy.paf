@@ -1,0 +1,16 @@
+#<? cfg paf policy ?>
+#
+# Stage policy for crRejectStage
+
+inputKeys: {
+    exposure: "calibratedExposure"
+}
+    
+outputKeys: {
+    exposure: "calibratedExposure"
+}
+
+parameters: {
+    defaultFwhm : 1.0
+    keepCRs: False
+}

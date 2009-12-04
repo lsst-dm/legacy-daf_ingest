@@ -30,7 +30,6 @@ try:
     type(display)
 except NameError:
     display = False
-    display = True
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

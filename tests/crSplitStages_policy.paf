@@ -3,11 +3,13 @@
 
 BackgroundEstimationStage: {
     inputKeys: {
-        exposure: "calibratedExposure"
+        exposure0: "calibratedExposure0"
+        exposure1: "calibratedExposure1"
     }
     outputKeys: {
-        exposure: "calibratedExposure"
-        background: "background"
+        exposure0: "calibratedExposure0"
+        exposure1: "calibratedExposure1"
+        background: None
     }
     parameters: {
         subtractBackground: true
@@ -16,15 +18,29 @@ BackgroundEstimationStage: {
 
 CrRejectStage: {
     inputKeys: {
-        exposure: "calibratedExposure"
+        exposure0: "calibratedExposure0"
+        exposure1: "calibratedExposure1"
     }
     
     outputKeys: {
-        exposure: "calibratedExposure"
+        exposure0: "calibratedExposure0"
+        exposure1: "calibratedExposure1"
     }
     
     parameters: {
         defaultFwhm : 1.0
-        keepCRs: False
+        #keepCRs: true
+        keepCRs: false
+    }
+}
+
+SimpleDiffImStage: {
+    inputKeys: {
+        exposures: "calibratedExposure0" "calibratedExposure1"
+    }
+    outputKeys: {
+        differenceExposure: "differenceExposure"
+    }
+    parameters: {
     }
 }

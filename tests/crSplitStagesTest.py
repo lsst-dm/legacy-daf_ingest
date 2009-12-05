@@ -52,7 +52,7 @@ class CrSplitStageTestCase(unittest.TestCase):
         cosmicRays.addCosmicRays(CRs, nCR=nCR, seed=seed)
         image += CRs
 
-        seed = int(afwMath.makeStatistics(image, afwMath.MIN).getValue())
+        seed = int(afwMath.makeStatistics(image, afwMath.MEAN).getValue())
         CRs.set(0)
         cosmicRays.addCosmicRays(CRs, nCR=nCR, seed=seed)
         image = mi.getImage()
@@ -127,6 +127,9 @@ class CrSplitStageTestCase(unittest.TestCase):
             
         stage = ipPipe.SimpleDiffImStage(policy.get("SimpleDiffImStage"))
         tester.addStage(stage)
+
+        stage = measPipe.SourceDetectionStage(policy.get("SourceDetectionStage"))
+        tester.addStage(stage)
         #
         # Load the clipboard
         #
@@ -156,9 +159,11 @@ class CrSplitStageTestCase(unittest.TestCase):
                 
             self.assertTrue(outClipboard.contains(outPolicy.get("exposure%d" % i)))
 
-        outPolicy = policy.get("SimpleDiffImStage.outputKeys")
+        outPolicy = policy.get("SourceDetectionStage.outputKeys")
+        print clipboard.get(outPolicy.get("positiveDetection"))
+        
         if display:
-            ds9.mtv(outClipboard.get(outPolicy.get("differenceExposure")),
+            ds9.mtv(outClipboard.get(outPolicy.get("backgroundSubtractedExposure")),
                     frame=2*nexp + 1, title="diffim")
         
 

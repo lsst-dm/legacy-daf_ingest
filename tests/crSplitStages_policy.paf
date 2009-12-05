@@ -9,7 +9,7 @@ BackgroundEstimationStage: {
     outputKeys: {
         exposure0: "calibratedExposure0"
         exposure1: "calibratedExposure1"
-        background: None
+        background: 
     }
     parameters: {
         subtractBackground: true
@@ -42,5 +42,30 @@ SimpleDiffImStage: {
         differenceExposure: "differenceExposure"
     }
     parameters: {
+    }
+}
+
+SourceDetectionStage: {
+    inputKeys: {
+        exposure: "differenceExposure"
+        psf: None
+    }
+    outputKeys: {
+        positiveDetection: "positiveFootprintSet"
+        negativeDetection: "negativeFootprintSet"
+        backgroundSubtractedExposure: "differenceExposure"
+    }
+    
+    backgroundPolicy: {
+        # how to interpolate the background values
+        algorithm:  "NONE" 
+    }
+
+    detectionPolicy: {
+        minPixels: 1
+        nGrow : 0
+        thresholdValue: 10
+        thresholdType: "stdev"
+        thresholdPolarity: "both"
     }
 }

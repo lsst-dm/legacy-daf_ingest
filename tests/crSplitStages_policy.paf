@@ -1,7 +1,7 @@
 #<? cfg paf policy ?>
 # 
 
-backgroundEstimationStage: {
+BackgroundEstimationStage: {
     inputKeys: {
         exposure: "calibratedExposure"
     }
@@ -14,7 +14,7 @@ backgroundEstimationStage: {
     }
 }
 
-crRejectStage: {
+CrRejectStage: {
     inputKeys: {
         exposure: "calibratedExposure"
     }

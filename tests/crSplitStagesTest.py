@@ -54,30 +54,30 @@ class CrRejectStageTestCase(unittest.TestCase):
 
         #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-        stage = measPipe.BackgroundEstimationStage(policy.get("backgroundEstimationStage"))
-        tester = SimpleStageTester(stage)
-
-        stage = ipPipe.CrRejectStage(policy.get("crRejectStage"))
-        tester.addStage(stage)
+        tester = SimpleStageTester()
+        
+        for stageClass in [measPipe.BackgroundEstimationStage, ipPipe.CrRejectStage]:
+            stage = stageClass(policy.get(stageClass.__name__))
+            tester.addStage(stage)
         #
         # Do the work
         #
         clipboard = pexClipboard.Clipboard()         
-        clipboard.put(policy.get("backgroundEstimationStage.inputKeys.exposure"), self.exposure)
+        clipboard.put(policy.get("BackgroundEstimationStage.inputKeys.exposure"), self.exposure)
 
         outClipboard = tester.runWorker(clipboard)
         #
         # See if we got it right
         #
-        outPolicy = policy.get("backgroundEstimationStage.outputKeys")
+        outPolicy = policy.get("BackgroundEstimationStage.outputKeys")
         assert(outClipboard.contains(outPolicy.get("backgroundSubtractedExposure")))
         assert(outClipboard.contains(outPolicy.get("background")))
 
         if display:
-            ds9.mtv(outClipboard.get(outPolicy.get("backgroundSubtractedExposure")),
+            ds9.mtv(outClipboard.get(outPolicy.get("BackgroundSubtractedExposure")),
                     frame=1, title="Subtracted")
 
-        outPolicy = policy.get("crRejectStage.outputKeys")
+        outPolicy = policy.get("CrRejectStage.outputKeys")
         self.assertTrue(outClipboard.contains(outPolicy.get("exposure")))
         self.assertEqual(outClipboard.get("nCR"), 25)
 

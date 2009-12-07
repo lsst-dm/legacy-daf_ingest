@@ -61,6 +61,7 @@ class CrSplitStageTestCase(unittest.TestCase):
 
         exposure2 = afwImage.makeExposure(mi, exposure.getWcs())
         exposure2.setMetadata(exposure.getMetadata())
+        exposure2.getMaskedImage().setXY0(exposure.getMaskedImage().getXY0())
 
         return [exposure, exposure2]
         

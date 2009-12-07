@@ -73,6 +73,8 @@ SourceDetectionStage: {
 CrSplitCombineStage: {
     inputKeys: {
         exposures: "calibratedExposure0" "calibratedExposure1"
+        positiveDetection: "positiveFootprintSet"
+        negativeDetection: "negativeFootprintSet"
     }
     outputKeys: {
         differenceExposure: "calibratedExposure"

@@ -32,6 +32,7 @@ try:
     type(display)
 except NameError:
     display = False
+    displayAll = not False
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -110,13 +111,18 @@ class CrSplitStageTestCase(unittest.TestCase):
         nexp = len(self.exposures)
 
         tester = SimpleStageTester()
-        
+        #
+        # Setup the first two stages, each of which needs to be run twice (once per Exposure)
+        #
         for stageClass in [measPipe.BackgroundEstimationStage, ipPipe.CrRejectStage]:
+            if stageClass == ipPipe.CrRejectStage:
+                continue
+            
             for i in range(nexp):
                 stageName = stageClass.__name__
                 stagePolicy = pexPolicy.Policy(policy.get(stageName), True)
                 #
-                # Patch the policy for this exposure
+                # Patch the policy to process this exposure
                 #
                 for io in ["input", "output"]:
                     stagePolicy.set("%sKeys.exposure" % (io),
@@ -130,13 +136,16 @@ class CrSplitStageTestCase(unittest.TestCase):
 
         stage = measPipe.SourceDetectionStage(policy.get("SourceDetectionStage"))
         tester.addStage(stage)
+
+        stage = ipPipe.CrSplitCombineStage(policy.get("CrSplitCombineStage"))
+        tester.addStage(stage)
         #
         # Load the clipboard
         #
         clipboard = pexClipboard.Clipboard()
 
         for i in range(nexp):
-            if 0 and display:
+            if displayAll and display:
                 ds9.mtv(self.exposures[i], frame=i, title="Input%d" % i)
 
             clipboard.put(policy.get("BackgroundEstimationStage.inputKeys.exposure%d" % i), self.exposures[i])
@@ -153,18 +162,23 @@ class CrSplitStageTestCase(unittest.TestCase):
 
             outPolicy = policy.get("CrRejectStage.outputKeys")
 
-            if 0 and display:
+            if displayAll and display:
                 ds9.mtv(outClipboard.get(outPolicy.get("exposure%d" % i)),
                         frame=nexp + i, title="no CR %d" % i)
                 
             self.assertTrue(outClipboard.contains(outPolicy.get("exposure%d" % i)))
 
         outPolicy = policy.get("SourceDetectionStage.outputKeys")
-        print clipboard.get(outPolicy.get("positiveDetection"))
+        
+        if displayAll and display:
+            ds9.mtv(outClipboard.get(outPolicy.get("backgroundSubtractedExposure")),
+                    frame=2*nexp, title="diffim")
+
+        outPolicy = policy.get("CrSplitCombineStage.outputKeys")
         
         if display:
-            ds9.mtv(outClipboard.get(outPolicy.get("backgroundSubtractedExposure")),
-                    frame=2*nexp + 1, title="diffim")
+            ds9.mtv(outClipboard.get(outPolicy.get("combinedExposure")),
+                    frame=2*nexp + 1, title="combined")
         
 
 def suite():

@@ -29,8 +29,8 @@ CrRejectStage: {
     
     parameters: {
         defaultFwhm : 1.0
-        #keepCRs: true
-        keepCRs: false
+        keepCRs: true
+        #keepCRs: false
     }
 }
 
@@ -67,5 +67,16 @@ SourceDetectionStage: {
         thresholdValue: 10
         thresholdType: "stdev"
         thresholdPolarity: "both"
+    }
+}
+
+CrSplitCombineStage: {
+    inputKeys: {
+        exposures: "calibratedExposure0" "calibratedExposure1"
+    }
+    outputKeys: {
+        differenceExposure: "calibratedExposure"
+    }
+    parameters: {
     }
 }

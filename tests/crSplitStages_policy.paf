@@ -3,12 +3,10 @@
 
 BackgroundEstimationStage: {
     inputKeys: {
-        exposure0: "calibratedExposure0"
-        exposure1: "calibratedExposure1"
+        exposure: "calibratedExposure"
     }
     outputKeys: {
-        exposure0: "calibratedExposure0"
-        exposure1: "calibratedExposure1"
+        backgroundSubtractedExposure:
         background: 
     }
     parameters: {
@@ -18,13 +16,11 @@ BackgroundEstimationStage: {
 
 CrRejectStage: {
     inputKeys: {
-        exposure0: "calibratedExposure0"
-        exposure1: "calibratedExposure1"
+        exposure: "calibratedExposure"
     }
     
     outputKeys: {
-        exposure0: "calibratedExposure0"
-        exposure1: "calibratedExposure1"
+        exposure: "calibratedExposure"
     }
     
     parameters: {
@@ -64,7 +60,7 @@ SourceDetectionStage: {
     detectionPolicy: {
         minPixels: 1
         nGrow : 0
-        thresholdValue: 10
+        thresholdValue: 10.0
         thresholdType: "stdev"
         thresholdPolarity: "both"
     }
@@ -77,7 +73,7 @@ CrSplitCombineStage: {
         negativeDetection: "negativeFootprintSet"
     }
     outputKeys: {
-        differenceExposure: "calibratedExposure"
+        combinedExposure: "calibratedExposure"
     }
     parameters: {
     }

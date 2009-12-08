@@ -75,12 +75,12 @@ class CrSplitStageTestCase(unittest.TestCase):
         policy = pexPolicy.Policy.createPolicy(policyFile)
         #
         # Modify the policy;  delete the CRs even if the policy wants to keep them,
-        # and set policy.exposure from policy.exposure0
+        # and set policy.exposure from policy.exposure
         #
         policy.set("CrRejectStage.parameters.keepCRs", False)
         for io in ["input", "output"]:
             policy.set("CrRejectStage.%sKeys.exposure" % io,
-                       policy.get("CrRejectStage.%sKeys.exposure0" % io))
+                       policy.get("CrRejectStage.%sKeys.exposure" % io))
 
         stage = ipPipe.CrRejectStage(policy.get("CrRejectStage"))
         tester = SimpleStageTester(stage)
@@ -116,8 +116,9 @@ class CrSplitStageTestCase(unittest.TestCase):
         # Setup the first two stages, each of which needs to be run twice (once per Exposure)
         #
         for stageClass in [measPipe.BackgroundEstimationStage, ipPipe.CrRejectStage]:
-            if stageClass == ipPipe.CrRejectStage:
-                continue
+            if False:
+                if stageClass == ipPipe.CrRejectStage:
+                    continue
             
             for i in range(nexp):
                 stageName = stageClass.__name__
@@ -125,9 +126,11 @@ class CrSplitStageTestCase(unittest.TestCase):
                 #
                 # Patch the policy to process this exposure
                 #
-                for io in ["input", "output"]:
-                    stagePolicy.set("%sKeys.exposure" % (io),
-                                    policy.get("%s.%sKeys.exposure%d" % (stageName, io, i)))
+                stagePolicy.set("inputKeys.exposure",
+                                policy.get("%s.inputKeys.exposure" % (stageName)) + str(i))
+                if 0 and stageClass == measPipe.BackgroundEstimationStage:
+                    stagePolicy.set("outputKeys.exposure",
+                                    policy.get("%s.outputKeys.exposure" % (stageName)) + str(i))
                     
                 stage = stageClass(stagePolicy)
                 tester.addStage(stage)
@@ -149,7 +152,8 @@ class CrSplitStageTestCase(unittest.TestCase):
             if displayAll and display:
                 ds9.mtv(self.exposures[i], frame=i, title="Input%d" % i)
 
-            clipboard.put(policy.get("BackgroundEstimationStage.inputKeys.exposure%d" % i), self.exposures[i])
+            clipboard.put(policy.get("BackgroundEstimationStage.inputKeys.exposure") + str(i),
+                          self.exposures[i])
         #
         # Do the work
         #
@@ -158,16 +162,8 @@ class CrSplitStageTestCase(unittest.TestCase):
         # See if we got it right
         #
         for i in range(nexp):
-            outPolicy = policy.get("BackgroundEstimationStage.outputKeys")
-            assert(outClipboard.contains(outPolicy.get("exposure%d" % i)))
-
-            outPolicy = policy.get("CrRejectStage.outputKeys")
-
             if displayAll and display:
-                ds9.mtv(outClipboard.get(outPolicy.get("exposure%d" % i)),
-                        frame=nexp + i, title="no CR %d" % i)
-                
-            self.assertTrue(outClipboard.contains(outPolicy.get("exposure%d" % i)))
+                ds9.mtv(self.exposures[i], frame=nexp + i, title="no CR %d" % i)
 
         outPolicy = policy.get("SourceDetectionStage.outputKeys")
         

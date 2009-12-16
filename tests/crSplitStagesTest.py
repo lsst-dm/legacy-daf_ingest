@@ -59,6 +59,12 @@ class CrSplitStageTestCase(unittest.TestCase):
         image = mi.getImage()
         image += CRs
 
+        rand = afwMath.Random()
+        noise = image.Factory(image.getDimensions())
+        afwMath.randomGaussianImage(noise, rand)
+        image.scaledPlus(2, noise)
+        del noise; del rand
+
         exposure2 = afwImage.makeExposure(mi, exposure.getWcs())
         exposure2.setMetadata(exposure.getMetadata())
         exposure2.getMaskedImage().setXY0(exposure.getMaskedImage().getXY0())
@@ -128,9 +134,6 @@ class CrSplitStageTestCase(unittest.TestCase):
                 #
                 stagePolicy.set("inputKeys.exposure",
                                 policy.get("%s.inputKeys.exposure" % (stageName)) + str(i))
-                if 0 and stageClass == measPipe.BackgroundEstimationStage:
-                    stagePolicy.set("outputKeys.exposure",
-                                    policy.get("%s.outputKeys.exposure" % (stageName)) + str(i))
                     
                 stage = stageClass(stagePolicy)
                 tester.addStage(stage)

@@ -1,0 +1,9 @@
+AdditionalData: "pathName=triggerCcdAssemblyEvent.outputPathName"
+OutputItems: {
+   isrCcdExposure: {
+      StoragePolicy: {
+         Storage: "FitsStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+}

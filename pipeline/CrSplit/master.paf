@@ -31,50 +31,45 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.pex.harness.IoStage.InputStage"
       eventTopic: "triggerCrSplitEvent"
-      stagePolicy: @010-image0Input.paf
+      stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
       eventTopic: "None"
-      stagePolicy: @020-image1Input.paf
+      stagePolicy: @020-backgroundEstimation.paf
    }
 
    appStage: {
-      stageName: "lsst.datarel.VisitMetadataStage.VisitMetadataStage"
+      stageName: "lsst.ip.pipeline.CrRejectStage"
       eventTopic: "None"
-      stagePolicy: @030-visitMetadata.paf
+      stagePolicy: @030-crReject.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.MaskCosmicsStage.MaskCosmicsStage"
+      stageName: "lsst.ip.pipeline.SimpleDiffImStage"
       eventTopic: "None"
-      stagePolicy: @040-maskCosmics.paf
+      stagePolicy: @040-simpleDiffIm.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.SimpleDiffImStage.SimpleDiffImStage"
+      stageName: "lsst.meas.pipeline.SourceDetectionStage"
       eventTopic: "None"
-      stagePolicy: @050-simpleDiffIm.paf
+      stagePolicy: @050-sourceDetection.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.DifferenceDetectionStage.DifferenceDetectionStage"
+      stageName: "lsst.ip.pipeline.crSplitCombineStage"
       eventTopic: "None"
-      stagePolicy: @060-differenceDetection.paf
+      stagePolicy: @060-crSplitCombine.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.MaskAndSumStage.MaskAndSumStage"
+      stageName: "lsst.pex.harness.IoStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @070-maskAndSum.paf
+      stagePolicy: @070-output.paf
    }
 
-   appStage: {
-      stageName: "lsst.pex.harness.IOStage.OutputStage"
-      eventTopic: "None"
-      stagePolicy: @080-visitImageOutput.paf
-   }
 }

@@ -31,56 +31,57 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.pex.harness.IoStage.InputStage"
       eventTopic: "triggerImgCharEvent"
-      stagePolicy: @010-imageInput.paf
+      stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.datarel.VisitMetadataStage.VisitMetadataStage"
+      stageName: "lsst.meas.pipeline.SourceDetectionStage"
       eventTopic: "None"
-      stagePolicy: @020-visitMetadata.paf
+      stagePolicy: @020-sourceDetection.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.BackgroundEstimationStage.BackgroundEstimationStage"
+      stageName: "lsst.meas.pipeline.SourceMeasurementStage"
       eventTopic: "None"
-      stagePolicy: @030-backgroundEstimation.paf
+      stagePolicy: @030-sourceMeasurement.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.StarDetectMeasureStage.StarDetectMeasureStage"
+      stageName: "lsst.meas.pipeline.PsfDeterminationStage"
       eventTopic: "None"
-      stagePolicy: @040-starDetectMeasure.paf
+      stagePolicy: @040-psfDetermination.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.PsfDeterminationStage.PsfDeterminationStage"
+      stageName: "lsst.meas.pipeline.WcsDeterminationStage"
       eventTopic: "None"
-      stagePolicy: @050-psfDetermination.paf
+      stagePolicy: @050-wcsDetermination.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.WcsDeterminationStage.WcsDeterminationStage"
+      stageName: "lsst.sdqa.WcsVerificationStage"
       eventTopic: "None"
-      stagePolicy: @060-wcsDetermination.paf
+      stagePolicy: @060-wcsVerification.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.PhotoCalStage.PhotoCalStage"
+      stageName: "lsst.meas.pipeline.PhotoCalStage"
       eventTopic: "None"
       stagePolicy: @070-photoCal.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.ExposureGenerationStage.ExposureGenerationStage"
+      stageName: "lsst.ip.pipeline.ExposureGenerationStage"
       eventTopic: "None"
       stagePolicy: @080-exposureGeneration.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      stageName: "lsst.pex.harness.IoStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @090-calibratedExposureOutput.paf
+      stagePolicy: @090-output.paf
    }
+
 }

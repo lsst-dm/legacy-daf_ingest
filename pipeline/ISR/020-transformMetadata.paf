@@ -1,0 +1,11 @@
+inputKeys: {
+   inputMetadata: "rawCameraMetadata"
+   policyPath: ""
+   metadataPolicyFile: ""
+   datatypePolicyFile: ""
+   keywordSuffix: ""
+}
+outputKeys: {
+   transformedMetadata: "isrMetadata"
+   isValidated: "isValidated"
+}

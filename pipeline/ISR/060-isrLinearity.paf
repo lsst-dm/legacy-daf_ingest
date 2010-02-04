@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "rawCameraImage"
+   lutPolicyPath: ""
+   lutPolicyFile: "linearizationLookupTable.paf"
+}
+outputKeys: {
+   linearityCorrectedExposure: "isrExposure"
+}

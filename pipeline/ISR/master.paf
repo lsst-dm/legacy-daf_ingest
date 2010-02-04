@@ -31,50 +31,87 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.pex.harness.IoStage.InputStage"
       eventTopic: "triggerISREvent"
       stagePolicy: @010-imageInput.paf
    }
 
    appStage: {
-      stageName: "lsst.datarel.VisitMetadataStage.VisitMetadataStage"
+      stageName: "lsst.ip.pipeline.TransformMetadataStage"
       eventTopic: "None"
-      stagePolicy: @020-visitMetadata.paf
+      stagePolicy: @020-transformMetadata.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.MetadataStages.TransformMetadataStage"
+      stageName: "lsst.ip.pipeline.ValidateMetadataStage"
       eventTopic: "None"
-      stagePolicy: @030-transformMetadata.paf
+      stagePolicy: @020-transformMetadata.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.MetadataStages.ValidateMetadataStage"
+      stageName: "lsst.ip.pipeline.IdentifyCalibrationProductsStage"
       eventTopic: "None"
-      stagePolicy: @040-transformMetadata.paf
+      stagePolicy: @040-identifyCalibrationProducts.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.IdentifyCalibrationProductsStage.IdentifyCalibrationProductsStage"
+      stageName: "lsst.pex.harness.IoStage.InputStage"
       eventTopic: "None"
-      stagePolicy: @050-identifyCalibrationProducts.paf
+      stagePolicy: @050-calibrationInput.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.ip.pipeline.IsrLinearityStage"
       eventTopic: "None"
-      stagePolicy: @060-calibrationInput.paf
+      stagePolicy: @060-isrLinearity.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.IsrStage"
+      stageName: "lsst.ip.pipeline.IsrSaturationStage"
       eventTopic: "None"
-      stagePolicy: @070-isr.paf
+      stagePolicy: @070-isrSaturation.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      stageName: "lsst.ip.pipeline.IsrOverscanStage"
       eventTopic: "None"
-      stagePolicy: @080-postIsrImageOutput.paf
+      stagePolicy: @080-isrOverscan.paf
    }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.IsrBiasStage"
+      eventTopic: "None"
+      stagePolicy: @090-isrBias.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.IsrDarkStage"
+      eventTopic: "None"
+      stagePolicy: @100-isrDark.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.IsrFlatStage"
+      eventTopic: "None"
+      stagePolicy: @110-isrFlat.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.IsrFringeStage"
+      eventTopic: "None"
+      stagePolicy: @120-isrFringe.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.IsrDefectStage"
+      eventTopic: "None"
+      stagePolicy: @130-isrDefect.paf
+   }
+
+   appStage: {
+      stageName: "lsst.pex.harness.IoStage.OutputStage"
+      eventTopic: "None"
+      stagePolicy: @140-isrExposureOutput.paf
+   }
+
 }

@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "isrExposure"
+   saturation: "saturationValue"
+   fwhm: "fwhmValue"
+}
+outputKeys: {
+   saturationCorrectedExposure: "isrExposure"
+}

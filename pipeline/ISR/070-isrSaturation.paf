@@ -1,6 +1,6 @@
 inputKeys: {
    exposure: "isrExposure"
-   saturation: "saturationValue"
+   cameraInfo: "cameraInfo"
    fwhm: "fwhmValue"
 }
 outputKeys: {

@@ -1,0 +1,9 @@
+AdditionalData: "pathName=triggerISREvent.pathName"
+OutputItems: {
+   isrExposure: {
+      StoragePolicy: {
+         Storage: "FitsStorage"
+         Location: "%(output)/isr/pathName"
+      }
+   }
+}

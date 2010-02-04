@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "isrExposure"
+   defectList: "defectList"
+   fwhm: "fwhm"
+}
+outputKeys: {
+   defectCorrectedExposure: "isrExposure"
+}

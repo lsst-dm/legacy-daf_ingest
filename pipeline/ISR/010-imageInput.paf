@@ -1,11 +1,11 @@
-AdditionalData: "pathName=triggerISREvent.pathName"
+AdditionalData: "pathName=triggerISREvent.inputPathName"
 InputItems: {
     rawCameraImage: {
         Type: "DecoratedImageF"
         PythonType: "lsst.afw.image.DecoratedImageF"
         StoragePolicy: {
             Storage: "FitsStorage"
-            Location: "%(input)/%(pathName)"
+            Location: "%(input)/%(inputPathName)"
         }
     }
 }

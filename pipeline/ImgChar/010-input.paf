@@ -1,4 +1,4 @@
-AdditionalData: "pathName=triggerImgCharEvent.inputPathName"
+AdditionalData: "inputPathName=triggerImgCharEvent.inputPathName"
 InputItems: {
     scienceExposure: {
         Type: "ExposureF"

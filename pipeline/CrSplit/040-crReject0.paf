@@ -1,0 +1,11 @@
+inputKeys: {
+   exposure: "bkgSubCcdExposure0"
+   processingInfo: "processingInfo0"
+}
+outputKeys: {
+   exposure: "crSubCcdExposure0"
+   processingInfo: "processingInfo0"
+}
+parameters: {
+   keepCRs: false
+}

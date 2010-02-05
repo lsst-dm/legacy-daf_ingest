@@ -1,0 +1,20 @@
+AdditionalData: "pathName0=triggerCrSplitEvent.inputPathName0"
+AdditionalData: "pathName1=triggerCrSplitEvent.inputPathName1"
+InputItems: {
+    isrCcdExposure0: {
+        Type: "ExposureF"
+        PythonType: "lsst.afw.image.ExposureF"
+        StoragePolicy: {
+            Storage: "FitsStorage"
+            Location: "%(input)/%(inputPathName0)"
+        }
+    }
+    isrCcdExposure1: {
+        Type: "ExposureF"
+        PythonType: "lsst.afw.image.ExposureF"
+        StoragePolicy: {
+            Storage: "FitsStorage"
+            Location: "%(input)/%(inputPathName1)"
+        }
+    }
+}

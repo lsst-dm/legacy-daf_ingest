@@ -39,37 +39,49 @@ execute: {
    appStage: {
       stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
       eventTopic: "None"
-      stagePolicy: @020-backgroundEstimation.paf
+      stagePolicy: @020-backgroundEstimation0.paf
+   }
+
+   appStage: {
+      stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
+      eventTopic: "None"
+      stagePolicy: @030-backgroundEstimation1.paf
    }
 
    appStage: {
       stageName: "lsst.ip.pipeline.CrRejectStage"
       eventTopic: "None"
-      stagePolicy: @030-crReject.paf
+      stagePolicy: @040-crReject0.paf
+   }
+
+   appStage: {
+      stageName: "lsst.ip.pipeline.CrRejectStage"
+      eventTopic: "None"
+      stagePolicy: @050-crReject1.paf
    }
 
    appStage: {
       stageName: "lsst.ip.pipeline.SimpleDiffImStage"
       eventTopic: "None"
-      stagePolicy: @040-simpleDiffIm.paf
+      stagePolicy: @060-simpleDiffIm.paf
    }
 
    appStage: {
       stageName: "lsst.meas.pipeline.SourceDetectionStage"
       eventTopic: "None"
-      stagePolicy: @050-sourceDetection.paf
+      stagePolicy: @070-sourceDetection.paf
    }
 
    appStage: {
       stageName: "lsst.ip.pipeline.crSplitCombineStage"
       eventTopic: "None"
-      stagePolicy: @060-crSplitCombine.paf
+      stagePolicy: @080-crSplitCombine.paf
    }
 
    appStage: {
       stageName: "lsst.pex.harness.IoStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @070-output.paf
+      stagePolicy: @090-output.paf
    }
 
 }

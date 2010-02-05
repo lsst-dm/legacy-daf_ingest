@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "isrCcdExposure1"
+}
+outputKeys: {
+   backgroundSubtractedExposure: "bkgSubCcdExposure1"
+   background: "background1"
+   processingInfo: "processingInfo1"
+}

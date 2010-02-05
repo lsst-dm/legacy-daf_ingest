@@ -1,9 +1,16 @@
-AdditionalData: "outputPathName=triggerImgCharEvent.outputPathName"
+AdditionalData: "sourcePathName=triggerSFMEvent.sourcePathName"
+AdditionalData: "detectionPathName=triggerSFMEvent.detectionPathName"
 OutputItems: {
+   sourceFootprintSet: {
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(output)/%(detectionPathName)"
+      }
+   }
    sources: {
       StoragePolicy: {
          Storage: "BoostStorage"
-         Location: "%(output)/%(outputPathName)"
+         Location: "%(output)/%(sourcePathName)"
       }
    }
 }

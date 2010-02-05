@@ -1,0 +1,9 @@
+inputKeys: {
+   psf: "detectionPsf"
+   exposure: "scienceExposure"
+   positiveDetection: "calibFootprintSet"
+}
+outputKeys: {
+   sources: "calibSources"
+}
+

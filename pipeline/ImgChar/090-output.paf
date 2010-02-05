@@ -1,0 +1,9 @@
+AdditionalData: "pathName=triggerImgCharEvent.outputPathName"
+OutputItems: {
+   finalScienceExposure: {
+      StoragePolicy: {
+         Storage: "FitsStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+}

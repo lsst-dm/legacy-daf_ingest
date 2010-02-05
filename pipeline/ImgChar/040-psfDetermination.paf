@@ -3,5 +3,7 @@ inputKeys: {
    sourceSet: "calibSources"
 }
 outputKeys: {
-   photometricModel: "photoModel"
+   psf: "measuredPsf"
+   cellSet: "psfCellSet"
+   sdqa: "sdqaInfo"
 }

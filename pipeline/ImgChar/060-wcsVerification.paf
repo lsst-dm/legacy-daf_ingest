@@ -1,0 +1,8 @@
+inputKeys: {
+   sourceSet: "calibSourceSet"
+   wcs: "measuredWcs"
+   sdqa: "sdqaInfo"
+}
+outputKeys: {
+   sdqa: "sdqaInfo"
+}

@@ -1,0 +1,7 @@
+inputKeys: {
+   exposure: "scienceExposure"
+   referenceExposure: "referenceExposure"
+}
+outputKeys: {
+   warpedExposure: "warpedExposure"
+}

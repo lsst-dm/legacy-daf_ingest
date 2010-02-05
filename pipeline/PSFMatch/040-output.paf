@@ -1,0 +1,16 @@
+AdditionalData: "outputPathName=triggerPSFMatchEvent.outputPathName"
+AdditionalData: "kernelPathName=triggerPSFMatchEvent.kernelPathName"
+OutputItems: {
+   psfMatchedExposure: {
+      StoragePolicy: {
+         Storage: "FitsStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+   psfMatchingKernel: {
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(output)/%(kernelPathName)"
+      }
+   }
+}

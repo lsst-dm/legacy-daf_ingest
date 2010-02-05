@@ -1,0 +1,9 @@
+inputKeys: {
+   warpedExposure: "warpedExposure"
+   referenceExposure: "referenceExposure"
+}
+outputKeys: {
+   psfMatchedExposure: "psfMatchedExposure"
+   psfMatchingKernel: "psfMatchingKernel"
+   psfMatchingKernelSum: "psfMatchingKernelSum"
+}

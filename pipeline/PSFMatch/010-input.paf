@@ -1,0 +1,20 @@
+AdditionalData: "inputPathName=triggerPSFMatchEvent.inputPathName"
+AdditionalData: "refPathName=triggerPSFMatchEvent.refPathName"
+InputItems: {
+    scienceExposure: {
+        Type: "ExposureF"
+        PythonType: "lsst.afw.image.ExposureF"
+        StoragePolicy: {
+            Storage: "FitsStorage"
+            Location: "%(input)/%(inputPathName)"
+        }
+    }
+    referenceExposure: {
+        Type: "ExposureF"
+        PythonType: "lsst.afw.image.ExposureF"
+        StoragePolicy: {
+            Storage: "FitsStorage"
+            Location: "%(input)/%(refPathName)"
+        }
+    }
+}

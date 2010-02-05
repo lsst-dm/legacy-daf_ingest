@@ -31,32 +31,27 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.pex.harness.IoStage.InputStage"
       eventTopic: "triggerPSFMatchEvent"
-      stagePolicy: @010-templateReferenceExposureInput.paf
+      stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
-      eventTopic: "triggerPSFMatchEvent"
-      stagePolicy: @020-deepReferenceExposureInput.paf
-   }
-
-   appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.coadd.pipeline.WarpExposureStage"
       eventTopic: "None"
-      stagePolicy: @030-calibratedExposureInput.paf
+      stagePolicy: @020-warpExposure.paf
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.PsfMatchStage.PsfMatchStage"
+      stageName: "lsst.coadd.pipeline.PsfMatchStage"
       eventTopic: "None"
-      stagePolicy: @040-psfMatch.paf
+      stagePolicy: @030-psfMatch.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.OutputStage"
+      stageName: "lsst.pex.harness.IoStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @050-psfMatchKernelsOutput.paf
+      stagePolicy: @040-output.paf
    }
+
 }

@@ -1,4 +1,4 @@
-AdditionalData: "pathName=triggerCcdAssemblyEvent.outputPathName"
+AdditionalData: "outputPathName=triggerCcdAssemblyEvent.outputPathName"
 OutputItems: {
    isrCcdExposure: {
       StoragePolicy: {

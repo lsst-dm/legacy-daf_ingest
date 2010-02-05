@@ -1,4 +1,4 @@
-AdditionalData: "pathName=triggerISREvent.inputPathName"
+AdditionalData: "inputPathName=triggerISREvent.inputPathName"
 InputItems: {
     rawCameraImage: {
         Type: "DecoratedImageF"

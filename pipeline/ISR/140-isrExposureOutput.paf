@@ -1,4 +1,4 @@
-AdditionalData: "pathName=triggerISREvent.outputPathName"
+AdditionalData: "outputPathName=triggerISREvent.outputPathName"
 OutputItems: {
    isrExposure: {
       StoragePolicy: {

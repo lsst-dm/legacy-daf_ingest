@@ -1,0 +1,9 @@
+AdditionalData: "outputPathName=triggerImgCharEvent.outputPathName"
+OutputItems: {
+   sources: {
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+}

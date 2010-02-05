@@ -1,5 +1,5 @@
-AdditionalData: "pathName0=triggerCrSplitEvent.inputPathName0"
-AdditionalData: "pathName1=triggerCrSplitEvent.inputPathName1"
+AdditionalData: "inputPathName0=triggerCrSplitEvent.inputPathName0"
+AdditionalData: "inputPathName1=triggerCrSplitEvent.inputPathName1"
 InputItems: {
     isrCcdExposure0: {
         Type: "ExposureF"

@@ -1,4 +1,4 @@
-AdditionalData: "pathName=triggerCrSplitEvent.outputPathName"
+AdditionalData: "outputPathName=triggerCrSplitEvent.outputPathName"
 OutputItems: {
    scienceCcdExposure: {
       StoragePolicy: {

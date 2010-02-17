@@ -1,0 +1,7 @@
+inputKeys: {
+   skyMapImageList: "skyMapImageStack"
+}
+
+outputKeys: {
+   coadd: "coadd"
+}

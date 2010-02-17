@@ -1,0 +1,9 @@
+AdditionalData: "outputPathName=triggerTemplateGenEvent.outputPathName"
+OutputItems: {
+   skyTile: {
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+}

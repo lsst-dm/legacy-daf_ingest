@@ -18,9 +18,9 @@ framework: {
 execute: {
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-   shutdownTopic: shutdownCoaddGen
+   shutdownTopic: shutdownChiSqGen
    dir: {
-      shortName: CoaddGen
+      shortName: ChiSqGen
       defaultRoot: .
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
@@ -32,7 +32,7 @@ execute: {
 
    appStage: {
       stageName: "lsst.pex.harness.IoStage.InputStage"
-      eventTopic: "triggerCoaddGenEvent"
+      eventTopic: "triggerChiSqGenEvent"
       stagePolicy: @010-input.paf
    }
 

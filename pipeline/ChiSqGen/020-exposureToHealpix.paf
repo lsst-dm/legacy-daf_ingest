@@ -1,0 +1,6 @@
+inputKeys: {
+   exposure: "scienceExposure"
+}
+outputKeys: {
+   skyMapImage: "skyMapImage"
+}

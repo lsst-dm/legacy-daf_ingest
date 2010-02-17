@@ -1,6 +1,6 @@
 inputKeys: {
-   warpedExposure: "warpedExposure"
-   referenceExposure: "referenceExposure"
+   warpedExposure: "scienceExposure"
+   referencePsf: "referencePsf"
 }
 outputKeys: {
    psfMatchedExposure: "psfMatchedExposure"

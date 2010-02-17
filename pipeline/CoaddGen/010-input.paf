@@ -1,5 +1,5 @@
-AdditionalData: "inputPathName=triggerPSFMatchEvent.inputPathName"
-AdditionalData: "refPathName=triggerPSFMatchEvent.refPathName"
+AdditionalData: "inputPathName=triggerCoaddGenEvent.inputPathName"
+AdditionalData: "skyTilePathName=triggerCoaddGenEvent.skyTilePathName"
 InputItems: {
     scienceExposure: {
         Type: "ExposureF"
@@ -9,12 +9,11 @@ InputItems: {
             Location: "%(input)/%(inputPathName)"
         }
     }
-    referencePsf: {
-        Type: "PSF"
-        PythonType: "lsst.meas.algorithms.PSF"
+    skyTile: {
+        Type: "SkyMapImage"
+        PythonType: "lsst.afw.image.SkyMapImage"
         StoragePolicy: {
             Storage: "BoostStorage"
-            Location: "%(input)/%(refPathName)"
+            Location: "%(input)/%(skyTilePathName)"
         }
-    }
 }

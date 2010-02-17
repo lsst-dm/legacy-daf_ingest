@@ -31,38 +31,27 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
+      stageName: "lsst.pex.harness.IoStage.InputStage"
       eventTopic: "triggerTemplateGenEvent"
-      stagePolicy: @010-skyTileMetadata.paf
+      stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.datarel.ExposureStackStage.ExposureStackStage"
+      stageName: "lsst.coadd.pipeline.OutlierRejectionStage"
       eventTopic: "None"
-      stagePolicy: @020-exposureStack.paf
+      stagePolicy: @020-outlierRejection.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.coadd.pipeline.AddHealpixStage"
       eventTopic: "None"
-      stagePolicy: @030-exposureStackInput.paf
+      stagePolicy: @030-addHealpix.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      stageName: "lsst.pex.harness.IoStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @040-psfMatchKernelsInput.paf
+      stagePolicy: @040-output.paf
    }
 
-   appStage: {
-      stageName: "lsst.coadd.pipeline.TemplateGenerationStage.TemplateGenerationStage"
-      eventTopic: "None"
-      stagePolicy: @050-templateGeneration.paf
-   }
-
-   appStage: {
-      stageName: "lsst.pex.harness.IOStage.OutputStage"
-      eventTopic: "None"
-      stagePolicy: @060-templateTileOutput.paf
-   }
 }

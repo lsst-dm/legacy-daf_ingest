@@ -1,0 +1,6 @@
+inputKeys: {
+   exposure: "psfMatchedExposure"
+}
+outputKeys: {
+   skyMapImage: "skyMapImage"
+}

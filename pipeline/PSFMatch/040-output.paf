@@ -1,9 +1,9 @@
 AdditionalData: "outputPathName=triggerPSFMatchEvent.outputPathName"
 AdditionalData: "kernelPathName=triggerPSFMatchEvent.kernelPathName"
 OutputItems: {
-   psfMatchedExposure: {
+   skyMapImage: {
       StoragePolicy: {
-         Storage: "FitsStorage"
+         Storage: "BoostStorage"
          Location: "%(output)/%(outputPathName)"
       }
    }

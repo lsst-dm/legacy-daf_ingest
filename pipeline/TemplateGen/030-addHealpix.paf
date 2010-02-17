@@ -1,0 +1,8 @@
+inputKeys: {
+   coadd: "coadd"
+   skyTile: "skyTile"
+}
+
+outputKeys: {
+   skyTile: "skyTile"
+}

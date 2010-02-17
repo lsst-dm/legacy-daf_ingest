@@ -37,15 +37,15 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.WarpExposureStage"
+      stageName: "lsst.coadd.pipeline.PsfMatchStage"
       eventTopic: "None"
-      stagePolicy: @020-warpExposure.paf
+      stagePolicy: @020-psfMatch.paf
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.PsfMatchStage"
+      stageName: "lsst.coadd.pipeline.ExposureToHealpixStage"
       eventTopic: "None"
-      stagePolicy: @030-psfMatch.paf
+      stagePolicy: @030-warpExposure.paf
    }
 
    appStage: {

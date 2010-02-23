@@ -1,5 +1,4 @@
 AdditionalData: "inputPathName=triggerCoaddGenEvent.inputPathName"
-AdditionalData: "skyTilePathName=triggerCoaddGenEvent.skyTilePathName"
 InputItems: {
     scienceExposure: {
         Type: "ExposureF"
@@ -9,11 +8,4 @@ InputItems: {
             Location: "%(input)/%(inputPathName)"
         }
     }
-    skyTile: {
-        Type: "SkyMapImage"
-        PythonType: "lsst.afw.image.SkyMapImage"
-        StoragePolicy: {
-            Storage: "BoostStorage"
-            Location: "%(input)/%(skyTilePathName)"
-        }
 }

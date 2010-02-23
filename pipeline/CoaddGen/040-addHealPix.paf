@@ -1,0 +1,10 @@
+inputKeys: {
+   coadd: "skyTile"
+   weightMap: "weightMap"
+   exposureTile: "exposureTile"
+   event: "triggerCoaddGenEvent"
+}
+
+parameters: {
+   eventDoNormalizeAndOutputKey: "lastExposure"
+}

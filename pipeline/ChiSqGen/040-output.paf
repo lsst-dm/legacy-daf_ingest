@@ -1,9 +1,0 @@
-AdditionalData: "outputPathName=triggerChiSqGenEvent.outputPathName"
-OutputItems: {
-   skyTile: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
-}

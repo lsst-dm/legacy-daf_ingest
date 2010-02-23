@@ -37,15 +37,15 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.OutlierRejectionStage"
+      stageName: "lsst.datarel.GenerateSkyTileStage"
       eventTopic: "None"
-      stagePolicy: @020-outlierRejection.paf
+      stagePolicy: @020-generateSkyTile.paf
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.AddHealpixStage"
+      stageName: "lsst.coadd.pipeline.OutlierRejectionStage"
       eventTopic: "None"
-      stagePolicy: @030-addHealpix.paf
+      stagePolicy: @030-outlierRejection.paf
    }
 
    appStage: {

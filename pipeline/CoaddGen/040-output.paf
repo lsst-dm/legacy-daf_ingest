@@ -1,9 +1,0 @@
-AdditionalData: "outputPathName=triggerCoaddGenEvent.outputPathName"
-OutputItems: {
-   skyTile: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
-}

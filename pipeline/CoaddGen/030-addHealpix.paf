@@ -1,8 +1,0 @@
-inputKeys: {
-   coadd: "skyMapImage"
-   skyTile: "skyTile"
-}
-
-outputKeys: {
-   skyTile: "skyTile"
-}

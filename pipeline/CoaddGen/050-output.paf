@@ -1,0 +1,18 @@
+AdditionalData: "outputPathName=triggerCoaddGenEvent.outputPathName"
+AdditionalData: "weightMapOutputPathName=triggerCoaddGenEvent.weightMapOutputPathName"
+OutputItems: {
+   skyTile: {
+      Required: false
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(scratch)/%(outputPathName)"
+      }
+   }
+   weightMap: {
+      Required: false
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(scratch)/%(weightMapOutputPathName)"
+      }
+   }
+}

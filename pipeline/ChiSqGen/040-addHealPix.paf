@@ -1,0 +1,11 @@
+inputKeys: {
+   coadd: "skyTile"
+   weightMap: "weightMap"
+   exposureTile: "exposureTile"
+   event: "triggerChiSqGenEvent"
+}
+
+parameters: {
+   eventDoNormalizeAndOutputKey: "lastExposure"
+   chiSq: true
+}

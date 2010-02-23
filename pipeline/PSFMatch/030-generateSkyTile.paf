@@ -1,0 +1,11 @@
+inputKeys: {
+   event: "triggerPSFMatchEvent"
+}
+
+parameters: {
+   eventSkyMapIdSetKey: "skyMapIdSet"
+}
+
+outputKeys: {
+   skyMapImage: "skyTile"
+}

@@ -1,0 +1,11 @@
+inputKeys: {
+   event: "triggerChiSqGenEvent"
+}
+
+parameters: {
+   eventSkyMapIdSetKey: "skyMapIdSet"
+}
+
+outputKeys: {
+   skyMapImage: "exposureTile"
+}

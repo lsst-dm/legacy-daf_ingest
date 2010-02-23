@@ -1,7 +1,7 @@
 AdditionalData: "outputPathName=triggerPSFMatchEvent.outputPathName"
 AdditionalData: "kernelPathName=triggerPSFMatchEvent.kernelPathName"
 OutputItems: {
-   skyMapImage: {
+   skyTile: {
       StoragePolicy: {
          Storage: "BoostStorage"
          Location: "%(output)/%(outputPathName)"

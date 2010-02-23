@@ -1,5 +1,4 @@
 AdditionalData: "inputPathDir=triggerTemplateGenEvent.inputDir"
-AdditionalData: "skyTilePathName=triggerTemplateGenEvent.skyTilePathName"
 InputItems: {
     skyMapImageStack: {
         Type: "SkyMapImageStack"
@@ -9,11 +8,4 @@ InputItems: {
             Location: "%(input)/%(inputDir)"
         }
     }
-    skyTile: {
-        Type: "SkyMapImage"
-        PythonType: "lsst.afw.image.SkyMapImage"
-        StoragePolicy: {
-            Storage: "BoostStorage"
-            Location: "%(input)/%(skyTilePathName)"
-        }
 }

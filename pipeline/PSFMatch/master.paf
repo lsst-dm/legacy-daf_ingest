@@ -43,15 +43,21 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.ExposureToHealpixStage"
+      stageName: "lsst.datarel.GenerateSkyTileStage"
       eventTopic: "None"
-      stagePolicy: @030-warpExposure.paf
+      stagePolicy: @030-generateSkyTile.paf
+   }
+
+   appStage: {
+      stageName: "lsst.coadd.pipeline.ExposureToHealPixStage"
+      eventTopic: "None"
+      stagePolicy: @040-exposureToHealPix.paf
    }
 
    appStage: {
       stageName: "lsst.pex.harness.IoStage.OutputStage"
       eventTopic: "None"
-      stagePolicy: @040-output.paf
+      stagePolicy: @050-output.paf
    }
 
 }

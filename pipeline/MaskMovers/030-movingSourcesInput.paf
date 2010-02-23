@@ -1,0 +1,12 @@
+AdditionalData: "diaSourcePathName=triggerMaskMoversEvent.diaSourcePathName"
+AdditionalData: "diaSourceIds=diaSourceIds"
+InputItems: {
+    diaSourceList: {
+        Type: "DiaSourceSet"
+        PythonType: "lsst.afw.source.DiaSourceSet"
+        StoragePolicy: {
+            Storage: "BoostStorage"
+            Location: "%(input)/%(diaSourcePathName)"
+        }
+    }
+}

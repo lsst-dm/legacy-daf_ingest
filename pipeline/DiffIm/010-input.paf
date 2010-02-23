@@ -1,0 +1,11 @@
+AdditionalData: "inputPathName=triggerDiffImEvent.inputPathName"
+InputItems: {
+    scienceExposure: {
+        Type: "ExposureF"
+        PythonType: "lsst.afw.image.ExposureF"
+        StoragePolicy: {
+            Storage: "FitsStorage"
+            Location: "%(input)/%(inputPathName)"
+        }
+    }
+}

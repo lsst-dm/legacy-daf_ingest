@@ -1,0 +1,10 @@
+inputKeys: {
+   psf: "detectionPsf"
+   exposure: "differenceExposure"
+   positiveDetection: "positiveFootprintSet"
+   negativeDetection: "negativeFootprintSet"
+}
+outputKeys: {
+   sources: "differenceSources"
+}
+

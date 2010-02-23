@@ -1,0 +1,12 @@
+AdditionalData: "skyMapIdSet=skyMapIdSet"
+AdditionalData: "templateDir=triggerDiffImEvent.templateDir"
+InputItems: {
+    skyMapImage: {
+        Type: "SkyMapImage"
+        PythonType: "lsst.afw.image.SkyMapImage"
+        StoragePolicy: {
+            Storage: "BoostStorage"
+            Location: "%(input)/%(templateDir)"
+        }
+    }
+}

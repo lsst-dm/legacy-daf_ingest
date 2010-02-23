@@ -1,0 +1,7 @@
+inputKeys: {
+   exposureToMatch: "scienceExposure"
+   skyMapImage: "skyMapImage"
+}
+outputKeys: {
+   coaddExposure: "templateExposure"
+}

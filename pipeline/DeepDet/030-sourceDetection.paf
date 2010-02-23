@@ -1,0 +1,7 @@
+inputKeys: {
+   exposure: "detectionExposure"
+}
+outputKeys: {
+   positiveDetection: "detectionFootprintSet"
+   psf: "detectionPsf"
+}

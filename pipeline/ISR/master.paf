@@ -45,7 +45,7 @@ execute: {
    appStage: {
       stageName: "lsst.ip.pipeline.ValidateMetadataStage"
       eventTopic: "None"
-      stagePolicy: @020-transformMetadata.paf
+      stagePolicy: @030-validateMetadata.paf
    }
 
    appStage: {

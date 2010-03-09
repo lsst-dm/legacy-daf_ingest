@@ -43,15 +43,15 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.ExposureToHealPixStage"
+      stageName: "lsst.coadd.pipeline.ExposureToSkyMapStage"
       eventTopic: "None"
-      stagePolicy: @030-exposureToHealPix.paf
+      stagePolicy: @030-exposureToSkyMap.paf
    }
 
    appStage: {
-      stageName: "lsst.coadd.pipeline.AddHealPixStage"
+      stageName: "lsst.coadd.pipeline.AddSkyMapStage"
       eventTopic: "None"
-      stagePolicy: @040-addHealPix.paf
+      stagePolicy: @040-addSkyMap.paf
    }
 
    appStage: {

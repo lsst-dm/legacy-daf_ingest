@@ -16,9 +16,11 @@ framework: {
 }
 
 execute: {
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCcdAssembly
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: CcdAssembly
       defaultRoot: .
@@ -31,19 +33,25 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IoStage.InputStage"
+      #stageName: "lsst.pex.harness.IOStage.InputStage"
+      name: "lsst.pex.harness.IOStage.InputStage"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "triggerCcdAssemblyEvent"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.AssembleCcdStage"
+      #stageName: "lsst.ip.pipeline.AssembleCcdStage"
+      name: "lsst.ip.pipeline.AssembleCcdStage"
+      parallelClass: "lsst.ip.pipeline.AssembleCcdStageParallel"
       eventTopic: "None"
       stagePolicy: @020-assembleCcd.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IoStage.OutputStage"
+      #stageName: "lsst.pex.harness.IOStage.OutputStage"
+      name: "lsst.pex.harness.IOStage.OutputStage"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @030-output.paf
    }

@@ -16,9 +16,11 @@ framework: {
 }
 
 execute: {
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCrSplit
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: CrSplit
       defaultRoot: .
@@ -31,55 +33,73 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IoStage.InputStage"
+      #stageName: "lsst.pex.harness.IOStage.InputStage"
+      name: "lsst.pex.harness.IOStage.InputStage"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "triggerCrSplitEvent"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
+      #stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
+      name: "lsst.meas.pipeline.BackgroundEstimationStage"
+      parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
       stagePolicy: @020-backgroundEstimation0.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
+      #stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
+      name: "lsst.meas.pipeline.BackgroundEstimationStage"
+      parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
       stagePolicy: @030-backgroundEstimation1.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.CrRejectStage"
+      #stageName: "lsst.ip.pipeline.CrRejectStage"
+      name: "lsst.ip.pipeline.CrRejectStage"
+      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
       stagePolicy: @040-crReject0.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.CrRejectStage"
+      #stageName: "lsst.ip.pipeline.CrRejectStage"
+      name: "lsst.ip.pipeline.CrRejectStage"
+      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
       stagePolicy: @050-crReject1.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.SimpleDiffImStage"
+      #stageName: "lsst.ip.pipeline.SimpleDiffImStage"
+      name: "lsst.ip.pipeline.SimpleDiffImStage"
+      parallelClass: "lsst.ip.pipeline.SimpleDiffImStageParallel"
       eventTopic: "None"
       stagePolicy: @060-simpleDiffIm.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.SourceDetectionStage"
+      #stageName: "lsst.meas.pipeline.SourceDetectionStage"
+      name: "lsst.meas.pipeline.SourceDetectionStage"
+      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
       stagePolicy: @070-sourceDetection.paf
    }
 
    appStage: {
-      stageName: "lsst.ip.pipeline.crSplitCombineStage"
+      #stageName: "lsst.ip.pipeline.crSplitCombineStage"
+      name: "lsst.ip.pipeline.crSplitCombineStage"
+      parallelClass: "lsst.ip.pipeline.crSplitCombineStageParallel"
       eventTopic: "None"
       stagePolicy: @080-crSplitCombine.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IoStage.OutputStage"
+      #stageName: "lsst.pex.harness.IOStage.OutputStage"
+      name: "lsst.pex.harness.IOStage.OutputStage"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @090-output.paf
    }

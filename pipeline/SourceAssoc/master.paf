@@ -16,9 +16,11 @@ framework: {
 }
 
 execute: {
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownSourceAssoc
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: SourceAssoc
       defaultRoot: .
@@ -31,7 +33,9 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.ap.pipeline.SourceAssocStage.SourceAssocStage"
+      #stageName: "lsst.ap.pipeline.SourceAssocStage.SourceAssocStage"
+      name: "lsst.ap.pipeline.SourceAssocStage.SourceAssocStage"
+      parallelClass: "lsst.ap.pipeline.SourceAssocStage.SourceAssocStageParallel"
       eventTopic: "triggerSourceAssocEvent"
       stagePolicy: @010-sourceAssoc.paf
    }

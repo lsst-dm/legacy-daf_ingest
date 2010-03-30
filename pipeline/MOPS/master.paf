@@ -16,9 +16,11 @@ framework: {
 }
 
 execute: {
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownMOPS
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: MOPS
       defaultRoot: .
@@ -31,37 +33,49 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IOStage.InputStage"
+      #stageName: "lsst.pex.harness.IOStage.InputStage"
+      name: "lsst.pex.harness.IOStage.InputStage"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "triggerMOPSEvent"
       stagePolicy: @010-nightlyDiaSourcesInput.paf
    }
 
    appStage: { 
-      stageName: "lsst.mops.daymops.SetupStage" 
+      #stageName: "lsst.mops.daymops.SetupStage" 
+      name: "lsst.mops.daymops.SetupStage" 
+      parallelClass: "lsst.mops.daymops.SetupStageParallel" 
       eventTopic: "None" 
       stagePolicy: @020-setup.paf
    }
 
    appStage: { 
-      stageName: "lsst.mops.daymops.IntraNightLinkingStage" 
+      #stageName: "lsst.mops.daymops.IntraNightLinkingStage" 
+      name: "lsst.mops.daymops.IntraNightLinkingStage" 
+      parallelClass: "lsst.mops.daymops.IntraNightLinkingStageParallel" 
       eventTopic: "None" 
       stagePolicy: @030-intraNightLinking.paf
    }
 
    appStage: { 
-      stageName: "lsst.mops.daymops.InterNightLinkingStage" 
+      #stageName: "lsst.mops.daymops.InterNightLinkingStage" 
+      name: "lsst.mops.daymops.InterNightLinkingStage" 
+      parallelClass: "lsst.mops.daymops.InterNightLinkingStageParallel" 
       eventTopic: "None" 
       stagePolicy: @040-interNightLinking.paf
    }
 
    appStage: { 
-      stageName: "lsst.mops.daymops.OrbitDeterminationStage" 
+      #stageName: "lsst.mops.daymops.OrbitDeterminationStage" 
+      name: "lsst.mops.daymops.OrbitDeterminationStage" 
+      parallelClass: "lsst.mops.daymops.OrbitDeterminationStageParallel" 
       eventTopic: "None" 
       stagePolicy: @050-orbitDetermination.paf
    }
 
    appStage: { 
-      stageName: "lsst.mops.daymops.OrbitManagementStage" 
+      #stageName: "lsst.mops.daymops.OrbitManagementStage" 
+      name: "lsst.mops.daymops.OrbitManagementStage" 
+      parallelClass: "lsst.mops.daymops.OrbitManagementStageParallel"
       eventTopic: "None" 
       stagePolicy: @060-orbitManagement.paf
    }

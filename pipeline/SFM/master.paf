@@ -16,9 +16,11 @@ framework: {
 }
 
 execute: {
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownSFM
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: SFM
       defaultRoot: .
@@ -31,25 +33,33 @@ execute: {
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IoStage.InputStage"
+      #stageName: "lsst.pex.harness.IOStage.InputStage"
+      name: "lsst.pex.harness.IOStage.InputStage"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "triggerSFMEvent"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.SourceDetectionStage"
+      #stageName: "lsst.meas.pipeline.SourceDetectionStage"
+      name: "lsst.meas.pipeline.SourceDetectionStage"
+      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
       stagePolicy: @020-sourceDetection.paf
    }
 
    appStage: {
-      stageName: "lsst.meas.pipeline.SourceMeasurementStage"
+      #stageName: "lsst.meas.pipeline.SourceMeasurementStage"
+      name: "lsst.meas.pipeline.SourceMeasurementStage"
+      parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
       eventTopic: "None"
       stagePolicy: @030-sourceMeasurement.paf
    }
 
    appStage: {
-      stageName: "lsst.pex.harness.IoStage.OutputStage"
+      #stageName: "lsst.pex.harness.IOStage.OutputStage"
+      name: "lsst.pex.harness.IOStage.OutputStage"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @040-output.paf
    }

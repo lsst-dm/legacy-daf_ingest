@@ -1,0 +1,29 @@
+#
+#  020-sourceDetection.paf 
+#  
+inputKeys: {
+   exposure: "scienceExposure"
+   # psf:    ""          # uncomment line to get psf from clipboard
+			 # if this policy item does not exist, the stage will attempt 
+			 # to create a naive smoothing psf using the psfPolicy below
+}
+outputKeys: {
+   positiveDetection: "sourceFootprintSet"
+   psf: "detectionPsf"
+}
+
+# Minimal example psfPolicy 
+# For real run, psf should be provided on the clipboard (via the triggering event )
+# These parameters are defaults for generating psf within the stage
+psfPolicy: {
+    height: 9
+    width: 9 
+    parameter: 1.5
+    parameter: 1.5
+}
+
+# Minimal example backgroundPolicy
+backgroundPolicy: { 
+   	# algorithm: "none"  # uncomment to dissable background estimation
+	# binsize: 20        # uncomment for small images
+} 

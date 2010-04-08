@@ -1,4 +1,5 @@
-AdditionalData: "outputPathName=triggerISREvent.outputPathName"
+# Following moved to SDQA output stage
+#AdditionalData: "outputPathName=triggerISREvent.outputPathName"
 OutputItems: {
    isrExposure: {
       StoragePolicy: {

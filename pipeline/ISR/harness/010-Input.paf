@@ -1,38 +1,45 @@
-AdditionalData: "biasPath=calibData.biasPath"
-AdditionalData: "darkPath=calibData.darkPath"
-AdditionalData: "flatPath=calibData.flatPath"
-AdditionalData: "fringePath=calibData.fringePath"
-InputItems: {
-    biasExposure: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(biasPath)"
+AdditionalData: "cameraInfo=triggerISREvent.cameraInfo"
+inputKeys: {
+    inputDatasets: inputDatasets
+    jobIdentity: jobIdentity
+}
+parameters: {
+    butler: {
+        mapperName: minMapper.MinMapper
+	mapperPolicy: {
+            root: /lsst/sims/ImSim_data
         }
     }
-    flatExposure: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(flatPath)"
+    inputItems: {
+        rawCameraImage: {
+            datasetType: raw
+            datasetId: {
+                fromInputDatasets: true
+            }
         }
-    }
-    fringeExposure: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(fringePath)"
+        biasExposure: {
+            datasetType: bias
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    darkExposure: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(darkPath)"
+        darkExposure: {
+            datasetType: dark
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        flatExposure: {
+            datasetType: flat
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        fringeExposure: {
+            datasetType: fringe
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
     }
 }

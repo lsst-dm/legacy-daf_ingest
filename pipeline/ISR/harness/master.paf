@@ -42,7 +42,7 @@ execute: {
    appStage: {
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
-      eventTopic: "None"
+      eventTopic: "triggerISREvent"
       stagePolicy: @010-Input.paf
    }
 
@@ -108,7 +108,20 @@ execute: {
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @100-isrExposureOutput.paf
+   }
 
+   appStage: {
+      name: "lsst.sdqa.pipeline.isrSdqaStage"
+      parallelClass: "lsst.sdqa.pipeline.isrSdqaStageParallel"
+      eventTopic: "None"
+      stagePolicy: @110-isrSdqa.paf
+   }
+
+   appStage: {
+      name: "lsst.pex.harness.IOStage.OutputStage"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @120-isrSdqaOutput.paf
    }
 
 }

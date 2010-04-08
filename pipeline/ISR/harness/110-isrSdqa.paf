@@ -1,0 +1,25 @@
+#<?cfg paf dictionary ?>
+#
+
+IsrSdqaStage: {
+    inputKeys: {
+        exposureKey: "isrExposure"
+        nBadCalibPixKey: "nBadCalibPix"
+        nSaturatePixKey: "nSaturatePix"
+        overscanMeanKey: "overscanMean"
+        overscanMeanUncKey: "overscanMeanUnc"
+        overscanStdDevKey: "overscanStdDev"
+        overscanMedianKey: "overscanMedian"
+        imageMedianKey: "imageMedian"
+        imageMinKey: "imageMin"
+        imageMaxKey: "imageMax"
+        xImageGradientKey: "imageGradientX"
+        yImageGradientKey: "imageGradientY"
+    }
+    outputKeys: {
+        isrPersistableSdqaRatingVectorKey: "isrPersistableSdqaRatingVector"
+    }
+    parameters: {
+        sdqaRatingScope: 0
+    }
+}

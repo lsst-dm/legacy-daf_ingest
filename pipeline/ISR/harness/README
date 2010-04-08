@@ -9,17 +9,21 @@ level of pex_harness via the  launchPipeline.py script.
 To run here at the pex_harness level, we perform by hand a couple of tasks 
 that ctrl_orca provides during "production" runs. 
 
-We link the input directory:
+We define the input directory in the 010-Input.paf policy:
+	input: /lsst/sims/ImSim_data
 
-% ln -s /lsst/DC3/stacks/default/Linux64/afwdata/svn11397 input
+and make the other output  directories : 
 
-and make the output directory : 
+% cd ....datarel/pipeline/harness/
+% mkdir output work scratch log
 
-% mkdir output 
+Since the camera geom is not ready for the butler...the camera geometry 
+is placed on the clipboard via the triggerISREventTransmitter.
+
 
 The pipeline can be then started via : 
 
-% launchPipeline.py master.paf test_15038
+% launchPipeline.py master.paf test_1 ISR -v
 
 The pipeline will block and wait for an incoming data event.
 Provide this event with the trigger script :

@@ -1,9 +1,0 @@
-inputKeys: {
-   exposure: "isrExposure"
-   darkexposure: "darkExposure"
-   darkscale: "darkScale"
-   exposurescale: "exposureScale"
-}
-outputKeys: {
-   darkSubtractedExposure: "isrExposure"
-}

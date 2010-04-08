@@ -1,7 +1,0 @@
-inputKeys: {
-   exposure: "isrExposure"
-   biasexposure: "biasExposure"
-}
-outputKeys: {
-   biasSubtractedExposure: "isrExposure"
-}

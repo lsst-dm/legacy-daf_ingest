@@ -1,8 +1,0 @@
-inputKeys: {
-   exposure: "isrExposure"
-   cameraInfo: "cameraInfo"
-   fwhm: "fwhmValue"
-}
-outputKeys: {
-   saturationCorrectedExposure: "isrExposure"
-}

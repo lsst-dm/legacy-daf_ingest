@@ -1,7 +1,0 @@
-inputKeys: {
-   exposure: "isrExposure"
-   fringeexposure: "fringeExposure"
-}
-outputKeys: {
-   fringeCorrectedExposure: "isrExposure"
-}

@@ -21,14 +21,5 @@ if __name__ == "__main__":
     root.set("inputPathName0", "imsim_85751839_R23_S11_C04_E000")
     root.set("inputPathName1", "imsim_85751839_R23_S11_C04_E001")
 
-    # root.set("inputPathName", "small_MI")
-    # root.set("inputPathName", "med")
-
-
-
-
-    # root.setInt("visitId", 1)
-    # root.setDouble("FOVRa", 273.48066298343)
-
     externalEventTransmitter.publish(root)
 

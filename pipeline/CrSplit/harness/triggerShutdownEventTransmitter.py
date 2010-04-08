@@ -10,7 +10,7 @@ import time
 if __name__ == "__main__":
     print "starting...\n"
 
-    shutdownTopic = "shutdownSFM"
+    shutdownTopic = "shutdownCrSplit"
     eventBrokerHost = "lsst8.ncsa.uiuc.edu"
 
     externalEventTransmitter = events.EventTransmitter(eventBrokerHost, shutdownTopic )

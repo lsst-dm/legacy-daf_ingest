@@ -1,0 +1,10 @@
+inputKeys: {
+   exposure: "isrExposure"
+   cameraInfo: "cameraInfo"
+}
+
+overscanfittype: "mean"
+
+outputKeys: {
+   overscanCorrectedExposure: "isrExposure"
+}

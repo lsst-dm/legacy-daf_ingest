@@ -1,0 +1,38 @@
+
+=============================================================================
+datarel  ISR/harness example
+=============================================================================
+
+In this example we run the ISR pipeline, launching it at the 
+level of pex_harness via the  launchPipeline.py script. 
+
+To run here at the pex_harness level, we perform by hand a couple of tasks 
+that ctrl_orca provides during "production" runs. 
+
+We link the input directory:
+
+% ln -s /lsst/DC3/stacks/default/Linux64/afwdata/svn11397 input
+
+and make the output directory : 
+
+% mkdir output 
+
+The pipeline can be then started via : 
+
+% launchPipeline.py master.paf test_15038
+
+The pipeline will block and wait for an incoming data event.
+Provide this event with the trigger script :
+
+% python triggerISREventTransmitter.py 
+
+This script will send events of topic "triggerISREvent" that contain a keyword
+to identify the data set (uncalibratedImage) to be processed, for example,
+
+"inputPathName" => "871034p_1_MI"
+
+The Output Stage is configured to produce a single calibrated output file :
+
+% ls -l output
+........Fill in the sample ls........
+

@@ -1,0 +1,9 @@
+AdditionalData: "outputPathName=triggerISREvent.outputPathName"
+OutputItems: {
+   isrExposure: {
+      StoragePolicy: {
+         Storage: "FitsStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+}

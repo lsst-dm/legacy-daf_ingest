@@ -1,0 +1,12 @@
+inputKeys: {
+   exposures: "crSubCcdExposure0" "crSubCcdExposure1"
+   positiveDetection: "positiveFootprintSet"
+   negativeDetection: "negativeFootprintSet"
+   # processingInfo: "processingInfo"
+}
+
+outputKeys: {
+   combinedExposure: "scienceCcdExposure"
+   # processingInfo: "processingInfo"
+}
+

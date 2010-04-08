@@ -1,0 +1,43 @@
+
+
+=============================================================================
+datarel  CrSplit/harness example
+=============================================================================
+
+In this example we run the CrSplit pipeline, launching it at the
+level of pex_harness via the  launchPipeline.py script.
+
+To run here at the pex_harness level, we perform by hand a couple of tasks
+that ctrl_orca provides during "production" runs.
+
+We link the input directory:
+
+% ln -s /lsst/sims/ImSim_data input
+
+and make the output directory :
+
+% mkdir output
+
+The pipeline can be then started via :
+
+%  launchPipeline.py master.paf test_15040
+
+The pipeline will block and wait for an incoming data event.
+Provide this event with the trigger script :
+
+% python triggerCrSplitEventTransmitter.py
+
+This script will send events of topic "triggerCrSplitEvent" that contain keywords 
+to identify the exposures to be processed, for example,
+
+"inputPathName0" => "imsim_85751839_R23_S11_C04_E000" 
+"inputPathName1" => "imsim_85751839_R23_S11_C04_E001" 
+
+
+
+
+
+
+
+
+

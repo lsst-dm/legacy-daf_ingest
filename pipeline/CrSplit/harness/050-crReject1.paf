@@ -1,0 +1,15 @@
+inputKeys: {
+   exposure: "bkgSubCcdExposure1"
+   # processingInfo: "processingInfo1"
+}
+outputKeys: {
+   exposure: "crSubCcdExposure1"
+   # processingInfo: "processingInfo1"
+}
+
+parameters: {
+   defaultFwhm : 1.0
+   keepCRs: true
+   #keepCRs: false
+}
+

@@ -1,4 +1,3 @@
-AdditionalData: "cameraInfo=triggerISREvent.cameraInfo"
 inputKeys: {
     inputDatasets: inputDatasets
     jobIdentity: jobIdentity

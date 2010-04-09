@@ -22,7 +22,7 @@ execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    executionMode: "oneloop"
    # Be quite verbose
-   logThreshold: -3
+   #logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownISR

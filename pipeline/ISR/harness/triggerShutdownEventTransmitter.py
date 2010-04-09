@@ -9,11 +9,18 @@ import time
 
 if __name__ == "__main__":
     print "starting...\n"
-    externalEventTransmitter = events.EventTransmitter("lsst8.ncsa.uiuc.edu", "shutdownISR")
+
+    shutdownTopic = "shutdownISR"
+    eventBrokerHost = "lsst8.ncsa.uiuc.edu"
+
+    externalEventTransmitter = events.EventTransmitter(eventBrokerHost, shutdownTopic )
 
     root = PropertySet()
-  
-    root.set("visitid", "fov391")
+    # Shutdown at level 1 : stop immediately by killing process (ugly)
+    # Shutdown at level 2 : exit in a clean manner (Pipeline and Slices) at a synchronization point 
+    # Shutdown at level 3 : exit in a clean manner (Pipeline and Slices) at the end of a Stage
+    # Shutdown at level 4 : exit in a clean manner (Pipeline and Slices) at the end of a Visit
+    root.setInt("level", 1)
 
     externalEventTransmitter.publish(root)
 

@@ -9,16 +9,21 @@ level of pex_harness via the  launchPipeline.py script.
 To run here at the pex_harness level, we perform by hand a couple of tasks 
 that ctrl_orca provides during "production" runs. 
 
-We define the input directory in the 010-Input.paf policy:
+1) define the input directory in the 010-Input.paf policy:
 	input: /lsst/sims/ImSim_data
 
-and make the other output  directories : 
+2) make the other output  directories : 
 
 % cd ....datarel/pipeline/harness/
 % mkdir output work scratch log
 
+3) ensure that DMS/obs/lsstSim is setup as obs_lsstSim.  Since it does not
+   have its first tag....this must be done by hand.
+
+-------------------------------------------------------------------
 Since the camera geom is not ready for the butler...the camera geometry 
-is placed on the clipboard via the triggerISREventTransmitter.
+   is placed on the clipboard a temporary stage: 020-makeCameraGeomStage
+----------------------------------------------------------------------
 
 
 The pipeline can be then started via : 

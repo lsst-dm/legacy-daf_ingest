@@ -47,6 +47,13 @@ execute: {
    }
 
    appStage: {
+      name: "lsst.ip.pipeline.MakeCameraGeomStage"
+      parallelClass: "lsst.ip.pipeline.MakeCameraGeomStageParallel"
+      eventTopic: "None"
+      stagePolicy: @020-makeCameraGeom.paf
+   }
+
+   appStage: {
       name: "lsst.ip.pipeline.IsrLinearityStage"
       parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
       eventTopic: "None"

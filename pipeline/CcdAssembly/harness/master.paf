@@ -1,19 +1,19 @@
 #<?cfg paf policy ?>
 
-requires: {
-   database: {
-      type: MySQL
-   }
-   platform: {
-      minCoreCount: 1
-   }
-}
-
-framework: {
-   type: standard
-   environment: "$DATAREL_DIR/etc/setup.sh"
-   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
-}
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+#
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
 
 execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
@@ -45,10 +45,9 @@ execute: {
       eventTopic: "None"
       stagePolicy: @020-assembleCcd.paf
    }
-
    appStage: {
-      name: "lsst.ip.pipeline.IsrDefectAssembleCcdStage"
-      parallelClass: "lsst.ip.pipeline.IsrDefectStageParallel"
+      name: "lsst.ip.pipeline.IsrDetectStage"
+      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
       eventTopic: "None"
       stagePolicy: @030-isrDefect.paf
    }
@@ -57,7 +56,7 @@ execute: {
       name: "lsst.pex.harness.IOStage.OutputStage"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @030-output.paf
+      stagePolicy: @040-output.paf
    }
 
 }

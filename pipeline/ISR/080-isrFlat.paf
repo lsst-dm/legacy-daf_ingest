@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "isrExposure"
+   flatexposure: "flatExposure"
+   flatscalingtype: "flatScalingType"
+}
+outputKeys: {
+   flatCorrectedExposure: "isrExposure"
+}

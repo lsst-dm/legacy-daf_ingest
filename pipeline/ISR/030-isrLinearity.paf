@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "rawCameraImage"
+   metadata: "isrMetadata"
+   cameraInfo: "cameraInfo"
+}
+outputKeys: {
+   linearityCorrectedExposure: "isrExposure"
+}

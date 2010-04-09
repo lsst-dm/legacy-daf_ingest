@@ -1,0 +1,8 @@
+README - 9 April 2010  RAA
+
+Proper integration of isrDefect into the master.paf has not been done.
+Need to check that the input/output blocks are correct for its use.
+
+Simon said something about needing to get saturated defects from a cache.
+
+

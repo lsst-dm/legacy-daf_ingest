@@ -1,20 +1,22 @@
-AdditionalData: "inputPathName0=triggerCrSplitEvent.inputPathName0"
-AdditionalData: "inputPathName1=triggerCrSplitEvent.inputPathName1"
-InputItems: {
-    isrCcdExposure0: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(inputPathName0)"
+parameters: {
+    additionalData: "inputPathName0=triggerCrSplitEvent.inputPathName0"
+    additionalData: "inputPathName1=triggerCrSplitEvent.inputPathName1"
+    inputItems: {
+        isrCcdExposure0: {
+            type: "ExposureF"
+            pythonType: "lsst.afw.image.ExposureF"
+            storagePolicy: {
+                storage: "FitsStorage"
+                location: "%(input)/%(inputPathName0)"
+            }
         }
-    }
-    isrCcdExposure1: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(inputPathName1)"
+        isrCcdExposure1: {
+            type: "ExposureF"
+            pythonType: "lsst.afw.image.ExposureF"
+            storagePolicy: {
+                storage: "FitsStorage"
+                location: "%(input)/%(inputPathName1)"
+            }
         }
     }
 }

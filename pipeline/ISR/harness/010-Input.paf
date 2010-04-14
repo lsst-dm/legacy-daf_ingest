@@ -4,25 +4,25 @@ inputKeys: {
 }
 parameters: {
     butler: {
-        mapperName: minMapper.MinMapper
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
 	mapperPolicy: {
-            root: /lsst/sims/ImSim_data
+            root: /astro/users/krughoff/lsst/lsst_devel/Linux64/afwdata/ImSim/
         }
     }
     inputItems: {
-        rawCameraImage: {
+        Exposure: {
             datasetType: raw
             datasetId: {
                 fromInputDatasets: true
             }
         }
-        biasExposure: {
+        BiasExposure: {
             datasetType: bias
             datasetId: {
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
             }
         }
-        darkExposure: {
+        DarkExposure: {
             datasetType: dark
             datasetId: {
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"

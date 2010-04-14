@@ -1,0 +1,9 @@
+inputKeys: {
+   exposure: "scienceExposure"
+   sourceSet: "calibSources"
+}
+outputKeys: {
+   psf: "measuredPsf"
+   cellSet: "psfCellSet"
+   sdqa: "sdqaInfo"
+}

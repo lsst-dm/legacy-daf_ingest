@@ -1,0 +1,102 @@
+#<?cfg paf policy ?>
+
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
+
+execute: {
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   executionMode: "oneloop"
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
+   nSlices: 1
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownImgChar
+   dir: {
+      shortName: ImgChar
+      defaultRoot: .
+      # root directory for run I/O
+      #runDirPattern: "../../%(runid)s/%(shortname)s"
+      runDirPattern: "."
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+   appStage: {
+      name: "lsst.pex.harness.IOStage.InputStage"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
+      eventTopic: "triggerImgCharEvent"
+      stagePolicy: @010-input.paf
+   }
+
+   appStage: {
+      name: "lsst.meas.pipeline.SourceDetectionStage"
+      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
+      eventTopic: "None"
+      stagePolicy: @020-sourceDetection.paf
+   }
+
+   appStage: {
+      name: "lsst.meas.pipeline.SourceMeasurementStage"
+      parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
+      eventTopic: "None"
+      stagePolicy: @030-sourceMeasurement.paf
+   }
+
+   appStage: {
+      name: "lsst.meas.pipeline.PsfDeterminationStage"
+      parallelClass: "lsst.meas.pipeline.PsfDeterminationStageParallel"
+      eventTopic: "None"
+      stagePolicy: @040-psfDetermination.paf
+   }
+
+   appStage: {
+      name: "lsst.meas.pipeline.WcsDeterminationStage"
+      parallelClass: "lsst.meas.pipeline.WcsDeterminationStageParallel"
+      eventTopic: "None"
+      stagePolicy: @050-wcsDetermination.paf
+   }
+
+   appStage: {
+      name: "lsst.sdqa.WcsVerificationStage"
+      parallelClass: "lsst.sdqa.WcsVerificationStageParallel"
+      eventTopic: "None"
+      stagePolicy: @060-wcsVerification.paf
+   }
+
+   appStage: {
+      name: "lsst.meas.pipeline.PhotoCalStage"
+      parallelClass: "lsst.meas.pipeline.PhotoCalStageParallel"
+      eventTopic: "None"
+      stagePolicy: @070-photoCal.paf
+   }
+
+   appStage: {
+      name: "lsst.ip.pipeline.ExposureGenerationStage"
+      parallelClass: "lsst.ip.pipeline.ExposureGenerationStageParallel"
+      eventTopic: "None"
+      stagePolicy: @080-exposureGeneration.paf
+   }
+
+   appStage: {
+      name: "lsst.pex.harness.IOStage.OutputStage"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @090-output.paf
+   }
+
+}

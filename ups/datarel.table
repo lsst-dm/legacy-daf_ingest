@@ -1,3 +1,4 @@
 setupRequired(meas_pipeline)
 setupRequired(ip_pipeline)
 setupRequired(coadd_utils)
+setupRequired(daf_butlerUtils)

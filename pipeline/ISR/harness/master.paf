@@ -48,17 +48,17 @@ execute: {
 
    appStage: {
       name: "lsst.ip.pipeline.MakeCameraGeomStage"
-      parallelClass: "lsst.ip.pipeline.MakeCameraGeomStageParallel"
+      parallelClass: "lsst.ip.pipeline.MakeCameraStageParallel"
       eventTopic: "None"
       stagePolicy: @020-makeCameraGeom.paf
    }
 
-   appStage: {
-      name: "lsst.ip.pipeline.IsrLinearityStage"
-      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
-      eventTopic: "None"
-      stagePolicy: @030-isrLinearity.paf
-   }
+#   appStage: {
+#      name: "lsst.ip.pipeline.IsrLinearityStage"
+#      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @030-isrLinearity.paf
+#   }
 
    appStage: {
       name: "lsst.ip.pipeline.IsrSaturationStage"
@@ -118,17 +118,17 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.sdqa.pipeline.isrSdqaStage"
-      parallelClass: "lsst.sdqa.pipeline.isrSdqaStageParallel"
+      name: "lsst.sdqa.pipeline.IsrSdqaStage"
+      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
       eventTopic: "None"
       stagePolicy: @110-isrSdqa.paf
    }
 
-   appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
-      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
-      eventTopic: "None"
-      stagePolicy: @120-isrSdqaOutput.paf
-   }
+#   appStage: {
+#      name: "lsst.pex.harness.IOStage.OutputStage"
+#      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @120-isrSdqaOutput.paf
+#   }
 
 }

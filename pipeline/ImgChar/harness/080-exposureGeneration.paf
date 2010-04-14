@@ -1,0 +1,9 @@
+inputKeys: {
+   exposure: "scienceExposure"
+   psf: "measuredPsf"
+   wcs: "measuredWcs"
+   photometricModel: "photoModel"
+}
+outputKeys: {
+   exposure: "finalScienceExposure"
+}

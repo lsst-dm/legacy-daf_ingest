@@ -12,6 +12,16 @@ BackgroundEstimationStage: {
     parameters: {
         subtractBackground: true
     }
+    OutputItems: {
+        OutputImage: {
+            required: true
+            StoragePolicy: {
+                Storage: "FitsStorage"
+                Location: "exposure"
+            }
+        }
+    }
+
 }
 
 CrRejectStage: {

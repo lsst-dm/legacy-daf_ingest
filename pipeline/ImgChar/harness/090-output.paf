@@ -1,0 +1,39 @@
+AdditionalData: "outputPathName=triggerImgCharEvent.outputPathName"
+AdditionalData: "cellSetPathName=triggerImgCharEvent.cellSetPathName"
+AdditionalData: "matchListPathName=triggerImgCharEvent.matchListPathName"
+OutputItems: {
+   finalScienceExposure: {
+      StoragePolicy: {
+         Storage: "FitsStorage"
+         Location: "%(output)/%(outputPathName)"
+      }
+   }
+   psfCellSet: {
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(output)/%(cellSetPathName)"
+      }
+   }
+   wcsMatchList: {
+      StoragePolicy: {
+         Storage: "BoostStorage"
+         Location: "%(output)/%(matchListPathName)"
+      }
+   }
+   sdqa: {
+      StoragePolicy: {
+         Storage: "DbStorage"
+         Location: "%(dbUrl)"
+      }
+   }
+}
+
+Persistence: {
+    Formatter: {
+        SdqaRatings: {
+            sdqa: {
+                tableName: "Sdqa"
+            }
+        }
+    }
+}

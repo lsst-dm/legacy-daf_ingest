@@ -3,7 +3,7 @@ inputKeys: {
    cameraInfo: "cameraInfo"
 }
 
-overscanfittype: "mean"
+overscanFitType: "MEDIAN"
 
 outputKeys: {
    overscanCorrectedExposure: "isrExposure"

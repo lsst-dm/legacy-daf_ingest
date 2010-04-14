@@ -1,0 +1,8 @@
+inputKeys: {
+   exposure: "scienceExposure"
+   sourceSet: "calibSourceSet"
+}
+outputKeys: {
+   wcs: "measuredWcs"
+   matchList: "wcsMatchList"
+}

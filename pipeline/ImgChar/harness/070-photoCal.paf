@@ -1,0 +1,7 @@
+inputKeys: {
+   exposure: "scienceExposure"
+   sourceSet: "calibSources"
+}
+outputKeys: {
+   photometricModel: "photoModel"
+}

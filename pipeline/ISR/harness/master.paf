@@ -21,8 +21,8 @@ execute: {
    nSlices: 1
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    executionMode: "oneloop"
-   # Be quite verbose
-   #logThreshold: -3
+   # To be quite verbose: add 'logThreshold: -3'
+   logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownISR
@@ -30,8 +30,8 @@ execute: {
       shortName: ISR
       defaultRoot: .
       # Path to root Run directory
-      #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "."
+      # runDirPattern: "../../%(runid)s/%(shortname)s"
+      runDirPattern: "./%(runid)s/%(shortname)s"
       work: work
       input: input
       output: output
@@ -40,19 +40,20 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.InputStage"
-      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
-      eventTopic: "triggerISREvent"
-      stagePolicy: @010-Input.paf
+      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-getajob.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.MakeCameraGeomStage"
-      parallelClass: "lsst.ip.pipeline.MakeCameraStageParallel"
+      name: "lsst.pex.harness.IOStage.InputStage"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @020-makeCameraGeom.paf
+      stagePolicy: @010-Input.paf
    }
 
+# This stage is not implemented in DC3b PT1
 #   appStage: {
 #      name: "lsst.ip.pipeline.IsrLinearityStage"
 #      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
@@ -95,6 +96,7 @@ execute: {
       stagePolicy: @080-isrFlat.paf
    }
 
+# This stage is not implemented in DC3b PT1
 #  appStage: {
 #     name: "lsst.ip.pipeline.IsrFringeStage"
 #     parallelClass: "lsst.ip.pipeline.IsrFringeStageParallel"
@@ -102,13 +104,6 @@ execute: {
 #     stagePolicy: @090-isrFringe.paf
 #  }
 
-# Moving to CCD Assembly Pipelien
-#   appStage: {
-#    name: "lsst.ip.pipeline.IsrDefectStage"
-#     parallelClass: "lsst.ip.pipeline.IsrDefectStageParallel"
-#     eventTopic: "None"
-#     stagePolicy: @130-isrDefect.paf
-#  }
 
    appStage: {
       name: "lsst.pex.harness.IOStage.OutputStage"
@@ -124,11 +119,33 @@ execute: {
       stagePolicy: @110-isrSdqa.paf
    }
 
+   appStage: {
+      name: "lsst.pex.harness.IOStage.OutputStage"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @120-isrSdqaOutput.paf
+   }
+
+   appStage: {
+      name: "lsst.ctrl.sched.pipeline.JobDone"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @130-jobdone.paf
+   }
+
+   failureStage: {
+      name: "lsst.ctrl.sched.pipeline.Failure"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @140-failure.paf
+   }
+
+#  THis stage is moving to CCD Assembly Pipeline
 #   appStage: {
-#      name: "lsst.pex.harness.IOStage.OutputStage"
-#      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+#      name: "lsst.ip.pipeline.IsrDefectStage"
+#      parallelClass: "lsst.ip.pipeline.IsrDefectStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @120-isrSdqaOutput.paf
-#   }
+#      stagePolicy: @130-isrDefect.paf
+#  }
 
 }

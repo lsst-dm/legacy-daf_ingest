@@ -1,10 +1,10 @@
+# isrOverscan.paf
 inputKeys: {
    exposure: "isrExposure"
-   cameraInfo: "cameraInfo"
+   overscanfittype: "overscanFitType"
 }
-
-overscanFitType: "MEDIAN"
 
 outputKeys: {
    overscanCorrectedExposure: "isrExposure"
 }
+

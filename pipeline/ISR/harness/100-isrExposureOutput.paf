@@ -1,10 +1,25 @@
-# Following moved to SDQA output stage
-#AdditionalData: "outputPathName=triggerISREvent.outputPathName"
-OutputItems: {
-   isrExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
+# isrExposureOutput.paf
+
+inputKeys: {
+    jobIdentity: 'jobIdentity"
+}
+
+outputKeys: {
+    outputDatasets: "outputDatasets"
+}
+
+parameters: {
+    additionalData: "root=root"
+    outputItems: {
+        isrExposure: {
+            datasetId: {
+                datasetType: postIsr
+                fromClipboard: "name" "visit" "ccd" "snap" "filter" "channel"
+            }
+            StoragePolicy: {
+               Storage: "FitsStorage"
+               Location: "%(root)/postISR/v%(visit)-f%(filter)/s%(snap)/c%(ccd)/a%(channel).fits
+            }
+        }
+    }
 }

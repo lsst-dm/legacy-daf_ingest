@@ -1,6 +1,5 @@
 #<?cfg paf policy ?>
 
-AdditionalData: "outputPathName=triggerISREvent.outputPathName"
 OutputItems: {
     isrPersistableSdqaRatingVector: {
         StoragePolicy: {

@@ -45,9 +45,8 @@ inputKeys: {
     # failed to produce them.  Thus, this value must match the corresponding 
     # keys in the output stages and the get-a-job stage.  
     # 
-    # completedDatasets: outputDatasets
+    completedDatasets: outputDatasets
 
- # TBD
 
     # this is a python list of all the possible output datasets produced
     # by this pipeline that will be needed by other pipelines.  If there 
@@ -56,9 +55,8 @@ inputKeys: {
     # corresponding keys used in any data-ready stages and in the 
     # get-a-job stage.  
     # 
-    # possibleDatasets:  targetDatasets
+    possibleDatasets:  targetDatasets
 
- # TBD
 
 }
 

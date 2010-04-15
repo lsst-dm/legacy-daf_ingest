@@ -1,6 +1,6 @@
 #<?cfg paf policy ?>
 
-OutputItems: {
+outputItems: {
     isrPersistableSdqaRatingVector: {
         StoragePolicy: {
             Storage: "DbStorage"
@@ -9,7 +9,7 @@ OutputItems: {
     }
 }
 
-Persistence: {
+persistence: {
     Formatter: {
         PersistableSdqaRatingVector: {
             isrPersistableSdqaRatingVector: {

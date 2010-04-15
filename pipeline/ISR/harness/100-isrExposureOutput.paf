@@ -9,7 +9,6 @@ outputKeys: {
 }
 
 parameters: {
-    additionalData: "root=root"
     outputItems: {
         isrExposure: {
             datasetId: {
@@ -18,7 +17,7 @@ parameters: {
             }
             StoragePolicy: {
                Storage: "FitsStorage"
-               Location: "%(root)/postISR/v%(visit)-f%(filter)/s%(snap)/c%(ccd)/a%(channel).fits
+               Location: "%(output)/postISR/v%(visit)-f%(filter)/s%(snap)/c%(ccd)/a%(channel).fits
             }
         }
     }

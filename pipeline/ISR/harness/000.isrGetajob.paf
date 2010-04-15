@@ -33,7 +33,6 @@ outputKeys: {
     # read in the input datasets.
     #
     # inputDatasets: inputDatasets
-#TBD
 
     # this is a python list of all the possible output datasets produced
     # by this pipeline that will be needed by other pipelines.  By the 
@@ -43,7 +42,6 @@ outputKeys: {
     # any data-ready stages and the job-done stage.  
     #
     # outputDatasets:  targetDatasets
-#TBD
 
     # this stage will place an empty list on the clipboard with the key 
     # name specified below; this list is used by the output stages to 
@@ -54,5 +52,4 @@ outputKeys: {
     # the job-done stage.  
     #
     # completedDatasets:  outputDatasets
-#TBD
 }

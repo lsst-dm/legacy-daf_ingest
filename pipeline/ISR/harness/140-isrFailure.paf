@@ -27,19 +27,20 @@ jobSuccess: false
 #
 datasets: {
 
-   dataReadyEvent:  CcdAssemblyJob
+   dataReadyEvent:  RawAvailable
 
-#TBD			Who gets this? 
-#			   Is it to get new data for this ISR pipeline
-#			   or to event handler of next CCDASSEMBLY pipeline?
+## TBD    Should this match the event for the next pipeline???
+##        How should dataset from data-ready stage: 100-isrExposureOutput.paf
+##            be represented here and below...
+
 
 }
 
 inputKeys: {
-    # completedDatasets: outputDatasets
-    # possibleDatasets:  targetDatasets
+    completedDatasets: outputDatasets
+    possibleDatasets:  targetDatasets
 
-#TBD
+#TBD         What is wanted????
 
 }
 

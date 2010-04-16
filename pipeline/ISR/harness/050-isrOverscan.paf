@@ -1,7 +1,6 @@
 # isrOverscan.paf
 inputKeys: {
    exposure: "isrExposure"
-   overscanfittype: "overscanFitType"
 }
 
 outputKeys: {

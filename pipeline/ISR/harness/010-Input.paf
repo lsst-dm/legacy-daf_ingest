@@ -1,8 +1,4 @@
 # Input.paf
-inputKeys: {
-    inputDatasets: inputDatasets
-    jobIdentity: jobIdentity
-}
 parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper

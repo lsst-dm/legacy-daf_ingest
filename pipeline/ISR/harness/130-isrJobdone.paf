@@ -26,14 +26,14 @@ datasets: {
    # the "listen.dataReadyEvent" parameter in policies for all JobOffice 
    # that are interested in these datasets.
    # 
-   dataReadyEvent:  CcdAssemblyJob
+   dataReadyEvent:  postISRReady
 
    # this item restricts data-ready events going out on the above topic
    # to datasets of the given type.  If this parameter is not set, events
    # will go out for all possible datasets; this is what we want in this 
    # example pipeline.
    #
-   datasetType:  PostISR
+   datasetType:  postISR
 }
 
 inputKeys: {
@@ -45,7 +45,7 @@ inputKeys: {
     # failed to produce them.  Thus, this value must match the corresponding 
     # keys in the output stages and the get-a-job stage.  
     # 
-    completedDatasets: outputDatasets
+    # completedDatasets: outputDatasets
 
 
     # this is a python list of all the possible output datasets produced
@@ -55,7 +55,7 @@ inputKeys: {
     # corresponding keys used in any data-ready stages and in the 
     # get-a-job stage.  
     # 
-    possibleDatasets:  targetDatasets
+    # possibleDatasets:  targetDatasets
 
 
 }

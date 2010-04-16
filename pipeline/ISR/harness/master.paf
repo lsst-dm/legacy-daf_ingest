@@ -31,7 +31,7 @@ execute: {
       defaultRoot: .
       # Path to root Run directory
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "./%(runid)s/%(shortname)s"
+      runDirPattern: "./"
       work: work
       input: input
       output: output
@@ -43,7 +43,7 @@ execute: {
       name: "lsst.ctrl.sched.pipeline.GetAJob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @000-getajob.paf
+      stagePolicy: @000-isrGetajob.paf
    }
 
    appStage: {
@@ -112,33 +112,38 @@ execute: {
       stagePolicy: @100-isrExposureOutput.paf
    }
 
-   appStage: {
-      name: "lsst.sdqa.pipeline.IsrSdqaStage"
-      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
-      eventTopic: "None"
-      stagePolicy: @110-isrSdqa.paf
-   }
+#============================================================================
+#                   Need once correctly running through ISR algorithms
+#   appStage: {
+#      name: "lsst.sdqa.pipeline.IsrSdqaStage"
+#      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @110-isrSdqa.paf
+#   }
+#
+#   appStage: {
+#      name: "lsst.pex.harness.IOStage.OutputStage"
+#      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @120-isrSdqaOutput.paf
+#   }
 
-   appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
-      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
-      eventTopic: "None"
-      stagePolicy: @120-isrSdqaOutput.paf
-   }
-
-   appStage: {
-      name: "lsst.ctrl.sched.pipeline.JobDone"
-      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
-      eventTopic: "None"
-      stagePolicy: @130-jobdone.paf
-   }
-
-   failureStage: {
-      name: "lsst.ctrl.sched.pipeline.Failure"
-      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
-      eventTopic: "None"
-      stagePolicy: @140-failure.paf
-   }
+#============================================================================
+#                   Need when hooking up to CcdAssembly
+#   appStage: {
+#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @130-isrJobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @140-isrFailure.paf
+#   }
+#============================================================================
 
 #  THis stage is moving to CCD Assembly Pipeline
 #   appStage: {

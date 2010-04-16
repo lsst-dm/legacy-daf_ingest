@@ -26,22 +26,8 @@ jobSuccess: false
 # any other data-ready stages.  
 #
 datasets: {
-
-   dataReadyEvent:  RawAvailable
-
-## TBD    Should this match the event for the next pipeline???
-##        How should dataset from data-ready stage: 100-isrExposureOutput.paf
-##            be represented here and below...
-
-
-}
-
-inputKeys: {
-    completedDatasets: outputDatasets
-    possibleDatasets:  targetDatasets
-
-#TBD         What is wanted????
-
+   dataReadyEvent:  postISRReady
+   datasetType: postISR
 }
 
 

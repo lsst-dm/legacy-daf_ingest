@@ -1,10 +1,12 @@
 #<?cfg paf policy ?>
 
-outputItems: {
-    isrPersistableSdqaRatingVector: {
-        StoragePolicy: {
-            Storage: "DbStorage"
-            Location: "%(dbUrl)"
+parameters: {
+    outputItems: {
+        isrPersistableSdqaRatingVector: {
+            storagePolicy: {
+                storage: "DbStorage"
+                location: "%(dbUrl)"
+            }
         }
     }
 }

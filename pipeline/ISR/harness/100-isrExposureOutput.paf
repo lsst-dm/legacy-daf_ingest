@@ -1,13 +1,5 @@
 # isrExposureOutput.paf
 
-inputKeys: {
-    jobIdentity: 'jobIdentity"
-}
-
-outputKeys: {
-    outputDatasets: "outputDatasets"
-}
-
 parameters: {
     outputItems: {
         isrExposure: {
@@ -15,9 +7,9 @@ parameters: {
                 datasetType: postIsr
                 fromClipboard: "name" "visit" "ccd" "snap" "filter" "channel"
             }
-            StoragePolicy: {
-               Storage: "FitsStorage"
-               Location: "%(output)/postISR/v%(visit)-f%(filter)/s%(snap)/c%(ccd)/a%(channel).fits
+            storagePolicy: {
+               storage: "FitsStorage"
+               location: "%(output)/postISR/v%(visit)-f%(filter)/s%(snap)/c%(ccd)/a%(channel).fits"
             }
         }
     }

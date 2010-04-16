@@ -18,6 +18,7 @@ pipelineEvent:  IsrJob
 # required to appear here).
 # 
 outputKeys: {
+}
 
     # this will contain a dictionary of identifier names and values
     # that uniquely identify the work that the JobOffice sends to this 
@@ -52,4 +53,4 @@ outputKeys: {
     # the job-done stage.  
     #
     # completedDatasets:  outputDatasets
-}
+

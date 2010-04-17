@@ -7,19 +7,19 @@ parameters: {
         }
     }
     inputItems: {
-        Exposure: {
+        isrExposure: {
             datasetType: raw
             datasetId: {
                 fromInputDatasets: true
             }
         }
-        BiasExposure: {
+        biasExposure: {
             datasetType: bias
             datasetId: {
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
             }
         }
-        DarkExposure: {
+        darkExposure: {
             datasetType: dark
             datasetId: {
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"

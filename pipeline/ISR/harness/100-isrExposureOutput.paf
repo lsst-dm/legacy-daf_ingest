@@ -5,11 +5,11 @@ parameters: {
         isrExposure: {
             datasetId: {
                 datasetType: postIsr
-                fromClipboard: "name" "visit" "ccd" "snap" "filter" "channel"
+                fromClipboard: "visit" "snap" "raft" "sensor" "channel"
             }
             storagePolicy: {
                storage: "FitsStorage"
-               location: "%(output)/postISR/v%(visit)-f%(filter)/s%(snap)/c%(ccd)/a%(channel).fits"
+               location: "%(output)/postISR/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor)-C%(channel).fits"
             }
         }
     }

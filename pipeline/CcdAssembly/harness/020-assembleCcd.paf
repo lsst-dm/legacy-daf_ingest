@@ -1,3 +1,4 @@
+#  assembleCcd.paf
 inputKeys: {
    exposurePrefix: "isrAmpExposure"
 }
@@ -5,5 +6,5 @@ inputKeys: {
 numAmplifiers: 8
 
 outputKeys: {
-   ccdExposure: "isrCcdExposure"
+   ccdExposure: "assembledCcdExposure"
 }

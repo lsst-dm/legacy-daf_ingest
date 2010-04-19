@@ -1,34 +1,42 @@
-AdditionalData: "outputPathName=triggerImgCharEvent.outputPathName"
-AdditionalData: "cellSetPathName=triggerImgCharEvent.cellSetPathName"
-AdditionalData: "matchListPathName=triggerImgCharEvent.matchListPathName"
-OutputItems: {
-   finalScienceExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
+# Output.paf
+ 
+parameters: {
+   OutputItems: {
+      finalScienceExposure: {
+         datasetId: {
+            datasetType: postIsr
+            fromClipboard: "visit" "raft" "sensor" 
+         }
+         StoragePolicy: {
+            Storage: "FitsStorage"
+            #Location: "%(output)/postImChar/v%(visit)-fr/R%(raft)-S%(sensor).fits"
+            Location: "%(output)/postImChar/v%(visit)-fr_R%(raft)-S%(sensor).fits"
+         }
       }
-   }
-   psfCellSet: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(cellSetPathName)"
+      cellSet: {
+         datasetId: {
+            datasetType: cellSet
+            fromClipboard: "visit" "raft" "sensor" 
+         }
+         StoragePolicy: {   TBD: check names.
+            Storage: "BoostStorage"
+            Location: "%(output)/%(cellSetPathName)"
+         
       }
-   }
-   wcsMatchList: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(matchListPathName)"
-      }
-   }
-   sdqa: {
-      StoragePolicy: {
-         Storage: "DbStorage"
-         Location: "%(dbUrl)"
+      matchList: {
+         datasetId: {
+            datasetType: sourceMatchSet
+            fromClipboard: "visit" "raft" "sensor" 
+         }
+         StoragePolicy: {
+            Storage: "BoostStorage"
+            Location: "%(output)/%(matchListPathName)"
+         }
       }
    }
 }
-
-Persistence: {
+   
+   Persistence: {
     Formatter: {
         SdqaRatings: {
             sdqa: {

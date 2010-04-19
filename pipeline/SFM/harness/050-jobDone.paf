@@ -1,0 +1,63 @@
+#<?cfg paf policy ?>
+#
+########################################################################
+# This policy configures the stage that appears at the end of the 
+# pipeline that receives a job assignment from the job office.
+#
+# The dictionary data defines this policy is policies/JobDone_dict.paf.
+########################################################################
+ 
+# This is the event topic we will send our event indicating that this 
+# pipeline has finished its assigned job.  This needs to match 
+# listen.pipelineEvent in the policy for the JobOffice that manages 
+# this pipeline.  
+#
+pipelineEvent:  TBD: SfmJob
+
+# jobSuccess: true    # (Note: set this to false in failure.paf)
+
+# This job-done stage will also send out data-ready event when this
+# policy file contains one or more "datasets" items. 
+# 
+datasets: {
+
+   # this is the event topic that will be used to send data-ready events
+   # for the datasets covered by this "datasets" entry.  It must match 
+   # the "listen.dataReadyEvent" parameter in policies for all JobOffice 
+   # that are interested in these datasets.
+   # 
+   dataReadyEvent:  TBD: postISRReady
+
+   # this item restricts data-ready events going out on the above topic
+   # to datasets of the given type.  If this parameter is not set, events
+   # will go out for all possible datasets; this is what we want in this 
+   # example pipeline.
+   #
+   datasetType:  TBD: postISR
+}
+
+inputKeys: {
+
+    # this key will hold the list of datasets stage that were successfully
+    # persisted.  It should have been updated by the output stages.  Any 
+    # datasets that are in the "possibleDatasets" list that are not in this 
+    # one will be marked invalid, telling the JobOffice that the pipeline 
+    # failed to produce them.  Thus, this value must match the corresponding 
+    # keys in the output stages and the get-a-job stage.  
+    # 
+    # completedDatasets: outputDatasets
+
+
+    # this is a python list of all the possible output datasets produced
+    # by this pipeline that will be needed by other pipelines.  If there 
+    # are "datasets" items specified above, this list will be used to 
+    # send out the data-ready events.  This value must match the 
+    # corresponding keys used in any data-ready stages and in the 
+    # get-a-job stage.  
+    # 
+    # possibleDatasets:  targetDatasets
+
+
+}
+
+

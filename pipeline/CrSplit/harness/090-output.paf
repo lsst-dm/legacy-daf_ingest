@@ -1,29 +1,27 @@
-AdditionalData: "outputPathName=triggerCrSplitEvent.outputPathName"
-OutputItems: {
-   scienceCcdExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
+# output.paf
+parameters: {
+   outputItems: {
+      scienceCcdExposure: {
+         datasetId: {
+            datasetType:postISRCCD
+            fromClipboard: "visit" "raft" "sensor"
+         }
+         StoragePolicy: {
+            Storage: "FitsStorage"
+            #Location: "%(output)/postISRCCD/v%(visit)-fr/R%(raft)-S%(sensor).fits"
+            Location: "%(output)/postISRCCD/v%(visit)-fr_R%(raft)-S%(sensor).fits"
+         }
       }
    }
-   processingInfo: {
-      # StoragePolicy: {
-      #    Storage: "DbStorage"
-      #    Location: "%(dbUrl)"
-      # }
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/processingInfo"
-      }
+    
+# TBD:  persistence block  needs validation
+   persistence: {
+       Formatter: {
+           PropertySet: {
+               processingInfo: {
+                   tableName: "CrSplitProcessingInfo"
+               }
+           }
+       }
    }
-}
-
-Persistence: {
-    Formatter: {
-        PropertySet: {
-            processingInfo: {
-                tableName: "CrSplitProcessingInfo"
-            }
-        }
-    }
 }

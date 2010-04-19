@@ -17,14 +17,15 @@
 
 execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   localLogMode: true
+   # localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCcdAssembly
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: CcdAssembly
       defaultRoot: .
-      runDirPattern: "../../%(runid)s/%(shortname)s"
+      #runDirPattern: "../../%(runid)s/%(shortname)s"
+      runDirPattern: "./"
       work: work
       input: input
       output: output
@@ -33,9 +34,16 @@ execute: {
    }
 
    appStage: {
+      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-getajob.paf
+   }
+
+   appStage: {
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
-      eventTopic: "triggerCcdAssemblyEvent"
+      eventTopic: "None"
       stagePolicy: @010-input.paf
    }
 
@@ -45,12 +53,14 @@ execute: {
       eventTopic: "None"
       stagePolicy: @020-assembleCcd.paf
    }
-   appStage: {
-      name: "lsst.ip.pipeline.IsrDetectStage"
-      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
-      eventTopic: "None"
-      stagePolicy: @030-isrDefect.paf
-   }
+
+# This stage is not yet integrated into CCD Assembly pipeline
+#   appStage: {
+#      name: "lsst.ip.pipeline.IsrDetectStage"
+#      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @030-isrDefect.paf
+#   }
 
    appStage: {
       name: "lsst.pex.harness.IOStage.OutputStage"

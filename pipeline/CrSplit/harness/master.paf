@@ -4,7 +4,7 @@ execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    nSlices: 1
    executionMode: "oneloop"
-   logThreshold: -3
+   # logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCrSplit
@@ -13,7 +13,7 @@ execute: {
       shortName: CrSplit
       defaultRoot: .
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "."
+      runDirPattern: "./"
       work: work
       input: input
       output: output
@@ -22,15 +22,20 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.pex.harness.IOStage.InputStage"
+      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-getajob.paf
+   }
+
+   appStage: {
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
-      eventTopic: "triggerCrSplitEvent"
+      eventTopic: "None"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
       name: "lsst.meas.pipeline.BackgroundEstimationStage"
       parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
@@ -38,7 +43,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.BackgroundEstimationStage"
       name: "lsst.meas.pipeline.BackgroundEstimationStage"
       parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
@@ -46,7 +50,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.CrRejectStage"
       name: "lsst.ip.pipeline.CrRejectStage"
       parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
@@ -54,7 +57,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.CrRejectStage"
       name: "lsst.ip.pipeline.CrRejectStage"
       parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
@@ -62,7 +64,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.SimpleDiffImStage"
       name: "lsst.ip.pipeline.SimpleDiffImStage"
       parallelClass: "lsst.ip.pipeline.SimpleDiffImStageParallel"
       eventTopic: "None"
@@ -70,7 +71,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.SourceDetectionStage"
       name: "lsst.meas.pipeline.SourceDetectionStage"
       parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
@@ -78,7 +78,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.crSplitCombineStage"
       name: "lsst.ip.pipeline.crSplitCombineStage"
       parallelClass: "lsst.ip.pipeline.CrSplitCombineStageParallel"
       eventTopic: "None"
@@ -86,11 +85,26 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.pex.harness.IOStage.OutputStage"
       name: "lsst.pex.harness.IOStage.OutputStage"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @090-output.paf
    }
+#============================================================================
+#                   Need when hooking up to ImgChar
+#   appStage: {
+#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @100-jobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @110-failure.paf
+#   }
+#============================================================================
 
 }

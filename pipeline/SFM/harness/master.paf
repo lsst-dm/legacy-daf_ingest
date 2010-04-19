@@ -6,7 +6,7 @@ execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    executionMode: "oneloop"
    # Be quite verbose
-   logThreshold: -3
+   #logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownSFM
@@ -15,7 +15,7 @@ execute: {
       shortName: SFM
       defaultRoot: .
       # runDirPattern: "./%(runid)s"
-      runDirPattern: "."
+      runDirPattern: "./"
       work: work
       input: input
       output: output
@@ -23,11 +23,18 @@ execute: {
       scratch: scratch
    }
 
+  appStage: {
+      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-isrGetajob.paf
+   }
+ 
    appStage: {
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
-      eventTopic: "triggerSFMEvent"
-      stagePolicy: @010-input.paf
+      eventTopic: "None"
+      stagePolicy: @010-Input.paf
    }
 
    appStage: {
@@ -51,4 +58,21 @@ execute: {
       stagePolicy: @040-output.paf
    }
 
+#============================================================================
+#                   Need when hooking up to next pipeline in Production
+#   appStage: {
+#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @050-isrJobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @060-isrFailure.paf
+#   }
+#============================================================================
 
+}

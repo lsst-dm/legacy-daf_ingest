@@ -1,75 +1,108 @@
-AdditionalData: "pathName0=triggerCcdAssemblyEvent.pathName0"
-AdditionalData: "pathName1=triggerCcdAssemblyEvent.pathName1"
-AdditionalData: "pathName2=triggerCcdAssemblyEvent.pathName2"
-AdditionalData: "pathName3=triggerCcdAssemblyEvent.pathName3"
-AdditionalData: "pathName4=triggerCcdAssemblyEvent.pathName4"
-AdditionalData: "pathName5=triggerCcdAssemblyEvent.pathName5"
-AdditionalData: "pathName6=triggerCcdAssemblyEvent.pathName6"
-AdditionalData: "pathName7=triggerCcdAssemblyEvent.pathName7"
+# Ccd Assembly Input.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
+        }
+    }
 
-InputItems: {
-    isrAmpExposure0: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName0)"
+    InputItems: {
+        isrAmpExposure0: {
+            datasetType: "postISR" "channel=C:0,0"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure1: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName1)"
+        isrAmpExposure1: {
+            datasetType: "postISR" "channel=C:0,1"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure2: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName2)"
+        isrAmpExposure2: {
+            datasetType: "postISR" "channel=C:0,2"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure3: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName3)"
+        isrAmpExposure3: {
+            datasetType: "postISR" "channel=C:0,3"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure4: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName4)"
+        isrAmpExposure4: {
+            datasetType: "postISR" "channel=C:0,4"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure5: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName5)"
+        isrAmpExposure5: {
+            datasetType: "postISR" "channel=C:0,5"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure6: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName6)"
+        isrAmpExposure6: {
+            datasetType: "postISR" "channel=C:0,6"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
-    }
-    isrAmpExposure7: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName7)"
+        isrAmpExposure7: {
+            datasetType: "postISR" "channel=C:0,7"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure0: {
+            datasetType: "postISR" "channel=C:1,0"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure1: {
+            datasetType: "postISR" "channel=C:1,1"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure2: {
+            datasetType: "postISR" "channel=C:1,2"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure3: {
+            datasetType: "postISR" "channel=C:1,3"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure4: {
+            datasetType: "postISR" "channel=C:1,4"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure5: {
+            datasetType: "postISR" "channel=C:1,5"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure6: {
+            datasetType: "postISR" "channel=C:1,6"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        isrAmpExposure7: {
+            datasetType: "postISR" "channel=C:1,7"
+            datasetId: {
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
         }
     }
 }

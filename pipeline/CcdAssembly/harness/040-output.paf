@@ -1,9 +1,16 @@
-AdditionalData: "outputPathName=triggerCcdAssemblyEvent.outputPathName"
-OutputItems: {
-   isrCcdExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
+# CCD Assembly  output.paf
+parameters: {
+    outputItems: {
+        assembledCcdExposure: {
+            datasetId: {
+                datasetType: postISRCCD
+                fromClipboard: "visit" "snap" "raft" "sensor" 
+            }
+            storagePolicy: {
+                storage: "FitsStorage"
+                #location: "%(output)/postISRCCD/v%(visit)-fr_s%(snap)_R%(raft)-S%(sensor).fits"
+                location: "%(output)/postISRCCD/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor).fits"
+            }
+        }
+    }
 }

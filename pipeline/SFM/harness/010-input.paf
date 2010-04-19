@@ -1,11 +1,16 @@
-AdditionalData: "inputPathName=triggerSFMEvent.inputPathName"
-InputItems: {
-    scienceExposure: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(inputPathName)"
-        }
-    }
-}
+# Single Frame Measurement input.paf
+parameters: {
+   butler: {
+       mapperName: lsst.obs.lsstSim.LsstSimMapper
+       mapperPolicy: {
+           root: %(input)
+       }
+   }
+   InputItems: {
+       scienceExposure: {
+           datasetType: calexp
+                fromJobIdentity: "visit" "raft" "sensor"
+       }
+   }
+
+

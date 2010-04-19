@@ -1,11 +1,10 @@
+# backgroundEstimation0.paf
 inputKeys: {
    exposure: "isrCcdExposure0"
 }
 
 outputKeys: {
    backgroundSubtractedExposure: "bkgSubCcdExposure0"
-   background: "background0"
-   # processingInfo: "processingInfo0"
 }
 
 parameters: {

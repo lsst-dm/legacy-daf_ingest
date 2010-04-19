@@ -9,7 +9,8 @@ parameters: {
             }
             storagePolicy: {
                storage: "FitsStorage"
-               location: "%(output)/postISR/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor)-C%(channel).fits"
+               #location: "%(output)/postISR/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor)-C%(channel).fits"
+               location: "%(output)/postISR/v%(visit)-fr_s%(snap)_R%(raft)-S%(sensor)-C%(channel).fits"
             }
         }
     }

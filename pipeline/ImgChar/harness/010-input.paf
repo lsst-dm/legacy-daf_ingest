@@ -1,11 +1,16 @@
-AdditionalData: "inputPathName=triggerImgCharEvent.inputPathName"
-InputItems: {
-    scienceExposure: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(inputPathName)"
+# Image Characterization input.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
         }
     }
+   InputItems: {
+       visitExposure: {
+           datasetType: visitim
+            datasetId: {
+                fromJobIdentity: "visit" "raft" "sensor" 
+       }
+   }
 }

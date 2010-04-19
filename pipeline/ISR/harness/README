@@ -57,27 +57,48 @@ Setup Environment
 
 Most activity is done in local copy of: datarel/pipeline/ISR/harness.
 
-1. Acquire, build, make current, then setup local versions of modules which 
+0. cd datarel; setup -r .
+
+1.1 Acquire, build, make current, then setup local versions of modules which 
    do NOT have policies loaded in the system packages:
-   * definitely need for isr sdqa ctrl_sdqa ; 
-	% setup ip_isr 
+   * definitely need for sdqa (tagged and ready) ctrl_sched (fixed in trunk) ; 
 	% setup ctrl_sched  
 	% setup sdqa 
    * may need more but I routinely access some packages in local mode
 
-2. At end of README there is listing of currently setup packages when I run.
-   I haven't updated the datarel/ups/datarel.table  - it needs to require
-   ctrl_sched
+1.2 Acquire, build, make current, then setup local versions of obs_lsstSim
+    (until version with uses channel specs that same as raft specs is installed)
+    % setup obs_lsstSim
 
-3. Setup where your actual files are found or to be archived:
+1.3 At end of README there is listing of currently setup packages when I run.
+
+2. Setup where your actual files are found or to be archived:
     I setup master.paf to have: 
 	runDirPattern: "./"
    Then in datarel/pipeline/ISR/harness, 
-         ln -s /lsst/DC3/stacks/gcc433/04jun/Linux64/afwdata/svn11397 input
-         mkdir output work update scratch
+         ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
+         mkdir -p output work update scratch
 
-4. Update PYTHONPATH to find ctrl_sched/bin sendevents.py:
-   cd ctrl_sched/example/pipeline; setup -r .
+3. Update PYTHONPATH to find ctrl_sched/bin/sendevents.py:
+   cd ctrl_sched/examples/pipeline; setup -r .
+
+-------------------------------
+# Nicely bundled for one click use:
+cd ~/DC3b/DMS_trunk/datarel
+setup -r .
+setup ctrl_sched ctrl_sched_trunk
+setup sdqa sdqa_trunk
+setup obs_lsstSim obs_lsstSim_trunk
+cd ~/DC3b/DMS_trunk/datarel/pipeline/ISR/harness
+ls -ald input
+ls input
+mkdir -p work scratch update output
+pushd ~/DC3b/DMS_trunk/ctrl_sched/examples/pipeline
+setup -r .
+which sendevent.py
+popd
+eups list --setup
+-----------------------------------------
 
 Running the Pipeline
 ----------------------
@@ -94,17 +115,11 @@ Window Two:
 When pipeline output in Window One says "Told JobOffice, I'm ready!",
 send the  event providing the details of the specific input data to use.
 
-
-sendevent.py -r Run2 -n ISR -b lsst8 -o \
-  <originatorId # from Window One>  \
--i "raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=00" -O "postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=00" assign IsrJob "ISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=00"
-
-   
-(Note to self: determine if "-o #" can be placed at end of command.)
+sendevent.py -r Run2 -n ISR -b lsst8 -i "raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" -O "postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" assign IsrJob "ISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" -o \
+  <originatorId # from Window One>
 
 
-
-
+(Note: contrary to doco, '-o' at end of command is OK; easier for mousey-click.)
 
 ======================================================================
 Following is the current eups list --setup for my environment  15 April 2010

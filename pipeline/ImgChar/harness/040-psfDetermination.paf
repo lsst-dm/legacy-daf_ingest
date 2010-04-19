@@ -1,9 +1,9 @@
+# psfDetermination.paf
 inputKeys: {
-   exposure: "scienceExposure"
-   sourceSet: "calibSources"
+   exposure: "visitExposure"
+   sourceSet: "sourceSet"
 }
 outputKeys: {
    psf: "measuredPsf"
-   cellSet: "psfCellSet"
-   sdqa: "sdqaInfo"
+   cellSet: "cellSet"
 }

@@ -1,8 +1,7 @@
+# wcsVerification.paf
 inputKeys: {
-   sourceSet: "calibSourceSet"
-   wcs: "measuredWcs"
-   sdqa: "sdqaInfo"
+   TBD:
 }
 outputKeys: {
-   sdqa: "sdqaInfo"
+   TBD:
 }

@@ -1,6 +1,6 @@
-AdditionalData: "sourcePathName=triggerSFMEvent.sourcePathName"
-AdditionalData: "detectionPathName=triggerSFMEvent.detectionPathName"
-AdditionalData: "ampExposureId=triggerSFMEvent.ampExposureId"
+# output.paf
+
+# TBD - not updated
 OutputItems: {
    # sourceFootprintSet: {
    #    StoragePolicy: {

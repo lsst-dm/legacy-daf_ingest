@@ -1,7 +1,7 @@
+# photoCal.paf
 inputKeys: {
-   exposure: "scienceExposure"
-   sourceSet: "calibSources"
+   # TBD: 
 }
 outputKeys: {
-   photometricModel: "photoModel"
+   # TBD: 
 }

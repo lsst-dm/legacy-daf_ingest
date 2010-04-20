@@ -6,3 +6,192 @@ Need to check that the input/output blocks are correct for its use.
 Simon said something about needing to get saturated defects from a cache.
 
 
+README  last modified: 15 April 2010 RAA
+-------
+See end for current method of running joboffice/butler harness pipeline
+
+=============================================================================
+datarel  ISR/harness example
+=============================================================================
+
+In this example we run the ISR pipeline, launching it at the 
+level of pex_harness via the  launchPipeline.py script. 
+
+To run here at the pex_harness level, we perform by hand a couple of tasks 
+that ctrl_orca provides during "production" runs. 
+
+1) define the input directory in the 010-Input.paf policy:
+	input: /lsst/sims/ImSim_data
+
+2) make the other output  directories : 
+
+% cd ....datarel/pipeline/harness/
+% mkdir output work scratch log
+
+3) ensure that DMS/obs/lsstSim is setup as obs_lsstSim.  Since it does not
+   have its first tag....this must be done by hand.
+
+-------------------------------------------------------------------
+Since the camera geom is not ready for the butler...the camera geometry 
+   is placed on the clipboard a temporary stage: 020-makeCameraGeomStage
+----------------------------------------------------------------------
+
+
+The pipeline can be then started via : 
+
+% launchPipeline.py master.paf test_1 ISR -v
+
+The pipeline will block and wait for an incoming data event.
+Provide this event with the trigger script :
+
+% python triggerISREventTransmitter.py 
+
+This script will send events of topic "triggerISREvent" that contain a keyword
+to identify the data set (uncalibratedImage) to be processed, for example,
+
+"inputPathName" => "871034p_1_MI"
+
+The Output Stage is configured to produce a single calibrated output file :
+
+% ls -l output
+........Fill in the sample ls........
+
+=============================================================================
+What I'm really doing at the moment for initial startup
+=============================================================================
+
+Setup Environment
+------------------
+
+Most activity is done in local copy of: datarel/pipeline/ISR/harness.
+
+0. cd datarel; setup -r .
+
+1.1 Acquire, build, make current, then setup local versions of modules which 
+   do NOT have policies loaded in the system packages:
+   * definitely need for sdqa (tagged and ready) ctrl_sched (fixed in trunk) ; 
+	% setup ctrl_sched  
+	% setup sdqa 
+   * may need more but I routinely access some packages in local mode
+
+1.2 Acquire, build, make current, then setup local versions of obs_lsstSim
+    (until version with uses channel specs that same as raft specs is installed)
+    % setup obs_lsstSim
+
+1.3 At end of README there is listing of currently setup packages when I run.
+
+2. Setup where your actual files are found or to be archived:
+    I setup master.paf to have: 
+	runDirPattern: "./"
+   Then in datarel/pipeline/ISR/harness, 
+         ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
+         mkdir -p output work update scratch
+
+3. Update PYTHONPATH to find ctrl_sched/bin/sendevents.py:
+   cd ctrl_sched/examples/pipeline; setup -r .
+
+-------------------------------
+# Nicely bundled for one click use:
+cd ~/DC3b/DMS_trunk/datarel
+setup -r .
+setup ctrl_sched ctrl_sched_trunk
+setup sdqa sdqa_trunk
+setup obs_lsstSim obs_lsstSim_trunk
+cd ~/DC3b/DMS_trunk/datarel/pipeline/ISR/harness
+ls -ald input
+ls input
+mkdir -p work scratch update output
+pushd ~/DC3b/DMS_trunk/ctrl_sched/examples/pipeline
+setup -r .
+which sendevent.py
+popd
+eups list --setup
+-----------------------------------------
+
+Running the Pipeline
+----------------------
+Window One: 
+-----------
+rm Pipeline.log Slice0.log calibRegistry.sqlite3 registry.sqlite3 boobie
+launchPipeline.py master.paf Run2 CA -v | & tee boobie
+
+
+From the output of the launched pipeline, capture the number in "originatorId=#"
+it will be used in the second window when sending the 'data available' event
+
+Window Two:
+-----------
+When pipeline output in Window One says "Told JobOffice, I'm ready!",
+send the  event providing the details of the specific input data to use.
+
+sendevent.py -r Run2 -n CA -b lsst8 \
+-O "postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" assign CaJob \
+ "visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
+ "postISR visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0"  -o 
+
+(Note: contrary to doco, '-o' at end of command is OK; easier for mousey-click.)
+
+======================================================================
+Following is the current eups list --setup for my environment  15 April 2010
+======================================================================
+activemqcpp           3.1.2     	Setup
+afw                   afw_trunk 	Current Setup
+afwdata               trunk     	Current Setup
+apr                   1.3.3     	Current Setup
+astrometry_net        0.26      	Setup
+astrometry_net_data   cfhttemplate	Current Setup
+base                  3.1       	Current Setup
+boost                 1.37.0    	Current Setup
+cat                   3.3       	Current Setup
+cfitsio               3006.2    	Current Setup
+coadd_utils           3.0.1     	Current Setup
+ctrl_events           3.8       	Current Setup
+ctrl_sched            ctrl_sched_trunk	Current Setup
+daf_base              3.2.12    	Current Setup
+daf_butlerUtils       daf_butlerUtils_trunk	Current Setup
+daf_data              3.2.3+1   	Current Setup
+daf_persistence       3.3.10    	Current Setup
+datarel               LOCAL:/lsst/home/rallsman/DC3b/DMS_trunk/datarel	Setup
+doxygen               1.5.9     	Current Setup
+eigen                 2.0.0     	Current Setup
+eups                  LOCAL:/lsst/DC3/stacks/gcc433/04jun/eups/1.1.1	Setup
+fftw                  3.1.2+1   	Current Setup
+freetype              2.3.8     	Current Setup
+gcc                   4.3.3     	Current Setup
+gsl                   1.8       	Current Setup
+ip_diffim             ip_diffim_trunk	Current Setup
+ip_isr                ip_isr_trunk	Current Setup
+ip_pipeline           ip_pipeline_trunk	Current Setup
+ip_utils              ip_utils_trunk	Current Setup
+isrdata               svn8518   	Current Setup
+libpng                1.2.35    	Current Setup
+lsst                  1.0.1     	Current Setup
+lssteups              1.0       	Current Setup
+matplotlib            0.98.5.2  	Current Setup
+meas_algorithms       meas_algorithms_trunk	Current Setup
+meas_astrom           meas_astrom_trunk	Current Setup
+meas_pipeline         3.0.8     	Current Setup
+meas_utils            meas_utils_trunk	Current Setup
+minuit2               5.22.00+1 	Current Setup
+mpich2                1.0.5p4+1 	Current Setup
+mysqlclient           5.0.45+1  	Current Setup
+mysqlpython           1.2.2     	Current Setup
+numpy                 1.2.1     	Current Setup
+obs_lsstSim           obs_lsstSim_trunk	Current Setup
+pex_exceptions        3.2.2     	Current Setup
+pex_harness           3.6.1     	Current Setup
+pex_logging           3.3.5     	Current Setup
+pex_policy            3.4.4     	Current Setup
+pyfits                2.2.2     	Current Setup
+python                2.5.2     	Current Setup
+scons                 3.3       	Current Setup
+sconsDistrib          0.98.5    	Current Setup
+sconsUtils            3.3       	Current Setup
+sdqa                  sdqa_trunk	Current Setup
+security              3.2.2     	Current Setup
+subversion            1.5.5     	Current Setup
+swig                  1.3.36+2  	Current Setup
+tcltk                 8.5a4     	Current Setup
+utils                 3.4.4     	Current Setup
+wcslib                4.4.4     	Current Setup
+xpa                   2.1.7b2   	Current Setup

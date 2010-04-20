@@ -17,20 +17,22 @@
 
 execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   # localLogMode: true
+   executionMode: oneloop
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   nSlices: 1
+   localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCcdAssembly
-   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
-      shortName: CcdAssembly
+      shortName: CA
       defaultRoot: .
       #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "./"
-      work: work
+      runDirPattern: "../../../"
+      work: input
       input: input
-      output: output
-      update: update
-      scratch: scratch
+      output: input
+      update: input
+      scratch: input
    }
 
    appStage: {
@@ -48,8 +50,8 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.AssembleCcdStage"
-      parallelClass: "lsst.ip.pipeline.AssembleCcdStageParallel"
+      name: "lsst.ip.pipeline.IsrCcdAssemblyStage"
+      parallelClass: "lsst.ip.pipeline.IsrCcdAssemblyStageParallel"
       eventTopic: "None"
       stagePolicy: @020-assembleCcd.paf
    }

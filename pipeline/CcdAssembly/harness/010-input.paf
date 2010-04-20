@@ -6,102 +6,11 @@ parameters: {
             root: %(input)
         }
     }
-
     inputItems: {
-        isrAmpExposure0: {
-            datasetType: "postISR"  
+        exposureList: {
+            datasetType: postISR
             datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure1: {
-            datasetType: "postISR" 
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure2: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure3: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure4: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure5: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure6: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure7: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure0: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure1: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure2: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure3: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure4: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure5: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure6: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
-            }
-        }
-        isrAmpExposure7: {
-            datasetType: "postISR"  
-            datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" 
+                fromInputDatasets: true
             }
         }
     }

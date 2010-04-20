@@ -21,6 +21,8 @@ execute: {
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices: 1
    localLogMode: true
+   # To be quite verbose: add 'logThreshold: -3'
+   logThreshold: -3
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCcdAssembly
    dir: {

@@ -104,8 +104,9 @@ Running the Pipeline
 ----------------------
 Window One: 
 -----------
-rm Pipeline.log Slice0.log calibRegistry.sqlite3 registry.sqlite3
+rm Pipeline.log Slice0.log calibRegistry.sqlite3 registry.sqlite3 boobie
 launchPipeline.py master.paf Run2 ISR -v | & tee boobie
+
 
 From the output of the launched pipeline, capture the number in "originatorId=#"
 it will be used in the second window when sending the 'data available' event
@@ -115,7 +116,7 @@ Window Two:
 When pipeline output in Window One says "Told JobOffice, I'm ready!",
 send the  event providing the details of the specific input data to use.
 
-sendevent.py -r Run2 -n ISR -b lsst8 -i "raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" -O "postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" assign IsrJob "ISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" -o \
+sendevent.py -r Run2 -n ISR -b lsst8 -O "postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" assign IsrJob "ISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" "raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0"  -o \
   <originatorId # from Window One>
 
 

@@ -1,17 +1,22 @@
 # isrExposureOutput.paf
 
 parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(update)
+        }
+    }
     outputItems: {
         isrExposure: {
             datasetId: {
-                datasetType: postIsr
+                datasetType: postISR
                 fromClipboard: "visit" "snap" "raft" "sensor" "channel"
             }
-            storagePolicy: {
-               storage: "FitsStorage"
-               #location: "%(output)/postISR/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor)-C%(channel).fits"
-               location: "%(output)/postISR/v%(visit)-fr_s%(snap)_R%(raft)-S%(sensor)-C%(channel).fits"
-            }
+            #storagePolicy: {
+            #   storage: "FitsStorage"
+            #   location: "%(output)/postISR/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor)-C%(channel).fits"
+            #}
         }
     }
 }

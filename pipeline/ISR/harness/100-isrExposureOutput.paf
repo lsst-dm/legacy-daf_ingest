@@ -13,10 +13,6 @@ parameters: {
                 datasetType: postISR
                 fromClipboard: "visit" "snap" "raft" "sensor" "channel"
             }
-            #storagePolicy: {
-            #   storage: "FitsStorage"
-            #   location: "%(output)/postISR/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor)-C%(channel).fits"
-            #}
         }
     }
 }

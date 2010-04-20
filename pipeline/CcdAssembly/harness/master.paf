@@ -30,11 +30,11 @@ execute: {
       defaultRoot: .
       #runDirPattern: "../../%(runid)s/%(shortname)s"
       runDirPattern: "../../../"
-      work: input
+      work: work
       input: input
-      output: input
-      update: input
-      scratch: input
+      output: output
+      update: update
+      scratch: scratch
    }
 
    appStage: {

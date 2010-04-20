@@ -1,16 +1,19 @@
 # CCD Assembly  output.paf
 parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(update)
+        }
+    }
+
     outputItems: {
         assembledCcdExposure: {
             datasetId: {
                 datasetType: postISRCCD
-                fromClipboard: "visit" "snap" "raft" "sensor" 
-            }
-            storagePolicy: {
-                storage: "FitsStorage"
-                #location: "%(output)/postISRCCD/v%(visit)-fr_s%(snap)_R%(raft)-S%(sensor).fits"
-                location: "%(output)/postISRCCD/v%(visit)-fr/s%(snap)/R%(raft)-S%(sensor).fits"
+                fromClipboard:  "visit" "raft" "sensor"  "snap"
             }
         }
     }
 }
+

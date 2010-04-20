@@ -1,8 +1,8 @@
 inputKeys: {
-   exposure: "isrExposure"
+   assembledCcdExposure: "postISRCCD"
    defectList: "defectList"
    fwhm: "fwhm"
 }
 outputKeys: {
-   defectCorrectedExposure: "isrExposure"
+   defectCorrectedExposure: "postISRCCD"
 }

@@ -1,27 +1,18 @@
 # output.paf
 parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(update)
+        }
+    }
    outputItems: {
       scienceCcdExposure: {
          datasetId: {
-            datasetType:postISRCCD
+            datasetType: postISRCCD
             fromClipboard: "visit" "raft" "sensor"
-         }
-         StoragePolicy: {
-            Storage: "FitsStorage"
-            #Location: "%(output)/postISRCCD/v%(visit)-fr/R%(raft)-S%(sensor).fits"
-            Location: "%(output)/postISRCCD/v%(visit)-fr_R%(raft)-S%(sensor).fits"
          }
       }
    }
     
-# TBD:  persistence block  needs validation
-   persistence: {
-       Formatter: {
-           PropertySet: {
-               processingInfo: {
-                   tableName: "CrSplitProcessingInfo"
-               }
-           }
-       }
-   }
 }

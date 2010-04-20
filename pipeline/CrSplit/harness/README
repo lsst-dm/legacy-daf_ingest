@@ -16,28 +16,22 @@ We link the input directory:
 
 and make the output directory :
 
-% mkdir output
+% mkdir output update scratch work
 
 The pipeline can be then started via :
 
-%  launchPipeline.py master.paf test_15040
+%  launchPipeline.py  master.paf Run2 CrSplit -v | & tee CrSplit.log
 
 The pipeline will block and wait for an incoming data event.
-Provide this event with the trigger script :
+Provide this event with the trigger script: sendevent.py
 
-% python triggerCrSplitEventTransmitter.py
+This script will send events  and identify the exposures to be processed, for
+example:
 
-This script will send events of topic "triggerCrSplitEvent" that contain keywords 
-to identify the exposures to be processed, for example,
-
-"inputPathName0" => "imsim_85751839_R23_S11_C04_E000" 
-"inputPathName1" => "imsim_85751839_R23_S11_C04_E001" 
-
-
-
-
-
-
-
-
-
+sendevent.py -r Run2 -n CrSplit -b lsst8 -O \
+"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3" assign CrSplitJob \
+"postISR visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
+"postISR visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
+-o    <fill in pipeline originator number>
+ 
+..... fill in the originator number provided when you started the pipeline.

@@ -4,7 +4,7 @@ execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    nSlices: 1
    executionMode: "oneloop"
-   # logThreshold: -3
+   logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCrSplit
@@ -13,7 +13,7 @@ execute: {
       shortName: CrSplit
       defaultRoot: .
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "./"
+      runDirPattern: "../../../"
       work: work
       input: input
       output: output

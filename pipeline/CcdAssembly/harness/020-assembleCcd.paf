@@ -1,5 +1,5 @@
 inputKeys: {
-   exposureList: "isrExposure"
+   exposureList: "postISR"
 }
 outputKeys: {
    assembledCcdExposure: "isrCcdExposure"

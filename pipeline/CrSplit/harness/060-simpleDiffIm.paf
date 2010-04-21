@@ -1,6 +1,6 @@
 # simpleDiffIm.paf
 inputKeys: {
-   exposures: ["crSubCcdExposure0", "crSubCcdExposure1"]
+   exposures: "crSubCcdExposure0" "crSubCcdExposure1"
 }
 
 outputKeys: {

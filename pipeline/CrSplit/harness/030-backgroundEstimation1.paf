@@ -5,9 +5,11 @@ inputKeys: {
 
 outputKeys: {
    backgroundSubtractedExposure: "bkgSubCcdExposure1"
+   background: "background0"
 }
 
 parameters: {
    subtractBackground: true
 }
+
 

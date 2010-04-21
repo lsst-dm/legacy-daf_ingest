@@ -30,8 +30,8 @@ example:
 
 sendevent.py -r Run2 -n CrSplit -b lsst8 -O \
 "postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3" assign CrSplitJob \
-"postISR visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
-"postISR visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
+"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
+"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
 -o    <fill in pipeline originator number>
  
 ..... fill in the originator number provided when you started the pipeline.

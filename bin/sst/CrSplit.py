@@ -18,7 +18,7 @@ def crSplitProcess(root, outRoot, **keys):
         'isrCcdExposure1': butler.get("postISRCCD", snap=1, **keys)
     }
 
-    # bbox = afwImage.BBox(afwImage.PointI(0,0), 4000, 2048)
+    # bbox = afwImage.BBox(afwImage.PointI(0,0), 2500, 2500)
     # clip['isrCcdExposure0'] = \
     #         afwImage.ExposureF(clip['isrCcdExposure0'], bbox)
     # clip['isrCcdExposure1'] = \
@@ -62,7 +62,10 @@ def crSplitProcess(root, outRoot, **keys):
         }
         parameters: {
             defaultFwhm: 1.0
-            keepCRs: true
+            keepCRs: false
+        }
+        crRejectPolicy: {
+            nCrPixelMax: 100000
         }
         """))
     cr0 = SimpleStageTester(ipPipe.CrRejectStage(pol))
@@ -77,7 +80,10 @@ def crSplitProcess(root, outRoot, **keys):
         }
         parameters: {
             defaultFwhm: 1.0
-            keepCRs: true
+            keepCRs: false
+        }
+        crRejectPolicy: {
+            nCrPixelMax: 100000
         }
         """))
     cr1 = SimpleStageTester(ipPipe.CrRejectStage(pol))
@@ -135,11 +141,14 @@ def crSplitProcess(root, outRoot, **keys):
     clip = bkgd0.runWorker(clip)
     clip = bkgd1.runWorker(clip)
     clip = cr0.runWorker(clip)
+    print clip['nCR']
     clip = cr1.runWorker(clip)
+    print clip['nCR']
     clip = diff.runWorker(clip)
     clip = srcd.runWorker(clip)
     clip = comb.runWorker(clip)
     # clip = sst.runWorker(clip)
+
     exposure = clip['visitExposure']
     # exposure.writeFits("visitim.fits")
 

@@ -1,16 +1,18 @@
 # Output.paf
  
 parameters: {
-   OutputItems: {
-      finalScienceExposure: {
+   butler: {
+      mapperName: lsst.obs.lsstSim.LsstSimMapper
+      mapperPolicy: {
+         root: %(update)
+      }
+   }
+
+   outputItems: {
+      visitExposure: {
          datasetId: {
-            datasetType: postIsr
+            datasetType: postISRCCD
             fromClipboard: "visit" "raft" "sensor" 
-         }
-         StoragePolicy: {
-            Storage: "FitsStorage"
-            #Location: "%(output)/postImChar/v%(visit)-fr/R%(raft)-S%(sensor).fits"
-            Location: "%(output)/postImChar/v%(visit)-fr_R%(raft)-S%(sensor).fits"
          }
       }
       cellSet: {
@@ -18,30 +20,12 @@ parameters: {
             datasetType: cellSet
             fromClipboard: "visit" "raft" "sensor" 
          }
-         StoragePolicy: {   TBD: check names.
-            Storage: "BoostStorage"
-            Location: "%(output)/%(cellSetPathName)"
-         
       }
       matchList: {
          datasetId: {
             datasetType: sourceMatchSet
             fromClipboard: "visit" "raft" "sensor" 
          }
-         StoragePolicy: {
-            Storage: "BoostStorage"
-            Location: "%(output)/%(matchListPathName)"
-         }
       }
    }
-}
-   
-   Persistence: {
-    Formatter: {
-        SdqaRatings: {
-            sdqa: {
-                tableName: "Sdqa"
-            }
-        }
-    }
 }

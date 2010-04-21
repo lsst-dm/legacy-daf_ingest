@@ -8,17 +8,21 @@ parameters: {
     }
     inputItems: {
         isrCcdExposure0: {
-            datasetType: "PostISRCCD"
+            datasetType: "postISRCCD"
             datasetId: {
-                #fromClipboard: "visit" "snap" "raft" "sensor"
-                fromInputDatasets: true
+                fromJobIdentity: "visit" "raft" "sensor"
+                set: {
+                    snap: 0
+                }
             }
         }
         isrCcdExposure1: {
-            datasetType: "PostISRCCD"
+            datasetType: "postISRCCD"
             datasetId: {
-                #fromClipboard: "visit" "snap" "raft" "sensor"
-                fromInputDatasets: true
+                fromJobIdentity: "visit" "raft" "sensor"
+                set: {
+                    snap: 1
+                }
             }
         }
     }

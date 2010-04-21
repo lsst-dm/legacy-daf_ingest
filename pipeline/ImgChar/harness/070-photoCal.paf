@@ -1,7 +1,4 @@
 # photoCal.paf
-inputKeys: {
-   # TBD: 
-}
-outputKeys: {
-   # TBD: 
-}
+sourceMatchSetKey: matchList
+outputValueKey: photometricZeroPoint
+outputUncertaintyKey: photometricZeroPointUnc

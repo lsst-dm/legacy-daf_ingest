@@ -1,30 +1,34 @@
 #<?cfg paf policy ?>
 
-requires: {
-   database: {
-      type: MySQL
-   }
-   platform: {
-      minCoreCount: 1
-   }
-}
-
-framework: {
-   type: standard
-   environment: "$DATAREL_DIR/etc/setup.sh"
-   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
-}
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+#
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
 
 execute: {
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   nSlices:1
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
+   executionMode: "oneloop"
    localLogMode: true
+   logThreshold: -3
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownImgChar
-   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: ImgChar
       defaultRoot: .
-      runDirPattern: "../../%(runid)s/%(shortname)s"
+      #runDirPattern: "../../%(runid)s/%(shortname)s"
+      runDirPattern: "../../../"
       work: work
       input: input
       output: output
@@ -33,7 +37,13 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.pex.harness.IOStage.InputStage"
+      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-getajob.paf
+   }
+
+   appStage: {
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "triggerImgCharEvent"
@@ -41,7 +51,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.SourceDetectionStage"
       name: "lsst.meas.pipeline.SourceDetectionStage"
       parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
@@ -49,7 +58,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.SourceMeasurementStage"
       name: "lsst.meas.pipeline.SourceMeasurementStage"
       parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
       eventTopic: "None"
@@ -57,7 +65,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.PsfDeterminationStage"
       name: "lsst.meas.pipeline.PsfDeterminationStage"
       parallelClass: "lsst.meas.pipeline.PsfDeterminationStageParallel"
       eventTopic: "None"
@@ -65,7 +72,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.WcsDeterminationStage"
       name: "lsst.meas.pipeline.WcsDeterminationStage"
       parallelClass: "lsst.meas.pipeline.WcsDeterminationStageParallel"
       eventTopic: "None"
@@ -73,7 +79,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.sdqa.WcsVerificationStage"
       name: "lsst.sdqa.WcsVerificationStage"
       parallelClass: "lsst.sdqa.WcsVerificationStageParallel"
       eventTopic: "None"
@@ -81,7 +86,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.meas.pipeline.PhotoCalStage"
       name: "lsst.meas.pipeline.PhotoCalStage"
       parallelClass: "lsst.meas.pipeline.PhotoCalStageParallel"
       eventTopic: "None"
@@ -89,7 +93,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.ExposureGenerationStage"
       name: "lsst.ip.pipeline.ExposureGenerationStage"
       parallelClass: "lsst.ip.pipeline.ExposureGenerationStageParallel"
       eventTopic: "None"
@@ -97,11 +100,27 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.pex.harness.IOStage.OutputStage"
       name: "lsst.pex.harness.IOStage.OutputStage"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @090-output.paf
    }
+
+#============================================================================
+#                   Need when hooking up to ImgChar
+#   appStage: {
+#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @100-jobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @110-failure.paf
+#   }
+#============================================================================
 
 }

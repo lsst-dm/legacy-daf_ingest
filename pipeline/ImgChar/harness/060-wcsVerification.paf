@@ -1,7 +1,6 @@
+#<?cfg paf policy?>
 # wcsVerification.paf
-inputKeys: {
-   TBD:
-}
-outputKeys: {
-   TBD:
-}
+
+sourceMatchSetKey: matchList
+outputDictKey: wcsVerifyStats
+

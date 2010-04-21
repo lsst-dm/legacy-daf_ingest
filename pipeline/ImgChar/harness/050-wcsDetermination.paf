@@ -1,9 +1,6 @@
 # wcsDetermination.paf
-inputKeys: {
-   exposure: "visitExposure"
-   sourceSet: "sourceSet"
-}
-outputKeys: {
-   wcs: "measuredWcs"
-   matchListKey: "matchList"
-}
+inputExposureKey: visitExposure
+inputSourceSetKey: sourceSet
+outputWcsKey: measuredWcs
+outputMatchListKey: matchList
+

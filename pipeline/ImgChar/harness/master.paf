@@ -8,7 +8,7 @@
 #      minCoreCount: 1
 #   }
 #}
-
+#
 #framework: {
 #   type: standard
 #   environment: "$DATAREL_DIR/etc/setup.sh"
@@ -17,18 +17,18 @@
 
 execute: {
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
-   executionMode: "oneloop"
+   nSlices:1
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   nSlices: 1
+   executionMode: "oneloop"
    localLogMode: true
+   logThreshold: -3
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownImgChar
    dir: {
       shortName: ImgChar
       defaultRoot: .
-      # root directory for run I/O
       #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "."
+      runDirPattern: "../../../"
       work: work
       input: input
       output: output
@@ -42,14 +42,13 @@ execute: {
       eventTopic: "None"
       stagePolicy: @000-getajob.paf
    }
- 
+
    appStage: {
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @010-Input.paf
+      stagePolicy: @010-input.paf
    }
-
 
    appStage: {
       name: "lsst.meas.pipeline.SourceDetectionStage"
@@ -93,12 +92,14 @@ execute: {
       stagePolicy: @070-photoCal.paf
    }
 
-   appStage: {
-      name: "lsst.ip.pipeline.ExposureGenerationStage"
-      parallelClass: "lsst.ip.pipeline.ExposureGenerationStageParallel"
-      eventTopic: "None"
-      stagePolicy: @080-exposureGeneration.paf
-   }
+#============================================================================
+#                   Is this stage required in ImgChar???
+#    appStage: {
+#       name: "lsst.ip.pipeline.ExposureGenerationStage"
+#       parallelClass: "lsst.ip.pipeline.ExposureGenerationStageParallel"
+#       eventTopic: "None"
+#       stagePolicy: @080-exposureGeneration.paf
+#    }
 
    appStage: {
       name: "lsst.pex.harness.IOStage.OutputStage"

@@ -12,9 +12,9 @@ that ctrl_orca provides during "production" runs.
 
 We link the input directory:
 
-% ln -s /lsst/sims/ImSim_data input
+% ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
 
-and make the output directory :
+and make the output directories :
 
 % mkdir output update scratch work
 
@@ -24,14 +24,45 @@ The pipeline can be then started via :
 
 The pipeline will block and wait for an incoming data event.
 Provide this event with the trigger script: sendevent.py
+When pipeline output displays: "Told JobOffice, I'm ready!",
+capture the Origiator number for use in '-o' option to the sendevent command.
 
-This script will send events  and identify the exposures to be processed, for
-example:
+For example, the following command corresponds to the ImSim dataset linked
+above. BEWARE: as time passes, the ImSim dataset will morph.
 
 sendevent.py -r Run2 -n CrSplit -b lsst8 -O \
 "postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3" assign CrSplitJob \
 "postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
 "postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
--o    <fill in pipeline originator number>
- 
-..... fill in the originator number provided when you started the pipeline.
+-o    <fill in pipeline originator # provided by now waiting>.
+
+NOTE: can not break the long line right before '-O' --must be after or
+get multiple dataset complaint. Also, can not break within quoted string or
+will get embedded newline (which then is also interpreted as multiple output
+datasets).
+
+Note: contrary to doco, '-o' at end of command is OK; easier for cut-n-paste.
+
+
+=================================================================
+Example: Running the Pipeline
+=================================================================
+The commands below are setup to enable copy-paste use in two previously
+'setup' configured windows.
+
+Window One:
+-----------
+rm Pipeline.log Slice0.log CcdAssembly.log
+launchPipeline.py master.paf Run2 CA -v | & tee CcdAssembly.log
+
+
+Window Two:
+-----------
+When pipeline output in Window One says "Told JobOffice, I'm ready!",
+send the  event providing the details of the specific input data to use.
+
+sendevent.py -r Run2 -n CrSplit -b lsst8 -O \
+"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3" assign CrSplitJob \
+"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
+"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
+-o    <###############

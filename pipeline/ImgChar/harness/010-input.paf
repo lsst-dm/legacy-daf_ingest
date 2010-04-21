@@ -1,4 +1,4 @@
-# Image Characterization input.paf
+# ImgChar input.paf
 parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
@@ -6,11 +6,12 @@ parameters: {
             root: %(input)
         }
     }
-   InputItems: {
-       visitExposure: {
-           datasetType: visitim
+    inputItems: {
+        visitExposure: {
+            datasetType: "postISRCCD"
             datasetId: {
                 fromJobIdentity: "visit" "raft" "sensor" 
-       }
-   }
+            }
+        }
+    }
 }

@@ -1,14 +1,30 @@
 #<?cfg paf policy ?>
 
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+#
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
+
+
 execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   nSlices: 1
    executionMode: "oneloop"
-   logThreshold: -10
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   nSlices: 1
+   logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCrSplit
-   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    dir: {
       shortName: CrSplit
       defaultRoot: .

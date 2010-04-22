@@ -1,0 +1,59 @@
+#<?cfg paf policy ?>
+name:  CcdAssembly
+persist.dir:  %(schedroot)s/%(name)s-joboffice
+
+listen: {
+    brokerHostName:      lsst8.ncsa.uiuc.edu
+    dataReadyEvent:      postISRAvailable
+    pipelineEvent:       CaJob
+    stopEvent:           JobOfficeStop
+}
+
+schedule: {
+    trigger: {
+        datasetType: imsim
+        id: {
+            name: amp
+            min: 0
+            lim: 16
+        }
+    }
+
+    job: {
+        input: {
+            datasetType: postISR
+            id: {
+              name: visit
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: ccd
+            }
+            id: {
+              name: amp
+              min: 0
+              lim: 16
+            }
+        }
+        output: {
+            datasetType: postISRCCD
+            id: {
+              name: visit
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: ccd
+            }
+        }
+    }
+}

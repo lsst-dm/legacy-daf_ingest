@@ -38,21 +38,21 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
       stagePolicy: @000-getajob.paf
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.InputStage"
+      name: "010-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.IsrCcdAssemblyStage"
+      name: "020-assembleCcd"
       parallelClass: "lsst.ip.pipeline.IsrCcdAssemblyStageParallel"
       eventTopic: "None"
       stagePolicy: @020-assembleCcd.paf
@@ -60,14 +60,14 @@ execute: {
 
 # This stage is not yet integrated into CCD Assembly pipeline
 #   appStage: {
-#      name: "lsst.ip.pipeline.IsrDetectStage"
+#      name: "030-isrDefect"
 #      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
 #      eventTopic: "None"
 #      stagePolicy: @030-isrDefect.paf
 #   }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
+      name: "040-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @040-output.paf

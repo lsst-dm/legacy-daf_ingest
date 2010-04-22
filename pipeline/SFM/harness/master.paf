@@ -24,35 +24,35 @@ execute: {
    }
 
   appStage: {
-      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @000-isrGetajob.paf
+      stagePolicy: @000-getajob.paf
    }
  
    appStage: {
-      name: "lsst.pex.harness.IOStage.InputStage"
+      name: "010-Input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
       stagePolicy: @010-Input.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.SourceDetectionStage"
+      name: "020-sourceDetection"
       parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
       stagePolicy: @020-sourceDetection.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.SourceMeasurementStage"
+      name: "030-sourceMeasurement"
       parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
       eventTopic: "None"
       stagePolicy: @030-sourceMeasurement.paf
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
+      name: "040-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @040-output.paf
@@ -61,17 +61,17 @@ execute: {
 #============================================================================
 #                   Need when hooking up to next pipeline in Production
 #   appStage: {
-#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      name: "050-jobdone"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
-#      stagePolicy: @050-isrJobdone.paf
+#      stagePolicy: @050-jobdone.paf
 #   }
 #
 #   failureStage: {
-#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      name: "060-failure"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
-#      stagePolicy: @060-isrFailure.paf
+#      stagePolicy: @060-failure.paf
 #   }
 #============================================================================
 

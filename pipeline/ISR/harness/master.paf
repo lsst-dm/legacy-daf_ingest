@@ -40,14 +40,14 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      name: "000-isrGetajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
       stagePolicy: @000-isrGetajob.paf
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.InputStage"
+      name: "010-Input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
       stagePolicy: @010-Input.paf
@@ -55,42 +55,42 @@ execute: {
 
 # This stage is not implemented in DC3b PT1
 #   appStage: {
-#      name: "lsst.ip.pipeline.IsrLinearityStage"
+#      name: "030-isrLinearity"
 #      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
 #      eventTopic: "None"
 #      stagePolicy: @030-isrLinearity.paf
 #   }
 
    appStage: {
-      name: "lsst.ip.pipeline.IsrSaturationStage"
+      name: "040-isrSaturation"
       parallelClass: "lsst.ip.pipeline.IsrSaturationStageParallel"
       eventTopic: "None"
       stagePolicy: @040-isrSaturation.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.IsrOverscanStage"
+      name: "050-isrOverscan"
       parallelClass: "lsst.ip.pipeline.IsrOverscanStageParallel"
       eventTopic: "None"
       stagePolicy: @050-isrOverscan.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.IsrBiasStage"
+      name: "060-isrBias"
       parallelClass: "lsst.ip.pipeline.IsrBiasStageParallel"
       eventTopic: "None"
       stagePolicy: @060-isrBias.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.IsrDarkStage"
+      name: "070-isrDark"
       parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
       eventTopic: "None"
       stagePolicy: @070-isrDark.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.IsrFlatStage"
+      name: "080-isrFlat"
       parallelClass: "lsst.ip.pipeline.IsrFlatStageParallel"
       eventTopic: "None"
       stagePolicy: @080-isrFlat.paf
@@ -98,7 +98,7 @@ execute: {
 
 # This stage is not implemented in DC3b PT1
 #  appStage: {
-#     name: "lsst.ip.pipeline.IsrFringeStage"
+#     name: "090-isrFringe"
 #     parallelClass: "lsst.ip.pipeline.IsrFringeStageParallel"
 #     eventTopic: "None"
 #     stagePolicy: @090-isrFringe.paf
@@ -106,7 +106,7 @@ execute: {
 
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
+      name: "100-isrExposureOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @100-isrExposureOutput.paf
@@ -115,14 +115,14 @@ execute: {
 #============================================================================
 #                   Need once correctly running through ISR algorithms
 #   appStage: {
-#      name: "lsst.sdqa.pipeline.IsrSdqaStage"
+#      name: "110-isrSdqa"
 #      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
 #      eventTopic: "None"
 #      stagePolicy: @110-isrSdqa.paf
 #   }
 #
 #   appStage: {
-#      name: "lsst.pex.harness.IOStage.OutputStage"
+#      name: "120-isrSdqaOutput"
 #      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
 #      eventTopic: "None"
 #      stagePolicy: @120-isrSdqaOutput.paf
@@ -131,26 +131,18 @@ execute: {
 #============================================================================
 #                   Need when hooking up to CcdAssembly
 #   appStage: {
-#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      name: "130-isrJobdone"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
 #      stagePolicy: @130-isrJobdone.paf
 #   }
 #
 #   failureStage: {
-#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      name: "140-isrFailure"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
 #      stagePolicy: @140-isrFailure.paf
 #   }
 #============================================================================
-
-#  THis stage is moving to CCD Assembly Pipeline
-#   appStage: {
-#      name: "lsst.ip.pipeline.IsrDefectStage"
-#      parallelClass: "lsst.ip.pipeline.IsrDefectStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @130-isrDefect.paf
-#  }
 
 }

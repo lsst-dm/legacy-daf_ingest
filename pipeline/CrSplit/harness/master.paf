@@ -38,70 +38,70 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
       stagePolicy: @000-getajob.paf
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.InputStage"
+      name: "010-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.BackgroundEstimationStage"
+      name: "020-backgroundEstimation0"
       parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
       stagePolicy: @020-backgroundEstimation0.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.BackgroundEstimationStage"
+      name: "030-backgroundEstimation1"
       parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
       stagePolicy: @030-backgroundEstimation1.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.CrRejectStage"
+      name: "040-crReject0"
       parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
       stagePolicy: @040-crReject0.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.CrRejectStage"
+      name: "050-crReject1"
       parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
       stagePolicy: @050-crReject1.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.SimpleDiffImStage"
+      name: "060-simpleDiffIm"
       parallelClass: "lsst.ip.pipeline.SimpleDiffImStageParallel"
       eventTopic: "None"
       stagePolicy: @060-simpleDiffIm.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.SourceDetectionStage"
+      name: "070-sourceDetection"
       parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
       stagePolicy: @070-sourceDetection.paf
    }
 
    appStage: {
-      name: "lsst.ip.pipeline.crSplitCombineStage"
+      name: "080-crSplitCombine"
       parallelClass: "lsst.ip.pipeline.CrSplitCombineStageParallel"
       eventTopic: "None"
       stagePolicy: @080-crSplitCombine.paf
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
+      name: "090-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @090-output.paf
@@ -109,14 +109,14 @@ execute: {
 #============================================================================
 #                   Need when hooking up to ImgChar
 #   appStage: {
-#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      name: "100-jobdone"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
 #      stagePolicy: @100-jobdone.paf
 #   }
 #
 #   failureStage: {
-#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      name: "110-failure"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
 #      stagePolicy: @110-failure.paf

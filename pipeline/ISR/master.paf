@@ -1,32 +1,37 @@
 #<?cfg paf policy ?>
 
-requires: {
-   database: {
-      type: MySQL
-   }
-   platform: {
-      minCoreCount: 1
-   }
-}
-
-framework: {
-   type: standard
-   # script builds I/O master directories {work input output update scratch} 
-   # and populates pipeline input data ; see runDirPattern below.
-   environment: "$DATAREL_DIR/etc/setup.sh"
-   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
-}
+# Following is required for ORCA; we are hand orchestrating - see README
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+#
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
 
 execute: {
-   # for debug limit looping,  add 'executionMode: "oneloop"'
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   nSlices: 1
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
+   executionMode: "oneloop"
+   # To be quite verbose: add 'logThreshold: -3'
+   #logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownISR
-   # for non-MPI use, add 'nSlices:1'; else need file: nodelist.src
    dir: {
       shortName: ISR
       defaultRoot: .
-      runDirPattern: "../../%(runid)s/%(shortname)s"
+      # Path to root Run directory
+      # runDirPattern: "../../%(runid)s/%(shortname)s"
+      runDirPattern: "../../../"
       work: work
       input: input
       output: output
@@ -35,117 +40,109 @@ execute: {
    }
 
    appStage: {
-      # Note that stageName is not the correct key used by pex_harness
-      #stageName: "lsst.pex.harness.IOStage.InputStage"
-      name: "lsst.pex.harness.IOStage.InputStage"
-      # Load name of stage's processing module
-      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
-      eventTopic: "triggerISREvent"
-      stagePolicy: @010-imageInput.paf
-   }
-
-   appStage: {
-      #stageName: "lsst.ip.pipeline.TransformMetadataStage"
-      name: "lsst.ip.pipeline.TransformMetadataStage"
-      parallelClass: "lsst.ip.pipeline.TransformMetadataStageParallel"
+      name: "000-isrGetajob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @020-transformMetadata.paf
+      stagePolicy: @000-isrGetajob.paf
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.ValidateMetadataStage"
-      name: "lsst.ip.pipeline.ValidateMetadataStage"
-      parallelClass: "lsst.ip.pipeline.ValidateMetadataStageParallel"
-      eventTopic: "None"
-      stagePolicy: @030-validateMetadata.paf
-   }
-
-   appStage: {
-      #stageName: "lsst.ip.pipeline.IdentifyCalibrationProductsStage"
-      name: "lsst.ip.pipeline.IdentifyCalibrationProductsStage"
-      parallelClass: "lsst.ip.pipeline.IdentifyCalibrationProductsStageParallel"
-      eventTopic: "None"
-      stagePolicy: @040-identifyCalibrationProducts.paf
-   }
-
-   appStage: {
-      #stageName: "lsst.pex.harness.IOStage.InputStage"
-      name: "lsst.pex.harness.IOStage.InputStage"
+      name: "010-Input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @050-calibrationInput.paf
+      stagePolicy: @010-Input.paf
    }
 
-   appStage: {
-      #stageName: "lsst.ip.pipeline.IsrLinearityStage"
-      name: "lsst.ip.pipeline.IsrLinearityStage"
-      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
-      eventTopic: "None"
-      stagePolicy: @060-isrLinearity.paf
-   }
+# This stage is not implemented in DC3b PT1
+#   appStage: {
+#      name: "030-isrLinearity"
+#      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @030-isrLinearity.paf
+#   }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.IsrSaturationStage"
-      name: "lsst.ip.pipeline.IsrSaturationStage"
+      name: "040-isrSaturation"
       parallelClass: "lsst.ip.pipeline.IsrSaturationStageParallel"
       eventTopic: "None"
-      stagePolicy: @070-isrSaturation.paf
+      stagePolicy: @040-isrSaturation.paf
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.IsrOverscanStage"
-      name: "lsst.ip.pipeline.IsrOverscanStage"
+      name: "050-isrOverscan"
       parallelClass: "lsst.ip.pipeline.IsrOverscanStageParallel"
       eventTopic: "None"
-      stagePolicy: @080-isrOverscan.paf
+      stagePolicy: @050-isrOverscan.paf
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.IsrBiasStage"
-      name: "lsst.ip.pipeline.IsrBiasStage"
+      name: "060-isrBias"
       parallelClass: "lsst.ip.pipeline.IsrBiasStageParallel"
       eventTopic: "None"
-      stagePolicy: @090-isrBias.paf
+      stagePolicy: @060-isrBias.paf
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.IsrDarkStage"
-      name: "lsst.ip.pipeline.IsrDarkStage"
+      name: "070-isrDark"
       parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
       eventTopic: "None"
-      stagePolicy: @100-isrDark.paf
+      stagePolicy: @070-isrDark.paf
    }
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.IsrFlatStage"
-      name: "lsst.ip.pipeline.IsrFlatStage"
+      name: "080-isrFlat"
       parallelClass: "lsst.ip.pipeline.IsrFlatStageParallel"
       eventTopic: "None"
-      stagePolicy: @110-isrFlat.paf
+      stagePolicy: @080-isrFlat.paf
    }
 
-   appStage: {
-      #stageName: "lsst.ip.pipeline.IsrFringeStage"
-      name: "lsst.ip.pipeline.IsrFringeStage"
-      parallelClass: "lsst.ip.pipeline.IsrFringeStageParallel"
-      eventTopic: "None"
-      stagePolicy: @120-isrFringe.paf
-   }
+# This stage is not implemented in DC3b PT1
+#  appStage: {
+#     name: "090-isrFringe"
+#     parallelClass: "lsst.ip.pipeline.IsrFringeStageParallel"
+#     eventTopic: "None"
+#     stagePolicy: @090-isrFringe.paf
+#  }
+
 
    appStage: {
-      #stageName: "lsst.ip.pipeline.IsrDefectStage"
-      name: "lsst.ip.pipeline.IsrDefectStage"
-      parallelClass: "lsst.ip.pipeline.IsrDefectStageParallel"
-      eventTopic: "None"
-      stagePolicy: @130-isrDefect.paf
-   }
-
-   appStage: {
-      #stageName: "lsst.pex.harness.IOStage.OutputStage"
-      name: "lsst.pex.harness.IOStage.OutputStage"
+      name: "100-isrExposureOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @140-isrExposureOutput.paf
+      stagePolicy: @100-isrExposureOutput.paf
    }
+
+#============================================================================
+#                   Need once correctly running through ISR algorithms
+#   appStage: {
+#      name: "110-isrSdqa"
+#      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @110-isrSdqa.paf
+#   }
+#
+#   appStage: {
+#      name: "120-isrSdqaOutput"
+#      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @120-isrSdqaOutput.paf
+#   }
+
+#============================================================================
+#                   Need when hooking up to CcdAssembly
+#   appStage: {
+#      name: "130-isrJobdone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @130-isrJobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "140-isrFailure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @140-isrFailure.paf
+#   }
+#============================================================================
 
 }

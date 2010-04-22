@@ -1,25 +1,18 @@
-AdditionalData: "outputPathName=triggerCrSplitEvent.outputPathName"
-OutputItems: {
-   scienceCcdExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
-   processingInfo: {
-      StoragePolicy: {
-         Storage: "DbStorage"
-         Location: "%(dbUrl)"
-      }
-   }
-}
-
-Persistence: {
-    Formatter: {
-        PropertySet: {
-            processingInfo: {
-                tableName: "CrSplitProcessingInfo"
-            }
+# output.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(update)
         }
     }
+   outputItems: {
+      scienceCcdExposure: {
+         datasetId: {
+            datasetType: postISRCCD
+            fromJobIdentity: "visit" "raft" "sensor" "snap"
+         }
+      }
+   }
+    
 }

@@ -1,20 +1,29 @@
-AdditionalData: "inputPathName0=triggerCrSplitEvent.inputPathName0"
-AdditionalData: "inputPathName1=triggerCrSplitEvent.inputPathName1"
-InputItems: {
-    isrCcdExposure0: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(inputPathName0)"
+# CrSplit input.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
         }
     }
-    isrCcdExposure1: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(inputPathName1)"
+    inputItems: {
+        isrCcdExposure0: {
+            datasetType: "postISRCCD"
+            datasetId: {
+                fromJobIdentity: "visit" "raft" "sensor"
+                set: {
+                    snap: 0
+                }
+            }
+        }
+        isrCcdExposure1: {
+            datasetType: "postISRCCD"
+            datasetId: {
+                fromJobIdentity: "visit" "raft" "sensor"
+                set: {
+                    snap: 1
+                }
+            }
         }
     }
 }

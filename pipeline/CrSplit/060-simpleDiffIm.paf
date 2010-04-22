@@ -1,8 +1,9 @@
+# simpleDiffIm.paf
 inputKeys: {
    exposures: "crSubCcdExposure0" "crSubCcdExposure1"
-   processingInfo: "processingInfo0" "processingInfo1"
 }
+
 outputKeys: {
    differenceExposure: "diffExposure"
-   processingInfo: "processingInfo"
 }
+

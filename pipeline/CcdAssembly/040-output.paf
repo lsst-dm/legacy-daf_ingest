@@ -1,9 +1,19 @@
-AdditionalData: "outputPathName=triggerCcdAssemblyEvent.outputPathName"
-OutputItems: {
-   isrCcdExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
+# CCD Assembly  output.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(update)
+        }
+    }
+
+    outputItems: {
+        assembledCcdExposure: {
+            datasetId: {
+                datasetType: postISRCCD
+                fromJobIdentity:  "visit" "raft" "sensor"  "snap"
+            }
+        }
+    }
 }
+

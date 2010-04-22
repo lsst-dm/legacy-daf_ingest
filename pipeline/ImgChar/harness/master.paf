@@ -80,7 +80,7 @@ execute: {
 
    appStage: {
       name: "060-wcsVerification"
-      parallelClass: "lsst.sdqa.WcsVerificationStageParallel"
+      parallelClass: "lsst.sdqa.WcsVerificationParallel"
       eventTopic: "None"
       stagePolicy: @060-wcsVerification.paf
    }

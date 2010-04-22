@@ -1,11 +1,13 @@
+# crReject1.paf
 inputKeys: {
    exposure: "bkgSubCcdExposure1"
-   processingInfo: "processingInfo1"
 }
 outputKeys: {
    exposure: "crSubCcdExposure1"
-   processingInfo: "processingInfo1"
 }
+
 parameters: {
-   keepCRs: false
+   defaultFwhm : 0.1
+   keepCRs: true
 }
+

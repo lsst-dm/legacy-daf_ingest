@@ -1,39 +1,31 @@
-AdditionalData: "outputPathName=triggerImgCharEvent.outputPathName"
-AdditionalData: "cellSetPathName=triggerImgCharEvent.cellSetPathName"
-AdditionalData: "matchListPathName=triggerImgCharEvent.matchListPathName"
-OutputItems: {
-   finalScienceExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
+# Output.paf
+ 
+parameters: {
+   butler: {
+      mapperName: lsst.obs.lsstSim.LsstSimMapper
+      mapperPolicy: {
+         root: %(update)
       }
    }
-   psfCellSet: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(cellSetPathName)"
-      }
-   }
-   wcsMatchList: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(matchListPathName)"
-      }
-   }
-   sdqa: {
-      StoragePolicy: {
-         Storage: "DbStorage"
-         Location: "%(dbUrl)"
-      }
-   }
-}
 
-Persistence: {
-    Formatter: {
-        SdqaRatings: {
-            sdqa: {
-                tableName: "Sdqa"
-            }
-        }
-    }
+   outputItems: {
+      visitExposure: {
+         datasetId: {
+            datasetType: postISRCCD
+            fromJobIdentity: "visit" "raft" "sensor" 
+         }
+      }
+      cellSet: {
+         datasetId: {
+            datasetType: cellSet
+            fromJobIdentity: "visit" "raft" "sensor" 
+         }
+      }
+      matchList: {
+         datasetId: {
+            datasetType: sourceMatchSet
+            fromJobIdentity: "visit" "raft" "sensor" 
+         }
+      }
+   }
 }

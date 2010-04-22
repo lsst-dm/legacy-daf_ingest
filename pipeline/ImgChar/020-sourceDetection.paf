@@ -1,7 +1,14 @@
+# sourceDetection.paf
 inputKeys: {
-   exposure: "scienceExposure"
+   exposure: "visitExposure"
 }
 outputKeys: {
-   positiveDetection: "calibFootprintSet"
-   psf: "detectionPsf"
+   positiveDetection: "positiveFootprintSet"
+   negativeDetection: "negativeFootprintSet"
+   psf: "simplePsf"
+}
+psfPolicy: {
+   height: 15
+   width: 15
+   parameter: 1.0
 }

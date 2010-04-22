@@ -1,9 +1,11 @@
+# sourceMeasurement.paf
 inputKeys: {
-   psf: "detectionPsf"
-   exposure: "scienceExposure"
-   positiveDetection: "calibFootprintSet"
+   exposure: "visitExposure"
+   psf: "simplePsf"
+   positiveDetection: "positiveFootprintSet"
+   negativeDetection: "negativeFootprintSet"
 }
 outputKeys: {
-   sources: "calibSources"
+   sources: "sourceSet"
 }
 

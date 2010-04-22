@@ -1,9 +1,18 @@
-AdditionalData: "outputPathName=triggerISREvent.outputPathName"
-OutputItems: {
-   isrExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
+# isrExposureOutput.paf
+
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(update)
+        }
+    }
+    outputItems: {
+        isrExposure: {
+            datasetId: {
+                datasetType: postISR
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+    }
 }

@@ -11,7 +11,7 @@ parameters: {
         isrExposure: {
             datasetId: {
                 datasetType: postISR
-                fromClipboard: "visit" "snap" "raft" "sensor" "channel"
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
             }
         }
     }

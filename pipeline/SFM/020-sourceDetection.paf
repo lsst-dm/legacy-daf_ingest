@@ -1,7 +1,18 @@
+#
+#  020-sourceDetection.paf 
+#  
 inputKeys: {
-   exposure: "scienceExposure"
+   exposure: scienceExposure
+   # Someday PSF will be input instead of parameter (see below)
+   # psf: psf
 }
 outputKeys: {
-   positiveDetection: "sourceFootprintSet"
-   psf: "detectionPsf"
+   positiveDetection: "positiveFootprintSet"
+   # Remove this eventually
+   psf: "psf"
 }
+
+psfPolicy: {
+    parameter: 1.5
+}
+

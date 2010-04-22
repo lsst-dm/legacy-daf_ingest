@@ -45,13 +45,36 @@ Note: contrary to doco, '-o' at end of command is OK; easier for cut-n-paste.
 
 
 =================================================================
-Example: Running the Pipeline
+Example
 =================================================================
+
+Setup Environment
+------------------
+
+Most activity is done in local copy of: datarel/pipeline/ISR/harness.
+
+Setup where your actual files are found or to be archived:
+    I setup master.paf to have:
+        runDirPattern: "../../../"
+   Then in datarel, I've created the misc output directories;
+         mkdir -p output work update scratch
+   You should sym link to the local ImSim data directory
+         ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
+
+   However, copying over the ImSim directory is OK, too (it's currently small)
+         cp  -pr /lsst/DC3/data/afwdata/trunk/ImSim input
+
+
+Running the pipeline
+--------------------
+
 The commands below are setup to enable copy-paste use in two previously
-'setup' configured windows.
+'setup' (eg, 'cd datarel; setup -r .') configured windows.
+
 
 Window One:
 -----------
+cd datarel/pipeline/ISR/harness
 rm Pipeline.log Slice0.log ISR.log
 launchPipeline.py master.paf Run2 ISR -v | & tee ISR.log
 
@@ -65,55 +88,5 @@ sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
 "postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" \
 "raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
-
-=============================================================================
-What I'm really doing at the moment for initial startup
-=============================================================================
-
-Setup Environment
-------------------
-
-Most activity is done in local copy of: datarel/pipeline/ISR/harness.
-
-0. cd datarel; setup -r .
-
-1.1 Acquire, build, make current, then setup local versions of modules which 
-   do NOT have policies loaded in the system packages:
-   * definitely need for sdqa (tagged and ready) ctrl_sched (fixed in trunk) ; 
-	% setup sdqa 
-   * may need more but I routinely access some packages in local mode
-
-1.2 Acquire, build, make current, then setup local versions of obs_lsstSim
-    (until version with uses channel specs that same as raft specs is installed)
-    % setup obs_lsstSim
-
-
-2. Setup where your actual files are found or to be archived:
-    I setup master.paf to have:
-        runDirPattern: "../../../"
-   Then in datarel, I've created the misc output directories;
-         mkdir -p output work update scratch
-   You should sym link to the local ImSim data directory
-         ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
-
-   However, copying over the ImSim directory is OK, too (it's currently small)
-         cp  -pr /lsst/DC3/data/afwdata/trunk/ImSim input
-
-
--------------------------------
-# Setup bundled for one click use:
-cd ~/DC3b/DMS/datarel
-setup -r .
-setup sdqa sdqa_trunk
-setup obs_lsstSim obs_lsstSim_trunk
-cd pipeline/ISR/harness
-ls -l ../../../input   
-which sendevent.py
------------------------------------------
-
-
-sendevent.py -r Run2 -n ISR -b lsst8 -O "postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" assign IsrJob "ISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" "raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0"  -o \
-  <originatorId # from Window One>
-
 
 

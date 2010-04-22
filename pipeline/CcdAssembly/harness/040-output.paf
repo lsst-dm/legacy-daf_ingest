@@ -11,7 +11,7 @@ parameters: {
         assembledCcdExposure: {
             datasetId: {
                 datasetType: postISRCCD
-                fromClipboard:  "visit" "raft" "sensor"  "snap"
+                fromJobIdentity:  "visit" "raft" "sensor"  "snap"
             }
         }
     }

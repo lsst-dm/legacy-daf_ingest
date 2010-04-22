@@ -1,13 +1,14 @@
-AdditionalData: "sourcePathName=triggerSFMEvent.sourcePathName"
-AdditionalData: "detectionPathName=triggerSFMEvent.detectionPathName"
+# output.paf
+
+# TBD - not updated
 OutputItems: {
-   sourceFootprintSet: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(detectionPathName)"
-      }
-   }
-   sources: {
+   # sourceFootprintSet: {
+   #    StoragePolicy: {
+   #       Storage: "BoostStorage"
+   #       Location: "%(output)/%(detectionPathName)"
+   #    }
+   # }
+   sources_persistable: {
       StoragePolicy: {
          Storage: "BoostStorage"
          Location: "%(output)/%(sourcePathName)"

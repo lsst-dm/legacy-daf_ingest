@@ -1,7 +1,4 @@
-inputKeys: {
-   exposure: "scienceExposure"
-   sourceSet: "calibSources"
-}
-outputKeys: {
-   photometricModel: "photoModel"
-}
+# photoCal.paf
+sourceMatchSetKey: matchList
+outputValueKey: photometricZeroPoint
+outputUncertaintyKey: photometricZeroPointUnc

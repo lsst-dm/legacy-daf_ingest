@@ -1,75 +1,17 @@
-AdditionalData: "pathName0=triggerCcdAssemblyEvent.pathName0"
-AdditionalData: "pathName1=triggerCcdAssemblyEvent.pathName1"
-AdditionalData: "pathName2=triggerCcdAssemblyEvent.pathName2"
-AdditionalData: "pathName3=triggerCcdAssemblyEvent.pathName3"
-AdditionalData: "pathName4=triggerCcdAssemblyEvent.pathName4"
-AdditionalData: "pathName5=triggerCcdAssemblyEvent.pathName5"
-AdditionalData: "pathName6=triggerCcdAssemblyEvent.pathName6"
-AdditionalData: "pathName7=triggerCcdAssemblyEvent.pathName7"
-
-InputItems: {
-    isrAmpExposure0: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName0)"
+# Ccd Assembly Input.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
         }
     }
-    isrAmpExposure1: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName1)"
-        }
-    }
-    isrAmpExposure2: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName2)"
-        }
-    }
-    isrAmpExposure3: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName3)"
-        }
-    }
-    isrAmpExposure4: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName4)"
-        }
-    }
-    isrAmpExposure5: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName5)"
-        }
-    }
-    isrAmpExposure6: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName6)"
-        }
-    }
-    isrAmpExposure7: {
-        Type: "ExposureF"
-        PythonType: "lsst.afw.image.ExposureF"
-        StoragePolicy: {
-            Storage: "FitsStorage"
-            Location: "%(input)/%(pathName7)"
+    inputItems: {
+        exposureList: {
+            datasetType: postISR
+            datasetId: {
+                fromInputDatasets: true
+            }
         }
     }
 }

@@ -1,10 +1,22 @@
+# sourceDetection.paf
 inputKeys: {
    exposure: "diffExposure"
-   processingInfo: "processingInfo"
 }
 outputKeys: {
    positiveDetection: "positiveFootprintSet"
    negativeDetection: "negativeFootprintSet"
    psf: "psf"
-   processingInfo: "processingInfo"
 }
+
+backgroundPolicy: {
+    algorithm:  "NONE"
+}
+
+detectionPolicy: {
+    minPixels: 1
+    nGrow : 0
+    thresholdValue: 10.0
+    thresholdType: "stdev"
+    thresholdPolarity: "both"
+}
+

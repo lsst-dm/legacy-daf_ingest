@@ -1,9 +1,6 @@
 inputKeys: {
-   exposurePrefix: "isrAmpExposure"
+   exposureList: "exposureList"
 }
-
-numAmplifiers: 8
-
 outputKeys: {
-   ccdExposure: "isrCcdExposure"
+   assembledCcdExposure: "assembledCcdExposure"
 }

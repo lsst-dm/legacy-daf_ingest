@@ -12,19 +12,19 @@ parameters: {
       visitExposure: {
          datasetId: {
             datasetType: postISRCCD
-            fromClipboard: "visit" "raft" "sensor" 
+            fromJobIdentity: "visit" "raft" "sensor" 
          }
       }
       cellSet: {
          datasetId: {
             datasetType: cellSet
-            fromClipboard: "visit" "raft" "sensor" 
+            fromJobIdentity: "visit" "raft" "sensor" 
          }
       }
       matchList: {
          datasetId: {
             datasetType: sourceMatchSet
-            fromClipboard: "visit" "raft" "sensor" 
+            fromJobIdentity: "visit" "raft" "sensor" 
          }
       }
    }

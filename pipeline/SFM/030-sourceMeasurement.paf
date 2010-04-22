@@ -1,9 +1,10 @@
+# sourceMeasurement.paf
 inputKeys: {
-   psf: "detectionPsf"
    exposure: "scienceExposure"
-   positiveDetection: "sourceFootprintSet"
+   positiveDetection: "positiveFootprintSet"
+   psf: "psf"
 }
 outputKeys: {
-   sources: "sources"
+   sources: "sourceSet"
 }
 

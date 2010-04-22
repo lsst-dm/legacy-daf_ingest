@@ -1,3 +1,7 @@
+# xposureGeneration.paf 
+
+TBD:
+
 inputKeys: {
    exposure: "scienceExposure"
    psf: "measuredPsf"

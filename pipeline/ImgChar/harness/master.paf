@@ -37,56 +37,56 @@ execute: {
    }
 
    appStage: {
-      name: "lsst.ctrl.sched.pipeline.GetAJob"
+      name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
       stagePolicy: @000-getajob.paf
    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.InputStage"
+      name: "010-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
       stagePolicy: @010-input.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.SourceDetectionStage"
+      name: "020-sourceDetection"
       parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
       eventTopic: "None"
       stagePolicy: @020-sourceDetection.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.SourceMeasurementStage"
+      name: "030-sourceMeasurement"
       parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
       eventTopic: "None"
       stagePolicy: @030-sourceMeasurement.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.PsfDeterminationStage"
+      name: "040-psfDetermination"
       parallelClass: "lsst.meas.pipeline.PsfDeterminationStageParallel"
       eventTopic: "None"
       stagePolicy: @040-psfDetermination.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.WcsDeterminationStage"
+      name: "050-wcsDetermination"
       parallelClass: "lsst.meas.pipeline.WcsDeterminationStageParallel"
       eventTopic: "None"
       stagePolicy: @050-wcsDetermination.paf
    }
 
    appStage: {
-      name: "lsst.sdqa.WcsVerificationStage"
+      name: "060-wcsVerification"
       parallelClass: "lsst.sdqa.WcsVerificationStageParallel"
       eventTopic: "None"
       stagePolicy: @060-wcsVerification.paf
    }
 
    appStage: {
-      name: "lsst.meas.pipeline.PhotoCalStage"
+      name: "070-photoCal"
       parallelClass: "lsst.meas.pipeline.PhotoCalStageParallel"
       eventTopic: "None"
       stagePolicy: @070-photoCal.paf
@@ -95,14 +95,14 @@ execute: {
 #============================================================================
 #                   Is this stage required in ImgChar???
 #    appStage: {
-#       name: "lsst.ip.pipeline.ExposureGenerationStage"
+#       name: "080-exposureGeneration"
 #       parallelClass: "lsst.ip.pipeline.ExposureGenerationStageParallel"
 #       eventTopic: "None"
 #       stagePolicy: @080-exposureGeneration.paf
 #    }
 
    appStage: {
-      name: "lsst.pex.harness.IOStage.OutputStage"
+      name: "090-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @090-output.paf
@@ -111,14 +111,14 @@ execute: {
 #============================================================================
 #                   Need when hooking up to SFM
 #   appStage: {
-#      name: "lsst.ctrl.sched.pipeline.JobDone"
+#      name: "100-jobdone"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
 #      stagePolicy: @100-jobdone.paf
 #   }
 #
 #   failureStage: {
-#      name: "lsst.ctrl.sched.pipeline.Failure"
+#      name: "110-failure"
 #      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
 #      eventTopic: "None"
 #      stagePolicy: @110-failure.paf

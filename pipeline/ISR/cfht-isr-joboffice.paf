@@ -1,0 +1,56 @@
+#<?cfg paf policy ?>
+
+name:  ISR
+persist.dir:  %(schedroot)s/%(name)s-joboffice
+
+listen: {
+    brokerHostName:      lsst8.ncsa.uiuc.edu
+    dataReadyEvent:      RawAvailable
+    pipelineEvent:       isrJob
+    stopEvent:           JobOfficeStop
+}
+
+schedule: {
+    trigger: {
+        datasetType: raw
+    }
+
+    job: {
+        input: {
+            datasetType: raw
+            id: {
+              name: visit
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: ccd
+            }
+            id: {
+              name: amp
+            }
+        }
+        output: {
+            datasetType: postISR
+            id: {
+              name: visit
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: ccd
+            }
+            id: {
+              name: amp
+            }
+        }
+    }
+}

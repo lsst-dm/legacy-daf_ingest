@@ -93,7 +93,7 @@ def isrProcess(root, outRoot, **keys):
 def run():
     root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
     isrProcess(root=root, outRoot=".", visit=85751839, snap=0,
-            raft="R:2,3", sensor="S:1,1", channel="C:0,0")
+            raft="2,3", sensor="1,1", channel="0,6")
 
 if __name__ == "__main__":
     run()

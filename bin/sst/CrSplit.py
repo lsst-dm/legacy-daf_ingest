@@ -34,9 +34,13 @@ def crSplitProcess(root, outRoot, **keys):
         }
         parameters: {
             subtractBackground: true
+            backgroundPolicy: {
+                binsize: 512
+            }
         }
         """))
     bkgd0 = SimpleStageTester(measPipe.BackgroundEstimationStage(pol))
+
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
@@ -48,6 +52,9 @@ def crSplitProcess(root, outRoot, **keys):
         }
         parameters: {
             subtractBackground: true
+            backgroundPolicy: {
+                binsize: 512
+            }
         }
         """))
     bkgd1 = SimpleStageTester(measPipe.BackgroundEstimationStage(pol))
@@ -140,26 +147,33 @@ def crSplitProcess(root, outRoot, **keys):
 
     clip = bkgd0.runWorker(clip)
     clip = bkgd1.runWorker(clip)
+    clip['bkgSubCcdExposure0'].writeFits("bkgSub0.fits")
+    clip['bkgSubCcdExposure1'].writeFits("bkgSub1.fits")
     clip = cr0.runWorker(clip)
     print clip['nCR']
     clip = cr1.runWorker(clip)
     print clip['nCR']
+    clip['crSubCcdExposure0'].writeFits("crSub0.fits")
+    clip['crSubCcdExposure1'].writeFits("crSub1.fits")
     clip = diff.runWorker(clip)
+    clip['diffExposure'].writeFits("diff.fits")
     clip = srcd.runWorker(clip)
     clip = comb.runWorker(clip)
+    clip['visitExposure'].writeFits("visit.fits")
     # clip = sst.runWorker(clip)
 
-    exposure = clip['visitExposure']
+
+    # exposure = clip['visitExposure']
     # exposure.writeFits("visitim.fits")
 
-    obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-    outButler = obf.create()
-    outButler.put(exposure, "visitim", **keys)
+    # obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
+    # outButler = obf.create()
+    # outButler.put(exposure, "visitim", **keys)
 
 def run():
     root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
     crSplitProcess(root=root, outRoot=".",
-            visit=85751839, raft="R:2,3", sensor="S:1,1")
+            visit=85751839, raft="2,3", sensor="1,1")
 
 if __name__ == "__main__":
     run()

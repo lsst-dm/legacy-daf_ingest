@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import lsst.afw.image as afwImage
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
 import lsst.meas.pipeline as measPipe
@@ -14,6 +15,10 @@ def imgCharProcess(root, **keys):
     clip = {
         'visitExposure': butler.get("visitim", **keys),
     }
+
+    bbox = afwImage.BBox(afwImage.PointI(0,0), 1024, 1024)
+    clip['visitExposure'] = \
+            afwImage.ExposureF(clip['visitExposure'], bbox)
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
@@ -56,6 +61,7 @@ def imgCharProcess(root, **keys):
         outputKeys: {
             psf: measuredPsf
             cellSet: cellSet
+            sdqa: sdqa
         }
         """))
     psfd = SimpleStageTester(measPipe.PsfDeterminationStage(pol))
@@ -96,11 +102,12 @@ def imgCharProcess(root, **keys):
     print clip['wcsVerifyStats']
     print clip['photometricZeroPoint']
     print clip['photometricZeroPointUnc']
+    print clip['sdqa']
 
 def run():
     # Needs visitim/v{visit}-f{filter}/R{raft}-S{sensor}.fits, which is not
     # yet in afwdata.  Use a symlink to postISRCCD/v-f/s0/R-S for now.
-    imgCharProcess(".", visit=85751839, raft="R:2,3", sensor="S:1,1")
+    imgCharProcess(".", visit=85751839, raft="2,3", sensor="1,1")
 
 if __name__ == "__main__":
     run()

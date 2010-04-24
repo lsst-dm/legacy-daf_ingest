@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import lsst.afw.image as afwImage
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
@@ -7,8 +8,9 @@ import lsst.meas.pipeline as measPipe
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
+from lsst.pex.harness.IOStage import OutputStage
 
-def imgCharProcess(root, **keys):
+def imgCharProcess(root, outRoot, **keys):
     bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
     butler = bf.create()
 
@@ -16,9 +18,9 @@ def imgCharProcess(root, **keys):
         'visitExposure': butler.get("visitim", **keys),
     }
 
-    bbox = afwImage.BBox(afwImage.PointI(0,0), 1024, 1024)
-    clip['visitExposure'] = \
-            afwImage.ExposureF(clip['visitExposure'], bbox)
+    # bbox = afwImage.BBox(afwImage.PointI(0,0), 1024, 1024)
+    # clip['visitExposure'] = \
+    #         afwImage.ExposureF(clip['visitExposure'], bbox)
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
@@ -90,24 +92,44 @@ def imgCharProcess(root, **keys):
         """))
     pcal = SimpleStageTester(measPipe.PhotoCalStage(pol))
 
+
     clip = srcd.runWorker(clip)
     clip = srcm.runWorker(clip)
-    clip = psfd.runWorker(clip)
-    clip = wcsd.runWorker(clip)
-    clip = wcsv.runWorker(clip)
-    clip = pcal.runWorker(clip)
 
+    fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
+            "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
+            "IyyErr", "Ixy", "IxyErr")
+    csv = open(os.path.join(outRoot, "imgCharSources.csv"), "w")
+    print >>csv, "FlagForDetection," + ",".join(fields)
+    for s in clip['sourceSet']:
+        line = "%d" % (s.getFlagForDetection(),)
+        for f in fields:
+            func = getattr(s, "get" + f)
+            line += ",%f" % (func(),)
+        print >>csv, line
+    csv.close()
+
+    clip = psfd.runWorker(clip)
     print clip['measuredPsf'].getKernel().toString()
+
+    obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
+    outButler = obf.create()
+    outButler.put(clip['measuredPsf'], "psf", **keys)
+
+    clip = wcsd.runWorker(clip)
     print clip['measuredWcs'].getFitsMetadata().toString()
+
+    clip = wcsv.runWorker(clip)
     print clip['wcsVerifyStats']
+
+    clip = pcal.runWorker(clip)
     print clip['photometricZeroPoint']
     print clip['photometricZeroPointUnc']
-    print clip['sdqa']
 
 def run():
-    # Needs visitim/v{visit}-f{filter}/R{raft}-S{sensor}.fits, which is not
-    # yet in afwdata.  Use a symlink to postISRCCD/v-f/s0/R-S for now.
-    imgCharProcess(".", visit=85751839, raft="2,3", sensor="1,1")
+    imgCharProcess(
+            root=os.path.join(os.environ['AFWDATA_DIR'], "ImSim"),
+            outRoot=".", visit=85751839, raft="2,3", sensor="1,1")
 
 if __name__ == "__main__":
     run()

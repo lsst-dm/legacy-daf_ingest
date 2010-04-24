@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Requires obs_lsstSim 3.0.3
+
 import os
 import lsst.afw.image as afwImage
 import lsst.pex.policy as pexPolicy

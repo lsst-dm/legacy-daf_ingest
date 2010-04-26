@@ -10,9 +10,9 @@ parameters: {
    }
 
    outputItems: {
-      visitExposure: {
+      scienceExposure: {
          datasetId: {
-            datasetType: postISRCCD
+            datasetType: calexp
             fromJobIdentity: "visit" "raft" "sensor" 
          }
       }

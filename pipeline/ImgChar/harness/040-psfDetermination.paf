@@ -7,4 +7,5 @@ inputKeys: {
 outputKeys: {
    psf: "measuredPsf"
    cellSet: "cellSet"
+   sdqa: "sdqa"
 }

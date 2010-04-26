@@ -78,12 +78,12 @@ execute: {
       stagePolicy: @050-wcsDetermination.paf
    }
 
-   appStage: {
-      name: "060-wcsVerification"
-      parallelClass: "lsst.meas.pipeline.WcsVerificationParallel"
-      eventTopic: "None"
-      stagePolicy: @060-wcsVerification.paf
-   }
+#   appStage: {
+#      name: "060-wcsVerification"
+#      parallelClass: "lsst.meas.pipeline.WcsVerificationParallel"
+#      eventTopic: "None"
+#      stagePolicy: @060-wcsVerification.paf
+#   }
 
    appStage: {
       name: "070-photoCal"

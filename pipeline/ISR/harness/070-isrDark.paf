@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # isrDark.paf
 inputKeys: {
    exposure: "isrExposure"

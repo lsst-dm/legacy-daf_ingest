@@ -114,6 +114,9 @@ execute: {
 
 #============================================================================
 #                   Need once correctly running through ISR algorithms
+#
+#  22 April 2010...ISR has SDQA metric generation in a comment block
+#
 #   appStage: {
 #      name: "110-isrSdqa"
 #      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
@@ -127,7 +130,7 @@ execute: {
 #      eventTopic: "None"
 #      stagePolicy: @120-isrSdqaOutput.paf
 #   }
-
+#
 #============================================================================
 #                   Need when hooking up to CcdAssembly
 #   appStage: {

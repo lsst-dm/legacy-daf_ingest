@@ -32,8 +32,8 @@ For, example, the following command corresponds to the ImSim dataset linked
 above. BEWARE: as time passes, the ImSim dataset will morph.
 
 sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" \
-"raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" \
+"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 NOTE: can not break the long line right before '-O' --must be after or
@@ -76,7 +76,15 @@ Window One:
 -----------
 cd datarel/pipeline/ISR/harness
 rm Pipeline.log Slice0.log ISR.log
-launchPipeline.py master.paf Run2 ISR -v | & tee ISR.log
+
+---Run 1:
+launchPipeline.py master.paf Run1 ISR -v | & tee ISRRun1.log
+
+---Run 2 for second image needed by CcdAssembly:
+launchPipeline.py master.paf Run2 ISR -v | & tee ISRRun2.log
+
+--- Repeat until all individual amps are processed. The sendevent.py
+process identifies which chunk is to be processed.
 
 
 Window Two:
@@ -84,9 +92,26 @@ Window Two:
 When pipeline output in Window One says "Told JobOffice, I'm ready!",
 send the  event providing the details of the specific input data to use.
 
-sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" \
-"raw visit=85751839 snap=0 raft=R:2,3 sensor=S:1,1 channel=C:0,0" \
+---Run 1---
+sendevent.py -r Run1 -n ISR -b lsst8 assign IsrJob -O \
+"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
+
+---Run 2 for second image needed by CcdAssembly---
+sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
+"postISR visit=85751839 snap=1 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+-o    <fill in pipeline originator # provided by now waiting>
+
+---Run 3 for second image needed by CcdAssembly---
+sendevent.py -r Run3 -n ISR -b lsst8 assign IsrJob -O \
+"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,1" \
+"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+-o    <fill in pipeline originator # provided by now waiting>
+
+
+--- Repeat until all individual amps are processed. The sendevent.py
+process identifies which chunk is to be processed.
 

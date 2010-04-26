@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 inputKeys: {
    exposure: "isrExposure"
    fringeexposure: "fringeExposure"

@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # CCD Assembly  output.paf
 parameters: {
     butler: {

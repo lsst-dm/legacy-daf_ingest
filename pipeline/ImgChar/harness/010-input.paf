@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # ImgChar input.paf
 parameters: {
     butler: {
@@ -8,7 +9,7 @@ parameters: {
     }
     inputItems: {
         visitExposure: {
-            datasetType: "postISRCCD"
+            datasetType: "visitim"
             datasetId: {
                 fromJobIdentity: "visit" "raft" "sensor" 
             }

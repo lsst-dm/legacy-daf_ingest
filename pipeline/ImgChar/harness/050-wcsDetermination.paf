@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # wcsDetermination.paf
 inputExposureKey: visitExposure
 inputSourceSetKey: sourceSet

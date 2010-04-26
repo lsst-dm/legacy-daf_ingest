@@ -1,10 +1,13 @@
+#<?cfg paf policy?>
 # crSplitCombine.paf
 inputKeys: {
-   exposures: "crSubCcdExposure0" "crSubCcdExposure1"
+   # Following was replaced in order to remove CR rejection in pipeline
+   #exposures: "crSubCcdExposure0" "crSubCcdExposure1"
+   exposures: "bkgSubCcdExposure0" "bkgSubCcdExposure1"
    positiveDetection: "positiveFootprintSet"
    negativeDetection: "negativeFootprintSet"
 }
 outputKeys: {
-   combinedExposure: "scienceCcdExposure"
+   combinedExposure: "visitExposure"
 }
 

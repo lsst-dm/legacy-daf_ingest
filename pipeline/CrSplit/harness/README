@@ -1,4 +1,7 @@
 
+NOTE: The master.paf and 060-simpleDiffIm.paf 080-crSplitCombine.paf  were 
+modified for ImSim use to remove the cosmic ray rejection stages.
+
 
 =============================================================================
 datarel  CrSplit/harness example
@@ -31,9 +34,9 @@ For example, the following command corresponds to the ImSim dataset linked
 above. BEWARE: as time passes, the ImSim dataset will morph.
 
 sendevent.py -r Run2 -n CrSplit -b lsst8 -O \
-"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3" assign CrSplitJob \
-"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
-"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
+"visitim visit=85751839 sensor=1,1 raft=2,3" assign CrSplitJob \
+"postISRCCD visit=85751839 sensor=1,1 raft=2,3" \
+"postISRCCD visit=85751839 sensor=1,1 raft=2,3" \
 -o    <fill in pipeline originator # provided by now waiting>.
 
 NOTE: can not break the long line right before '-O' --must be after or
@@ -52,8 +55,8 @@ The commands below are setup to enable copy-paste use in two previously
 
 Window One:
 -----------
-rm Pipeline.log Slice0.log CcdAssembly.log
-launchPipeline.py master.paf Run2 CA -v | & tee CcdAssembly.log
+rm Pipeline.log Slice0.log CrSplit.log
+launchPipeline.py master.paf Run2 CrSplit -v | & tee CrSplit.log
 
 
 Window Two:
@@ -62,7 +65,7 @@ When pipeline output in Window One says "Told JobOffice, I'm ready!",
 send the  event providing the details of the specific input data to use.
 
 sendevent.py -r Run2 -n CrSplit -b lsst8 -O \
-"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3" assign CrSplitJob \
-"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=0" \
-"postISRCCD visit=85751839 sensor=S:1,1 raft=R:2,3 snap=1" \
+"visitim visit=85751839 sensor=1,1 raft=2,3" assign CrSplitJob \
+"postISRCCD visit=85751839 sensor=1,1 raft=2,3" \
+"postISRCCD visit=85751839 sensor=1,1 raft=2,3" \
 -o    <###############

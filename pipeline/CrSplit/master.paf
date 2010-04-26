@@ -65,19 +65,20 @@ execute: {
       stagePolicy: @030-backgroundEstimation1.paf
    }
 
-   appStage: {
-      name: "040-crReject0"
-      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
-      eventTopic: "None"
-      stagePolicy: @040-crReject0.paf
-   }
-
-   appStage: {
-      name: "050-crReject1"
-      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
-      eventTopic: "None"
-      stagePolicy: @050-crReject1.paf
-   }
+# Following crReject stages are removed for ImSim dataset
+#   appStage: {
+#      name: "040-crReject0"
+#      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @040-crReject0.paf
+#   }
+#
+#   appStage: {
+#      name: "050-crReject1"
+#      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @050-crReject1.paf
+#   }
 
    appStage: {
       name: "060-simpleDiffIm"

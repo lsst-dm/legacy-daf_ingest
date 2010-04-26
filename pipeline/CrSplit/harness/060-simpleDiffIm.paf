@@ -1,6 +1,9 @@
+#<?cfg paf policy?>
 # simpleDiffIm.paf
 inputKeys: {
-   exposures: "crSubCcdExposure0" "crSubCcdExposure1"
+   # Following was replaced in order to remove CR rejection in pipeline
+   #exposures: "crSubCcdExposure0" "crSubCcdExposure1"
+   exposures: "bkgSubCcdExposure0" "bkgSubCcdExposure1"
 }
 
 outputKeys: {

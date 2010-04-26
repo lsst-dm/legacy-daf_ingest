@@ -1,3 +1,4 @@
+#<?cfg paf policy?>
 # CrSplit input.paf
 parameters: {
     butler: {

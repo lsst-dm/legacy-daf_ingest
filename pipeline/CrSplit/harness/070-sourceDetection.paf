@@ -1,3 +1,4 @@
+#<?cfg paf policy?>
 # sourceDetection.paf
 inputKeys: {
    exposure: "diffExposure"
@@ -6,6 +7,10 @@ outputKeys: {
    positiveDetection: "positiveFootprintSet"
    negativeDetection: "negativeFootprintSet"
    psf: "psf"
+}
+
+psfPolicy: {
+    parameter: 1.5
 }
 
 backgroundPolicy: {

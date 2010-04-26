@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # output.paf
 parameters: {
     butler: {
@@ -7,10 +8,10 @@ parameters: {
         }
     }
    outputItems: {
-      scienceCcdExposure: {
+      visitExposure: {
          datasetId: {
-            datasetType: postISRCCD
-            fromJobIdentity: "visit" "raft" "sensor" "snap"
+            datasetType: visitim
+            fromJobIdentity: "visit" "raft" "sensor" 
          }
       }
    }

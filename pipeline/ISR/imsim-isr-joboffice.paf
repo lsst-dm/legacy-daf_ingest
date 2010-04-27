@@ -6,7 +6,7 @@ persist.dir:  %(schedroot)s/%(name)s-joboffice
 listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
     dataReadyEvent:      RawAvailable
-    pipelineEvent:       isrJob
+    pipelineEvent:       IsrJob
     stopEvent:           JobOfficeStop
 }
 
@@ -20,6 +20,9 @@ schedule: {
             datasetType: raw
             id: {
               name: visit
+            }
+            id: {
+              name: filter
             }
             id: {
               name: snap
@@ -38,6 +41,9 @@ schedule: {
             datasetType: postISR
             id: {
               name: visit
+            }
+            id: {
+              name: filter
             }
             id: {
               name: snap

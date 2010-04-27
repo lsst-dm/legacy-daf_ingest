@@ -32,8 +32,8 @@ For, example, the following command corresponds to the ImSim dataset linked
 above. BEWARE: as time passes, the ImSim dataset will morph.
 
 sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
-"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"postISR visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 NOTE: can not break the long line right before '-O' --must be after or
@@ -94,21 +94,21 @@ send the  event providing the details of the specific input data to use.
 
 ---Run 1---
 sendevent.py -r Run1 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
-"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"postISR visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 
 ---Run 2 for second image needed by CcdAssembly---
 sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 snap=1 raft=2,3 sensor=1,1 channel=0,0" \
-"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"postISR visit=85751839 filter=r snap=1 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 ---Run 3 for second image needed by CcdAssembly---
 sendevent.py -r Run3 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,1" \
-"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"postISR visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,1" \
+"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 

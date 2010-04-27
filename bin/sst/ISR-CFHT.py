@@ -98,9 +98,8 @@ def isrProcess(root, outRoot, **keys):
 
 def run():
     root = "/lsst/DC3/data/obstest/CFHTLS"
-    isrProcess(root=root, outRoot=".",
-            field="D3",
-            visit=788965, ccd=6, amp=0)
+    isrProcess(root=root, outRoot=".", field="D3", visit=788965, ccd=6, amp=0)
+    isrProcess(root=root, outRoot=".", field="D3", visit=788965, ccd=6, amp=1)
 
 if __name__ == "__main__":
     run()

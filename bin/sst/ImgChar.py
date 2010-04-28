@@ -74,6 +74,7 @@ def imgCharProcess(root, outRoot, **keys):
         inputSourceSetKey: sourceSet
         outputWcsKey: measuredWcs
         outputMatchListKey: matchList
+        numBrightStars: 75
         """))
     wcsd = SimpleStageTester(measPipe.WcsDeterminationStage(pol))
 
@@ -123,12 +124,13 @@ def imgCharProcess(root, outRoot, **keys):
     print clip['wcsVerifyStats']
 
     clip = pcal.runWorker(clip)
-    print clip['photometricZeroPoint']
-    print clip['photometricZeroPointUnc']
+    print "Photometric zero:", clip['photometricZeroPoint']
+    print "Photometric zero unc:", clip['photometricZeroPointUnc']
 
 def run():
     imgCharProcess(
-            root=os.path.join(os.environ['AFWDATA_DIR'], "ImSim"),
+            root=".",
+    #        root=os.path.join(os.environ['AFWDATA_DIR'], "ImSim"),
             outRoot=".", visit=85751839, raft="2,3", sensor="1,1")
 
 if __name__ == "__main__":

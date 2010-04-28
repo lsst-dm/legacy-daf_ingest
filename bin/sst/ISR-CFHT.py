@@ -73,6 +73,9 @@ def isrProcess(root, outRoot, **keys):
             exposure: isrExposure
             flatexposure: flatExposure
         }
+        parameters: {
+            flatScalingValue: 1.0
+        }
         outputKeys: {
             flatCorrectedExposure: isrExposure
         }

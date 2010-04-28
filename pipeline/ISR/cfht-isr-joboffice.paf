@@ -6,7 +6,7 @@ persist.dir:  %(schedroot)s/%(name)s-joboffice
 listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
     dataReadyEvent:      RawAvailable
-    pipelineEvent:       isrJob
+    pipelineEvent:       IsrJob
     stopEvent:           JobOfficeStop
 }
 

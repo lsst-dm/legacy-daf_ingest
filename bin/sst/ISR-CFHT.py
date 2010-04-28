@@ -88,11 +88,8 @@ def isrProcess(root, outRoot, **keys):
     # exposure.writeFits("postIsr.fits")
 
     # Need the input registry to get filters for output.
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
-        """#<?cfg paf policy?>
-        registryPath: /lsst/DC3/data/obstest/CFHTLS/registry.sqlite3
-        """))
-    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(pol, root=outRoot))
+    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(pol, root=outRoot,
+            registry="/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"))
     outButler = obf.create()
     outButler.put(exposure, "postISR", **keys)
 

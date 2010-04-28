@@ -22,7 +22,7 @@ execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    executionMode: "oneloop"
    # To be quite verbose: add 'logThreshold: -3'
-   #logThreshold: -3
+   logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownISR
@@ -32,7 +32,7 @@ execute: {
       # Path to root Run directory
       # runDirPattern: "../../%(runid)s/%(shortname)s"
       # runDirPattern: "../../../"
-      runDirPattern: "."
+      runDirPattern: "%(runid)s"
       work: work
       input: input
       output: output

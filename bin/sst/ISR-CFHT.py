@@ -88,7 +88,7 @@ def isrProcess(root, outRoot, **keys):
     # exposure.writeFits("postIsr.fits")
 
     # Need the input registry to get filters for output.
-    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(pol, root=outRoot,
+    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot,
             registry="/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"))
     outButler = obf.create()
     outButler.put(exposure, "postISR", **keys)

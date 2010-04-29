@@ -1,0 +1,78 @@
+#<?cfg paf policy ?>
+
+execute: {
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   nSlices: 1
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
+   executionMode: "oneloop"
+   # Be quite verbose
+   #logThreshold: -3
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownSFM
+
+   dir: {
+      shortName: SFM
+      defaultRoot: .
+      # runDirPattern: "./%(runid)s"
+      runDirPattern: "./"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+  appStage: {
+      name: "000-getajob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-getajob.paf
+   }
+ 
+   appStage: {
+      name: "010-Input"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @010-Input.paf
+   }
+
+   appStage: {
+      name: "020-sourceDetection"
+      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
+      eventTopic: "None"
+      stagePolicy: @020-sourceDetection.paf
+   }
+
+   appStage: {
+      name: "030-sourceMeasurement"
+      parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
+      eventTopic: "None"
+      stagePolicy: @030-sourceMeasurement.paf
+   }
+
+   appStage: {
+      name: "040-output"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @040-output.paf
+   }
+
+#============================================================================
+#                   Need when hooking up to next pipeline in Production
+#   appStage: {
+#      name: "050-jobdone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @050-jobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "060-failure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @060-failure.paf
+#   }
+#============================================================================
+
+}

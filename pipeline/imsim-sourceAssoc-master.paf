@@ -1,0 +1,91 @@
+#<?cfg paf policy ?>
+
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+#
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
+
+execute: {
+   # To terminate after predetermined count: add 'executionMode: "oneloop"'
+   executionMode: "oneloop"
+   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
+   nSlices: 1
+   logThreshold: -3
+   localLogMode: true
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: shutdownSourceAssoc
+   dir: {
+      shortName: SourceAssoc
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
+      work: work
+      input: input
+      output: output
+      update: update
+      scratch: scratch
+   }
+
+  appStage: {
+      name: "000-getajob"
+      parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @000-getajob.paf
+   }
+ 
+   appStage: {
+      name: "010-Input"
+      parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @010-Input.paf
+   }
+
+   appStage: {
+      name: "020-sourceClustering"
+      parallelClass: "lsst.ap.cluster.SourceClusteringStage.SourceClusteringParallel"
+      eventTopic: "None"
+      stagePolicy: @020-sourceClustering.paf
+   }
+
+   appStage: {
+      name: "030-sourceClusterAttributes"
+      parallelClass: "lsst.ap.cluster.SourceClusterAttributesStage.SourceClusterAttributesParallel"
+      eventTopic: "None"
+      stagePolicy: @030-sourceClustering.paf
+   }
+   appStage: {
+      name: "090-output"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @090-output.paf
+   }
+#============================================================================
+#                   Need when hooking up to SourceAssociation
+#   appStage: {
+#      name: "100-jobdone"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @100-jobdone.paf
+#   }
+#
+#   failureStage: {
+#      name: "110-failure"
+#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+#      eventTopic: "None"
+#      stagePolicy: @110-failure.paf
+#   }
+#============================================================================
+
+}
+010-sourceAssoc.paf  sourceClusterAttributes.paf
+master.paf           sourceClustering.paf
+

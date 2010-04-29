@@ -1,0 +1,14 @@
+#<?cfg paf policy ?>
+# sourceClustering
+
+inputKeys: {
+    event:
+    sources:
+}
+
+
+outputKeys: {
+    sourceClusters:
+    sources:
+}
+

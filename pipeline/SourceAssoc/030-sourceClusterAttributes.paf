@@ -1,0 +1,10 @@
+#<?cfg paf policy ?>
+# sourceClusterAttributes
+inputKeys: {
+    event:
+    sourceClusters:
+}
+
+outputKeys: {
+    sourceClusterAttributes:
+}

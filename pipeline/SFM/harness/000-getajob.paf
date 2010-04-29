@@ -1,0 +1,56 @@
+#<?cfg paf policy ?>
+#
+########################################################################
+# This policy configures the stage that appears at the start of the 
+# pipeline that receives a job assignment from the job office.
+#
+# The dictionary data defines this policy is policies/GetAJob_dict.paf.
+########################################################################
+ 
+# This is the event topic we will receive the assignment event on.
+# This needs to match listen.pipelineEvent in the policy for the
+# JobOffice that manages this pipeline.  
+# 
+pipelineEvent:  SFMJob
+
+# This stage will put a few things onto the clipboard.  Below are the 
+# defaults that are set in the dictionary (and therefore are not
+# required to appear here).
+# 
+outputKeys: {
+}
+
+    # this will contain a dictionary of identifier names and values
+    # that uniquely identify the work that the JobOffice sends to this 
+    # pipeline.  
+    #
+    # jobIdentity: jobIdentity
+
+    # this is a python list of the datasets that should be used as input to
+    # this pipeline.  Each dataset is represented as an instance of 
+    # lsst.pex.harness.dataset.Dataset, a container keeping the
+    # dataset type and a set of identifier name-value pairs.  This 
+    # information is used, for example, by input stages to locate and 
+    # read in the input datasets.
+    #
+    # inputDatasets: inputDatasets
+
+    # this is a python list of all the possible output datasets produced
+    # by this pipeline that will be needed by other pipelines.  By the 
+    # end of the current interation through the pipeline, a data-ready 
+    # event will be issued to tell other pipelines that they are ready.
+    # This value must match the "possibleDatasets" input key used in 
+    # any data-ready stages and the job-done stage.  
+    #
+    # outputDatasets:  targetDatasets
+
+    # this stage will place an empty list on the clipboard with the key 
+    # name specified below; this list is used by the output stages to 
+    # indicate that an output dataset has been written and by the 
+    # data-ready and job-done stages to issue events announcing their 
+    # availability.  Thus, the value here must match the corresponding 
+    # keys in the output stages, the data-ready stages (if any), and
+    # the job-done stage.  
+    #
+    # completedDatasets:  outputDatasets
+

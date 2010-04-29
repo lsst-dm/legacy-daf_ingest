@@ -1,5 +1,7 @@
 #<?cfg paf policy ?>
 
+# CFHT-LS Master.paf
+
 # Following is required for ORCA; we are hand orchestrating - see README
 #requires: {
 #   database: {
@@ -22,7 +24,7 @@ execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
    executionMode: "oneloop"
    # To be quite verbose: add 'logThreshold: -3'
-   logThreshold: -3
+   #logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownISR
@@ -31,8 +33,7 @@ execute: {
       defaultRoot: .
       # Path to root Run directory
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      # runDirPattern: "../../../"
-      runDirPattern: "../../%(runid)s"
+      runDirPattern: "../../../"
       work: work
       input: input
       output: output
@@ -48,10 +49,10 @@ execute: {
    }
 
    appStage: {
-      name: "010-imsim-isrInput"
+      name: "010-cfht-isrInput"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @010-imsim-isrInput.paf
+      stagePolicy: @010-cfht-isrInput.paf
    }
 
 # This stage is not implemented in DC3b PT1
@@ -83,12 +84,13 @@ execute: {
       stagePolicy: @060-isrBias.paf
    }
 
-   appStage: {
-      name: "070-isrDark"
-      parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
-      eventTopic: "None"
-      stagePolicy: @070-isrDark.paf
-   }
+# Darks are not processed for CFHT-LS dataset
+#   appStage: {
+#      name: "070-isrDark"
+#      parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @070-isrDark.paf
+#   }
 
    appStage: {
       name: "080-isrFlat"
@@ -107,14 +109,17 @@ execute: {
 
 
    appStage: {
-      name: "100-imsim-isrExposureOutput"
+      name: "100-cfht-isrExposureOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @100-imsim-isrExposureOutput.paf
+      stagePolicy: @100-cfht-isrExposureOutput.paf
    }
 
 #============================================================================
 #                   Need once correctly running through ISR algorithms
+#
+#  22 April 2010...ISR has SDQA metric generation in a comment block
+#
 #   appStage: {
 #      name: "110-isrSdqa"
 #      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
@@ -128,9 +133,9 @@ execute: {
 #      eventTopic: "None"
 #      stagePolicy: @120-isrSdqaOutput.paf
 #   }
-
+#
 #============================================================================
-#                   Need when hooking up to CcdAssembly
+                   Need when hooking up to CcdAssembly
    appStage: {
       name: "130-isrJobdone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"

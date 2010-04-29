@@ -1,7 +1,8 @@
+#<?cfg paf policy ?>
 # CCD Assembly  output.paf
 parameters: {
     butler: {
-        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
             root: %(update)
         }

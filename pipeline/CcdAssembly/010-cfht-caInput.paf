@@ -2,7 +2,7 @@
 # Ccd Assembly Input.paf
 parameters: {
     butler: {
-        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
             root: %(input)
         }

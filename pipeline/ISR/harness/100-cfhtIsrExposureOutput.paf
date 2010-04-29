@@ -1,0 +1,20 @@
+#<?cfg paf policy ?>
+# cfhtIsrExposureOutput.paf
+
+parameters: {
+    butler: {
+        mapperName: lsst.obs.cfht.CfhtMapper
+        mapperPolicy: {
+            calibRegistryPath: /lsst/DC3/data/obstest/CFHTLS/registry.sqlite3
+            root: %(update)
+        }
+    }
+    outputItems: {
+        isrExposure: {
+            datasetId: {
+                datasetType: postISR
+                fromJobIdentity: "field" "visit" "ccd" 
+            }
+        }
+    }
+}

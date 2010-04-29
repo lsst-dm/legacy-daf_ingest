@@ -1,4 +1,4 @@
-README  last modified: 21 April 2010 RAA
+README  last modified: 27 April 2010 RAA
 -------
 
 =============================================================================
@@ -12,16 +12,19 @@ To run here at the pex_harness level, we perform by hand a couple of tasks
 that ctrl_orca provides during "production" runs.
 
 We link the input directory:
+% ln -s /lsst/DC3/data/obstest/ImSim input
 
-% ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
+update the input and output directory pathnames in 000-getajob.paf
 
-and make the output directory :
-
+and make the output directories :
 % mkdir output update scratch work
 
-The pipeline can be then started via :
-
+------------------------------------------------------
+ImSim Processing
+------------------------------------------------------
+The ImSim pipeline can be then started via :
 %  launchPipeline.py  master.paf Run2 ISR -v | & tee ISR.log
+
 
 The pipeline will block and wait for an incoming data event.
 Provide this event with the trigger script: sendevent.py
@@ -31,9 +34,9 @@ capture the Origiator number for use in '-o' option to the sendevent command.
 For, example, the following command corresponds to the ImSim dataset linked
 above. BEWARE: as time passes, the ImSim dataset will morph.
 
-sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
-"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+% sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
+"postISR visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+"raw visit=85751839 snap=0 raft=2,3 sensor=1,1 channel=0,0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 NOTE: can not break the long line right before '-O' --must be after or
@@ -43,75 +46,22 @@ datasets).
 
 Note: contrary to doco, '-o' at end of command is OK; easier for cut-n-paste.
 
+------------------------------------------------------
+CFHT-LS  Processing
+------------------------------------------------------
 
-=================================================================
-Example
-=================================================================
+Win 1%  launchPipeline.py  cfhtlsMaster.paf Run2 ISR -v | & tee IsrRun2.log
 
-Setup Environment
-------------------
-
-Most activity is done in local copy of: datarel/pipeline/ISR/harness.
-
-Setup where your actual files are found or to be archived:
-    I setup master.paf to have:
-        runDirPattern: "../../../"
-   Then in datarel, I've created the misc output directories;
-         mkdir -p output work update scratch
-   You should sym link to the local ImSim data directory
-         ln -s /lsst/DC3/data/afwdata/trunk/ImSim input
-
-   However, copying over the ImSim directory is OK, too (it's currently small)
-         cp  -pr /lsst/DC3/data/afwdata/trunk/ImSim input
-
-
-Running the pipeline
---------------------
-
-The commands below are setup to enable copy-paste use in two previously
-'setup' (eg, 'cd datarel; setup -r .') configured windows.
-
-
-Window One:
------------
-cd datarel/pipeline/ISR/harness
-rm Pipeline.log Slice0.log ISR.log
-
----Run 1:
-launchPipeline.py master.paf Run1 ISR -v | & tee ISRRun1.log
-
----Run 2 for second image needed by CcdAssembly:
-launchPipeline.py master.paf Run2 ISR -v | & tee ISRRun2.log
-
---- Repeat until all individual amps are processed. The sendevent.py
-process identifies which chunk is to be processed.
-
-
-Window Two:
------------
-When pipeline output in Window One says "Told JobOffice, I'm ready!",
-send the  event providing the details of the specific input data to use.
-
----Run 1---
-sendevent.py -r Run1 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
-"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+Win 2% sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
+"postISR field="D3" visit=788965 ccd=6 amp=0" \
+"raw field="D3" visit=788965 ccd=6 amp=0" \
 -o    <fill in pipeline originator # provided by now waiting>
 
 
----Run 2 for second image needed by CcdAssembly---
-sendevent.py -r Run2 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 filter=r snap=1 raft=2,3 sensor=1,1 channel=0,0" \
-"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
+Win 1%  launchPipeline.py  cfhtlsMaster.paf Run3 ISR -v | & tee IsrRun3.log
+
+Win 2% sendevent.py -r Run3 -n ISR -b lsst8 assign IsrJob -O \
+"postISR field="D3" visit=788965 ccd=6 amp=1" \
+"raw field="D3" visit=788965 ccd=6 amp=1" \
 -o    <fill in pipeline originator # provided by now waiting>
-
----Run 3 for second image needed by CcdAssembly---
-sendevent.py -r Run3 -n ISR -b lsst8 assign IsrJob -O \
-"postISR visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,1" \
-"raw visit=85751839 filter=r snap=0 raft=2,3 sensor=1,1 channel=0,0" \
--o    <fill in pipeline originator # provided by now waiting>
-
-
---- Repeat until all individual amps are processed. The sendevent.py
-process identifies which chunk is to be processed.
 

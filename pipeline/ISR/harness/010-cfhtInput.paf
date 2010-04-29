@@ -1,0 +1,46 @@
+#<?cfg paf policy ?>
+# Input.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.cfht.CfhtMapper
+	mapperPolicy: {
+            root: %(input)/CFHTLS/D3
+            calibRoot: $(input)/CFHTLS/calib
+            rawTemplate: "raw/v%(visit)s-f%(filter)s/s00/c%(ccd)03d-a%(amp)1d.fits"
+            biasTemplate: "bias/v%(visit)s/c%(ccd)03d-a%(amp)1d.fits"
+            flatTemplate: "flat/v%(visit)s-f%(filter)s/c%(ccd)03d-a%(amp)1d.fits"
+        }
+    }
+    inputItems: {
+        isrExposure: {
+            datasetType: raw
+            datasetId: {
+                fromInputDatasets: true
+            }
+        }
+        biasExposure: {
+            datasetType: bias
+            datasetId: {
+                fromJobIdentity: "visit" "filter" "ccd" "amp"
+            }
+        }
+#        darkExposure: {
+#            datasetType: dark
+#            datasetId: {
+#                fromJobIdentity: "visit" "filter" "ccd" "amp"
+#            }
+#        }
+        flatExposure: {
+            datasetType: flat
+            datasetId: {
+                fromJobIdentity: "visit" "filter" "ccd" "amp"
+            }
+        }
+#        fringeExposure: {
+#            datasetType: fringe
+#            datasetId: {
+#                fromJobIdentity: "visit" "filter" "ccd" "amp"
+#            }
+#        }
+    }
+}

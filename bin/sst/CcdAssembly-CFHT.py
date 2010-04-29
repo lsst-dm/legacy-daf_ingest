@@ -20,10 +20,24 @@ def ccdAssemblyProcess(root, outRoot, **keys):
         'exposureList': expList
     }
 
-    asmb = SimpleStageTester(ipPipe.IsrCcdAssemblyStage(pexPolicy.Policy()))
+    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+        outputKeys: {
+            assembledCcdExposure: isrExposure
+        }
+        """))
+    asmb = SimpleStageTester(ipPipe.IsrCcdAssemblyStage(pol))
+    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+        inputKeys: {
+            ccdExposure: isrExposure
+        }
+        """))
+    defect = SimpleStageTester(ipPipe.IsrCcdDefectStage(pol))
 
     clip = asmb.runWorker(clip)
-    exposure = clip['assembledCcdExposure']
+    clip = defect.runWorker(clip)
+    exposure = clip['defectMaskedCcdExposure']
     # exposure.writeFits("postISRCCD.fits")
 
     obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot,
@@ -32,9 +46,8 @@ def ccdAssemblyProcess(root, outRoot, **keys):
     outButler.put(exposure, "postISRCCD", **keys)
 
 def run():
-    # root = "/lsst/DC3/data/obstest/CFHTLS"
-    root = "."
-    ccdAssemblyProcess(root=root, outRoot=".", visit=788965, ccd=6)
+    root = "/lsst/DC3/data/obstest/CFHTLS"
+    ccdAssemblyProcess(root=root, outRoot="/lsst/DC3/data/obstest/CFHTLS", visit=788965, ccd=0)
 
 if __name__ == "__main__":
     run()

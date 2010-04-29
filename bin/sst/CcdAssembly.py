@@ -20,10 +20,23 @@ def ccdAssemblyProcess(root, outRoot, **keys):
         'exposureList': expList
     }
 
+    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+        outputKeys: {
+            assembledCcdExposure: isrExposure
+        }
+        """))
     asmb = SimpleStageTester(ipPipe.IsrCcdAssemblyStage(pexPolicy.Policy()))
+    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+        inputKeys: {
+            ccdExposure: isrExposure
+        }
+        """))
+    defect = SimpleStageTester(ipPipe.IsrCcdDefectStage(pol))
 
     clip = asmb.runWorker(clip)
-    exposure = clip['assembledCcdExposure']
+    exposure = clip['defectMaskedCcdExposure']
     # exposure.writeFits("postISRCCD.fits")
 
     obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))

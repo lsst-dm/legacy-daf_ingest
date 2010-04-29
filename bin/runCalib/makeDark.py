@@ -24,7 +24,7 @@ def isrProcess(butler, outButler, **keys):
             saturationCorrectedExposure: isrExposure
         }
         """))
-    sat = SimpleStageTester(ipPipe.IsrSaturationStage(pol))
+    sat = SimpleStageTester(ipPipe.SimCalibSaturationDefectStage(pol))
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
@@ -85,9 +85,10 @@ def run():
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
             rawTemplate: "rawdark/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
-            postISRTemplate: "dark/v1/R%(raft)s/S%(sensor)s/imsim_0_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            postISRTemplate: "dark/v%(visit)d/R%(raft)s/S%(sensor)s/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
         """))
-    root = os.path.join(os.environ['AFWDATA_DIR'], "imsim_tmp")
+    #root = os.path.join(os.environ['AFWDATA_DIR'], "imsim_tmp")
+    root = "/local/tmp/ImSimCalib"
     bf = dafPersist.ButlerFactory(
             mapper=LsstSimMapper(
                 policy=pol,
@@ -97,10 +98,10 @@ def run():
     butler = bf.create()
     #obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
     #outButler = obf.create()
-    for i in range(0,2):
-        for j in range(0,8):
+    for i in range(1,2):
+        for j in range(5,6):
             isrProcess(butler, butler, visit=1, snap=0,
-                raft="2,3", sensor="1,1", channel="%i,%i"%(i,j), filter="")
+                raft="1,2", sensor="2,2", channel="%i,%i"%(i,j), filter="r")
 
 if __name__ == "__main__":
     run()

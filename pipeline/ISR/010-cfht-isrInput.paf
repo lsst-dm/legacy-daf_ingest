@@ -1,14 +1,15 @@
 #<?cfg paf policy ?>
 # Input.paf
 parameters: {
+    # sendevent doesn't pass calibration root.
+    # CFHTLS and ImSim are currently setup with different pathnames structure 
+    #     from 'root' for calib files.
+    # Fix butler below if datasets conform in structure or sendevent fixed.
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
 	mapperPolicy: {
-            root: %(input)/CFHTLS/D3
-            calibRoot: $(input)/CFHTLS/calib
-            rawTemplate: "raw/v%(visit)s-f%(filter)s/s00/c%(ccd)03d-a%(amp)1d.fits"
-            biasTemplate: "bias/v%(visit)s/c%(ccd)03d-a%(amp)1d.fits"
-            flatTemplate: "flat/v%(visit)s-f%(filter)s/c%(ccd)03d-a%(amp)1d.fits"
+            root: %(input)
+            calibRoot: "/lsst/DC3/data/obstest/CFHTLS/calib"
         }
     }
     inputItems: {
@@ -21,25 +22,27 @@ parameters: {
         biasExposure: {
             datasetType: bias
             datasetId: {
-                fromJobIdentity: "visit" "filter" "ccd" "amp"
+                fromJobIdentity: "field" "visit" "ccd" "amp"
             }
         }
+#  No dark exposures for CFHTLS
 #        darkExposure: {
 #            datasetType: dark
 #            datasetId: {
-#                fromJobIdentity: "visit" "filter" "ccd" "amp"
+#                fromJobIdentity: "field" "visit" "ccd" "amp"
 #            }
 #        }
         flatExposure: {
             datasetType: flat
             datasetId: {
-                fromJobIdentity: "visit" "filter" "ccd" "amp"
+                fromJobIdentity: "field" "visit" "ccd" "amp"
             }
         }
+#  Not handling fringe processing yet
 #        fringeExposure: {
 #            datasetType: fringe
 #            datasetId: {
-#                fromJobIdentity: "visit" "filter" "ccd" "amp"
+#                fromJobIdentity: "field" "visit" "ccd" "amp"
 #            }
 #        }
     }

@@ -1,3 +1,4 @@
+#<?cfg paf policy >
 # isrFlat.paf
 inputKeys: {
    exposure: "isrExposure"

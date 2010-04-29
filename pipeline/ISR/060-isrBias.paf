@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # isrBias.paf
 inputKeys: {
    exposure: "isrExposure"

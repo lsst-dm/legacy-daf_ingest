@@ -1,9 +1,0 @@
-#<?cfg paf policy ?>
-# isrBias.paf
-inputKeys: {
-   exposure: "isrExposure"
-   biasexposure: "biasExposure"
-}
-outputKeys: {
-   biasSubtractedExposure: "isrExposure"
-}

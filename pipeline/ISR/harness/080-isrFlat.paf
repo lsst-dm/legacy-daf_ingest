@@ -1,9 +1,0 @@
-#<?cfg paf policy >
-# isrFlat.paf
-inputKeys: {
-   exposure: "isrExposure"
-   flatexposure: "flatExposure"
-}
-outputKeys: {
-   flatCorrectedExposure: "isrExposure"
-}

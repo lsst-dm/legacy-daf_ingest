@@ -1,3 +1,4 @@
+#<?cfg paf policy ?>
 # isrOverscan.paf
 inputKeys: {
    exposure: "isrExposure"

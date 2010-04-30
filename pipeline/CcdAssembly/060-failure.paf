@@ -1,6 +1,6 @@
 #<?cfg paf policy ?>
 pipelineEvent:  CaJob
 jobSuccess: false
-datasets.dataReadyEvent:   postISRCCDReady
+datasets.dataReadyEvent:   postISRCCDAvailable
 
 

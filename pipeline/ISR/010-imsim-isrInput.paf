@@ -3,12 +3,9 @@
 parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
-	mapperPolicy: {
-            root: %(input)/ImSim
-            rawTemplate: "raw/v%(visit)s-f%(filter)s/E%(snap)03d/R%(raft)s/S%(sensor)s/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
-            biasTemplate: "bias/v0/E%(snap)03d/R%(raft)s/S%(sensor)s/imsim_0_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits"
-            darkTemplate: "dark/v1/E%(snap)03d/R%(raft)s/S%(sensor)s/imsim_1_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits"
-            flatTemplate: "flat/v2-f%(filter)s/E%(snap)03d/R%(raft)s/S%(sensor)s/imsim_2_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits"
+        mapperPolicy: {
+            root: %(input)
+            calibRoot: %(input)
         }
     }
     inputItems: {

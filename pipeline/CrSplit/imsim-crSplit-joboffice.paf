@@ -15,10 +15,9 @@ schedule: {
     trigger: {
         datasetType: postISRCCD
         id: {
-            name: isrCcdExposure0
-        }
-        id: {
-            name: isrCcdExposure1
+            name: sensor
+            min:0
+            lim:2
         }
     }
 

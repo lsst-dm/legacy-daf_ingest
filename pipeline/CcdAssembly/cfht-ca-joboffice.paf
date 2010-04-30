@@ -23,9 +23,6 @@ schedule: {
         input: {
             datasetType: postISR
             id: {
-              name: field
-            }
-            id: {
               name: visit
             }
             id: {
@@ -39,9 +36,6 @@ schedule: {
         }
         output: {
             datasetType: postISRCCD
-            id: {
-              name: field
-            }
             id: {
               name: visit
             }

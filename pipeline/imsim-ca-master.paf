@@ -58,13 +58,12 @@ execute: {
       stagePolicy: @020-assembleCcd.paf
    }
 
-# This stage is not yet integrated into CCD Assembly pipeline
-#   appStage: {
-#      name: "030-isrDefect"
-#      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @030-isrDefect.paf
-#   }
+   appStage: {
+      name: "030-isrDefect"
+      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
+      eventTopic: "None"
+      stagePolicy: @030-isrDefect.paf
+   }
 
    appStage: {
       name: "040-output"

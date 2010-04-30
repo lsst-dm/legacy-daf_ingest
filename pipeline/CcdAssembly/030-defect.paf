@@ -1,9 +1,7 @@
 #<?cfg paf policy ?>
 inputKeys: {
-   assembledCcdExposure: "postISRCCD"
-   defectList: "defectList"
-   fwhm: "fwhm"
+   ccdExposure: isrExposure
 }
 outputKeys: {
-   defectCorrectedExposure: "postISRCCD"
+   defectMaskedCcdExposure: "postISRCCD"
 }

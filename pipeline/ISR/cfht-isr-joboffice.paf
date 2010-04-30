@@ -21,9 +21,6 @@ schedule: {
         input: {
             datasetType: raw
             id: {
-              name: field
-            }
-            id: {
               name: visit
             }
             id: {
@@ -35,9 +32,6 @@ schedule: {
         }
         output: {
             datasetType: postISR
-            id: {
-              name: field
-            }
             id: {
               name: visit
             }

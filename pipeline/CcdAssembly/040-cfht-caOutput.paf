@@ -9,7 +9,7 @@ parameters: {
     }
 
     outputItems: {
-        assembledCcdExposure: {
+        defectMaskedExposure: {
             datasetId: {
                 datasetType: postISRCCD
                 fromJobIdentity:  "visit" "raft" "sensor"  "snap"

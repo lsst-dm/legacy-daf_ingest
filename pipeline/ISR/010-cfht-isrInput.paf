@@ -1,4 +1,6 @@
 #<?cfg paf policy ?>
+# 010-cfht-isrInput.paf
+
 # Input.paf
 parameters: {
     # sendevent doesn't pass calibration root.
@@ -7,9 +9,11 @@ parameters: {
     # Fix butler below if datasets conform in structure or sendevent fixed.
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
-	mapperPolicy: {
+        mapperPolicy: {
+            # below  %(input) resolves to  /lsst/DC3/data/obstest/CFHTLS
+            # sendevent input:"raw filter=y field=D3 visit=788965 ccd=6 amp=0" 
             root: %(input)
-            calibRoot: %(input)/calib"
+            calibRoot: %(input)/calib
         }
     }
     inputItems: {
@@ -22,27 +26,27 @@ parameters: {
         biasExposure: {
             datasetType: bias
             datasetId: {
-                fromJobIdentity: "field" "visit" "ccd" "amp"
+                fromJobIdentity: "visit" "ccd" "amp"
             }
         }
 #  No dark exposures for CFHTLS
 #        darkExposure: {
 #            datasetType: dark
 #            datasetId: {
-#                fromJobIdentity: "field" "visit" "ccd" "amp"
+#                fromJobIdentity:  "visit" "ccd" "amp"
 #            }
 #        }
         flatExposure: {
             datasetType: flat
             datasetId: {
-                fromJobIdentity: "field" "visit" "ccd" "amp"
+                fromJobIdentity:  "visit" "ccd" "amp"
             }
         }
 #  Not handling fringe processing yet
 #        fringeExposure: {
 #            datasetType: fringe
 #            datasetId: {
-#                fromJobIdentity: "field" "visit" "ccd" "amp"
+#                fromJobIdentity:  "visit" "ccd" "amp"
 #            }
 #        }
     }

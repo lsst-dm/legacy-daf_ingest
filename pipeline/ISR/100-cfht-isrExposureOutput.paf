@@ -12,7 +12,7 @@ parameters: {
         isrExposure: {
             datasetId: {
                 datasetType: postISR
-                fromJobIdentity: "field" "visit" "ccd" 
+                fromJobIdentity: "visit" "ccd" 
             }
         }
     }

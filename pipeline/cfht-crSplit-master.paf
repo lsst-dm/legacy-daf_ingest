@@ -45,10 +45,10 @@ execute: {
    }
 
    appStage: {
-      name: "010-imsim-crSplitInput"
+      name: "010-cfht-crSplitInput"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @010-imsim-crSplitInput.paf
+      stagePolicy: @010-cfht-crSplitInput.paf
    }
 
    appStage: {
@@ -102,13 +102,13 @@ execute: {
    }
 
    appStage: {
-      name: "090-imsim-crSplitOutput"
+      name: "090-cfht-crSplitOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @090-imsim-crSplitOutput.paf
+      stagePolicy: @090-cfht-crSplitOutput.paf
    }
 #============================================================================
-                   Need when hooking up to ImgChar
+#                   Need when hooking up to ImgChar
    appStage: {
       name: "100-jobdone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"

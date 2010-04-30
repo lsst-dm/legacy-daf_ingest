@@ -3,16 +3,16 @@
  
 parameters: {
    butler: {
-      mapperName: lsst.obs.lsstSim.LsstSimMapper
+      mapperName: lsst.obs.cfht.CfhtMapper
       mapperPolicy: {
          root: %(update)
       }
    }
 
    outputItems: {
-      visitExposure: {
+      scienceExposure: {
          datasetId: {
-            datasetType: postISRCCD
+            datasetType: calexp
             fromJobIdentity: "visit" "raft" "sensor" 
          }
       }

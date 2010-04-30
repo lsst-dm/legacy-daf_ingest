@@ -1,33 +1,6 @@
 #<?cfg paf policy ?>
-#
-########################################################################
-# This policy configures the stage that appears as the failure stage of 
-# the pipeline that receives a job assignment from the job office.  See
-# also jobdone.paf for a full explanation of all entries.
-#
-# The dictionary data defines this policy is policies/JobDone_dict.paf.
-########################################################################
- 
-# This is the event topic we will send our event indicating that this 
-# pipeline has finished its attempt on the assigned job.  This needs to 
-# match "listen.pipelineEvent" in the policy for the JobOffice that 
-# manages this pipeline.  
-#
 pipelineEvent:  CrSplitJob
-
-# This must be set to False for a failure stage to indicate that this 
-# pipeline failed to finish its job.
-#
 jobSuccess: false
-
-# This job-done stage will also send out data-ready event when this
-# policy file contains one or more "datasets" items.  This failure policy
-# file should include "datasets" entries matching the job-done stage and
-# any other data-ready stages.  
-#
-datasets: {
-   dataReadyEvent:  postCrSplitReady
-   datasetType:  postISRCCD
-}
+datasets.dataReadyEvent:  visitimAvailable
 
 

@@ -130,7 +130,6 @@ execute: {
 #   }
 
 #============================================================================
-#                   Need when hooking up to CcdAssembly
    appStage: {
       name: "130-isrJobdone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
@@ -144,6 +143,5 @@ execute: {
       eventTopic: "None"
       stagePolicy: @140-isrFailure.paf
    }
-#============================================================================
 
 }

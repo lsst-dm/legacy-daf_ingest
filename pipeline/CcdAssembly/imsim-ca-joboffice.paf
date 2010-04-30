@@ -11,7 +11,7 @@ listen: {
 
 schedule: {
     trigger: {
-        datasetType: raw
+        datasetType: postISR
         id: {
             name: channel
             value: "0,0"
@@ -46,7 +46,7 @@ schedule: {
               name: raft
             }
             id: {
-              name: ccd
+              name: sensor
             }
             id: {
               name: channel

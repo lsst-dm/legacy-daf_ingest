@@ -9,7 +9,7 @@ parameters: {
         mapperName: lsst.obs.cfht.CfhtMapper
 	mapperPolicy: {
             root: %(input)
-            calibRoot: "/lsst/DC3/data/obstest/CFHTLS/calib"
+            calibRoot: %(input)/calib"
         }
     }
     inputItems: {

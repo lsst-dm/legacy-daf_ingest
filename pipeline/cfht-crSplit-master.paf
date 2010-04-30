@@ -37,6 +37,9 @@ execute: {
       scratch: scratch
    }
 
+##########################################################3
+#   N O T E      CFHT only has single image per visit
+##########################################################3
    appStage: {
       name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
@@ -58,34 +61,14 @@ execute: {
       stagePolicy: @020-backgroundEstimation0.paf
    }
 
-   appStage: {
-      name: "030-backgroundEstimation1"
-      parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
-      eventTopic: "None"
-      stagePolicy: @030-backgroundEstimation1.paf
-   }
-
-# Following crReject stages are removed for ImSim dataset
-#   appStage: {
-#      name: "040-crReject0"
-#      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @040-crReject0.paf
-#   }
-#
-#   appStage: {
-#      name: "050-crReject1"
-#      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @050-crReject1.paf
-#   }
 
    appStage: {
-      name: "060-simpleDiffIm"
-      parallelClass: "lsst.ip.pipeline.SimpleDiffImStageParallel"
+      name: "040-crReject0"
+      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
-      stagePolicy: @060-simpleDiffIm.paf
+      stagePolicy: @040-crReject0.paf
    }
+ 
 
    appStage: {
       name: "070-sourceDetection"
@@ -95,20 +78,12 @@ execute: {
    }
 
    appStage: {
-      name: "080-crSplitCombine"
-      parallelClass: "lsst.ip.pipeline.CrSplitCombineStageParallel"
-      eventTopic: "None"
-      stagePolicy: @080-crSplitCombine.paf
-   }
-
-   appStage: {
       name: "090-cfht-crSplitOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @090-cfht-crSplitOutput.paf
    }
-#============================================================================
-#                   Need when hooking up to ImgChar
+
    appStage: {
       name: "100-jobdone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
@@ -122,6 +97,5 @@ execute: {
       eventTopic: "None"
       stagePolicy: @110-failure.paf
    }
-#============================================================================
 
 }

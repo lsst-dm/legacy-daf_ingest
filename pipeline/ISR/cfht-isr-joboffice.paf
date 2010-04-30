@@ -1,5 +1,7 @@
 #<?cfg paf policy ?>
 
+# cfht-isr-joboffice.paf
+
 name:  ISR
 persist.dir:  %(schedroot)s/%(name)s-joboffice
 
@@ -19,13 +21,10 @@ schedule: {
         input: {
             datasetType: raw
             id: {
+              name: field
+            }
+            id: {
               name: visit
-            }
-            id: {
-              name: snap
-            }
-            id: {
-              name: raft
             }
             id: {
               name: ccd
@@ -37,13 +36,10 @@ schedule: {
         output: {
             datasetType: postISR
             id: {
+              name: field
+            }
+            id: {
               name: visit
-            }
-            id: {
-              name: snap
-            }
-            id: {
-              name: raft
             }
             id: {
               name: ccd

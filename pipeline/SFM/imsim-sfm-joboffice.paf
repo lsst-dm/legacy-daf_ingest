@@ -1,52 +1,47 @@
 #<?cfg paf policy ?>
-name:  CcdAssembly
+# imsim-sfm-joboffice.paf
+
+name:  SFM
 persist.dir:  %(schedroot)s/%(name)s-joboffice
 
 listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
-    dataReadyEvent:      postISRAvailable
-    pipelineEvent:       CaJob
+    dataReadyEvent:      calexpAvailable
+    pipelineEvent:       SfmJob
     stopEvent:           JobOfficeStop
 }
 
 schedule: {
     trigger: {
-        datasetType: postISR
+        datasetType: calexp
         id: {
-            name: amp
-            min: 0
-            lim: 36
+            name: scienceExposure
         }
     }
 
     job: {
         input: {
-            datasetType: postISR
-            id: {
-              name: field
-            }
+            datasetType: calexp
             id: {
               name: visit
             }
             id: {
-              name: ccd
+              name: raft
             }
             id: {
-              name: amp
-              min: 0
-              lim: 36
+              name: sensor
             }
         }
         output: {
-            datasetType: postISRCCD
-            id: {
-              name: field
-            }
+            datasetType: sourceSet    TBD
             id: {
               name: visit
             }
             id: {
-              name: ccd
+              name: raft
+            }
+            id: {
+              name: sensor
             }
         }
     }

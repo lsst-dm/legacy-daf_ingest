@@ -85,12 +85,6 @@ execute: {
    }
 
 # Darks are not processed for CFHT-LS dataset
-#   appStage: {
-#      name: "070-isrDark"
-#      parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @070-isrDark.paf
-#   }
 
    appStage: {
       name: "080-isrFlat"
@@ -135,7 +129,6 @@ execute: {
 #   }
 #
 #============================================================================
-                   Need when hooking up to CcdAssembly
    appStage: {
       name: "130-isrJobdone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
@@ -149,6 +142,5 @@ execute: {
       eventTopic: "None"
       stagePolicy: @140-isrFailure.paf
    }
-#============================================================================
 
 }

@@ -5,7 +5,6 @@ parameters: {
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
-            calibRegistryPath: /lsst/DC3/data/obstest/CFHTLS/registry.sqlite3
             root: %(update)
         }
     }

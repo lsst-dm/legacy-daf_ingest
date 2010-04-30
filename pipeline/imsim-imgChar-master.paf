@@ -100,6 +100,7 @@ execute: {
 #       eventTopic: "None"
 #       stagePolicy: @080-exposureGeneration.paf
 #    }
+#============================================================================
 
    appStage: {
       name: "090-output"
@@ -108,21 +109,18 @@ execute: {
       stagePolicy: @090-output.paf
    }
 
-#============================================================================
-#                   Need when hooking up to SFM
-#   appStage: {
-#      name: "100-jobdone"
-#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
-#      eventTopic: "None"
-#      stagePolicy: @100-jobdone.paf
-#   }
-#
-#   failureStage: {
-#      name: "110-failure"
-#      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
-#      eventTopic: "None"
-#      stagePolicy: @110-failure.paf
-#   }
-#============================================================================
+   appStage: {
+      name: "100-jobdone"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @100-jobdone.paf
+   }
+
+   failureStage: {
+      name: "110-failure"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @110-failure.paf
+   }
 
 }

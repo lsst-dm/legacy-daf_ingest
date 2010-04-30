@@ -33,7 +33,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
       name: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStage"
       parallelClass: "lsst.datarel.SkyTileMetadataStage.SkyTileMetadataStageParallel"
       eventTopic: "triggerAstroCalEvent"
@@ -41,7 +40,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.pex.harness.IOStage.InputStage"
       name: "lsst.pex.harness.IOStage.InputStage"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
@@ -49,7 +47,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.astrocal.pipeline.AstroCalStage.AstroCalStage"
       name: "lsst.astrocal.pipeline.AstroCalStage.AstroCalStage"
       parallelClass: "lsst.astrocal.pipeline.AstroCalStage.AstroCalStageParallel"
       eventTopic: "None"
@@ -57,7 +54,6 @@ execute: {
    }
 
    appStage: {
-      #stageName: "lsst.pex.harness.IOStage.OutputStage"
       name: "lsst.pex.harness.IOStage.OutputStage"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"

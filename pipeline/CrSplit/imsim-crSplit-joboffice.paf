@@ -1,52 +1,53 @@
 #<?cfg paf policy ?>
-name:  CcdAssembly
+# imsim-crSplit-joboffice.paf
+
+name:  CrSplit
 persist.dir:  %(schedroot)s/%(name)s-joboffice
 
 listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
-    dataReadyEvent:      postISRAvailable
-    pipelineEvent:       CaJob
+    dataReadyEvent:      postISRCCDAvailable
+    pipelineEvent:       CrSplitJob
     stopEvent:           JobOfficeStop
 }
 
 schedule: {
     trigger: {
-        datasetType: postISR
+        datasetType: postISRCCD
         id: {
-            name: amp
-            min: 0
-            lim: 36
+            name: isrCcdExposure0
+        }
+        id: {
+            name: isrCcdExposure1
         }
     }
 
     job: {
         input: {
-            datasetType: postISR
-            id: {
-              name: field
-            }
+            datasetType: postISRCCD
             id: {
               name: visit
             }
             id: {
-              name: ccd
+              name: snap
             }
             id: {
-              name: amp
-              min: 0
-              lim: 36
+              name: raft
+            }
+            id: {
+              name: sensor
             }
         }
         output: {
-            datasetType: postISRCCD
-            id: {
-              name: field
-            }
+            datasetType: visitim
             id: {
               name: visit
             }
             id: {
-              name: ccd
+              name: raft
+            }
+            id: {
+              name: sensor
             }
         }
     }

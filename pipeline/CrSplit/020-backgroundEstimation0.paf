@@ -1,4 +1,4 @@
-#<?cfg paf policy ?>
+#<?cfg paf policy?>
 # backgroundEstimation0.paf
 inputKeys: {
    exposure: "isrCcdExposure0"
@@ -11,5 +11,8 @@ outputKeys: {
 
 parameters: {
    subtractBackground: true
+   backgroundPolicy: {
+      binsize: 512
+   }
 }
 

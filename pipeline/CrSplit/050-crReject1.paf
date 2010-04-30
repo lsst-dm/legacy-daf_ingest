@@ -1,4 +1,4 @@
-#<?cfg paf policy ?>
+#<?cfg paf policy?>
 # crReject1.paf
 inputKeys: {
    exposure: "bkgSubCcdExposure1"
@@ -12,3 +12,6 @@ parameters: {
    keepCRs: true
 }
 
+crRejectPolicy: {
+    nCrPixelMax: 100000
+}

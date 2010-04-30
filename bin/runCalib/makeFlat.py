@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import os,sys
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
 import lsst.daf.persistence as dafPersist
@@ -82,26 +82,76 @@ def isrProcess(butler, outButler, **keys):
     outButler.put(exposure, "postISR", **keys)
 
 def run():
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    outvisit = 2
+    if len(sys.argv) > 1:
+        filter = sys.argv[1]
+    else:
+        filter = 'r'
+    polDict = {'u':
+        pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
-            rawTemplate: "rawflat_%(filter)s/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
-            postISRTemplate: "flat_%(filter)s/v%(visit)d/R%(raft)s/S%(sensor)s/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            rawTemplate: "flat_%(filter)s/imsim_0_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/flat_%(filter)s/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
+        """)),
+        'g':
+        pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+            rawTemplate: "flat_%(filter)s/imsim_1_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/flat_%(filter)s/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
+        """)),
+        'r':
+        pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+            rawTemplate: "flat_%(filter)s/imsim_2_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/flat_%(filter)s/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
+        """)),
+        'i':
+        pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+            rawTemplate: "flat_%(filter)s/imsim_3_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/flat_%(filter)s/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
+        """)),
+        'z':
+        pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+            rawTemplate: "flat_%(filter)s/imsim_4_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/flat_%(filter)s/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
+        """)),
+        'y':
+        pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+            rawTemplate: "flat_%(filter)s/imsim_5_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/flat_%(filter)s/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
         """))
+    }
     #root = os.path.join(os.environ['AFWDATA_DIR'], "imsim_tmp")
-    root = "/local/tmp/ImSimCalib"
+    root = "/usr/data/mysql2/ImsimCalib"
+    calibRoot = "/usr/data/mysql2/ImsimCalibRed"
     bf = dafPersist.ButlerFactory(
             mapper=LsstSimMapper(
-                policy=pol,
+                policy=polDict[filter],
                 root=root,
-                calibRoot=root
+                calibRoot=calibRoot
             ))
     butler = bf.create()
     #obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
     #outButler = obf.create()
-    for i in range(1,2):
-        for j in range(5,6):
-            isrProcess(butler, butler, visit=2, snap=0,
-                raft="1,2", sensor="2,2", channel="%i,%i"%(i,j), filter="r")
+    for rix in range(0,5):
+        for riy in range(0,5):
+            if (rix, riy) not in [(0,0),(0,4),(4,0),(4,4)]:
+                for six in range(0,3):
+                    for siy in range(0,3):
+                        for cix in range(0,2):
+                            for ciy in range(0,8):
+                                isrProcess(butler, butler, visit=outvisit, snap=0,
+                                    raft="%i,%i"%(rix,riy), sensor="%i,%i"%(six,siy), channel="%i,%i"%(cix,ciy), filter=filter)
+
 
 if __name__ == "__main__":
     run()

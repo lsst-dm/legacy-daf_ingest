@@ -84,24 +84,32 @@ def isrProcess(butler, outButler, **keys):
 def run():
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
         """#<?cfg paf policy?>
-            rawTemplate: "rawdark/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
-            postISRTemplate: "dark/v%(visit)d/R%(raft)s/S%(sensor)s/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            rawTemplate: "dark/imsim_%(visit)d_R%(raft)s_S%(sensor)s_C%(channel)s_E%(snap)03d.fits.gz"
+            postISRTemplate: "../ImsimCalibRed/dark/v%(visit)s/R%(raft)s/S%(sensor)s/imsim_%(visit)s_R%(raft)s_S%(sensor)s_C%(channel)s.fits"
+            cameraDescription: "../description/Full_STA_def_geom.paf"
         """))
     #root = os.path.join(os.environ['AFWDATA_DIR'], "imsim_tmp")
-    root = "/local/tmp/ImSimCalib"
+    root = "/usr/data/mysql2/ImsimCalib"
+    calibRoot = "/usr/data/mysql2/ImsimCalibRed/"
     bf = dafPersist.ButlerFactory(
             mapper=LsstSimMapper(
                 policy=pol,
                 root=root,
-                calibRoot=root
+                calibRoot=calibRoot
             ))
     butler = bf.create()
     #obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
     #outButler = obf.create()
-    for i in range(1,2):
-        for j in range(5,6):
-            isrProcess(butler, butler, visit=1, snap=0,
-                raft="1,2", sensor="2,2", channel="%i,%i"%(i,j), filter="r")
+    for rix in range(0,5):
+        for riy in range(0,5):
+            if (rix, riy) not in [(0,0),(0,4),(4,0),(4,4)]:
+                for six in range(0,3):
+                    for siy in range(0,3):
+                        for cix in range(0,2):
+                            for ciy in range(0,8):
+                                isrProcess(butler, butler, visit=1, snap=0,
+                                    raft="%i,%i"%(rix,riy), sensor="%i,%i"%(six,siy), channel="%i,%i"%(cix,ciy), filter="r")
+
 
 if __name__ == "__main__":
     run()

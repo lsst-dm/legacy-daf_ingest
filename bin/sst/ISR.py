@@ -27,7 +27,7 @@ def isrProcess(root, outRoot, **keys):
             exposure: isrExposure
         }
         outputKeys: {
-            saturationCorrectedExposure: isrExposure
+            saturationMaskedExposure: isrExposure
         }
         """))
     sat = SimpleStageTester(ipPipe.IsrSaturationStage(pol))
@@ -85,6 +85,7 @@ def isrProcess(root, outRoot, **keys):
     clip = dark.runWorker(clip)
     clip = flat.runWorker(clip)
     exposure = clip['isrExposure']
+    bboxes = clip['satPixels']
     # exposure.writeFits("postIsr.fits")
     obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
     outButler = obf.create()
@@ -93,7 +94,7 @@ def isrProcess(root, outRoot, **keys):
 def run():
     root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
     isrProcess(root=root, outRoot=".", visit=85751839, snap=0,
-            raft="2,3", sensor="1,1", channel="0,0")
+            raft="2,3", sensor="1,1", channel="0,0", filter="r")
 
 if __name__ == "__main__":
     run()

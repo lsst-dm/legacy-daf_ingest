@@ -1,13 +1,13 @@
 #! /bin/sh
 set -e
 RUNID=isr42
-repository=/lsst/DC3/data/obsbeta/ImSim
+repository=/lsst/DC3/data/obsdata/CFHTLS
 
 pipeline=ISR
 broker=lsst8
 availtopic=RawAvailable
 stoptopic=JobOfficeStop
-jobofficepol=imsim-isr-joboffice.paf
+jobofficepol=cfht-isr-joboffice.paf
 
 echo Running $pipeline pipeline in directory, $RUNID
 
@@ -15,7 +15,6 @@ echo Running $pipeline pipeline in directory, $RUNID
 mkdir -p $RUNID
 (cd $RUNID && mkdir -p input output scratch update work)
 [ -e "$RUNID/input/raw" ]  || ln -s $repository/raw  $RUNID/input/raw
-[ -e "$RUNID/input/dark" ] || ln -s $repository/dark $RUNID/input/dark
 [ -e "$RUNID/input/bias" ] || ln -s $repository/bias $RUNID/input/bias
 [ -e "$RUNID/input/flat" ] || ln -s $repository/flat $RUNID/input/flat
 if [ -e "$RUNID/work/$pipeline-joboffice" ]; then
@@ -24,10 +23,10 @@ fi
 
 joboffice.py -D -L verb2 -r $RUNID -b $broker -d $RUNID/work $jobofficepol
 sleep 2
-launchPipeline.py -L debug imsim-isr-master.paf $RUNID | grep -v Shutdown &
+launchPipeline.py -L debug cfht-isr-master.paf $RUNID | grep -v Shutdown &
 
 set +e
-announceDataset.py -r $RUNID -b $broker -t $availtopic inputdata.txt
+announceDataset.py -r $RUNID -b $broker -t $availtopic cfht-isr-inputdata.txt
 sleep 15
 
 # ps -auxww | grep runPipeline.py | grep $RUNID
@@ -36,4 +35,4 @@ echo kill $pid
 kill $pid
 sendevent.py -b $broker -r $RUNID stop $stoptopic
 sleep 5
-rm -rf $pipeline-joboffice
+#rm -rf $pipeline-joboffice

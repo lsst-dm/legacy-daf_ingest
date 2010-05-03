@@ -5,12 +5,12 @@
 inputKeys: {
    exposure: scienceExposure
    # Someday PSF will be input instead of parameter (see below)
-   # psf: psf
+   psf: psf
 }
 outputKeys: {
    positiveDetection: "positiveFootprintSet"
    # Remove this eventually
-   psf: "psf"
+   #psf: "psf"
 }
 
 psfPolicy: {

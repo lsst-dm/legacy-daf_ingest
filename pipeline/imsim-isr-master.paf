@@ -31,8 +31,7 @@ execute: {
       defaultRoot: .
       # Path to root Run directory
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../"
-      #runDirPattern: "../../%(runid)s"
+      runDirPattern: "%(runid)s"
       work: work
       input: input
       output: output

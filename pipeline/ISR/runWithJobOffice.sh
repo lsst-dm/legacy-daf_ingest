@@ -1,7 +1,7 @@
 #! /bin/sh
 set -e
-RUNID=isr42
-repository=/lsst/DC3/data/obsbeta/ImSim
+RUNID=isr43
+repository=/lsst/DC3/data/obstest/ImSim
 
 pipeline=ISR
 broker=lsst8

@@ -13,7 +13,7 @@ parameters: {
             # below  %(input) resolves to  /lsst/DC3/data/obstest/CFHTLS
             # sendevent input:"raw filter=y field=D3 visit=788965 ccd=6 amp=0" 
             root: %(input)
-            calibRoot: %(input)/calib
+            calibRoot: %(input)
         }
     }
     inputItems: {

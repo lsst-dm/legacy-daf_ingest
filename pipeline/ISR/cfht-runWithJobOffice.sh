@@ -1,7 +1,7 @@
 #! /bin/sh
 set -e
 RUNID=isr42
-repository=/lsst/DC3/data/obsdata/CFHTLS
+repository=/lsst/DC3/data/obstest/CFHTLS
 
 pipeline=ISR
 broker=lsst8
@@ -14,9 +14,11 @@ echo Running $pipeline pipeline in directory, $RUNID
 # doin' some orchestration
 mkdir -p $RUNID
 (cd $RUNID && mkdir -p input output scratch update work)
-[ -e "$RUNID/input/raw" ]  || ln -s $repository/raw  $RUNID/input/raw
-[ -e "$RUNID/input/bias" ] || ln -s $repository/bias $RUNID/input/bias
-[ -e "$RUNID/input/flat" ] || ln -s $repository/flat $RUNID/input/flat
+[ -e "$RUNID/input/raw" ]  || ln -s $repository/D2/raw  $RUNID/input/raw
+[ -e "$RUNID/input/bias" ] || ln -s $repository/calib/bias $RUNID/input/bias
+[ -e "$RUNID/input/flat" ] || ln -s $repository/calib/flat $RUNID/input/flat
+[ -e "$RUNID/input/registry.sqlite3" ] || ln -s $repository/registry.sqlite3 $RUNID/input/registry.sqlite3
+[ -e "$RUNID/input/calibRegistry.sqlite3" ] || ln -s $repository/calib/calibRegistry.sqlite3 $RUNID/input/calibRegistry.sqlite3
 if [ -e "$RUNID/work/$pipeline-joboffice" ]; then
    rm -rf $RUNID/work/$pipeline-joboffice
 fi

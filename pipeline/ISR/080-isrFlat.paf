@@ -6,4 +6,6 @@ inputKeys: {
 }
 outputKeys: {
    flatCorrectedExposure: "isrExposure"
+   # need mapper name
+   #bboxes: "satPixels"
 }

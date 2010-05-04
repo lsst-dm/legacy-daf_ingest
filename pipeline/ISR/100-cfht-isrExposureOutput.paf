@@ -5,14 +5,14 @@ parameters: {
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
-            root: %(update)
+            root: %(input)
         }
     }
     outputItems: {
         isrExposure: {
             datasetId: {
                 datasetType: postISR
-                fromJobIdentity: "visit" "ccd" 
+                fromJobIdentity: "visit" "ccd" "amp"
             }
         }
     }

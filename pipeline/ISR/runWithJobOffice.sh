@@ -1,6 +1,10 @@
 #! /bin/sh
 set -e
-RUNID=isr43
+if [ $# -gt 0 ]; then
+   RUNID=$1
+else
+   RUNID=isr42
+fi
 repository=/lsst/DC3/data/obstest/ImSim
 
 pipeline=ISR
@@ -24,7 +28,7 @@ fi
 
 joboffice.py -D -L verb2 -r $RUNID -b $broker -d $RUNID/work $jobofficepol
 sleep 2
-launchPipeline.py -L debug imsim-isr-master.paf $RUNID | grep -v Shutdown &
+launchPipeline.py -L debug imsim-isr-master.paf $RUNID $pipeline | grep -v Shutdown &
 
 set +e
 announceDataset.py -r $RUNID -b $broker -t $availtopic inputdata.txt
@@ -34,6 +38,6 @@ sleep 15
 pid=`ps -auxww | grep runPipeline.py | grep $RUNID | awk '{print $2}'`
 echo kill $pid
 kill $pid
-sendevent.py -b $broker -r $RUNID stop $stoptopic
+sendevent.py -n $pipeline  -b $broker -r $RUNID stop $stoptopic
 sleep 5
 rm -rf $pipeline-joboffice

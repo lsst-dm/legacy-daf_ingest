@@ -35,9 +35,9 @@ def sfmProcess(root, outRoot, **keys):
     clip = srcd.runWorker(clip)
     clip = srcm.runWorker(clip)
 
-    # obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-    # outButler = obf.create()
-    # outButler.put(clip['sourceSet_persistable'], "src", **keys)
+    obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
+    outButler = obf.create()
+    outButler.put(clip['sourceSet_persistable'], "src", **keys)
 
     fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr", 
             "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",

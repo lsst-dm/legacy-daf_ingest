@@ -11,8 +11,8 @@ def isrProcess(root, outRoot, **keys):
     bf = dafPersist.ButlerFactory(
             mapper=LsstSimMapper(
                 root=root,
-                calibRoot=os.path.join(os.environ["AFWDATA_DIR"], "ImSim")
-            ))
+                calibRoot=root)
+            )
     butler = bf.create()
     clip = {
         'isrExposure': butler.get("raw", **keys),
@@ -90,11 +90,15 @@ def isrProcess(root, outRoot, **keys):
     obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
     outButler = obf.create()
     outButler.put(exposure, "postISR", **keys)
+    outButler.put(bboxes, "satPixelSet", **keys)
 
 def run():
-    root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
-    isrProcess(root=root, outRoot=".", visit=85751839, snap=0,
-            raft="2,3", sensor="1,1", channel="0,0", filter="r")
+    root = "/lsst/DC3/data/obstest/ImSim"
+    if not os.path.exists("registry.sqlite3"):
+        os.symlink(os.path.join(root, "registry.sqlite3"),
+                "./registry.sqlite3")
+    isrProcess(root=root, outRoot=".", visit=85470982, snap=0,
+            raft="2,3", sensor="1,1", channel="0,0")
 
 if __name__ == "__main__":
     run()

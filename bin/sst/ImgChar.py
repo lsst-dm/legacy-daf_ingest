@@ -120,6 +120,19 @@ def imgCharProcess(root, outRoot, **keys):
     clip = wcsd.runWorker(clip)
     print clip['measuredWcs'].getFitsMetadata().toString()
 
+    if clip['matchList'] is not None:
+        csv = open(os.path.join(outRoot, "wcsMatches.csv"), "w")
+        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
+                "ImgRA,ImgDec,ImgPsfFlux,Distance"
+        for m in clip['matchList']:
+            print >>csv, "%f,%f,%f,%f,%f,%f,%f" % (
+                    m.first.getRa(), m.first.getDec(),
+                    m.first.getPsfFlux(),
+                    m.second.getRa(), m.second.getDec(),
+                    m.second.getPsfFlux(),
+                    m.distance)
+        csv.close()
+
     clip = wcsv.runWorker(clip)
     print clip['wcsVerifyStats']
 
@@ -127,11 +140,13 @@ def imgCharProcess(root, outRoot, **keys):
     print "Photometric zero:", clip['photometricZeroPoint']
     print "Photometric zero unc:", clip['photometricZeroPointUnc']
 
+    outButler.put(clip['visitExposure'], "calexp", **keys)
+
 def run():
     imgCharProcess(
             root=".",
     #        root=os.path.join(os.environ['AFWDATA_DIR'], "ImSim"),
-            outRoot=".", visit=85751839, raft="2,3", sensor="1,1")
+            outRoot=".", visit=85751839, raft="2,3", sensor="1,1", filter="r")
 
 if __name__ == "__main__":
     run()

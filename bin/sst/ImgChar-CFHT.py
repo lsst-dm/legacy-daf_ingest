@@ -76,6 +76,7 @@ def imgCharProcess(root, outRoot, **keys):
         inputSourceSetKey: sourceSet
         outputWcsKey: measuredWcs
         outputMatchListKey: matchList
+        numBrightStars: 75
         """))
     wcsd = SimpleStageTester(measPipe.WcsDeterminationStage(pol))
 
@@ -128,6 +129,8 @@ def imgCharProcess(root, outRoot, **keys):
     clip = pcal.runWorker(clip)
     print clip['photometricZeroPoint']
     print clip['photometricZeroPointUnc']
+
+    outButler.put(clip['visitExposure'], "calexp", **keys)
 
 def run():
     imgCharProcess(root=".", outRoot=".", visit=788965, ccd=6)

@@ -9,19 +9,15 @@ from lsst.obs.lsstSim import LsstSimMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
 def ccdAssemblyProcess(root, outRoot, **keys):
-    #Fake a set of saturation bounding boxes just to see if everything works
-    #as it should
-    bboxes = []
-    for i in range(750):
-        for j in range(5):
-            bboxes.append(ipIsr.Bbox(i*2, j*90, 10, 10))
     bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
     butler = bf.create()
     expList = []
+    bboxes = []
     for ampX in (0, 1):
         for ampY in xrange(8):
             ampName = "%d,%d" % (ampX, ampY)
             expList.append(butler.get("postISR", channel=ampName, **keys))
+            bboxes.append(butler.get("satPixelSet", channel=ampName, **keys))
 
     clip = {
         'exposureList': expList,

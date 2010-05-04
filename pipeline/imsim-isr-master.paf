@@ -20,7 +20,7 @@ execute: {
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices: 1
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   executionMode: "oneloop"
+   # executionMode: "oneloop"
    # To be quite verbose: add 'logThreshold: -3'
    logThreshold: -3
    localLogMode: true

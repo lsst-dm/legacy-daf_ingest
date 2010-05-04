@@ -5,13 +5,19 @@ parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
         mapperPolicy: {
-            root: %(update)
+            root: %(input)
         }
     }
     outputItems: {
         isrExposure: {
             datasetId: {
                 datasetType: postISR
+                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+            }
+        }
+        satPixels: {
+            datasetId: {
+                datasetType: satPixelSet
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
             }
         }

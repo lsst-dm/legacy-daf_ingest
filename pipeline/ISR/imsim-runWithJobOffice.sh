@@ -22,6 +22,7 @@ mkdir -p $RUNID
 [ -e "$RUNID/input/dark" ] || ln -s $repository/dark $RUNID/input/dark
 [ -e "$RUNID/input/bias" ] || ln -s $repository/bias $RUNID/input/bias
 [ -e "$RUNID/input/flat" ] || ln -s $repository/flat $RUNID/input/flat
+[ -e "$RUNID/input/registry.sqlite3" ] || ln -s $repository/registry.sqlite3 $RUNID/input/registry.sqlite3
 if [ -e "$RUNID/work/$pipeline-joboffice" ]; then
    rm -rf $RUNID/work/$pipeline-joboffice
 fi
@@ -31,13 +32,13 @@ sleep 2
 launchPipeline.py -L debug imsim-isr-master.paf $RUNID $pipeline | grep -v Shutdown &
 
 set +e
-announceDataset.py -r $RUNID -b $broker -t $availtopic inputdata.txt
+announceDataset.py -r $RUNID -b $broker -t $availtopic imsim-isr-inputdata.txt
 sleep 15
 
 # ps -auxww | grep runPipeline.py | grep $RUNID
-pid=`ps -auxww | grep runPipeline.py | grep $RUNID | awk '{print $2}'`
-echo kill $pid
-kill $pid
-sendevent.py -n $pipeline  -b $broker -r $RUNID stop $stoptopic
-sleep 5
-rm -rf $pipeline-joboffice
+#pid=`ps -auxww | grep runPipeline.py | grep $RUNID | awk '{print $2}'`
+#echo kill $pid
+#kill $pid
+#sendevent.py -n $pipeline  -b $broker -r $RUNID stop $stoptopic
+#sleep 5
+#rm -rf $pipeline-joboffice

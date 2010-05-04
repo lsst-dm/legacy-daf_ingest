@@ -4,5 +4,5 @@ inputKeys: {
    exposure: "isrExposure"
 }
 outputKeys: {
-   saturationCorrectedExposure: "isrExposure"
+   saturationMaskedExposure: "isrExposure"
 }

@@ -36,9 +36,9 @@ announceDataset.py -r $RUNID -b $broker -t $availtopic cfht-isr-inputdata.txt
 sleep 15
 
 # ps -auxww | grep runPipeline.py | grep $RUNID
-pid=`ps -auxww | grep runPipeline.py | grep $RUNID | awk '{print $2}'`
-echo kill $pid
-kill $pid
-sendevent.py -n $pipeline -b $broker -r $RUNID stop $stoptopic
-sleep 5
+#pid=`ps -auxww | grep runPipeline.py | grep $RUNID | awk '{print $2}'`
+#echo kill $pid
+#kill $pid
+#sendevent.py -n $pipeline -b $broker -r $RUNID stop $stoptopic
+#sleep 5
 #rm -rf $pipeline-joboffice

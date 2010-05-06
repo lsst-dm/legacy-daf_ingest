@@ -4,7 +4,7 @@ parameters: {
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
-            root: %(update)
+            root: %(input)
         }
     }
 
@@ -12,7 +12,7 @@ parameters: {
         defectMaskedExposure: {
             datasetId: {
                 datasetType: postISRCCD
-                fromJobIdentity:  "visit" "raft" "sensor"  "snap"
+                fromJobIdentity:  "visit" "ccd" "amp"
             }
         }
     }

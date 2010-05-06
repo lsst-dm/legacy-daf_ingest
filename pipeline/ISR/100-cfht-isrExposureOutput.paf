@@ -15,11 +15,5 @@ parameters: {
                 fromJobIdentity: "visit" "ccd" "amp"
             }
         }
-        satPixels: {
-            datasetId: {
-                datasetType: satPixelSet
-                fromJobIdentity: "visit" "ccd" "amp"
-            }
-        }
     }
 }

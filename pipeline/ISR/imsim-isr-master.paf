@@ -25,13 +25,13 @@ execute: {
    #logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-   shutdownTopic: shutdownISR45
+   shutdownTopic: shutdownISR46
    dir: {
       shortName: ISR
       defaultRoot: .
       # Path to root Run directory
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "%(runid)s"
+      runDirPattern: %(runid)s
       work: work
       input: input
       output: output

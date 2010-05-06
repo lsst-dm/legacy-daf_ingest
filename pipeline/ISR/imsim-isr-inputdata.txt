@@ -1,8 +1,7 @@
 >intids visit snap
-
 raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,0
 raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,1
-#raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,2
+raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,2
 #raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,3
 #raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,4
 #raw visit=85470982 filter=y snap=0 raft=2,3 sensor=0,0 channel=0,5

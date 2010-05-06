@@ -15,7 +15,7 @@ schedule: {
         id: {
             name: amp
             min: 0
-            lim: 36
+            lim: 2
         }
     }
 
@@ -31,7 +31,7 @@ schedule: {
             id: {
               name: amp
               min: 0
-              lim: 36
+              lim: 2
             }
         }
         output: {

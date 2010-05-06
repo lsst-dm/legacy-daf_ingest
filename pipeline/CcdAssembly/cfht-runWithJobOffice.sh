@@ -10,7 +10,7 @@ repository=/lsst/DC3/data/obstest/CFHTLS
 
 pipeline=CA
 broker=lsst8
-availtopic=RawAvailable
+availtopic=postISRAvailable
 stoptopic=JobOfficeStop
 jobofficepol=cfht-ca-joboffice.paf
 
@@ -23,6 +23,10 @@ mkdir -p $RunDir
 (cd $RunDir && rm -rf output scratch update work)
 (cd $RunDir && mkdir -p output scratch update work)
 [ -e "$RunDir/input/D2" ] || ln -s $repository/D2 $RunDir/input/D2
+[ -e "$RunDir/input/bias" ] || ln -s $repository/calib/bias $RunDir/input/bias
+[ -e "$RunDir/input/flat" ] || ln -s $repository/calib/flat $RunDir/input/flat
+[ -e "$RunDir/input/registry.sqlite3" ] || ln -s $repository/registry.sqlite3 $RunDir/input/registry.sqlite3
+[ -e "$RunDir/input/calibRegistry.sqlite3" ] || ln -s $repository/calib/calibRegistry.sqlite3 $RunDir/input/calibRegistry.sqlite3
 if [ -e "$RunDir/work/$pipeline-joboffice" ]; then
    rm -rf $RunDir/work/$pipeline-joboffice
 fi

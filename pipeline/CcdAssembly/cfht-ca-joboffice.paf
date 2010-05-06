@@ -20,6 +20,14 @@ schedule: {
     }
 
     job: {
+        identity: {
+            id: {
+              name: visit
+            }
+            id: {
+              name: ccd
+            }
+        }
         input: {
             datasetType: postISR
             id: {

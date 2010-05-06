@@ -12,7 +12,7 @@ parameters: {
         defectMaskedExposure: {
             datasetId: {
                 datasetType: postISRCCD
-                fromJobIdentity:  "visit" "ccd" "amp"
+                fromJobIdentity:  "visit" "ccd" 
             }
         }
     }

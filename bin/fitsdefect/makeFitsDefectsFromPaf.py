@@ -14,10 +14,11 @@ def prepareFits():
     hdu = pf.PrimaryHDU()
     hdulist = pf.HDUList([hdu])
     return hdulist
-def addExtensions(defpol, outfile = "defects.fits"):
+def makeFitsDefectsFromPaf(defpol, outfileroot = "defects"):
     defects = cgUtils.makeDefects(defpol)
-    hdulist = prepareFits()
     for key in defects.keys():
+        outfile = outfileroot+str(key.getSerial())+".fits"
+        hdulist = prepareFits()
         x0 = []
         y0 = []
         width = []
@@ -28,7 +29,6 @@ def addExtensions(defpol, outfile = "defects.fits"):
             y0.append(bbox.getY0())
             width.append(bbox.getWidth())
             height.append(bbox.getHeight())
-
         x0 = np.asarray(x0)
         y0 = np.asarray(y0)
         width = np.asarray(width)
@@ -40,32 +40,13 @@ def addExtensions(defpol, outfile = "defects.fits"):
         cols = pf.ColDefs([col1,col2,col3,col4])
         tbhdu=pf.new_table(cols)
         hdr = tbhdu.header
-        hdr.update('serial', key.getSerial())
-        hdr.update('name', key.getName())
+        hdr.update('SERIAL', key.getSerial())
+        hdr.update('NAME', key.getName())
+        hdr.update('CDATE', time.asctime(time.localtime()))
+
         hdulist.append(tbhdu)
-    hdulist.writeto(outfile)
-def fitsToDefectDict(hdulist):
-    defects = {}
-    for hdu in hdulist[1:]:
-        id = cameraGeom.Id(hdu.header['serial'], hdu.header['name'])
-        print id
-        data = hdu.data
-        defectList = []
-        for i in range(len(data)):
-            bbox = afwImage.BBox(afwImage.PointI(int(data[i]['x0']),\
-                int(data[i]['y0'])), int(data[i]['width']),\
-                int(data[i]['height']))
-            defectList.append(measAlg.Defect(bbox))
-        defects[id] = defectList
-    return defects
+        hdulist.writeto(outfile)
 
 if __name__ == "__main__":
     defpol = pexPolicy.Policy(sys.argv[1])
-    #addExtensions(defpol)
-    hdulist = pf.open(sys.argv[2])
-    t1 = time.time()
-    defects = cgUtils.makeDefects(defpol)
-    print time.time() - t1
-    t1 = time.time()
-    defects = fitsToDefectDict(hdulist)
-    print time.time() - t1
+    makeFitsDefectsFromPaf(defpol)

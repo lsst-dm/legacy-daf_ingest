@@ -3,25 +3,30 @@
 import os
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
-import lsst.ip.isr as ipIsr
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def ccdAssemblyProcess(root, outRoot, **keys):
-    bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
-    butler = bf.create()
+def ccdAssemblyProcess(root=None, outRoot=None, inButler=None, outButler=None,
+        **keys):
+    if inButler is None:
+        bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
+        inButler = bf.create()
+    if outButler is None:
+        obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
+        outButler = obf.create()
+
     expList = []
     bboxes = []
     for ampX in (0, 1):
         for ampY in xrange(8):
             ampName = "%d,%d" % (ampX, ampY)
-            expList.append(butler.get("postISR", channel=ampName, **keys))
-            bboxes.append(butler.get("satPixelSet", channel=ampName, **keys))
+            expList.append(inButler.get("postISR", channel=ampName, **keys))
+            # bboxes.append(inButler.get("satPixelSet", channel=ampName, **keys))
 
     clip = {
         'exposureList': expList,
-        'satPixels': bboxes
+        # 'satPixels': bboxes
     }
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
@@ -44,8 +49,6 @@ def ccdAssemblyProcess(root, outRoot, **keys):
     exposure = clip['defectMaskedCcdExposure']
     # exposure.writeFits("postISRCCD.fits")
 
-    obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-    outButler = obf.create()
     outButler.put(exposure, "postISRCCD", **keys)
 
 def run():

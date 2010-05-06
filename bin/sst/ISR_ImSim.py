@@ -7,18 +7,20 @@ import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def isrProcess(root, outRoot, **keys):
-    bf = dafPersist.ButlerFactory(
-            mapper=LsstSimMapper(
-                root=root,
-                calibRoot=root)
-            )
-    butler = bf.create()
+def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
+    if inButler is None:
+        bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(
+            root=root, calibRoot=root))
+        inButler = bf.create()
+    if outButler is None:
+        obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
+        outButler = obf.create()
+
     clip = {
-        'isrExposure': butler.get("raw", **keys),
-        'biasExposure': butler.get("bias", **keys),
-        'darkExposure': butler.get("dark", **keys),
-        'flatExposure': butler.get("flat", **keys)
+        'isrExposure': inButler.get("raw", **keys),
+        'biasExposure': inButler.get("bias", **keys),
+        'darkExposure': inButler.get("dark", **keys),
+        'flatExposure': inButler.get("flat", **keys)
     }
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
@@ -85,12 +87,9 @@ def isrProcess(root, outRoot, **keys):
     clip = dark.runWorker(clip)
     clip = flat.runWorker(clip)
     exposure = clip['isrExposure']
-    bboxes = clip['satPixels']
     # exposure.writeFits("postIsr.fits")
-    obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-    outButler = obf.create()
     outButler.put(exposure, "postISR", **keys)
-    outButler.put(bboxes, "satPixelSet", **keys)
+    # outButler.put(clip['satPixels'], "satPixelSet", **keys)
 
 def run():
     root = "/lsst/DC3/data/obstest/ImSim"

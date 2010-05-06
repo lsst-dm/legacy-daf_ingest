@@ -10,14 +10,18 @@ from lsst.obs.cfht import CfhtMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 from lsst.pex.harness.IOStage import OutputStage
 
-def imgCharProcess(root, outRoot, **keys):
-    registry="/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"
-    bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=root,
-        registry=registry))
-    butler = bf.create()
+def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
+        **keys):
+
+    if inButler is None:
+        bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=root))
+        inButler = bf.create()
+    if outButler is None:
+        obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
+        outButler = obf.create()
 
     clip = {
-        'visitExposure': butler.get("visitim", **keys),
+        'visitExposure': inButler.get("visitim", **keys),
     }
 
     # bbox = afwImage.BBox(afwImage.PointI(0,0), 1024, 1024)
@@ -87,13 +91,12 @@ def imgCharProcess(root, outRoot, **keys):
         """))
     wcsv = SimpleStageTester(measPipe.WcsVerificationStage(pol))
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
-        """#<?cfg paf policy?>
-        sourceMatchSetKey: matchList
-        outputValueKey: photometricZeroPoint
-        outputUncertaintyKey: photometricZeroPointUnc
-        """))
-    pcal = SimpleStageTester(measPipe.PhotoCalStage(pol))
+#     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+#         """#<?cfg paf policy?>
+#         sourceMatchSetKey: matchList
+#         outputValueKey: photometricMagnitudeObject
+#         """))
+#     pcal = SimpleStageTester(measPipe.PhotoCalStage(pol))
 
 
     clip = srcd.runWorker(clip)
@@ -102,7 +105,7 @@ def imgCharProcess(root, outRoot, **keys):
     fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
             "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
             "IyyErr", "Ixy", "IxyErr")
-    csv = open(os.path.join(outRoot, "imgCharSources.csv"), "w")
+    csv = open("imgCharSources-v%(visit)d-c%(ccd)d.csv" % keys, "w")
     print >>csv, "FlagForDetection," + ",".join(fields)
     for s in clip['sourceSet']:
         line = "%d" % (s.getFlagForDetection(),)
@@ -115,20 +118,31 @@ def imgCharProcess(root, outRoot, **keys):
     clip = psfd.runWorker(clip)
     print clip['measuredPsf'].getKernel().toString()
 
-    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot,
-        registry=registry))
-    outButler = obf.create()
     outButler.put(clip['measuredPsf'], "psf", **keys)
 
     clip = wcsd.runWorker(clip)
     print clip['measuredWcs'].getFitsMetadata().toString()
 
-    clip = wcsv.runWorker(clip)
-    print clip['wcsVerifyStats']
+    if clip['matchList'] is not None:
+        csv = open("wcsMatches-v%(visit)d-c%(ccd)d.csv" % keys, "w")
+        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
+                "ImgRA,ImgDec,ImgPsfFlux,Distance"
+        for m in clip['matchList']:
+            print >>csv, "%f,%f,%f,%f,%f,%f,%f" % (
+                    m.first.getRa(), m.first.getDec(),
+                    m.first.getPsfFlux(),
+                    m.second.getRa(), m.second.getDec(),
+                    m.second.getPsfFlux(),
+                    m.distance)
+        csv.close()
 
-    clip = pcal.runWorker(clip)
-    print clip['photometricZeroPoint']
-    print clip['photometricZeroPointUnc']
+        clip = wcsv.runWorker(clip)
+        print clip['wcsVerifyStats']
+
+#         clip = pcal.runWorker(clip)
+#         photoObj = clip['photometricMagnitudeObject']
+#         print "Photometric zero:", photoObj.getMag(1)
+#         print "Flux of a 20th mag object:", photoObj.getFlux(20)
 
     outButler.put(clip['visitExposure'], "calexp", **keys)
 

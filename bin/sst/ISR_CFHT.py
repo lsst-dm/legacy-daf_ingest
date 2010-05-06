@@ -7,18 +7,21 @@ import lsst.daf.persistence as dafPersist
 from lsst.obs.cfht import CfhtMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def isrProcess(root, outRoot, **keys):
-    bf = dafPersist.ButlerFactory(
-            mapper=CfhtMapper(
-                root=root,
-                calibRoot="/lsst/DC3/data/obstest/CFHTLS/calib"
-            ))
-    butler = bf.create()
+def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
+
+    if inButler is None:
+        bf = dafPersist.ButlerFactory(mapper=CfhtMapper(
+            root=root, calibRoot="/lsst/DC3/data/obstest/CFHTLS/calib"))
+        inButler = bf.create()
+    if outButler is None:
+        obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
+        outButler = obf.create()
+
     clip = {
-        'isrExposure': butler.get("raw", **keys),
-        'biasExposure': butler.get("bias", **keys),
-#         'darkExposure': butler.get("dark", **keys),
-        'flatExposure': butler.get("flat", **keys)
+        'isrExposure': inButler.get("raw", **keys),
+        'biasExposure': inButler.get("bias", **keys),
+#         'darkExposure': inButler.get("dark", **keys),
+        'flatExposure': inButler.get("flat", **keys)
     }
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
@@ -27,7 +30,7 @@ def isrProcess(root, outRoot, **keys):
             exposure: isrExposure
         }
         outputKeys: {
-            saturationCorrectedExposure: isrExposure
+            saturationMaskedExposure: isrExposure
         }
         """))
     sat = SimpleStageTester(ipPipe.IsrSaturationStage(pol))
@@ -90,10 +93,6 @@ def isrProcess(root, outRoot, **keys):
     exposure = clip['isrExposure']
     # exposure.writeFits("postIsr.fits")
 
-    # Need the input registry to get filters for output.
-    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot,
-            registry="/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"))
-    outButler = obf.create()
     outButler.put(exposure, "postISR", **keys)
 
 def run():

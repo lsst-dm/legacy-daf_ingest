@@ -11,13 +11,19 @@ import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def crSplitProcess(root, outRoot, **keys):
-    bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
-    butler = bf.create()
+def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
+        **keys):
+
+    if inButler is None:
+        bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
+        inButler = bf.create()
+    if outButler is None:
+        obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
+        outButler = obf.create()
 
     clip = {
-        'isrCcdExposure0': butler.get("postISRCCD", snap=0, **keys),
-#        'isrCcdExposure1': butler.get("postISRCCD", snap=1, **keys)
+        'isrCcdExposure0': inButler.get("postISRCCD", snap=0, **keys),
+#        'isrCcdExposure1': inButler.get("postISRCCD", snap=1, **keys)
     }
 
     # bbox = afwImage.BBox(afwImage.PointI(0,0), 2500, 2500)
@@ -60,23 +66,23 @@ def crSplitProcess(root, outRoot, **keys):
 #         """))
 #     bkgd1 = SimpleStageTester(measPipe.BackgroundEstimationStage(pol))
 # 
-#     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
-#         """#<?cfg paf policy?>
-#         inputKeys: {
-#             exposure: bkgSubCcdExposure0
-#         }
-#         outputKeys: {
-#             exposure: crSubCcdExposure0
-#         }
-#         parameters: {
-#             defaultFwhm: 1.0
-#             keepCRs: false
-#         }
-#         crRejectPolicy: {
-#             nCrPixelMax: 100000
-#         }
-#         """))
-#     cr0 = SimpleStageTester(ipPipe.CrRejectStage(pol))
+    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+        inputKeys: {
+            exposure: bkgSubCcdExposure0
+        }
+        outputKeys: {
+            exposure: crSubCcdExposure0
+        }
+        parameters: {
+            defaultFwhm: 1.0
+            keepCRs: false
+        }
+        crRejectPolicy: {
+            nCrPixelMax: 100000
+        }
+        """))
+    cr0 = SimpleStageTester(ipPipe.CrRejectStage(pol))
 # 
 #     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
 #         """#<?cfg paf policy?>
@@ -150,8 +156,8 @@ def crSplitProcess(root, outRoot, **keys):
 #     clip = bkgd1.runWorker(clip)
 #     clip['bkgSubCcdExposure0'].writeFits("bkgSub0.fits")
 #     clip['bkgSubCcdExposure1'].writeFits("bkgSub1.fits")
-#     clip = cr0.runWorker(clip)
-#     print clip['nCR']
+    clip = cr0.runWorker(clip)
+    print clip['nCR']
 #     clip = cr1.runWorker(clip)
 #     print clip['nCR']
 #     clip['crSubCcdExposure0'].writeFits("crSub0.fits")
@@ -165,11 +171,10 @@ def crSplitProcess(root, outRoot, **keys):
 
 
     # exposure = clip['visitExposure']
-    exposure = clip['bkgSubCcdExposure0']
+    # exposure = clip['bkgSubCcdExposure0']
+    exposure = clip['crSubCcdExposure0']
     # exposure.writeFits("visitim.fits")
 
-    obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-    outButler = obf.create()
     outButler.put(exposure, "visitim", **keys)
 
 def run():

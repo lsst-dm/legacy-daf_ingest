@@ -11,14 +11,18 @@ import lsst.daf.persistence as dafPersist
 from lsst.obs.cfht import CfhtMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def crSplitProcess(root, outRoot, **keys):
-    registry="/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"
-    bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=root,
-        registry=registry))
-    butler = bf.create()
+def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
+        **keys):
+
+    if inButler is None:
+        bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=root))
+        inButler = bf.create()
+    if outButler is None:
+        obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
+        outButler = obf.create()
 
     clip = {
-        'isrCcdExposure': butler.get("postISRCCD", **keys),
+        'isrCcdExposure': inButler.get("postISRCCD", **keys),
     }
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
@@ -61,12 +65,8 @@ def crSplitProcess(root, outRoot, **keys):
     clip['bkgSubCcdExposure'].writeFits("bkgSub.fits")
     clip = cr.runWorker(clip)
     print clip['nCR']
-    clip['crSubCcdExposure'].writeFits("crSub.fits")
 
     exposure = clip['crSubCcdExposure']
-    obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot,
-        registry=registry))
-    outButler = obf.create()
     outButler.put(exposure, "visitim", **keys)
 
 def run():

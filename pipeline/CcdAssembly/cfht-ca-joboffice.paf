@@ -21,17 +21,18 @@ schedule: {
 
     job: {
         identity: {
-            id: {
-              name: visit
-            }
-            id: {
-              name: ccd
-            }
+            datasetType: postISRCCD
+            id: visit
+            id: filter
+            id: ccd
         }
         input: {
             datasetType: postISR
             id: {
               name: visit
+            }
+            id: {
+              name: filter
             }
             id: {
               name: ccd
@@ -46,6 +47,9 @@ schedule: {
             datasetType: postISRCCD
             id: {
               name: visit
+            }
+            id: {
+              name: filter
             }
             id: {
               name: ccd

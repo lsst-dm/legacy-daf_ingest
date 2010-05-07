@@ -43,6 +43,9 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
             width: 5
             parameter: 1.0
         }
+        backgroundPolicy: {
+            algorithm: NONE
+        }
         """))
     srcd = SimpleStageTester(measPipe.SourceDetectionStage(pol))
 
@@ -81,6 +84,8 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
         outputWcsKey: measuredWcs
         outputMatchListKey: matchList
         numBrightStars: 75
+        wcsToleranceInArcsec: 0.3
+#        defaultFilterName: mag
         """))
     wcsd = SimpleStageTester(measPipe.WcsDeterminationStage(pol))
 
@@ -91,12 +96,12 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
         """))
     wcsv = SimpleStageTester(measPipe.WcsVerificationStage(pol))
 
-#     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
-#         """#<?cfg paf policy?>
-#         sourceMatchSetKey: matchList
-#         outputValueKey: photometricMagnitudeObject
-#         """))
-#     pcal = SimpleStageTester(measPipe.PhotoCalStage(pol))
+    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """#<?cfg paf policy?>
+        sourceMatchSetKey: matchList
+        outputValueKey: photometricMagnitudeObject
+        """))
+    pcal = SimpleStageTester(measPipe.PhotoCalStage(pol))
 
 
     clip = srcd.runWorker(clip)

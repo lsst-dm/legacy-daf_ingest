@@ -31,6 +31,9 @@ def sfmProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             positiveDetection: positiveFootprintSet
         }
+        backgroundPolicy: {
+            algorithm: NONE
+        }
         """))
     srcd = SimpleStageTester(measPipe.SourceDetectionStage(pol))
 

@@ -17,16 +17,30 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
     if outButler is None:
         obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
         outButler = obf.create()
+
+    if 'skyTile' in keys:
+        skyTiles = [(keys['skyTile'],)]
+    else:
+        skyTiles = inButler.queryMetadata("raw", "skytile", ("skytile",))
+        if len(skyTiles) == 0:
+            raise RuntimeError('No sky-tiles found')
+
     srcList = []
-    raftSensorList = inButler.queryMetadata("raw", "raft", ("visit", "raft", "sensor"),
-                                            skyTile=keys['skyTile'])
-    for visit, raft, sensor in raftSensorList:
-        srcs = butler.get("src", visit=visit, raft=raft, sensor=sensor)
-        srcList.append(srcs)
+    while len(skyTiles) > 0 and len(srcList) == 0:
+        skyTile = skyTiles.pop()[0]
+        raftSensorList = inButler.queryMetadata(
+            "raw", "raft", ("visit", "raft", "sensor"), skyTile=skyTile)
+        for visit, raft, sensor in raftSensorList:
+            if inButler.fileExists("src", visit=visit, raft=raft, sensor=sensor):
+                srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
+                srcList.append(srcs)
+    if len(srcList) == 0:
+        raise RuntimeError("No sources found")
+    keys['skyTile'] = skyTile
 
     clip = {
         'sources': srcList,
-        'jobIdentity': { 'skyTileId': keys['skyTile'] },
+        'jobIdentity': { 'skyTileId': skyTile },
     }
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
@@ -65,7 +79,7 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
         outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
 
 def run():
-    sourceAssocProcess(root=".", outRoot=".", skyTile=1)
+    sourceAssocProcess(root=".", outRoot=".")
 
 if __name__ == "__main__":
     run()

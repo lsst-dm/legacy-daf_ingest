@@ -1,5 +1,6 @@
 setupRequired(meas_pipeline)
 setupRequired(ip_pipeline)
+setupRequired(ap)
 setupRequired(coadd_utils)
 setupRequired(daf_butlerUtils)
 setupRequired(ctrl_sched)

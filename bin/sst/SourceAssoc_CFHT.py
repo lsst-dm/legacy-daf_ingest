@@ -18,17 +18,28 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
         obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
         outButler = obf.create()
 
+    if 'skyTile' in keys:
+        skyTiles = [(keys['skyTile'],)]
+    else:
+        skyTiles = inButler.queryMetadata("raw", "skytile", ("skytile",))
+        if len(skyTiles) == 0:
+            raise RuntimeError('No sky-tiles found')
+
     srcList = []
-    ccdList = inButler.queryMetadata("raw", "ccd", ("visit", "ccd"),
-                                     skyTile=keys['skyTile'])
-    for visit, ccd in ccdList:
-        if ccd == 6: # hack (only ccd for which we have sources) 
-            srcs = inButler.get("src", visit=visit, ccd=ccd)
-            srcList.append(srcs)
+    while len(skyTiles) > 0 and len(srcList) == 0:
+        skyTile = skyTiles.pop()[0]
+        ccdList = inButler.queryMetadata("raw", "ccd", ("visit", "ccd"), skyTile=skyTile)
+        for visit, ccd in ccdList:
+            if inButler.fileExists("src", visit=visit, ccd=ccd):
+                srcs = inButler.get("src", visit=visit, ccd=ccd)
+                srcList.append(srcs)
+    if len(srcList) == 0:
+        raise RuntimeError("No sources found")
+    keys['skyTile'] = skyTile
 
     clip = {
         'sources': srcList,
-        'jobIdentity': { 'skyTileId': keys['skyTile'] },
+        'jobIdentity': { 'skyTileId': skyTile },
     }
 
     pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
@@ -67,7 +78,7 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
         outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
 
 def run():
-    sourceAssocProcess(root=".", outRoot=".", skyTile=100477)
+    sourceAssocProcess(root=".", outRoot=".")
 
 if __name__ == "__main__":
     run()

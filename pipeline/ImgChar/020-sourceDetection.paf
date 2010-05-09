@@ -1,15 +1,18 @@
 #<?cfg paf policy ?>
-# sourceDetection.paf
+# ImgChar sourceDetection.paf
 inputKeys: {
-   exposure: "visitExposure"
+   exposure: visitExposure
 }
 outputKeys: {
-   positiveDetection: "positiveFootprintSet"
-   negativeDetection: "negativeFootprintSet"
-   psf: "simplePsf"
+   positiveDetection: positiveFootprintSet
+   negativeDetection: negativeFootprintSet
+   psf: simplePsf
 }
 psfPolicy: {
-   height: 15
-   width: 15
+   height: 5
+   width: 5
    parameter: 1.0
+}
+backgroundPolicy: {
+   algorithm: NONE
 }

@@ -1,0 +1,21 @@
+#<?cfg paf policy ?>
+# SFN 050-imsim-output.paf
+
+parameters: {
+    butler: {
+        mapperName: lsst.obs.cfht.CfhtMapper
+        mapperPolicy: {
+            root: %(input)
+        }
+    }
+
+    outputItems: {
+       sourceSet_persistable: {
+          required: true
+          datasetId: {
+             datasetType: Src
+             fromJobIdentity: "visit"  "filter" "raft" "sensor"
+          }
+       }
+    }
+}

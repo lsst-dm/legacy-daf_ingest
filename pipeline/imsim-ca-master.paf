@@ -16,20 +16,16 @@
 #}
 
 execute: {
-   # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   executionMode: oneloop
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices: 1
    localLogMode: true
-   # To be quite verbose: add 'logThreshold: -3'
-   logThreshold: -3
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCcdAssembly
    dir: {
       shortName: CA
       defaultRoot: .
-      #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../../"
+      #runDirPattern: "../%(runid)s/%(shortname)s"
+      runDirPattern: "/home/rallsman/JOTest/%(runid)s/%(shortname)s"
       work: work
       input: input
       output: output
@@ -41,35 +37,48 @@ execute: {
       name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @000-getajob.paf
+      stagePolicy: @CcdAssembly/000-getajob.paf
    }
 
    appStage: {
       name: "010-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @010-input.paf
+      stagePolicy: @CcdAssembly/010-input.paf
    }
 
    appStage: {
       name: "020-assembleCcd"
       parallelClass: "lsst.ip.pipeline.IsrCcdAssemblyStageParallel"
       eventTopic: "None"
-      stagePolicy: @020-assembleCcd.paf
+      stagePolicy: @CcdAssembly/020-assembleCcd.paf
    }
 
    appStage: {
-      name: "030-isrDefect"
-      parallelClass: "lsst.ip.pipeline.IsrDetectStageParallel"
+      name: "030-isrCcdDefect"
+      parallelClass: "lsst.ip.pipeline.IsrCcdDefectStageParallel"
       eventTopic: "None"
-      stagePolicy: @030-isrDefect.paf
+      stagePolicy: @CcdAssembly/030-isrCcdDefect.paf
    }
 
    appStage: {
       name: "040-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @040-output.paf
+      stagePolicy: @CcdAssembly/040-output.paf
    }
 
+   appStage: {
+      name: "050-jobDone"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @CcdAssembly/050-jobDone.paf
+   }
+
+   failureStage: {
+      name: "060-failure"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @CcdAssembly/060-failure.paf
+   }
 }

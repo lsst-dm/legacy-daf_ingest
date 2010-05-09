@@ -1,0 +1,21 @@
+#<?cfg paf policy ?>
+# CCD Assembly  output.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
+        }
+    }
+
+    outputItems: {
+        isrExposure: {
+            required: true
+            datasetId: {
+                datasetType: postISRCCD
+                fromJobIdentity:  "visit" "filter" "raft" "sensor"  "snap"
+            }
+        }
+    }
+}
+

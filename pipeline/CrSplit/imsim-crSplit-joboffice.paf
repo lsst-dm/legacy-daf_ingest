@@ -22,32 +22,29 @@ schedule: {
     }
 
     job: {
+        identity: {
+            datasetType: postISRCCD
+            id: visit
+            id: filter
+            id: snap
+            id: raft
+            id: sensor
+        }
         input: {
             datasetType: postISRCCD
-            id: {
-              name: visit
-            }
-            id: {
-              name: snap
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
-            }
+            id: visit
+            id: filter
+            id: snap
+            id: raft
+            id: sensor
         }
         output: {
             datasetType: visitim
-            id: {
-              name: visit
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
-            }
+            id: visit
+            id: filter
+            id: snap
+            id: raft
+            id: sensor
         }
     }
 }

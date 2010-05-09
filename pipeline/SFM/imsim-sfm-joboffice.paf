@@ -7,42 +7,33 @@ persist.dir:  %(schedroot)s/%(name)s-joboffice
 listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
     dataReadyEvent:      calexpAvailable
-    pipelineEvent:       SfmJob
+    pipelineEvent:       SFMJob
     stopEvent:           JobOfficeStop
 }
 
 schedule: {
     trigger: {
         datasetType: calexp
-        id: {
-            name: scienceExposure
-        }
+        id: visit
+        id: field
+        id: raft
+        id: sensor
     }
 
     job: {
         input: {
             datasetType: calexp
-            id: {
-              name: visit
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
-            }
+            id: visit
+            id: field
+            id: raft
+            id: sensor
         }
         output: {
-            datasetType: sourceSet    TBD
-            id: {
-              name: visit
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
-            }
+            datasetType: src
+            id: visit
+            id: field
+            id: raft
+            id: sensor
         }
     }
 }

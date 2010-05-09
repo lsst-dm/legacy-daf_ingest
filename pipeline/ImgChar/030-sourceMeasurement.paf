@@ -1,12 +1,12 @@
 #<?cfg paf policy ?>
-# sourceMeasurement.paf
+# ImgChar sourceMeasurement.paf
 inputKeys: {
-   exposure: "visitExposure"
-   psf: "simplePsf"
-   positiveDetection: "positiveFootprintSet"
-   negativeDetection: "negativeFootprintSet"
+   exposure: visitExposure
+   psf: simplePsf
+   positiveDetection: positiveFootprintSet
+   negativeDetection: negativeFootprintSet
 }
 outputKeys: {
-   sources: "sourceSet"
+   sources: sourceSet
 }
 

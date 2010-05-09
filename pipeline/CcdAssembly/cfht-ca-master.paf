@@ -73,4 +73,18 @@ execute: {
       stagePolicy: @040-cfht-caOutput.paf
    }
 
+   appStage: {
+      name: "050-jobDone"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @050-jobDone.paf
+   }
+
+   failureStage: {
+      name: "060-failure"
+      parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
+      eventTopic: "None"
+      stagePolicy: @060-failure.paf
+   }
+
 }

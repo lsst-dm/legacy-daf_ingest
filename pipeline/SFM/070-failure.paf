@@ -2,4 +2,4 @@
 
 pipelineEvent:  SfmJob
 jobSuccess: false
-datasets.dataReadyEvent:  TBD: 
+datasets.dataReadyEvent:  srcAvailable

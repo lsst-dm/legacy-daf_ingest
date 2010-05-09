@@ -1,4 +1,5 @@
 #<?cfg paf policy ?>
+# imsim-crSplit-master.paf
 
 #requires: {
 #   database: {
@@ -18,10 +19,10 @@
 
 execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   executionMode: "oneloop"
+   #executionMode: "oneloop"
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices: 1
-   logThreshold: -3
+   #logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownCrSplit
@@ -29,7 +30,7 @@ execute: {
       shortName: CrSplit
       defaultRoot: .
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../../"
+      runDirPattern: "../../JOTest"
       work: work
       input: input
       output: output
@@ -41,84 +42,84 @@ execute: {
       name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @000-getajob.paf
+      stagePolicy: @CrSplit/000-getajob.paf
    }
 
    appStage: {
-      name: "010-imsim-crSplitInput"
+      name: "010-imsim-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @010-imsim-crSplitInput.paf
+      stagePolicy: @CrSplit/010-imsim-input.paf
    }
 
    appStage: {
-      name: "020-backgroundEstimation0"
+      name: "020-imsim-backgroundEstimation0"
       parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
       eventTopic: "None"
-      stagePolicy: @020-backgroundEstimation0.paf
+      stagePolicy: @CrSplit/020-imsim-backgroundEstimation0.paf
    }
 
-   appStage: {
-      name: "030-backgroundEstimation1"
-      parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
-      eventTopic: "None"
-      stagePolicy: @030-backgroundEstimation1.paf
-   }
+#   appStage: {
+#      name: "030-backgroundEstimation1"
+#      parallelClass: "lsst.meas.pipeline.BackgroundEstimationStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @CrSplit/030-backgroundEstimation1.paf
+#   }
 
    appStage: {
-      name: "040-crReject0"
+      name: "040-imsim-crReject0"
       parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
       eventTopic: "None"
-      stagePolicy: @040-crReject0.paf
+      stagePolicy: @CrSplit/040-imsim-crReject0.paf
    }
 
-   appStage: {
-      name: "050-crReject1"
-      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
-      eventTopic: "None"
-      stagePolicy: @050-crReject1.paf
-   }
+#   appStage: {
+#      name: "050-crReject1"
+#      parallelClass: "lsst.ip.pipeline.CrRejectStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @CrSplit/050-crReject1.paf
+#   }
+#
+#   appStage: {
+#      name: "060-simpleDiffIm"
+#      parallelClass: "lsst.ip.pipeline.SimpleDiffImStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @CrSplit/060-simpleDiffIm.paf
+#   }
+#
+#   appStage: {
+#      name: "070-sourceDetection"
+#      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @CrSplit/070-sourceDetection.paf
+#   }
+#
+#   appStage: {
+#      name: "080-crSplitCombine"
+#      parallelClass: "lsst.ip.pipeline.CrSplitCombineStageParallel"
+#      eventTopic: "None"
+#      stagePolicy: @CrSplit/080-crSplitCombine.paf
+#   }
 
    appStage: {
-      name: "060-simpleDiffIm"
-      parallelClass: "lsst.ip.pipeline.SimpleDiffImStageParallel"
-      eventTopic: "None"
-      stagePolicy: @060-simpleDiffIm.paf
-   }
-
-   appStage: {
-      name: "070-sourceDetection"
-      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
-      eventTopic: "None"
-      stagePolicy: @070-sourceDetection.paf
-   }
-
-   appStage: {
-      name: "080-crSplitCombine"
-      parallelClass: "lsst.ip.pipeline.CrSplitCombineStageParallel"
-      eventTopic: "None"
-      stagePolicy: @080-crSplitCombine.paf
-   }
-
-   appStage: {
-      name: "090-imsim-crSplitOutput"
+      name: "090-imsim-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @090-imsim-crSplitOutput.paf
+      stagePolicy: @CrSplit/090-imsim-output.paf
    }
 
    appStage: {
-      name: "100-jobdone"
+      name: "100-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @100-jobdone.paf
+      stagePolicy: @CrSplit/100-jobDone.paf
    }
 
    failureStage: {
       name: "110-failure"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @110-failure.paf
+      stagePolicy: @CrSplit/110-failure.paf
    }
 
 }

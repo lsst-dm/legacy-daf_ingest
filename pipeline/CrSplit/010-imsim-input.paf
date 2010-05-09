@@ -1,0 +1,27 @@
+#<?cfg paf policy ?>
+# CrSplit input.paf
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
+        }
+    }
+    inputItems: {
+        isrCcdExposure0: {
+            datasetType: "postISRCCD"
+            datasetId: {
+                fromInputDatasets: true
+            }
+        }
+        #isrCcdExposure1: {
+        #    datasetType: "postISRCCD"
+        #    datasetId: {
+        #        fromJobIdentity: "visit" "raft" "sensor"
+        #        set: {
+        #            snap: 1
+        #        }
+        #    }
+        #}
+    }
+}

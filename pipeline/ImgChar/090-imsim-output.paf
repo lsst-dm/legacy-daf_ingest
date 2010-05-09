@@ -1,0 +1,39 @@
+#<?cfg paf policy ?>
+# Output.paf
+ 
+parameters: {
+   butler: {
+      mapperName: lsst.obs.lsstSim.LsstSimMapper
+      mapperPolicy: {
+         root: %(input)
+      }
+   }
+
+   outputItems: {
+      visitExposure: {
+         datasetId: {
+            datasetType: calexp
+            fromJobIdentity: "visit" "filter" "raft" "sensor" 
+         }
+      }
+      measuredPsf: {
+         datasetId: {
+            datasetType: psf
+            fromJobIdentity: "visit" "filter" "raft" "sensor"
+         }
+      }
+#      matchList: {
+#         datasetId: {
+#            datasetType: sourceMatchSet
+#            fromJobIdentity: "visit" "filter" "raft" "sensor"
+#         }
+#      }
+#      sourceSet: {
+#         datasetId: {
+#            datasetType: sourceSet
+#            fromJobIdentity: "visit" "filter" "raft" "sensor"
+#         }
+#      }
+ 
+   }
+}

@@ -2,7 +2,7 @@
 # ImgChar input.paf
 parameters: {
     butler: {
-        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
             root: %(input)
         }
@@ -11,7 +11,7 @@ parameters: {
         visitExposure: {
             datasetType: "visitim"
             datasetId: {
-                fromJobIdentity: "visit" "raft" "sensor" 
+                fromInputDatasets: true
             }
         }
     }

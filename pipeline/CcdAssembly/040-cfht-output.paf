@@ -9,10 +9,11 @@ parameters: {
     }
 
     outputItems: {
-        defectMaskedCcdExposure: {
+        isrExposure: {
+            required: true
             datasetId: {
                 datasetType: postISRCCD
-                fromJobIdentity:  "visit" "ccd" 
+                fromJobIdentity:  "visit" "filter" "ccd" 
             }
         }
     }

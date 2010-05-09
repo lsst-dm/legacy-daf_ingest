@@ -3,15 +3,9 @@
 
 # Input.paf
 parameters: {
-    # sendevent doesn't pass calibration root.
-    # CFHTLS and ImSim are currently setup with different pathnames structure 
-    #     from 'root' for calib files.
-    # Fix butler below if datasets conform in structure or sendevent fixed.
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
-            # below  %(input) resolves to  /lsst/DC3/data/obstest/CFHTLS
-            # sendevent input:"raw filter=y field=D3 visit=788965 ccd=6 amp=0" 
             root: %(input)
             calibRoot: %(input)
         }

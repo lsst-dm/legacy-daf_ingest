@@ -1,6 +1,6 @@
 #<?cfg paf policy ?>
+# ImgChar 100-jobdone.paf
 
 pipelineEvent:  ImgCharJob
 datasets.dataReadyEvent:  calexpAvailable
 
-# what about other output datasets:  matchList, cellSet

@@ -27,10 +27,10 @@ execute: {
    }
  
    appStage: {
-      name: "010-imsim-input"
+      name: "010-cfht-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @SFM/010-imsim-input.paf
+      stagePolicy: @SFM/010-cfht-input.paf
    }
 
    appStage: {
@@ -55,10 +55,10 @@ execute: {
    }
 
    appStage: {
-      name: "050-imsim-output"
+      name: "050-cfht-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @SFM/050-imsim-output.paf
+      stagePolicy: @SFM/050-cfht-output.paf
    }
 
    appStage: {

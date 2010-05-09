@@ -1,0 +1,21 @@
+#<?cfg paf policy ?>
+# Single Frame Measurement input.paf
+parameters: {
+   butler: {
+       mapperName: lsst.obs.lsstSim.LsstSimMapper
+       mapperPolicy: {
+           root: %(input)
+       }
+   }
+   InputItems: {
+       scienceExposure: {
+           datasetType: calexp
+                fromInputDatasets: true
+       }
+       psf: {
+           datasetType: psf
+                fromInputDatasets: true
+       }
+   }
+
+

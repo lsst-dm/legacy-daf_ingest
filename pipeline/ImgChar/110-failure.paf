@@ -1,9 +1,7 @@
 #<?cfg paf policy ?>
-#
+# ImgChar 100-jobdone.paf
 
 pipelineEvent:  ImgCharJob
 jobSuccess: false
 datasets.dataReadyEvent:  calexpAvailable
-
-# what about other output datasets:  matchList, cellSet
 

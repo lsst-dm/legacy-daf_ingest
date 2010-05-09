@@ -9,9 +9,10 @@ outputKeys: {
 }
 
 parameters: {
-   defaultFwhm : 0.1
-   keepCRs: true
+   defaultFwhm : 1.0
+   keepCRs: false
 }
+
 crRejectPolicy: {
     nCrPixelMax: 100000
 }

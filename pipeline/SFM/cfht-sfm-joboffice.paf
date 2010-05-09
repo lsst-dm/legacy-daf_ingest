@@ -1,34 +1,36 @@
 #<?cfg paf policy ?>
+# cfht-crSplit-joboffice.paf
 
-# cfht-isr-joboffice.paf
-
-name:  ISR
+name:  SFM
 persist.dir:  %(schedroot)s/%(name)s-joboffice
 
 listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
-    dataReadyEvent:      RawAvailable
-    pipelineEvent:       IsrJob
+    dataReadyEvent:      calexpAvailable
+    pipelineEvent:       SFMJob
     stopEvent:           JobOfficeStop
 }
 
 schedule: {
     trigger: {
-        datasetType: raw
+        datasetType: calexp
+        id: filter
+        id: visit
+        id: ccd
     }
 
     job: {
         input: {
-            datasetType: raw
+            datasetType: calexp
+            id: filter
             id: visit
             id: ccd
-            id: amp
         }
         output: {
-            datasetType: postISR
+            datasetType: src
+            id: filter
             id: visit
             id: ccd
-            id: amp
         }
     }
 }

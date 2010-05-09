@@ -3,5 +3,5 @@ inputKeys: {
    ccdExposure: isrExposure
 }
 outputKeys: {
-   defectMaskedCcdExposure: "postISRCCD"
+   defectMaskedCcdExposure: isrExposure
 }

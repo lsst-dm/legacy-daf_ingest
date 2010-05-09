@@ -1,5 +1,4 @@
 #<?cfg paf policy ?>
-# photoCal.paf
+# ImgChar photoCal.paf
 sourceMatchSetKey: matchList
-outputValueKey: photometricZeroPoint
-outputUncertaintyKey: photometricZeroPointUnc
+outputValueKey: photometricMagnitudeObject

@@ -1,0 +1,21 @@
+#<?cfg paf policy ?>
+# SFM 050-cfht-output.paf
+
+parameters: {
+    butler: {
+        mapperName: lsst.obs.cfht.CfhtMapper
+        mapperPolicy: {
+            root: %(input)
+        }
+    }
+
+    outputItems: {
+       sourceSet_persistable: {
+          required: true
+          datasetId: {
+             datasetType: src
+             fromJobIdentity: "visit" "filter" "ccd"
+          }
+       }
+    }
+}

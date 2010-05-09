@@ -1,5 +1,5 @@
 #<?cfg paf policy ?>
-# ImgChar input.paf
+# CrSplit input.paf
 parameters: {
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
@@ -8,10 +8,10 @@ parameters: {
         }
     }
     inputItems: {
-        visitExposure: {
-            datasetType: "visitim"
+        isrCcdExposure: {
+            datasetType: "postISRCCD"
             datasetId: {
-                fromJobIdentity: "visit" "raft" "sensor" 
+                fromInputDatasets:true
             }
         }
     }

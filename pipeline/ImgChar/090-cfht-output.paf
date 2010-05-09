@@ -1,0 +1,38 @@
+#<?cfg paf policy ?>
+# ImgChar Output.paf
+ 
+parameters: {
+   butler: {
+      mapperName: lsst.obs.cfht.CfhtMapper
+      mapperPolicy: {
+         root: %(input)
+      }
+   }
+
+   outputItems: {
+      visitExposure: {
+         datasetId: {
+            datasetType: calexp
+            fromJobIdentity: "visit" "filter" "ccd" 
+         }
+      }
+      measuredPsf: {
+         datasetId: {
+            datasetType: psf
+            fromJobIdentity: "visit" "filter" "ccd"
+         }
+      }
+#      matchList: {
+#         datasetId: {
+#            datasetType: sourceMatchSet
+#            fromJobIdentity: "visit" "filter" "ccd"
+#         }
+#      }
+#      sourceSet: {
+#         datasetId: {
+#            datasetType: sourceSet
+#            fromJobIdentity: "visit" "filter" "ccd" 
+#         }
+#      }
+   }
+}

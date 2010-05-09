@@ -1,12 +1,11 @@
 #<?cfg paf policy?>
-# backgroundEstimation0.paf
+# backgroundEstimation1.paf
 inputKeys: {
-   exposure: "isrCcdExposure0"
+   exposure: "isrCcdExposure1"
 }
 
 outputKeys: {
-   backgroundSubtractedExposure: "bkgSubCcdExposure0"
-   background: "background0"
+   backgroundSubtractedExposure: "bkgSubCcdExposure1"
 }
 
 parameters: {
@@ -14,5 +13,7 @@ parameters: {
    backgroundPolicy: {
       binsize: 512
    }
+
 }
+
 

@@ -1,5 +1,5 @@
 #<?cfg paf policy ?>
-# imsim-imgChar-joboffice.paf
+# cfht-imgChar-joboffice.paf
 
 name:  ImgChar
 persist.dir:  %(schedroot)s/%(name)s-joboffice
@@ -14,47 +14,41 @@ listen: {
 schedule: {
     trigger: {
         datasetType: visitim
-        id: filter
         id: visit
-        id: raft
-        id: sensor
+        id: filter
+        id: ccd
     }
 
     job: {
         input: {
             datasetType: visitim
-            id: filter
             id: visit
-            id: raft
-            id: sensor
+            id: filter
+            id: ccd
         }
         output: {
             datasetType: calexp
-            id: filter
             id: visit
-            id: raft
-            id: sensor
+            id: filter
+            id: ccd
         }
         output: {
             datasetType: psf
-            id: filter
             id: visit
-            id: raft
-            id: sensor
+            id: filter
+            id: ccd
         }
 #        output: {
 #            datasetType: cellSet
-#            id: filter
 #            id: visit
-#            id: raft
-#            id: sensor
+#            id: filter
+#            id: ccd
 #        }
-#        output: {
+#        output: { 
 #            datasetType: sourceMatchSet
-#            id: filter
 #            id: visit
-#            id: raft
-#            id: sensor
+#            id: filter
+#            id: ccd
 #        }
     }
 }

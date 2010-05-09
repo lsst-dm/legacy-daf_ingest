@@ -1,0 +1,7 @@
+#<?cfg paf policy ?>
+# SFM 040-computeSourceSkyCoords.paf
+inputKeys: {
+   exposure: "scienceExposure"
+   sources: "sourceSet"
+}
+

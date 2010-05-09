@@ -1,5 +1,5 @@
 #<?cfg paf policy ?>
-# CCD Assembly  output.paf
+# ImgChar input.paf
 parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
@@ -7,14 +7,12 @@ parameters: {
             root: %(input)
         }
     }
-
-    outputItems: {
-        defectMaskedCcdExposure: {
+    inputItems: {
+        visitExposure: {
+            datasetType: "visitim"
             datasetId: {
-                datasetType: postISRCCD
-                fromJobIdentity:  "visit" "raft" "sensor"  "snap"
+                fromInputDatasets: true
             }
         }
     }
 }
-

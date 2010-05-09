@@ -14,41 +14,23 @@ listen: {
 schedule: {
     trigger: {
         datasetType: postISRCCD
-        id: {
-            name: field
-        }
-        id: {
-            name: visit
-        }
-        id: {
-            name: ccd
-        }
+        id: filter
+        id: visit
+        id: ccd
     }
 
     job: {
         input: {
             datasetType: postISRCCD
-            id: {
-              name: field
-            }
-            id: {
-              name: visit
-            }
-            id: {
-              name: ccd
-            }
+            id: filter
+            id: visit
+            id: ccd
         }
         output: {
             datasetType: visitim
-            id: {
-              name: field
-            }
-            id: {
-              name: visit
-            }
-            id: {
-              name: ccd
-            }
+            id: filter
+            id: visit
+            id: ccd
         }
     }
 }

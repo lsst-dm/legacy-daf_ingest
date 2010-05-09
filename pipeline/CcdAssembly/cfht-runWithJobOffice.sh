@@ -31,13 +31,13 @@ if [ -e "$RunDir/work/$pipeline-joboffice" ]; then
    rm -rf $RunDir/work/$pipeline-joboffice
 fi
 
-joboffice.py -D -L verb2 -r $RUNID -b $broker -d $RunDir/work $jobofficepol
-sleep 2
-launchPipeline.py -L debug cfht-ca-master.paf $RUNID $pipeline | grep -v Shutdown &
+echo "joboffice.py -D -L verb2 -r $RUNID -b $broker -d $RunDir/work $jobofficepol"
+#sleep 2
+echo "launchPipeline.py -L debug cfht-ca-master.paf $RUNID $pipeline | grep -v Shutdown &"
 
 set +e
-announceDataset.py -r $RUNID -b $broker -t $availtopic cfht-ca-inputdata.txt
-sleep 15
+echo "announceDataset.py -r $RUNID -b $broker -t $availtopic cfht-ca-inputdata.txt"
+#sleep 15
 
 # ps -auxww | grep runPipeline.py | grep $RUNID
 #pid=`ps -auxww | grep runPipeline.py | grep $RUNID | awk '{print $2}'`

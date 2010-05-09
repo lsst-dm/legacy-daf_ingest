@@ -1,14 +1,14 @@
 #<?cfg paf policy ?>
 # xposureGeneration.paf 
 
-TBD:
-
-inputKeys: {
-   exposure: "scienceExposure"
-   psf: "measuredPsf"
-   wcs: "measuredWcs"
-   photometricModel: "photoModel"
-}
-outputKeys: {
-   exposure: "finalScienceExposure"
-}
+#......................TBD............................
+#
+#inputKeys: {
+#   exposure: "scienceExposure"
+#   psf: "measuredPsf"
+#   wcs: "measuredWcs"
+#   photometricModel: "photoModel"
+#}
+#outputKeys: {
+#   exposure: "finalScienceExposure"
+#}

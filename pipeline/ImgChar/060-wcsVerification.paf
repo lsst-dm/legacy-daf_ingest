@@ -1,5 +1,5 @@
 #<?cfg paf policy?>
-# wcsVerification.paf
+# ImgChar wcsVerification.paf
 
 sourceMatchSetKey: matchList
 outputDictKey: wcsVerifyStats

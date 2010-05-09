@@ -18,45 +18,21 @@ schedule: {
     job: {
         input: {
             datasetType: raw
-            id: {
-              name: visit
-            }
-            id: {
-              name: filter
-            }
-            id: {
-              name: snap
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
-            }
-            id: {
-              name: channel
-            }
+            id: visit
+            id: filter
+            id: snap
+            id: raft
+            id: sensor
+            id: channel
         }
         output: {
             datasetType: postISR
-            id: {
-              name: visit
-            }
-            id: {
-              name: filter
-            }
-            id: {
-              name: snap
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
-            }
-            id: {
-              name: channel
-            }
+            id: visit
+            id: filter
+            id: snap
+            id: raft
+            id: sensor
+            id: channel
         }
     }
 }

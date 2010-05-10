@@ -12,7 +12,11 @@ listen: {
 schedule: {
     trigger: {
         datasetType: postISR
-        id: amp
+        id: {
+            name: amp
+            min: 0
+            lim: 2
+        }
     }
 
     job: {
@@ -24,16 +28,32 @@ schedule: {
         }
         input: {
             datasetType: postISR
-            id: visit
-            id: filter
-            id: ccd
-            id: amp
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
+            id: {
+              name: amp
+              min: 0
+              lim: 2
+            }
         }
         output: {
             datasetType: postISRCCD
-            id: visit
-            id: filter
-            id: ccd
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
         }
     }
 }

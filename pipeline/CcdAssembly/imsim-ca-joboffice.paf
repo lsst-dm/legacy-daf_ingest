@@ -42,14 +42,23 @@ schedule: {
             id: raft
             id: sensor
         }
-
         input: {
             datasetType: postISR
-            id: visit
-            id: filter
-            id: snap
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
             id: {
               name: channel
               value: "0,0"
@@ -72,11 +81,21 @@ schedule: {
         }
         output: {
             datasetType: postISRCCD
-            id: visit
-            id: filter
-            id: snap
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
     }
 }

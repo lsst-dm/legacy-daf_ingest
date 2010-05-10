@@ -20,15 +20,33 @@ schedule: {
     job: {
         input: {
             datasetType: raw
-            id: visit
-            id: ccd
-            id: amp
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
+            id: {
+              name: amp
+            }
         }
         output: {
             datasetType: postISR
-            id: visit
-            id: ccd
-            id: amp
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
+            id: {
+              name: amp
+            }
         }
     }
 }

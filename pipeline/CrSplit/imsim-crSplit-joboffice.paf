@@ -15,6 +15,21 @@ schedule: {
     trigger: {
         datasetType: postISRCCD
         id: {
+            name: visit
+        }
+        id: {
+            name: filter
+        }
+        id: {
+            name: snap
+        }
+        id: {
+            name: raft
+        }
+        id: {
+            name: sensor
+        }
+        id: {
             name: sensor
             min:0
             lim:2
@@ -22,29 +37,41 @@ schedule: {
     }
 
     job: {
-        identity: {
-            datasetType: postISRCCD
-            id: visit
-            id: filter
-            id: snap
-            id: raft
-            id: sensor
-        }
         input: {
             datasetType: postISRCCD
-            id: visit
-            id: filter
-            id: snap
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
         output: {
             datasetType: visitim
-            id: visit
-            id: filter
-            id: snap
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
     }
 }

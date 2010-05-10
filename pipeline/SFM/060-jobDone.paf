@@ -1,6 +1,6 @@
 #<?cfg paf policy ?>
 #
-pipelineEvent:  SfmJob
+pipelineEvent:  SFMJob
 datasets.dataReadyEvent:  srcAvailable
 
 

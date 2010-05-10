@@ -14,26 +14,59 @@ listen: {
 schedule: {
     trigger: {
         datasetType: calexp
-        id: visit
-        id: field
-        id: raft
-        id: sensor
+        id: {
+            name: visit
+        }
+        id: {
+            name: filter
+        }
+        id: {
+            name: snap
+        }
+        id: {
+            name: raft
+        }
+        id: {
+            name: sensor
+        }
     }
 
     job: {
         input: {
             datasetType: calexp
-            id: visit
-            id: field
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap 
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
         output: {
             datasetType: src
-            id: visit
-            id: field
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap 
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
     }
 }

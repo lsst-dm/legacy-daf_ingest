@@ -42,71 +42,71 @@ execute: {
    }
 
    appStage: {
-      name: "000-isrGetajob"
+      name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @ISR/000-isrGetajob.paf
+      stagePolicy: @ISR/000-getajob.paf
    }
 
    appStage: {
-      name: "010-cfht-isrInput"
+      name: "010-cfht-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/010-cfht-isrInput.paf
+      stagePolicy: @ISR/010-cfht-input.paf
    }
 
 # This stage is not implemented in DC3b PT1
 #   appStage: {
-#      name: "030-isrLinearity"
+#      name: "030-linearity"
 #      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @ISR/030-isrLinearity.paf
+#      stagePolicy: @ISR/030-linearity.paf
 #   }
 
    appStage: {
-      name: "040-isrSaturation"
+      name: "040-saturation"
       parallelClass: "lsst.ip.pipeline.IsrSaturationStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/040-isrSaturation.paf
+      stagePolicy: @ISR/040-saturation.paf
    }
 
    appStage: {
-      name: "050-isrOverscan"
+      name: "050-overscan"
       parallelClass: "lsst.ip.pipeline.IsrOverscanStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/050-isrOverscan.paf
+      stagePolicy: @ISR/050-overscan.paf
    }
 
    appStage: {
-      name: "060-isrBias"
+      name: "060-bias"
       parallelClass: "lsst.ip.pipeline.IsrBiasStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/060-isrBias.paf
+      stagePolicy: @ISR/060-bias.paf
    }
 
 # Darks are not processed for CFHT-LS dataset
 
    appStage: {
-      name: "080-isrFlat"
+      name: "080-flat"
       parallelClass: "lsst.ip.pipeline.IsrFlatStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/080-isrFlat.paf
+      stagePolicy: @ISR/080-flat.paf
    }
 
 # This stage is not implemented in DC3b PT1
 #  appStage: {
-#     name: "090-isrFringe"
+#     name: "090-fringe"
 #     parallelClass: "lsst.ip.pipeline.IsrFringeStageParallel"
 #     eventTopic: "None"
-#     stagePolicy: @ISR/090-isrFringe.paf
+#     stagePolicy: @ISR/090-fringe.paf
 #  }
 
 
    appStage: {
-      name: "100-cfht-isrExposureOutput"
+      name: "100-cfht-exposureOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/100-cfht-isrExposureOutput.paf
+      stagePolicy: @ISR/100-cfht-exposureOutput.paf
    }
 
 #============================================================================
@@ -115,32 +115,32 @@ execute: {
 #  22 April 2010...ISR has SDQA metric generation in a comment block
 #
 #   appStage: {
-#      name: "110-isrSdqa"
+#      name: "110-sdqa"
 #      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @ISR/110-isrSdqa.paf
+#      stagePolicy: @ISR/110-sdqa.paf
 #   }
 #
 #   appStage: {
-#      name: "120-isrSdqaOutput"
+#      name: "120-sdqaOutput"
 #      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @ISR/120-isrSdqaOutput.paf
+#      stagePolicy: @ISR/120-sdqaOutput.paf
 #   }
 #
 #============================================================================
    appStage: {
-      name: "130-isrJobdone"
+      name: "130-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @ISR/130-isrJobdone.paf
+      stagePolicy: @ISR/130-jobDone.paf
    }
 
    failureStage: {
-      name: "140-isrFailure"
+      name: "140-failure"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @ISR/140-isrFailure.paf
+      stagePolicy: @ISR/140-failure.paf
    }
 
 }

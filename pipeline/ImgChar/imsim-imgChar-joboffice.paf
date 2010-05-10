@@ -14,47 +14,113 @@ listen: {
 schedule: {
     trigger: {
         datasetType: visitim
-        id: filter
-        id: visit
-        id: raft
-        id: sensor
+        id: {
+            name: visit
+        }
+        id: {
+            name: filter
+        }
+        id: {
+            name: snap
+        }
+        id: {
+            name: raft
+        }
+        id: {
+            name: sensor
+        }
     }
 
     job: {
         input: {
             datasetType: visitim
-            id: filter
-            id: visit
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
         output: {
             datasetType: calexp
-            id: filter
-            id: visit
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
         output: {
             datasetType: psf
-            id: filter
-            id: visit
-            id: raft
-            id: sensor
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
         }
 #        output: {
 #            datasetType: cellSet
-#            id: filter
-#            id: visit
-#            id: raft
-#            id: sensor
+#            id: {
+#              name: visit
+#            }
+#            id: {
+#              name: filter
+#            }
+#            id: {
+#              name: snap
+#            }
+#            id: {
+#              name: raft
+#            }
+#            id: {
+#              name: sensor
+#            }
 #        }
 #        output: {
 #            datasetType: sourceMatchSet
-#            id: filter
-#            id: visit
-#            id: raft
-#            id: sensor
+#            id: {
+#              name: visit
+#            }
+#            id: {
+#              name: filter
+#            }
+#            id: {
+#              name: snap
+#            }
+#            id: {
+#              name: raft
+#            }
+#            id: {
+#              name: sensor
+#            }
 #        }
     }
 }

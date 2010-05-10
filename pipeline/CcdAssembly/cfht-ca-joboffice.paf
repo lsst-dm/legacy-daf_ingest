@@ -13,6 +13,15 @@ schedule: {
     trigger: {
         datasetType: postISR
         id: {
+            name: filter
+            }
+        id: {
+            name: visit
+            }
+        id: {
+            name: ccd
+            }
+        id: {
             name: amp
             min: 0
             lim: 2

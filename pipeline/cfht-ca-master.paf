@@ -41,10 +41,10 @@ execute: {
    }
 
    appStage: {
-      name: "010-cfht-caInput"
+      name: "010-cfht-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @CcdAssembly/010-cfht-caInput.paf
+      stagePolicy: @CcdAssembly/010-cfht-input.paf
    }
 
    appStage: {
@@ -62,10 +62,10 @@ execute: {
    }
 
    appStage: {
-      name: "040-cfht-caOutput"
+      name: "040-cfht-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @CcdAssembly/040-cfht-caOutput.paf
+      stagePolicy: @CcdAssembly/040-cfht-output.paf
    }
 
    appStage: {

@@ -14,23 +14,41 @@ listen: {
 schedule: {
     trigger: {
         datasetType: calexp
-        id: filter
-        id: visit
-        id: ccd
+        id: {
+            name: filter
+            }
+        id: {
+            name: visit
+            }
+        id: {
+            name: ccd
+            }
     }
 
     job: {
         input: {
             datasetType: calexp
-            id: filter
-            id: visit
-            id: ccd
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
         }
         output: {
             datasetType: src
-            id: filter
-            id: visit
-            id: ccd
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
         }
     }
 }

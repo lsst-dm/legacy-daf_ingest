@@ -40,107 +40,107 @@ execute: {
    }
 
    appStage: {
-      name: "000-isrGetajob"
+      name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @000-isrGetajob.paf
+      stagePolicy: @ISR/000-getajob.paf
    }
 
    appStage: {
-      name: "010-imsim-isrInput"
+      name: "010-imsim-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @010-imsim-isrInput.paf
+      stagePolicy: @ISR/010-imsim-input.paf
    }
 
 # This stage is not implemented in DC3b PT1
 #   appStage: {
-#      name: "030-isrLinearity"
+#      name: "030-linearity"
 #      parallelClass: "lsst.ip.pipeline.IsrLinearityStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @030-isrLinearity.paf
+#      stagePolicy: @ISR/030-linearity.paf
 #   }
 
    appStage: {
-      name: "040-isrSaturation"
+      name: "040-saturation"
       parallelClass: "lsst.ip.pipeline.IsrSaturationStageParallel"
       eventTopic: "None"
-      stagePolicy: @040-isrSaturation.paf
+      stagePolicy: @ISR/040-saturation.paf
    }
 
    appStage: {
-      name: "050-isrOverscan"
+      name: "050-overscan"
       parallelClass: "lsst.ip.pipeline.IsrOverscanStageParallel"
       eventTopic: "None"
-      stagePolicy: @050-isrOverscan.paf
+      stagePolicy: @ISR/050-overscan.paf
    }
 
    appStage: {
-      name: "060-isrBias"
+      name: "060-bias"
       parallelClass: "lsst.ip.pipeline.IsrBiasStageParallel"
       eventTopic: "None"
-      stagePolicy: @060-isrBias.paf
+      stagePolicy: @ISR/060-bias.paf
    }
 
    appStage: {
-      name: "070-isrDark"
+      name: "070-dark"
       parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
       eventTopic: "None"
-      stagePolicy: @070-isrDark.paf
+      stagePolicy: @ISR/070-dark.paf
    }
 
    appStage: {
-      name: "080-isrFlat"
+      name: "080-flat"
       parallelClass: "lsst.ip.pipeline.IsrFlatStageParallel"
       eventTopic: "None"
-      stagePolicy: @080-isrFlat.paf
+      stagePolicy: @ISR/080-flat.paf
    }
 
 # This stage is not implemented in DC3b PT1
 #  appStage: {
-#     name: "090-isrFringe"
+#     name: "090-fringe"
 #     parallelClass: "lsst.ip.pipeline.IsrFringeStageParallel"
 #     eventTopic: "None"
-#     stagePolicy: @090-isrFringe.paf
+#     stagePolicy: @ISR/090-fringe.paf
 #  }
 
 
    appStage: {
-      name: "100-imsim-isrExposureOutput"
+      name: "100-imsim-exposureOutput"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @100-imsim-isrExposureOutput.paf
+      stagePolicy: @ISR/100-imsim-exposureOutput.paf
    }
 
 #============================================================================
 #                   Need once correctly running through ISR algorithms
 #   appStage: {
-#      name: "110-isrSdqa"
+#      name: "110-sdqa"
 #      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @110-isrSdqa.paf
+#      stagePolicy: @ISR/110-sdqa.paf
 #   }
 #
 #   appStage: {
-#      name: "120-isrSdqaOutput"
+#      name: "120-sdqaOutput"
 #      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
 #      eventTopic: "None"
-#      stagePolicy: @120-isrSdqaOutput.paf
+#      stagePolicy: @ISR/120-sdqaOutput.paf
 #   }
 
 #============================================================================
    appStage: {
-      name: "130-isrJobdone"
+      name: "130-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @130-isrJobdone.paf
+      stagePolicy: @ISR/130-jobDone.paf
    }
 
    failureStage: {
-      name: "140-isrFailure"
+      name: "140-failure"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @140-isrFailure.paf
+      stagePolicy: @ISR/140-failure.paf
    }
 
 }

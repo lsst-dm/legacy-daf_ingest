@@ -1,6 +1,6 @@
 #<?cfg paf policy ?>
 
-pipelineEvent:  IsrJob
+pipelineEvent:  ISRJob
 datasets.dataReadyEvent:  postISRAvailable
 jobSuccess: false
 

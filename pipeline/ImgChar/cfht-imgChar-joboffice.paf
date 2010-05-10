@@ -14,41 +14,77 @@ listen: {
 schedule: {
     trigger: {
         datasetType: visitim
-        id: visit
-        id: filter
-        id: ccd
+        id: {
+            name: filter
+            }
+        id: {
+            name: visit
+            }
+        id: {
+            name: ccd
+            }
     }
 
     job: {
         input: {
             datasetType: visitim
-            id: visit
-            id: filter
-            id: ccd
+            id: {
+                name: filter
+            }
+            id: {
+                name: visit
+            }
+            id: {
+                name: ccd
+            }
         }
         output: {
             datasetType: calexp
-            id: visit
-            id: filter
-            id: ccd
+            id: {
+                name: filter
+            }
+            id: {
+                name: visit
+            }
+            id: {
+                name: ccd
+            }
         }
         output: {
             datasetType: psf
-            id: visit
-            id: filter
-            id: ccd
+            id: {
+                name: filter
+            }
+            id: {
+                name: visit
+            }
+            id: {
+                name: ccd
+            }
         }
 #        output: {
 #            datasetType: cellSet
-#            id: visit
-#            id: filter
-#            id: ccd
+#            id: {
+#                name: filter
+#            }
+#            id: {
+#                name: visit
+#            }
+#            id: {
+#                name: ccd
+#            }
 #        }
 #        output: { 
 #            datasetType: sourceMatchSet
-#            id: visit
-#            id: filter
-#            id: ccd
+#            id: {
+#                name: filter
+#            }
+#            id: {
+#                name: visit
+#            }
+#            id: {
+#                name: ccd
+#            }
 #        }
     }
 }

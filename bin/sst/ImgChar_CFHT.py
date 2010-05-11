@@ -85,7 +85,7 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
         outputMatchListKey: matchList
         numBrightStars: 75
         wcsToleranceInArcsec: 0.3
-#        defaultFilterName: mag
+        defaultFilterName: mag
         """))
     wcsd = SimpleStageTester(measPipe.WcsDeterminationStage(pol))
 
@@ -144,10 +144,10 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
         clip = wcsv.runWorker(clip)
         print clip['wcsVerifyStats']
 
-#         clip = pcal.runWorker(clip)
-#         photoObj = clip['photometricMagnitudeObject']
-#         print "Photometric zero:", photoObj.getMag(1)
-#         print "Flux of a 20th mag object:", photoObj.getFlux(20)
+        clip = pcal.runWorker(clip)
+        photoObj = clip['photometricMagnitudeObject']
+        print "Photometric zero:", photoObj.getMag(1)
+        print "Flux of a 20th mag object:", photoObj.getFlux(20)
 
     outButler.put(clip['visitExposure'], "calexp", **keys)
 

@@ -80,6 +80,8 @@ def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
         }
         crRejectPolicy: {
             nCrPixelMax: 100000
+            # Temporary increase in sigma until gain/variance issues are solved
+            minSigma: 10.0
         }
         """))
     cr0 = SimpleStageTester(ipPipe.CrRejectStage(pol))

@@ -45,7 +45,7 @@ def makeFitsDefectsFromPaf(defpol, outfileroot = "defects"):
         hdr.update('CDATE', time.asctime(time.localtime()))
 
         hdulist.append(tbhdu)
-        hdulist.writeto(outfile)
+        hdulist.writeto(outfile, clobber=True)
 
 if __name__ == "__main__":
     defpol = pexPolicy.Policy(sys.argv[1])

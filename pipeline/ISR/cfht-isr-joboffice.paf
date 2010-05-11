@@ -9,7 +9,7 @@ listen: {
     brokerHostName:      lsst8.ncsa.uiuc.edu
     dataReadyEvent:      RawAvailable
     pipelineEvent:       ISRJob
-    stopEvent:           JobOfficeStop
+    stopEvent:           workflowShutdown
 }
 
 schedule: {

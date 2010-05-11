@@ -7,7 +7,7 @@ parameters: {
            root: %(input)
        }
    }
-   InputItems: {
+   inputItems: {
        scienceExposure: {
            datasetType: calexp
                 fromInputDatasets: true

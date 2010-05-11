@@ -2,12 +2,12 @@
 # Single Frame Measurement input.paf
 parameters: {
    butler: {
-       mapperName: lsst.obs.lsstSim.LsstSimMapper
+       mapperName: lsst.obs.cfht.CfhtMapper
        mapperPolicy: {
            root: %(input)
        }
    }
-   InputItems: {
+   inputItems: {
        scienceExposure: {
            datasetType: calexp
                 fromInputDatasets: true

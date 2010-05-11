@@ -14,15 +14,6 @@ listen: {
 schedule: {
     trigger: {
         datasetType: calexp
-        id: {
-            name: filter
-            }
-        id: {
-            name: visit
-            }
-        id: {
-            name: ccd
-            }
     }
 
     job: {

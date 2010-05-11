@@ -10,8 +10,13 @@ parameters: {
    InputItems: {
        scienceExposure: {
            datasetType: calexp
-                fromJobIdentity: "visit" "raft" "sensor"
+                fromInputDatasets: true
        }
+       psf: {
+           datasetType: psf
+                fromInputDatasets: true
+       }
+
    }
 
 

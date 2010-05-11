@@ -1,0 +1,20 @@
+#<?cfg paf policy ?>
+# 010-imsim-input.paf
+
+parameters: {
+    butler: {
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
+        mapperPolicy: {
+            root: %(input)
+            calibRoot: %(input)
+        }
+    }
+    inputItems: {
+        sources: {
+            datasetType: src
+            datasetId: {
+                fromInputDatasets: true
+            }
+        }
+    }
+}

@@ -2,13 +2,8 @@
 # sourceClustering
 
 inputKeys: {
-    event:
-    sources:
 }
 
-
 outputKeys: {
-    sourceClusters:
-    sources:
 }
 

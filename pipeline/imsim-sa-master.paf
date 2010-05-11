@@ -1,16 +1,30 @@
 #<?cfg paf policy ?>
 
+#requires: {
+#   database: {
+#      type: MySQL
+#   }
+#   platform: {
+#      minCoreCount: 1
+#   }
+#}
+#
+#framework: {
+#   type: standard
+#   environment: "$DATAREL_DIR/etc/setup.sh"
+#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+#}
+
 execute: {
    # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices: 1
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-   shutdownTopic: shutdownSFM
-
+   shutdownTopic: shutdownSourceAssoc
    dir: {
-      shortName: SFM
+      shortName: SourceAssoc
       defaultRoot: .
-      # runDirPattern: "./%(runid)s"
+      #runDirPattern: "../../%(runid)s/%(shortname)s"
       runDirPattern: "../../JOTest"
       work: work
       input: input
@@ -23,55 +37,47 @@ execute: {
       name: "000-getajob"
       parallelClass: "lsst.ctrl.sched.pipeline.GetAJobParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @SFM/000-getajob.paf
+      stagePolicy: @SourceAssoc/000-getajob.paf
    }
  
    appStage: {
       name: "010-imsim-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @SFM/010-imsim-input.paf
+      stagePolicy: @SourceAssoc/010-imsim-input.paf
    }
 
    appStage: {
-      name: "020-sourceDetection"
-      parallelClass: "lsst.meas.pipeline.SourceDetectionStageParallel"
+      name: "020-sourceClustering"
+      parallelClass: "lsst.ap.cluster.SourceClusteringStage.SourceClusteringParallel"
       eventTopic: "None"
-      stagePolicy: @SFM/020-sourceDetection.paf
+      stagePolicy: @SourceAssoc/020-sourceClustering.paf
    }
 
    appStage: {
-      name: "030-sourceMeasurement"
-      parallelClass: "lsst.meas.pipeline.SourceMeasurementStageParallel"
+      name: "030-sourceClusterAttributes"
+      parallelClass: "lsst.ap.cluster.SourceClusterAttributesStage.SourceClusterAttributesParallel"
       eventTopic: "None"
-      stagePolicy: @SFM/030-sourceMeasurement.paf
+      stagePolicy: @SourceAssoc/030-sourceClusterAttributes.paf
    }
-
    appStage: {
-      name: "040-computeSourceSkyCoords"
-      parallelClass: "lsst.meas.pipeline.ComputeSourceSkyCoordsStageParallel"
-      eventTopic: "None"
-      stagePolicy: @SFM/040-computeSourceSkyCoords.paf
-   }
-
-   appStage: {
-      name: "050-imsim-output"
+      name: "090-imsim-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @SFM/050-imsim-output.paf
+      stagePolicy: @SourceAssoc/090-imsim-output.paf
    }
-
    appStage: {
-      name: "060-jobdone"
+      name: "100-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @SFM/060-jobdone.paf
+      stagePolicy: @SourceAssoc/100-jobDone.paf
    }
 
    failureStage: {
-      name: "070-failure"
+      name: "110-failure"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @SFM/070-failure.paf
+      stagePolicy: @SourceAssoc/110-failure.paf
    }
 }
+

@@ -62,10 +62,10 @@ execute: {
    }
 
    appStage: {
-      name: "060-jobdone"
+      name: "060-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"
       eventTopic: "None"
-      stagePolicy: @SFM/060-jobdone.paf
+      stagePolicy: @SFM/060-jobDone.paf
    }
 
    failureStage: {

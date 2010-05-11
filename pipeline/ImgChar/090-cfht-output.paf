@@ -12,12 +12,14 @@ parameters: {
    outputItems: {
       visitExposure: {
          datasetId: {
+            required: true
             datasetType: calexp
             fromJobIdentity: "visit" "filter" "ccd" 
          }
       }
       measuredPsf: {
          datasetId: {
+            required: true
             datasetType: psf
             fromJobIdentity: "visit" "filter" "ccd"
          }

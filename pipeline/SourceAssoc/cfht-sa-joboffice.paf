@@ -1,0 +1,87 @@
+#<?cfg paf policy ?>
+name:  SA
+persist.dir:  %(schedroot)s/%(name)s-joboffice
+
+listen: {
+    brokerHostName:      lsst8.ncsa.uiuc.edu
+    dataReadyEvent:      srcAvailable
+    pipelineEvent:       SAJob
+    stopEvent:           JobOfficeStop
+}
+
+schedule: {
+    trigger: {
+        datasetType: src
+        id: {
+            name: visit
+        }
+    }
+
+    job: {
+        identity: {
+            datasetType: src
+            id: visit
+        }
+        input: {
+            datasetType: src
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
+        }
+        output: {
+            # from clipboard: sources
+            datasetType: source
+            id: {
+              name: skytile
+            }
+        }
+        output: {
+            # from clipboard: badSources
+            datasetType: badSource
+            id: {
+              name: skytile
+            }
+        }
+        output: {
+            # from clipboard: invalidSources
+            datasetType: invalidSource
+            id: {
+              name: skytile
+            }
+        }
+        output: {
+            # from clipboard: goodSourceHistogram
+            datasetType: sourceHist
+            id: {
+              name: skytile
+            }
+        }
+        output: {
+            # from clipboard: badSourceHistogram
+            datasetType: badSourceHist
+            id: {
+              name: skytile
+            }
+        }
+        output: {
+            # from clipboard: sourceClusterAttributes
+            datasetType: object
+            id: {
+              name: skytile
+            }
+        }
+        output: {
+            # from clipboard: badSourceClusterAttributes
+            datasetType: badObject
+            id: {
+              name: skytile
+            }
+        }
+    }
+}

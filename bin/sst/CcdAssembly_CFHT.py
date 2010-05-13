@@ -1,20 +1,13 @@
 #!/usr/bin/env python
 
-import os
-import lsst.pex.policy as pexPolicy
-import lsst.ip.pipeline as ipPipe
-import lsst.daf.persistence as dafPersist
-from lsst.obs.cfht import CfhtMapper
-from lsst.pex.harness.simpleStageTester import SimpleStageTester
+from utils import cfhtMain, cfhtSetup, runStage
 
-def ccdAssemblyProcess(root=None, outRoot=None, inButler=None, outButler=None,
-        **keys):
-    if inButler is None:
-        bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=root))
-        inButler = bf.create()
-    if outButler is None:
-        obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
-        outButler = obf.create()
+import lsst.ip.pipeline as ipPipe
+
+def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
+        inButler=None, outButler=None, **keys):
+    inButler, outButler = cfhtSetup(root, outRoot, registry, None,
+            inButler, outButler)
 
     expList = []
     for amp in (0, 1):
@@ -24,32 +17,27 @@ def ccdAssemblyProcess(root=None, outRoot=None, inButler=None, outButler=None,
         'exposureList': expList
     }
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrCcdAssemblyStage,
         """#<?cfg paf policy?>
         outputKeys: {
             assembledCcdExposure: isrExposure
         }
-        """))
-    asmb = SimpleStageTester(ipPipe.IsrCcdAssemblyStage(pol))
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """, clip)
+    clip = runStage(ipPipe.IsrCcdDefectStage,
         """#<?cfg paf policy?>
         inputKeys: {
             ccdExposure: isrExposure
         }
-        """))
-    defect = SimpleStageTester(ipPipe.IsrCcdDefectStage(pol))
+        """, clip)
 
-    clip = asmb.runWorker(clip)
-    clip = defect.runWorker(clip)
-    exposure = clip['defectMaskedCcdExposure']
-    # exposure.writeFits("postISRCCD.fits")
+    outButler.put(clip['defectMaskedCcdExposure'], "postISRCCD", **keys)
 
-    outButler.put(exposure, "postISRCCD", **keys)
-
-def run():
-    # root = "/lsst/DC3/data/obstest/CFHTLS"
+def test():
     root="."
     ccdAssemblyProcess(root=root, outRoot=".", visit=788965, ccd=0)
 
+def main():
+    cfhtMain(ccdAssemblyProcess, "postISRCCD", "ccd")
+
 if __name__ == "__main__":
-    run()
+    main()

@@ -1,21 +1,13 @@
 #!/usr/bin/env python
 
-import os
-import lsst.pex.policy as pexPolicy
+from utils import cfhtMain, cfhtSetup, runStage
+
 import lsst.ip.pipeline as ipPipe
-import lsst.daf.persistence as dafPersist
-from lsst.obs.cfht import CfhtMapper
-from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
-
-    if inButler is None:
-        bf = dafPersist.ButlerFactory(mapper=CfhtMapper(
-            root=root, calibRoot="/lsst/DC3/data/obstest/CFHTLS/calib"))
-        inButler = bf.create()
-    if outButler is None:
-        obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
-        outButler = obf.create()
+def isrProcess(root=None, outRoot=None, registry=None,
+        calibRoot=None, inButler=None, outButler=None, **keys):
+    inButler, outButler = cfhtSetup(root, outRoot, registry, calibRoot,
+            inButler, outButler)
 
     clip = {
         'isrExposure': inButler.get("raw", **keys),
@@ -24,7 +16,7 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         'flatExposure': inButler.get("flat", **keys)
     }
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrSaturationStage, 
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -32,10 +24,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             saturationMaskedExposure: isrExposure
         }
-        """))
-    sat = SimpleStageTester(ipPipe.IsrSaturationStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrOverscanStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -43,10 +34,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             overscanCorrectedExposure: isrExposure
         }
-        """))
-    over = SimpleStageTester(ipPipe.IsrOverscanStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrBiasStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -55,10 +45,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             biasSubtractedExposure: isrExposure
         }
-        """))
-    bias = SimpleStageTester(ipPipe.IsrBiasStage(pol))
+        """, clip)
 
-    # pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    # clip = runStage(ipPipe.IsrDarkStage,
     #     """#<?cfg paf policy?>
     #     inputKeys: {
     #         exposure: isrExposure
@@ -67,10 +56,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
     #     outputKeys: {
     #         darkSubtractedExposure: isrExposure
     #     }
-    #     """))
-    # dark = SimpleStageTester(ipPipe.IsrDarkStage(pol))
+    #     """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrFlatStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -82,23 +70,18 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             flatCorrectedExposure: isrExposure
         }
-        """))
-    flat = SimpleStageTester(ipPipe.IsrFlatStage(pol))
+        """, clip)
 
-    clip = sat.runWorker(clip)
-    clip = over.runWorker(clip)
-    clip = bias.runWorker(clip)
-    # clip = dark.runWorker(clip)
-    clip = flat.runWorker(clip)
-    exposure = clip['isrExposure']
-    # exposure.writeFits("postIsr.fits")
+    outButler.put(clip['isrExposure'], "postISR", **keys)
 
-    outButler.put(exposure, "postISR", **keys)
-
-def run():
+def test():
     root = "/lsst/DC3/data/obstest/CFHTLS"
-    isrProcess(root=root, outRoot=".", field="D3", visit=788965, ccd=6, amp=0)
-    isrProcess(root=root, outRoot=".", field="D3", visit=788965, ccd=6, amp=1)
+    isrProcess(root=root, outRoot=".", visit=788965, ccd=6, amp=0)
+    isrProcess(root=root, outRoot=".", visit=788965, ccd=6, amp=1)
+
+def main():
+    cfhtMain(isrProcess, "postISR", ("calib", "amp"),
+            "/lsst/DC3/data/obstest/CFHTLS")
 
 if __name__ == "__main__":
-    run()
+    main()

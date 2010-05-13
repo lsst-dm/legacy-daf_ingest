@@ -1,32 +1,22 @@
 #!/usr/bin/env python
 
-# Requires obs_lsstSim 3.0.3
-
-import os
 import sys
-import lsst.afw.image as afwImage
-import lsst.pex.policy as pexPolicy
+
+from utils import cfhtMain, cfhtSetup, runStage
+
 import lsst.ip.pipeline as ipPipe
 import lsst.meas.pipeline as measPipe
-import lsst.daf.persistence as dafPersist
-from lsst.obs.cfht import CfhtMapper
-from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
-        **keys):
-
-    if inButler is None:
-        bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=root))
-        inButler = bf.create()
-    if outButler is None:
-        obf = dafPersist.ButlerFactory(mapper=CfhtMapper(root=outRoot))
-        outButler = obf.create()
+def crSplitProcess(root=None, outRoot=None, registry=None,
+        inButler=None, outButler=None, **keys):
+    inButler, outButler = cfhtSetup(root, outRoot, registry, None,
+            inButler, outButler)
 
     clip = {
         'isrCcdExposure': inButler.get("postISRCCD", **keys),
     }
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(measPipe.BackgroundEstimationStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrCcdExposure
@@ -40,10 +30,8 @@ def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
                 binsize: 512
             }
         }
-        """))
-    bkgd = SimpleStageTester(measPipe.BackgroundEstimationStage(pol))
-
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+        """, clip)
+    clip = runStage(ipPipe.CrRejectStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: bkgSubCcdExposure
@@ -58,21 +46,17 @@ def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
         crRejectPolicy: {
             nCrPixelMax: 100000
         }
-        """))
-    cr = SimpleStageTester(ipPipe.CrRejectStage(pol))
+        """, clip)
 
-
-    clip = bkgd.runWorker(clip)
-    clip['bkgSubCcdExposure'].writeFits("bkgSub.fits")
-    clip = cr.runWorker(clip)
     print >>sys.stderr, clip['nCR'], "cosmic rays"
+    outButler.put(clip['crSubCcdExposure'], "visitim", **keys)
 
-    exposure = clip['crSubCcdExposure']
-    outButler.put(exposure, "visitim", **keys)
-
-def run():
+def test():
     root = "."
     crSplitProcess(root=root, outRoot=".", visit=788965, ccd=6)
 
+def main():
+    cfhtMain(crSplitProcess, "visitim", "ccd")
+
 if __name__ == "__main__":
-    run()
+    main()

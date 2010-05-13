@@ -63,7 +63,7 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
         line = "%d" % (s.getFlagForDetection(),)
         for f in fields:
             func = getattr(s, "get" + f)
-            line += ",%f" % (func(),)
+            line += ",%g" % (func(),)
         print >>csv, line
     csv.close()
 
@@ -99,7 +99,7 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
     print >>csv, "CatRA,CatDec,CatPsfFlux," + \
             "ImgRA,ImgDec,ImgPsfFlux,Distance"
     for m in clip['matchList']:
-        print >>csv, "%f,%f,%f,%f,%f,%f,%f" % (
+        print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
                 m.first.getRa(), m.first.getDec(),
                 m.first.getPsfFlux(),
                 m.second.getRa(), m.second.getDec(),

@@ -59,7 +59,7 @@ def sfmProcess(root=None, outRoot=None, registry=None,
         line = "%d" % (s.getFlagForDetection(),)
         for f in fields:
             func = getattr(s, "get" + f)
-            line += ",%f" % (func(),)
+            line += ",%g" % (func(),)
         print >>csv, line
     csv.close()
 

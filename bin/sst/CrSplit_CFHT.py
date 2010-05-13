@@ -3,6 +3,7 @@
 # Requires obs_lsstSim 3.0.3
 
 import os
+import sys
 import lsst.afw.image as afwImage
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
@@ -64,7 +65,7 @@ def crSplitProcess(root=None, outRoot=None, inButler=None, outButler=None,
     clip = bkgd.runWorker(clip)
     clip['bkgSubCcdExposure'].writeFits("bkgSub.fits")
     clip = cr.runWorker(clip)
-    print clip['nCR']
+    print >>sys.stderr, clip['nCR'], "cosmic rays"
 
     exposure = clip['crSubCcdExposure']
     outButler.put(exposure, "visitim", **keys)

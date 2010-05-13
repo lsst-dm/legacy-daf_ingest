@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import lsst.afw.image as afwImage
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
@@ -121,12 +122,12 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
     csv.close()
 
     clip = psfd.runWorker(clip)
-    print clip['measuredPsf'].getKernel().toString()
+    print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
 
     outButler.put(clip['measuredPsf'], "psf", **keys)
 
     clip = wcsd.runWorker(clip)
-    print clip['measuredWcs'].getFitsMetadata().toString()
+    print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
 
     if clip['matchList'] is not None:
         csv = open("wcsMatches-v%(visit)d-c%(ccd)d.csv" % keys, "w")
@@ -142,12 +143,12 @@ def imgCharProcess(root=None, outRoot=None, inButler=None, outButler=None,
         csv.close()
 
         clip = wcsv.runWorker(clip)
-        print clip['wcsVerifyStats']
+        print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
 
         clip = pcal.runWorker(clip)
         photoObj = clip['photometricMagnitudeObject']
-        print "Photometric zero:", photoObj.getMag(1)
-        print "Flux of a 20th mag object:", photoObj.getFlux(20)
+        print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
+        print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
 
     outButler.put(clip['visitExposure'], "calexp", **keys)
 

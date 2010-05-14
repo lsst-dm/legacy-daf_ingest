@@ -6,7 +6,7 @@ import lsst.meas.pipeline as measPipe
 
 def sfmProcess(root=None, outRoot=None, registry=None,
         inButler=None, outButler=None, **keys):
-    inButler, outButler = cfhtSetup(root, outRoot, registry, None,
+    inButler, outButler = lsstSimSetup(root, outRoot, registry, None,
             inButler, outButler)
 
     clip = {

@@ -63,8 +63,6 @@ def crSplitProcess(root=None, outRoot=None, registry=None,
         }
         crRejectPolicy: {
             nCrPixelMax: 100000
-            # Temporary increase in sigma until gain/variance issues are solved
-            minSigma: 10.0
         }
         """, clip)
     print >>sys.stderr, "Snap 0:", clip['nCR'], "cosmic rays"

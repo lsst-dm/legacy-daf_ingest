@@ -4,3 +4,5 @@ setupRequired(ap)
 setupRequired(coadd_utils)
 setupRequired(daf_butlerUtils)
 setupRequired(ctrl_sched)
+
+envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)

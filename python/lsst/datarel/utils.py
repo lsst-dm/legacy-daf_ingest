@@ -4,8 +4,19 @@ import sys
 
 import lsst.pex.policy as pexPolicy
 import lsst.daf.persistence as dafPersist
-from lsst.obs.cfht import CfhtMapper
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
+
+haveCfht = True
+haveLsstSim = True
+try:
+    from lsst.obs.cfht import CfhtMapper
+except:
+    haveCfht = False
+try:
+    from lsst.obs.lsstSim import LsstSimMapper
+except:
+    haveLsstSim = False
+
 
 def runStage(stage, policyString, clip):
     if policyString.startswith("#<?cfg "):
@@ -197,13 +208,13 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                 if not outButler.fileExists(outDatasetType,
                                         visit=visit, snap=snap, raft=raft,
                                         sensor=sensor):
-                                print >>sys.stderr, \
-                                        "***** Processing visit %d snap %d " + \
-                                        "raft %s sensor %s" % \
-                                        (visit, snap, raft, sensor)
-                                processFunction(inButler=inButler,
-                                        outButler=outButler, visit=visit,
-                                        snap=snap, raft=raft, sensor=sensor)
+                                    print >>sys.stderr, \
+                                            "***** Processing visit %d " + \
+                                            "snap %d raft %s sensor %s" % \
+                                            (visit, snap, raft, sensor)
+                                    processFunction(inButler=inButler,
+                                            outButler=outButler, visit=visit,
+                                            snap=snap, raft=raft, sensor=sensor)
             else: # snap
                 for raft in options.raft:
                     for sensor in options.sensor:
@@ -223,13 +234,13 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                         else:
                             if not outButler.fileExists(outDatasetType,
                                     visit=visit, raft=raft, sensor=sensor):
-                            print >>sys.stderr, \
-                                    "***** Processing visit %d " + \
-                                    "raft %s sensor %s" % \
-                                    (visit, raft, sensor)
-                            processFunction(inButler=inButler,
-                                    outButler=outButler, visit=visit,
-                                    raft=raft, sensor=sensor)
+                                print >>sys.stderr, \
+                                        "***** Processing visit %d " + \
+                                        "raft %s sensor %s" % \
+                                        (visit, raft, sensor)
+                                processFunction(inButler=inButler,
+                                        outButler=outButler, visit=visit,
+                                        raft=raft, sensor=sensor)
         else: # raft, sensor
              if not outButler.fileExists(outDatasetType, visit=visit):
                  print >>sys.stderr, "***** Processing visit %d" % (visit,)

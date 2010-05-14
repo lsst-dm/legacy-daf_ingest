@@ -3,7 +3,7 @@
 import os
 import sys
 
-from utils import cfhtMain, cfhtSetup, runStage
+from lsst.datarel import cfhtMain, cfhtSetup, runStage
 
 import lsst.ip.pipeline as ipPipe
 import lsst.meas.pipeline as measPipe

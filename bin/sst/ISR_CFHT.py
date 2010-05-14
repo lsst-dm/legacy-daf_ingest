@@ -16,7 +16,7 @@ def isrProcess(root=None, outRoot=None, registry=None,
         'flatExposure': inButler.get("flat", **keys)
     }
 
-    clip = runStage(ipPipe.IsrSaturationStage, 
+    clip = runStage(ipPipe.IsrSaturationStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure

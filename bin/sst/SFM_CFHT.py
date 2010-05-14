@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from utils import cfhtMain, cfhtSetup, runStage
+from lsst.datarel import cfhtMain, cfhtSetup, runStage
 
 import lsst.meas.pipeline as measPipe
 

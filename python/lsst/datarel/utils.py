@@ -108,6 +108,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                 help="calibration root")
     parser.add_option("-r", "--registry", help="registry")
     parser.add_option("-v", "--visit", type="int", help="visit number")
+    if "snap" in need:
+        parser.add_option("-s", "--snap", type="int", help="snap number")
     parser.add_option("-r", "--raft", help="raft coords")
     parser.add_option("-c", "--sensor", help="sensor coords")
     parser.add_option("-a", "--channel", help="channel coords")
@@ -134,6 +136,17 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                 inButler.queryMetadata("raw", "visit", ("visit",))]
     elif not hasattr(options.visit, "__iter__"):
         options.visit = [options.visit]
+
+    if "snap" in need:
+        if options.snap is None:
+            print >>sys.stderr, "Running over all snaps"
+            options.snap = [x[0] for x in
+                    inButler.queryMetadata("raw", "snap", ("snap",))]
+        elif not hasattr(options.snap, "__iter__"):
+            options.snap = [options.snap]
+    else:
+        setattr(options, "snap", [0])
+
     if "sensor" in need or "channel" in need:
         if options.raft is None:
             print >>sys.stderr, "Running over all rafts"
@@ -141,6 +154,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                     inButler.queryMetadata("raw", "raft", ("raft",))]
         elif not hasattr(options.raft, "__iter__"):
             options.raft = [options.raft]
+
     if "sensor" in need or "channel" in need:
         if options.sensor is None:
             print >>sys.stderr, "Running over all sensors"
@@ -148,6 +162,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                     inButler.queryMetadata("raw", "sensor", ("sensor",))]
         elif not hasattr(options.sensor, "__iter__"):
             options.sensor = [options.sensor]
+
     if "channel" in need:
         if options.channel is None:
             print >>sys.stderr, "Running over all channels"
@@ -158,30 +173,64 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
 
     for visit in options.visit:
         if "sensor" in need or "channel" in need:
-            for raft in options.raft:
-                for sensor in options.sensor:
-                    if "channel" in need:
-                        for channel in options.channel:
-                            if not outButler.fileExists(outDatasetType,
-                                    visit=visit, raft=raft, sensor=sensor,
-                                    channel=channel):
+            if "snap" in need:
+                for snap in options.snap:
+                    for raft in options.raft:
+                        for sensor in options.sensor:
+                            if "channel" in need:
+                                for channel in options.channel:
+                                    if not outButler.fileExists(outDatasetType,
+                                            visit=visit, snap=snap, raft=raft,
+                                            sensor=sensor, channel=channel):
+                                        print >>sys.stderr, \
+                                                "***** Processing " + \
+                                                "visit %d snap %d raft %s " + \
+                                                "sensor %s channel %s" % \
+                                                (visit, snap, raft, sensor,
+                                                        channel)
+                                        processFunction(inButler=inButler,
+                                                outButler=outButler,
+                                                visit=visit, snap=snap,
+                                                raft=raft, sensor=sensor,
+                                                channel=channel)
+                            else:
+                                if not outButler.fileExists(outDatasetType,
+                                        visit=visit, snap=snap, raft=raft,
+                                        sensor=sensor):
                                 print >>sys.stderr, \
-                                        "***** Processing visit %d raft %s sensor %s channel %s" % \
-                                        (visit, raft, sensor, channel)
+                                        "***** Processing visit %d snap %d " + \
+                                        "raft %s sensor %s" % \
+                                        (visit, snap, raft, sensor)
                                 processFunction(inButler=inButler,
-                                        outButler=outButler,
+                                        outButler=outButler, visit=visit,
+                                        snap=snap, raft=raft, sensor=sensor)
+            else: # snap
+                for raft in options.raft:
+                    for sensor in options.sensor:
+                        if "channel" in need:
+                            for channel in options.channel:
+                                if not outButler.fileExists(outDatasetType,
                                         visit=visit, raft=raft,
-                                        sensor=sensor, channel=channel)
-                    else:
-                        if not outButler.fileExists(outDatasetType,
-                                visit=visit, raft=raft, sensor=sensor):
+                                        sensor=sensor, channel=channel):
+                                    print >>sys.stderr, \
+                                            "***** Processing visit %d " + \
+                                            "raft %s sensor %s channel %s" % \
+                                            (visit, raft, sensor, channel)
+                                    processFunction(inButler=inButler,
+                                            outButler=outButler,
+                                            visit=visit, raft=raft,
+                                            sensor=sensor, channel=channel)
+                        else:
+                            if not outButler.fileExists(outDatasetType,
+                                    visit=visit, raft=raft, sensor=sensor):
                             print >>sys.stderr, \
-                                    "***** Processing visit %d raft %s sensor %s" % \
+                                    "***** Processing visit %d " + \
+                                    "raft %s sensor %s" % \
                                     (visit, raft, sensor)
                             processFunction(inButler=inButler,
                                     outButler=outButler, visit=visit,
                                     raft=raft, sensor=sensor)
-        else:
+        else: # raft, sensor
              if not outButler.fileExists(outDatasetType, visit=visit):
                  print >>sys.stderr, "***** Processing visit %d" % (visit,)
                  processFunction(inButler=inButler, outButler=outButler,

@@ -1,20 +1,13 @@
 #!/usr/bin/env python
 
-import os
-import lsst.pex.policy as pexPolicy
-import lsst.ip.pipeline as ipPipe
-import lsst.daf.persistence as dafPersist
-from lsst.obs.lsstSim import LsstSimMapper
-from lsst.pex.harness.simpleStageTester import SimpleStageTester
+from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
-def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
-    if inButler is None:
-        bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(
-            root=root, calibRoot=root))
-        inButler = bf.create()
-    if outButler is None:
-        obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-        outButler = obf.create()
+import lsst.ip.pipeline as ipPipe
+
+def isrProcess(root=None, outRoot=None, registry=None,
+        calibRoot=None, inButler=None, outButler=None, **keys):
+    inButler, outButler = lsstSimSetup(root, outRoot, registry, calibRoot,
+            inButler, outButler)
 
     clip = {
         'isrExposure': inButler.get("raw", **keys),
@@ -23,7 +16,7 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         'flatExposure': inButler.get("flat", **keys)
     }
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrSaturationStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -31,10 +24,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             saturationMaskedExposure: isrExposure
         }
-        """))
-    sat = SimpleStageTester(ipPipe.IsrSaturationStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrOverscanStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -42,10 +34,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             overscanCorrectedExposure: isrExposure
         }
-        """))
-    over = SimpleStageTester(ipPipe.IsrOverscanStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrBiasStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -54,10 +45,9 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             biasSubtractedExposure: isrExposure
         }
-        """))
-    bias = SimpleStageTester(ipPipe.IsrBiasStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrDarkStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
@@ -66,32 +56,25 @@ def isrProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             darkSubtractedExposure: isrExposure
         }
-        """))
-    dark = SimpleStageTester(ipPipe.IsrDarkStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(ipPipe.IsrFlatStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: isrExposure
             flatexposure: flatExposure
         }
+        parameters: {
+            flatScalingValue: 1.0
+        }
         outputKeys: {
             flatCorrectedExposure: isrExposure
         }
-        """))
-    flat = SimpleStageTester(ipPipe.IsrFlatStage(pol))
+        """, clip)
 
-    clip = sat.runWorker(clip)
-    clip = over.runWorker(clip)
-    clip = bias.runWorker(clip)
-    clip = dark.runWorker(clip)
-    clip = flat.runWorker(clip)
-    exposure = clip['isrExposure']
-    # exposure.writeFits("postIsr.fits")
-    outButler.put(exposure, "postISR", **keys)
-    # outButler.put(clip['satPixels'], "satPixelSet", **keys)
+    outButler.put(clip['isrExposure'], "postISR", **keys)
 
-def run():
+def test():
     root = "/lsst/DC3/data/obstest/ImSim"
     if not os.path.exists("registry.sqlite3"):
         os.symlink(os.path.join(root, "registry.sqlite3"),
@@ -99,5 +82,9 @@ def run():
     isrProcess(root=root, outRoot=".", visit=85470982, snap=0,
             raft="2,3", sensor="1,1", channel="0,0")
 
+def main():
+    lsstSimMain(isrProcess, "postISR", ("calib", "channel", "snap"),
+            "/lsst/DC3/data/obstest/ImSim")
+
 if __name__ == "__main__":
-    run()
+    main()

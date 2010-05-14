@@ -1,27 +1,20 @@
 #!/usr/bin/env python
 
-import os
-import lsst.pex.policy as pexPolicy
-import lsst.ip.pipeline as ipPipe
-import lsst.meas.pipeline as measPipe
-import lsst.daf.persistence as dafPersist
-from lsst.obs.lsstSim import LsstSimMapper
-from lsst.pex.harness.simpleStageTester import SimpleStageTester
+from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
-def sfmProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
-    if inButler is None:
-        bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
-        inButler = bf.create()
-    if outButler is None:
-        obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-        outButler = obf.create()
+import lsst.meas.pipeline as measPipe
+
+def sfmProcess(root=None, outRoot=None, registry=None,
+        inButler=None, outButler=None, **keys):
+    inButler, outButler = cfhtSetup(root, outRoot, registry, None,
+            inButler, outButler)
 
     clip = {
         'scienceExposure': inButler.get("calexp", **keys),
         'psf': inButler.get("psf", **keys)
     }
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(measPipe.SourceDetectionStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: scienceExposure
@@ -33,10 +26,9 @@ def sfmProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         backgroundPolicy: {
             algorithm: NONE
         }
-        """))
-    srcd = SimpleStageTester(measPipe.SourceDetectionStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(measPipe.SourceMeasurementStage,
         """#<?cfg paf policy?>
         inputKeys: {
             exposure: scienceExposure
@@ -46,21 +38,15 @@ def sfmProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         outputKeys: {
             sources: sourceSet
         }
-        """))
-    srcm = SimpleStageTester(measPipe.SourceMeasurementStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(measPipe.ComputeSourceSkyCoordsStage,
         """#<?cfg paf policy?>
         inputKeys: {
             sources: sourceSet
             exposure: scienceExposure
         }
-        """))
-    skyc = SimpleStageTester(measPipe.ComputeSourceSkyCoordsStage(pol))
-
-    clip = srcd.runWorker(clip)
-    clip = srcm.runWorker(clip)
-    clip = skyc.runWorker(clip)
+        """, clip)
 
     outButler.put(clip['sourceSet_persistable'], "src", **keys)
 
@@ -73,12 +59,15 @@ def sfmProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
         line = "%d" % (s.getFlagForDetection(),)
         for f in fields:
             func = getattr(s, "get" + f)
-            line += ",%f" % (func(),)
+            line += ",%g" % (func(),)
         print >>csv, line
     csv.close()
 
-def run():
+def test():
     sfmProcess(root=".", outRoot=".", visit=85751839, raft="2,3", sensor="1,1")
 
+def main():
+    lsstSimMain(sfmProcess, "src", "ccd")
+
 if __name__ == "__main__":
-    run()
+    main()

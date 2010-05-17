@@ -18,7 +18,6 @@ for d in Split("doc tests"):
 env['IgnoreFiles'] = r"(~$|\.pyc$|^\.svn$|\.o$)"
 
 Alias("install", env.Install(env['prefix'], "bin"))
-Alias("install", env.Install(env['prefix'], "doc"))
 Alias("install", env.Install(env['prefix'], "etc"))
 Alias("install", env.Install(env['prefix'], "pipeline"))
 Alias("install", env.Install(env['prefix'], "python"))

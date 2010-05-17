@@ -5,8 +5,8 @@
 import os.path, re, os
 import lsst.SConsUtils as scons
 
-env = scons.makeEnv("ip_utils",
-                    r"$HeadURL: svn+ssh://svn.lsstcorp.org/DMS/ip/utils/trunk/SConstruct $",
+env = scons.makeEnv("datarel",
+                    r"$HeadURL: svn+ssh://svn.lsstcorp.org/DMS/datarel/trunk/SConstruct $",
                     []
                     )
 #

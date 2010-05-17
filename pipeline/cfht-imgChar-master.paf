@@ -25,9 +25,9 @@ execute: {
       shortName: ImgChar
       defaultRoot: .
       #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../JOTest"
+      runDirPattern: "../../"
       work: work
-      input: input
+      input: update
       output: output
       update: update
       scratch: scratch
@@ -82,14 +82,12 @@ execute: {
       stagePolicy: @ImgChar/060-wcsVerification.paf
    }
 
-#============================================================================
-# Turned off due to problem during PT1 processing....
-#   appStage: {
-#      name: "070-photoCal"
-#      parallelClass: "lsst.meas.pipeline.PhotoCalStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @ImgChar/070-photoCal.paf
-#   }
+   appStage: {
+      name: "070-photoCal"
+      parallelClass: "lsst.meas.pipeline.PhotoCalStageParallel"
+      eventTopic: "None"
+      stagePolicy: @ImgChar/070-photoCal.paf
+   }
 
 #============================================================================
 #                   Is this stage required in ImgChar???

@@ -1,8 +1,8 @@
 #<?cfg paf policy ?>
 # ImgChar psfDetermination.paf
 inputKeys: {
-   exposure: "visitExposure"
-   sourceSet: "sourceSet"
+   exposure: visitExposure
+   sourceSet: sourceSet
 }
 outputKeys: {
    psf: measuredPsf

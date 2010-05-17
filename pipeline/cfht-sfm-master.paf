@@ -11,9 +11,9 @@ execute: {
       shortName: SFM
       defaultRoot: .
       # runDirPattern: "./%(runid)s"
-      runDirPattern: "../../JOTest"
+      runDirPattern: "../../"
       work: work
-      input: input
+      input: update
       output: output
       update: update
       scratch: scratch

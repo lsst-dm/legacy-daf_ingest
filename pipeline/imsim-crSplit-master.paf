@@ -32,7 +32,7 @@ execute: {
       # runDirPattern: "../../%(runid)s/%(shortname)s"
       runDirPattern: "../../JOTest"
       work: work
-      input: input
+      input: update
       output: output
       update: update
       scratch: scratch

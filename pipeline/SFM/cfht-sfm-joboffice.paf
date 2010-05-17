@@ -29,6 +29,18 @@ schedule: {
               name: ccd
             }
         }
+        input: {
+            datasetType: psf
+            id: {
+              name: visit
+            }
+            id: {
+              name: filter
+            }
+            id: {
+              name: ccd
+            }
+        }
         output: {
             datasetType: src
             id: {

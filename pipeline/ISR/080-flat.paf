@@ -4,8 +4,9 @@ inputKeys: {
    exposure: "isrExposure"
    flatexposure: "flatExposure"
 }
+parameters: {
+   flatScalingValue: 1.0
+}
 outputKeys: {
    flatCorrectedExposure: "isrExposure"
-   # need mapper name
-   #bboxes: "satPixels"
 }

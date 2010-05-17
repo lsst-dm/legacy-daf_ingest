@@ -10,11 +10,15 @@ parameters: {
    inputItems: {
        scienceExposure: {
            datasetType: calexp
+           datasetId: {
                 fromInputDatasets: true
+           }
        }
        psf: {
            datasetType: psf
+           datasetId: {
                 fromInputDatasets: true
+           }
        }
 
    }

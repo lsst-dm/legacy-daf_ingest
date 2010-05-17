@@ -24,10 +24,10 @@ execute: {
    dir: {
       shortName: CA
       defaultRoot: .
-      runDirPattern: "../../JOTest"
+      runDirPattern: "../../"
       #runDirPattern: "../%(runid)s/%(shortname)s"
       work: work
-      input: input
+      input: update
       output: output
       update: update
       scratch: scratch

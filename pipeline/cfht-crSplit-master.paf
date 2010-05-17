@@ -27,9 +27,9 @@ execute: {
       shortName: CrSplit
       defaultRoot: .
       # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../JOTest"
+      runDirPattern: "../../"
       work: work
-      input: input
+      input: update
       output: output
       update: update
       scratch: scratch

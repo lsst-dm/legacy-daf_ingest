@@ -5,7 +5,7 @@ inputSourceSetKey: sourceSet
 outputWcsKey: measuredWcs
 outputMatchListKey: matchList
 numBrightStars: 75
-wcsToleranceInArcsec: 0.3
-# defaultFilterName: mag
+#wcsToleranceInArcsec: 0.3
+defaultFilterName: mag
 
 

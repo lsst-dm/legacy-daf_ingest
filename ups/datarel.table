@@ -2,7 +2,9 @@ setupRequired(meas_pipeline)
 setupRequired(ip_pipeline)
 setupRequired(ap)
 setupRequired(coadd_utils)
-setupRequired(daf_butlerUtils)
 setupRequired(ctrl_sched)
+
+setupOptional(obs_cfht)
+setupOptional(obs_lsstSim)
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)

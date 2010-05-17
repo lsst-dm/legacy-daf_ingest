@@ -31,22 +31,32 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
             default=defaultRoot, help="input root")
     parser.add_option("-o", "--output", dest="outRoot", default=".",
             help="output root")
+    parser.add_option("-f", "--force", action="store_true", default=False,
+            help="execute even if output dataset exists")
     if "calib" in need:
         parser.add_option("-C", "--calibRoot", dest="calibRoot",
-                default="/lsst/DC3/data/obstest/CFHTLS/calib",
                 help="calibration root")
     parser.add_option("-r", "--registry", help="registry")
-    parser.add_option("-v", "--visit", type="int", help="visit number")
+    parser.add_option("-v", "--visit", action="append", type="int",
+            help="visit numbers (can be repeated)")
     if "ccd" in need or "amp" in need:
-        parser.add_option("-c", "--ccd", type="int", help="ccd number")
+        parser.add_option("-c", "--ccd", action="append", type="int",
+                help="ccd number (can be repeated)")
     if "amp" in need:
-        parser.add_option("-a", "--amp", type="int", help="amp number")
+        parser.add_option("-a", "--amp", action="append", type="int",
+                help="amp number (can be repeated)")
     (options, args) = parser.parse_args()
 
     if options.registry is None:
         if os.path.exists(os.path.join(options.root, "registry.sqlite3")):
             options.registry = os.path.join(options.root, "registry.sqlite3")
+    if options.registry is None:
+        if os.path.exists("/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"):
+            options.registry = "/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"
     if "calib" in need:
+        if options.calibRoot is None:
+            if os.path.exists("/lsst/DC3/data/obstest/CFHTLS/calib"):
+                options.calibRoot = "/lsst/DC3/data/obstest/CFHTLS/calib"
         bf = dafPersist.ButlerFactory(mapper=CfhtMapper(
             root=options.root, calibRoot=options.calibRoot,
             registry=options.registry))
@@ -84,8 +94,9 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
             for ccd in options.ccd:
                 if "amp" in need:
                     for amp in options.amp:
-                        if not outButler.fileExists(outDatasetType,
-                                visit=visit, ccd=ccd, amp=amp):
+                        if options.force or \
+                                not outButler.fileExists(outDatasetType,
+                                        visit=visit, ccd=ccd, amp=amp):
                             print >>sys.stderr, \
                                     "***** Processing visit %d ccd %d amp %d" % \
                                     (visit, ccd, amp)
@@ -93,15 +104,17 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                     outButler=outButler,
                                     visit=visit, ccd=ccd, amp=amp)
                 else:
-                    if not outButler.fileExists(outDatasetType,
-                            visit=visit, ccd=ccd):
+                    if options.force or \
+                            not outButler.fileExists(outDatasetType,
+                                    visit=visit, ccd=ccd):
                         print >>sys.stderr, \
                                 "***** Processing visit %d ccd %d" % \
                                 (visit, ccd)
                         processFunction(inButler=inButler, outButler=outButler,
                                 visit=visit, ccd=ccd)
         else:
-            if not outButler.fileExists(outDatasetType, visit=visit):
+            if options.force or \
+                    not outButler.fileExists(outDatasetType, visit=visit):
                 print >>sys.stderr, "***** Processing visit %d" % (visit,)
                 processFunction(inButler=inButler, outButler=outButler,
                         visit=visit)
@@ -113,23 +126,33 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
             default=defaultRoot, help="input root")
     parser.add_option("-o", "--output", dest="outRoot", default=".",
             help="output root")
+    parser.add_option("-f", "--force", action="store_true", default=False,
+            help="execute even if output dataset exists")
     if "calib" in need:
         parser.add_option("-C", "--calibRoot", dest="calibRoot",
-                default="/lsst/DC3/data/obstest/ImSim",
                 help="calibration root")
     parser.add_option("-r", "--registry", help="registry")
-    parser.add_option("-v", "--visit", type="int", help="visit number")
+    parser.add_option("-v", "--visit", action="append", type="int",
+            help="visit number (can be repeated)")
     if "snap" in need:
-        parser.add_option("-s", "--snap", type="int", help="snap number")
-    parser.add_option("-r", "--raft", help="raft coords")
-    parser.add_option("-c", "--sensor", help="sensor coords")
-    parser.add_option("-a", "--channel", help="channel coords")
+        parser.add_option("-s", "--snap", action="append", type="int",
+                help="snap number (can be repeated)")
+    if "sensor" in need:
+        parser.add_option("-r", "--raft", action="append",
+                help="raft coords (can be repeated)")
+        parser.add_option("-c", "--sensor", action="append",
+                help="sensor coords (can be repeated)")
+    if "channel" in need:
+        parser.add_option("-a", "--channel", action="append",
+                help="channel coords (can be repeated)")
     (options, args) = parser.parse_args()
 
     if options.registry is None:
         if os.path.exists(os.path.join(options.root, "registry.sqlite3")):
             options.registry = os.path.join(options.root, "registry.sqlite3")
     if "calib" in need:
+        if os.path.exists("/lsst/DC3/data/obstest/ImSim"):
+            options.calibRoot = "/lsst/DC3/data/obstest/ImSim"
         bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(
             root=options.root, calibRoot=options.calibRoot,
             registry=options.registry))
@@ -190,9 +213,12 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                         for sensor in options.sensor:
                             if "channel" in need:
                                 for channel in options.channel:
-                                    if not outButler.fileExists(outDatasetType,
-                                            visit=visit, snap=snap, raft=raft,
-                                            sensor=sensor, channel=channel):
+                                    if options.force or \
+                                            not outButler.fileExists(
+                                                    outDatasetType,
+                                                    visit=visit, snap=snap,
+                                                    raft=raft, sensor=sensor,
+                                                    channel=channel):
                                         print >>sys.stderr, \
                                                 "***** Processing " + \
                                                 "visit %d snap %d raft %s " + \
@@ -205,9 +231,11 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                                 raft=raft, sensor=sensor,
                                                 channel=channel)
                             else:
-                                if not outButler.fileExists(outDatasetType,
-                                        visit=visit, snap=snap, raft=raft,
-                                        sensor=sensor):
+                                if options.force or \
+                                        not outButler.fileExists(
+                                                outDatasetType,
+                                                visit=visit, snap=snap,
+                                                raft=raft, sensor=sensor):
                                     print >>sys.stderr, \
                                             "***** Processing visit %d " + \
                                             "snap %d raft %s sensor %s" % \
@@ -220,9 +248,11 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                     for sensor in options.sensor:
                         if "channel" in need:
                             for channel in options.channel:
-                                if not outButler.fileExists(outDatasetType,
-                                        visit=visit, raft=raft,
-                                        sensor=sensor, channel=channel):
+                                if options.force or \
+                                        not outButler.fileExists(
+                                                outDatasetType, visit=visit,
+                                                raft=raft, sensor=sensor,
+                                                channel=channel):
                                     print >>sys.stderr, \
                                             "***** Processing visit %d " + \
                                             "raft %s sensor %s channel %s" % \
@@ -232,8 +262,10 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                             visit=visit, raft=raft,
                                             sensor=sensor, channel=channel)
                         else:
-                            if not outButler.fileExists(outDatasetType,
-                                    visit=visit, raft=raft, sensor=sensor):
+                            if options.force or \
+                                    not outButler.fileExists(outDatasetType,
+                                            visit=visit, raft=raft,
+                                            sensor=sensor):
                                 print >>sys.stderr, \
                                         "***** Processing visit %d " + \
                                         "raft %s sensor %s" % \
@@ -242,7 +274,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                         outButler=outButler, visit=visit,
                                         raft=raft, sensor=sensor)
         else: # raft, sensor
-             if not outButler.fileExists(outDatasetType, visit=visit):
+             if options.force or \
+                     not outButler.fileExists(outDatasetType, visit=visit):
                  print >>sys.stderr, "***** Processing visit %d" % (visit,)
                  processFunction(inButler=inButler, outButler=outButler,
                          visit=visit)
@@ -250,7 +283,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
 def cfhtSetup(root, outRoot, registry, calibRoot, inButler, outButler):
     if inButler is None:
         if calibRoot is None:
-            calibRoot = "/lsst/DC3/data/obstest/CFHTLS/calib"
+            if os.path.exists("/lsst/DC3/data/obstest/CFHTLS/calib"):
+                calibRoot = "/lsst/DC3/data/obstest/CFHTLS/calib"
         if registry is None and root is not None:
             if os.path.exists(os.path.join(root, "registry.sqlite3")):
                 registry = os.path.join(root, "registry.sqlite3")
@@ -268,7 +302,8 @@ def cfhtSetup(root, outRoot, registry, calibRoot, inButler, outButler):
 def lsstSimSetup(root, outRoot, registry, calibRoot, inButler, outButler):
     if inButler is None:
         if calibRoot is None:
-            calibRoot = "/lsst/DC3/data/obstest/ImSim"
+            if os.path.exists("/lsst/DC3/data/obstest/ImSim"):
+                calibRoot = "/lsst/DC3/data/obstest/ImSim"
         if registry is None and root is not None:
             if os.path.exists(os.path.join(root, "registry.sqlite3")):
                 registry = os.path.join(root, "registry.sqlite3")

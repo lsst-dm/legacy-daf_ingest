@@ -89,39 +89,40 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
         outputWcsKey: measuredWcs
         outputMatchListKey: matchList
         numBrightStars: 75
-        wcsToleranceInArcsec: 0.3
         defaultFilterName: mag
         """, clip)
 
     print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
-    csv = open("wcsMatches-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys, "w")
-    print >>csv, "CatRA,CatDec,CatPsfFlux," + \
-            "ImgRA,ImgDec,ImgPsfFlux,Distance"
-    for m in clip['matchList']:
-        print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
-                m.first.getRa(), m.first.getDec(),
-                m.first.getPsfFlux(),
-                m.second.getRa(), m.second.getDec(),
-                m.second.getPsfFlux(),
-                m.distance)
-    csv.close()
 
+    if clip['matchList'] is not None and len(clip['matchList']) > 0:
+        csv = open("wcsMatches-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys,
+                "w")
+        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
+                "ImgRA,ImgDec,ImgPsfFlux,Distance"
+        for m in clip['matchList']:
+            print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
+                    m.first.getRa(), m.first.getDec(),
+                    m.first.getPsfFlux(),
+                    m.second.getRa(), m.second.getDec(),
+                    m.second.getPsfFlux(),
+                    m.distance)
+        csv.close()
 
-    clip = runStage(measPipe.WcsVerificationStage,
-        """#<?cfg paf policy?>
-        sourceMatchSetKey: matchList
-        outputDictKey: wcsVerifyStats
-        """, clip)
-    print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
+        clip = runStage(measPipe.WcsVerificationStage,
+            """#<?cfg paf policy?>
+            sourceMatchSetKey: matchList
+            outputDictKey: wcsVerifyStats
+            """, clip)
+        print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
 
-    clip = runStage(measPipe.PhotoCalStage,
-        """#<?cfg paf policy?>
-        sourceMatchSetKey: matchList
-        outputValueKey: photometricMagnitudeObject
-        """, clip)
-    photoObj = clip['photometricMagnitudeObject']
-    print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
-    print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
+        clip = runStage(measPipe.PhotoCalStage,
+            """#<?cfg paf policy?>
+            sourceMatchSetKey: matchList
+            outputValueKey: photometricMagnitudeObject
+            """, clip)
+        photoObj = clip['photometricMagnitudeObject']
+        print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
+        print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
 
     outButler.put(clip['visitExposure'], "calexp", **keys)
 

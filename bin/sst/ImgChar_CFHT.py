@@ -90,7 +90,6 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
         outputWcsKey: measuredWcs
         outputMatchListKey: matchList
         numBrightStars: 75
-        wcsToleranceInArcsec: 0.3
         defaultFilterName: mag
         """, clip)
 

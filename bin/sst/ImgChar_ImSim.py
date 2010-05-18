@@ -133,7 +133,7 @@ def test():
             outRoot=".", visit=85471048, raft="2,2", sensor="1,1")
 
 def main():
-    lsstSimMain(imgCharProcess, "calexp", "ccd")
+    lsstSimMain(imgCharProcess, "calexp", "sensor")
 
 if __name__ == "__main__":
     main()

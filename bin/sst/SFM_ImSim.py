@@ -67,7 +67,7 @@ def test():
     sfmProcess(root=".", outRoot=".", visit=85751839, raft="2,3", sensor="1,1")
 
 def main():
-    lsstSimMain(sfmProcess, "src", "ccd")
+    lsstSimMain(sfmProcess, "src", "sensor")
 
 if __name__ == "__main__":
     main()

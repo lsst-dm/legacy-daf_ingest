@@ -141,7 +141,7 @@ def test():
             visit=85751839, raft="2,3", sensor="1,1")
 
 def main():
-    lsstSimMain(crSplitProcess, "visitim", "ccd")
+    lsstSimMain(crSplitProcess, "visitim", "sensor")
 
 if __name__ == "__main__":
     main()

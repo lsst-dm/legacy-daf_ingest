@@ -41,7 +41,7 @@ def test():
             visit=85751839, snap=0, raft="2,3", sensor="1,1", filter="r")
 
 def main():
-    lsstSimMain(ccdAssemblyProcess, "postISRCCD", ("ccd", "snap"))
+    lsstSimMain(ccdAssemblyProcess, "postISRCCD", ("sensor", "snap"))
 
 if __name__ == "__main__":
     main()

@@ -38,7 +38,7 @@ hw: {
 
    # the number of available nodes
    #nodeCount:  8
-   nodeCount:  1
+   nodeCount:  4
 
    # the minimum number of cores per node
    minCoresPerNode:  2
@@ -74,6 +74,8 @@ deploy:  {
    #nodes:  "lsst8:8"
    #nodes:  "lsst9:8"
    #nodes:  "lsst10:6"
-   nodes:  "lsst5:1"
-
+   nodes:  "lsst5:2"
+   nodes:  "lsst6:2"
+   nodes:  "lsst7:1"
+   nodes:  "lsst8:1"
 }

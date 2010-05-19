@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # These arguments are in same location for launchPipeline.sh and are reused here
-defaultRoot=/lsst/DC3/data/datarel/CFHTLS-DC3
+defaultRoot=/lsst/DC3/data/datarel/CFHTLS/DC3
 RUNID=$2
 VERBOSITY=$4
 

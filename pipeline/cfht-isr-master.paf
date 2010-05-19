@@ -17,7 +17,7 @@ execute: {
    shutdownTopic: shutdownISR
    dir: {
       shortName: ISR
-      # Following directory info is OVERLAID by orca-pt1.paf:platform  defn
+      # Following directory info is OVERLAID by cfht-orca.paf:platform  defn
       defaultRoot: .
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work

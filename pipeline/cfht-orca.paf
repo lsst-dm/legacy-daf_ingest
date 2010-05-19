@@ -91,7 +91,7 @@ workflow: {
        definition:    @cfht-isr-master.paf
        runCount: 4
        deploy: {
-          processesOnNode: lsst10:1
+          processesOnNode: lsst5:1
        }
        launch: true
     }
@@ -100,7 +100,7 @@ workflow: {
        definition:    @cfht-ca-master.paf
        runCount: 2
        deploy: {
-          processesOnNode: lsst10:1
+          processesOnNode: lsst6:1
        }
        launch: true
     }
@@ -109,7 +109,7 @@ workflow: {
        definition:    @cfht-crSplit-master.paf
        runCount: 2
        deploy: {
-          processesOnNode: lsst10:1
+          processesOnNode: lsst7:1
        }
        launch: true
     }
@@ -118,7 +118,7 @@ workflow: {
        definition:    @cfht-imgChar-master.paf
        runCount: 2
        deploy: {
-          processesOnNode: lsst10:1
+          processesOnNode: lsst5:1
        }
        launch: true
     }
@@ -127,7 +127,7 @@ workflow: {
        definition:    @cfht-sfm-master.paf
        runCount: 2
        deploy: {
-          processesOnNode: lsst10:1
+          processesOnNode: lsst6:1
        }
        launch: true
     }

@@ -49,14 +49,14 @@ execute: {
 
    appStage: {
       name: "020-sourceClustering"
-      parallelClass: "lsst.ap.cluster.SourceClusteringStage.SourceClusteringParallel"
+      parallelClass: "lsst.ap.cluster.sourceClusteringStage.SourceClusteringParallel"
       eventTopic: "None"
       stagePolicy: @SourceAssoc/020-sourceClustering.paf
    }
 
    appStage: {
       name: "030-sourceClusterAttributes"
-      parallelClass: "lsst.ap.cluster.SourceClusterAttributesStage.SourceClusterAttributesParallel"
+      parallelClass: "lsst.ap.cluster.sourceClusterAttributesStage.SourceClusterAttributesParallel"
       eventTopic: "None"
       stagePolicy: @SourceAssoc/030-sourceClusterAttributes.paf
    }

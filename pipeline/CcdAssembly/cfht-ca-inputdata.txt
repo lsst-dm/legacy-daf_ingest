@@ -9,8 +9,8 @@ postISR field=D3 visit=788965 ccd=01 amp=1 filter=r
 postISR field=D3 visit=788965 ccd=02 amp=0 filter=r
 postISR field=D3 visit=788965 ccd=02 amp=1 filter=r
 
-postISR field=D3 visit=788965 ccd=03 amp=0 filter=r
-postISR field=D3 visit=788965 ccd=03 amp=1 filter=r
+#postISR field=D3 visit=788965 ccd=03 amp=0 filter=r
+#postISR field=D3 visit=788965 ccd=03 amp=1 filter=r
 
 postISR field=D3 visit=788965 ccd=04 amp=0 filter=r
 postISR field=D3 visit=788965 ccd=04 amp=1 filter=r

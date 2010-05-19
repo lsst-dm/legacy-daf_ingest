@@ -2,7 +2,7 @@
 calexp field=D3 visit=788965 ccd=00 filter=r
 calexp field=D3 visit=788965 ccd=01 filter=r
 calexp field=D3 visit=788965 ccd=02 filter=r
-calexp field=D3 visit=788965 ccd=03 filter=r
+#calexp field=D3 visit=788965 ccd=03 filter=r
 calexp field=D3 visit=788965 ccd=04 filter=r
 calexp field=D3 visit=788965 ccd=05 filter=r
 calexp field=D3 visit=788965 ccd=06 filter=r

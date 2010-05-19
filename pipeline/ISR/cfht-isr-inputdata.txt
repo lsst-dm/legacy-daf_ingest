@@ -2,7 +2,7 @@
 raw field=D3 visit=788965 filter=r ccd=00 amp=0
 raw field=D3 visit=788965 filter=r ccd=01 amp=0
 raw field=D3 visit=788965 filter=r ccd=02 amp=0
-raw field=D3 visit=788965 filter=r ccd=03 amp=0
+#raw field=D3 visit=788965 filter=r ccd=03 amp=0
 raw field=D3 visit=788965 filter=r ccd=04 amp=0
 raw field=D3 visit=788965 filter=r ccd=05 amp=0
 raw field=D3 visit=788965 filter=r ccd=06 amp=0
@@ -39,7 +39,7 @@ raw field=D3 visit=788965 filter=r ccd=35 amp=0
 raw field=D3 visit=788965 filter=r ccd=00 amp=1
 raw field=D3 visit=788965 filter=r ccd=01 amp=1
 raw field=D3 visit=788965 filter=r ccd=02 amp=1
-raw field=D3 visit=788965 filter=r ccd=03 amp=1
+#raw field=D3 visit=788965 filter=r ccd=03 amp=1
 raw field=D3 visit=788965 filter=r ccd=04 amp=1
 raw field=D3 visit=788965 filter=r ccd=05 amp=1
 raw field=D3 visit=788965 filter=r ccd=06 amp=1

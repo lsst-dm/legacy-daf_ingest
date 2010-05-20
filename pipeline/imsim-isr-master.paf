@@ -1,37 +1,23 @@
 #<?cfg paf policy ?>
 
-# Following is required for ORCA; we are hand orchestrating - see README
-#requires: {
-#   database: {
-#      type: MySQL
-#   }
-#   platform: {
-#      minCoreCount: 1
-#   }
-#}
-#
-#framework: {
-#   type: standard
-#   environment: "$DATAREL_DIR/etc/setup.sh"
-#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
-#}
+# ISR Master.paf
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.py"
+}
 
 execute: {
-   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices: 1
-   # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   # executionMode: "oneloop"
-   # To be quite verbose: add 'logThreshold: -3'
-   logThreshold: -3
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownISR
    dir: {
       shortName: ISR
       defaultRoot: .
-      # Path to root Run directory
-      # runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "%(runid)s"
+      # Following directory info is OVERLAID by imsim-orca.paf:platform  defn
+      defaultRoot: .
+      runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
       input: input
       output: output

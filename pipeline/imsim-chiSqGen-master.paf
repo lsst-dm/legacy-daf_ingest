@@ -11,9 +11,10 @@ requires: {
 
 framework: {
    type: standard
-   environment: "$DATAREL_DIR/etc/setup.sh"
-   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
+   environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.py"
 }
+
 
 execute: {
    # To terminate after predetermined count: add 'executionMode: "oneloop"'

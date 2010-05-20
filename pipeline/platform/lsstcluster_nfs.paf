@@ -76,6 +76,6 @@ deploy:  {
    #nodes:  "lsst10:6"
    nodes:  "lsst5:2"
    nodes:  "lsst6:2"
-   nodes:  "lsst7:1"
-   nodes:  "lsst8:1"
+   nodes:  "lsst7:2"
+   nodes:  "lsst8:2"
 }

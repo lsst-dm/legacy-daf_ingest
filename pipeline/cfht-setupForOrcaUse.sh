@@ -1,6 +1,6 @@
-#/bin/tcsh
-source /lsst/DC3/stacks/default/loadLSST.csh
-set RIGHTHERE=$PWD
+#!/bin/bash
+source /lsst/DC3/stacks/default/loadLSST.sh
+RIGHTHERE=$PWD
 setup ctrl_orca
 cd $CTRL_ORCA_DIR
 setup -r .

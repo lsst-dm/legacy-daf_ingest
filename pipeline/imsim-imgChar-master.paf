@@ -1,34 +1,22 @@
 #<?cfg paf policy ?>
 
-#requires: {
-#   database: {
-#      type: MySQL
-#   }
-#   platform: {
-#      minCoreCount: 1
-#   }
-#}
-#
-#framework: {
-#   type: standard
-#   environment: "$DATAREL_DIR/etc/setup.sh"
-#   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.sh"
-#}
+# ImSim ImgChar master.paf
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.py"
+}
 
 execute: {
-   # To run in nonMPI setup: add 'nSlices: 1' else need file: nodelist.src
    nSlices:1
-   # To terminate after predetermined count: add 'executionMode: "oneloop"'
-   executionMode: "oneloop"
    localLogMode: true
-   logThreshold: -3
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
    shutdownTopic: shutdownImgChar
    dir: {
       shortName: ImgChar
+      # Following directory info is OVERLAID by imsim-orca.paf:platform  defn
       defaultRoot: .
-      #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../../"
+      runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
       input: update
       output: output
@@ -44,7 +32,7 @@ execute: {
    }
 
    appStage: {
-      name: "010-input"
+      name: "010-imsim-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
       stagePolicy: @ImgChar/010-imsim-input.paf
@@ -105,7 +93,7 @@ execute: {
 #============================================================================
 
    appStage: {
-      name: "090-output"
+      name: "090-imsim-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @ImgChar/090-imsim-output.paf

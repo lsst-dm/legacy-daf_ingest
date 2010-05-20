@@ -4,7 +4,7 @@
 #
 shortName:           DataRelease
 eventBrokerHost:     lsst8.ncsa.uiuc.edu
-repositoryDirectory: /lsst/DC3/data/obstest
+repositoryDirectory: /home/rallsman/datarel/pipeline
 productionShutdownTopic:       productionShutdown
 
 # if a special productionRunConfigurator class is needed, specify it
@@ -60,14 +60,14 @@ workflow: {
         deployData: {
             dataRepository: /lsst/DC3/data/obstest
             collection: CFHTLS/D3 
-            script: @deployData.sh 
+            script: $DATAREL_DIR/pipeline/deployData.sh 
         }
         # launchScript: 
     }
 
     pipeline: {
        shortName:     joboffices
-       definition:    @joboffice.paf
+       definition:    @cfht-joboffice.paf
        runCount: 1
        deploy: {
           # the schema for this node is determined by the above 
@@ -89,7 +89,7 @@ workflow: {
     pipeline: {
        shortName:     isr
        definition:    @cfht-isr-master.paf
-       runCount: 4
+       runCount: 1
        deploy: {
           processesOnNode: lsst5:1
        }
@@ -98,7 +98,7 @@ workflow: {
     pipeline: {
        shortName:     ccdassembly
        definition:    @cfht-ca-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
           processesOnNode: lsst6:1
        }
@@ -107,7 +107,7 @@ workflow: {
     pipeline: {
        shortName:     crsplit
        definition:    @cfht-crSplit-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
           processesOnNode: lsst7:1
        }
@@ -116,7 +116,7 @@ workflow: {
     pipeline: {
        shortName:     imgchar
        definition:    @cfht-imgChar-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
           processesOnNode: lsst5:1
        }
@@ -125,7 +125,7 @@ workflow: {
     pipeline: {
        shortName:     sfm
        definition:    @cfht-sfm-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
           processesOnNode: lsst6:1
        }

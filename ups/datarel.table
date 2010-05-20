@@ -2,9 +2,10 @@ setupRequired(meas_pipeline)
 setupRequired(ip_pipeline)
 setupRequired(ap)
 setupRequired(coadd_utils)
-setupRequired(ctrl_sched)
+setupOptional(ctrl_sched)
 
 setupOptional(obs_cfht)
 setupOptional(obs_lsstSim)
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
+envAppend(PYTHONPATH, ${PRODUCT_DIR}/bin/sst)

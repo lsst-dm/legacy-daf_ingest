@@ -135,12 +135,12 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
     parser.add_option("-v", "--visit", action="append", type="int",
             help="visit number (can be repeated)")
     if "snap" in need:
-        parser.add_option("-s", "--snap", action="append", type="int",
+        parser.add_option("-S", "--snap", action="append", type="int",
                 help="snap number (can be repeated)")
     if "sensor" in need:
         parser.add_option("-r", "--raft", action="append",
                 help="raft coords (can be repeated)")
-        parser.add_option("-c", "--sensor", action="append",
+        parser.add_option("-s", "--sensor", action="append",
                 help="sensor coords (can be repeated)")
     if "channel" in need:
         parser.add_option("-a", "--channel", action="append",

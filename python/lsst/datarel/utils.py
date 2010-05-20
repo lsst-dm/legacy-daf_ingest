@@ -36,7 +36,7 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
     if "calib" in need:
         parser.add_option("-C", "--calibRoot", dest="calibRoot",
                 help="calibration root")
-    parser.add_option("-r", "--registry", help="registry")
+    parser.add_option("-R", "--registry", help="registry")
     parser.add_option("-v", "--visit", action="append", type="int",
             help="visit numbers (can be repeated)")
     if "ccd" in need or "amp" in need:
@@ -131,7 +131,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
     if "calib" in need:
         parser.add_option("-C", "--calibRoot", dest="calibRoot",
                 help="calibration root")
-    parser.add_option("-r", "--registry", help="registry")
+    parser.add_option("-R", "--registry", help="registry")
     parser.add_option("-v", "--visit", action="append", type="int",
             help="visit number (can be repeated)")
     if "snap" in need:
@@ -150,6 +150,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
     if options.registry is None:
         if os.path.exists(os.path.join(options.root, "registry.sqlite3")):
             options.registry = os.path.join(options.root, "registry.sqlite3")
+        elif os.path.exists("/lsst/DC3/data/obstest/ImSim/registry.sqlite3"):
+            options.registry = "/lsst/DC3/data/obstest/ImSim/registry.sqlite3"
     if "calib" in need:
         if os.path.exists("/lsst/DC3/data/obstest/ImSim"):
             options.calibRoot = "/lsst/DC3/data/obstest/ImSim"
@@ -220,9 +222,9 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                                     raft=raft, sensor=sensor,
                                                     channel=channel):
                                         print >>sys.stderr, \
-                                                "***** Processing " + \
+                                                ("***** Processing " + \
                                                 "visit %d snap %d raft %s " + \
-                                                "sensor %s channel %s" % \
+                                                "sensor %s channel %s") % \
                                                 (visit, snap, raft, sensor,
                                                         channel)
                                         processFunction(inButler=inButler,
@@ -237,8 +239,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                                 visit=visit, snap=snap,
                                                 raft=raft, sensor=sensor):
                                     print >>sys.stderr, \
-                                            "***** Processing visit %d " + \
-                                            "snap %d raft %s sensor %s" % \
+                                            ("***** Processing visit %d " + \
+                                            "snap %d raft %s sensor %s") % \
                                             (visit, snap, raft, sensor)
                                     processFunction(inButler=inButler,
                                             outButler=outButler, visit=visit,
@@ -254,8 +256,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                                 raft=raft, sensor=sensor,
                                                 channel=channel):
                                     print >>sys.stderr, \
-                                            "***** Processing visit %d " + \
-                                            "raft %s sensor %s channel %s" % \
+                                            ("***** Processing visit %d " + \
+                                            "raft %s sensor %s channel %s") % \
                                             (visit, raft, sensor, channel)
                                     processFunction(inButler=inButler,
                                             outButler=outButler,
@@ -267,8 +269,8 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                             visit=visit, raft=raft,
                                             sensor=sensor):
                                 print >>sys.stderr, \
-                                        "***** Processing visit %d " + \
-                                        "raft %s sensor %s" % \
+                                        ("***** Processing visit %d " + \
+                                        "raft %s sensor %s") % \
                                         (visit, raft, sensor)
                                 processFunction(inButler=inButler,
                                         outButler=outButler, visit=visit,

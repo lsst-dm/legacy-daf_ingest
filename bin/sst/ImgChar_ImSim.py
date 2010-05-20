@@ -7,107 +7,124 @@ from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
 import lsst.ip.pipeline as ipPipe
 import lsst.meas.pipeline as measPipe
+from stageCtrl import *
 
 def imgCharProcess(root=None, outRoot=None, registry=None,
-        inButler=None, outButler=None, **keys):
+                   inButler=None, outButler=None, stages=None, **keys):
     inButler, outButler = lsstSimSetup(root, outRoot, registry, None,
-            inButler, outButler)
+                                       inButler, outButler)
+    #
+    # Which stages to run, and prerequisites
+    #
+    stages = setPrerequisites(stages)
 
     if not os.environ.has_key("ASTROMETRY_NET_DATA_DIR") or \
             os.environ['ASTROMETRY_NET_DATA_DIR'].find("imsim") == -1:
-        raise RuntimeError, "astrometry_net_data is not setup to imsim"
+        msg = "astrometry_net_data is not setup to imsim"
+        if stages & WCS:
+            raise RuntimeError, msg
+        else:
+            print >> sys.stderr, msg
 
     clip = {
         'visitExposure': inButler.get("visitim", **keys),
     }
 
-    clip = runStage(measPipe.SourceDetectionStage,
-        """#<?cfg paf policy?>
-        inputKeys: {
-            exposure: visitExposure
-        }
-        outputKeys: {
-            positiveDetection: positiveFootprintSet
-            negativeDetection: negativeFootprintSet
-            psf: simplePsf
-        }
-        psfPolicy: {
-            height: 5
-            width: 5
-            parameter: 1.0
-        }
-        backgroundPolicy: {
-            algorithm: NONE
-        }
-        """, clip)
+    if stages & DETECT:
+        clip = runStage(measPipe.SourceDetectionStage,
+            """#<?cfg paf policy?>
+            inputKeys: {
+                exposure: visitExposure
+            }
+            outputKeys: {
+                positiveDetection: positiveFootprintSet
+                negativeDetection: negativeFootprintSet
+                psf: simplePsf
+            }
+            psfPolicy: {
+                height: 5
+                width: 5
+                parameter: 1.0
+            }
+            backgroundPolicy: {
+                algorithm: NONE
+            }
+            """, clip)
 
-    clip = runStage(measPipe.SourceMeasurementStage,
-        """#<?cfg paf policy?>
-        inputKeys: {
-            exposure: visitExposure
-            psf: simplePsf
-            positiveDetection: positiveFootprintSet
-            negativeDetection: negativeFootprintSet
-        }
-        outputKeys: {
-            sources: sourceSet
-        }
-        """, clip)
+    if stages & MEASURE:
+        clip = runStage(measPipe.SourceMeasurementStage,
+            """#<?cfg paf policy?>
+            inputKeys: {
+                exposure: visitExposure
+                psf: simplePsf
+                positiveDetection: positiveFootprintSet
+                negativeDetection: negativeFootprintSet
+            }
+            outputKeys: {
+                sources: sourceSet
+            }
+            """, clip)
 
-    fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
-            "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
-            "IyyErr", "Ixy", "IxyErr")
-    csv = open("imgCharSources-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys, "w")
-    print >>csv, "FlagForDetection," + ",".join(fields)
-    for s in clip['sourceSet']:
-        line = "%d" % (s.getFlagForDetection(),)
-        for f in fields:
-            func = getattr(s, "get" + f)
-            line += ",%g" % (func(),)
-        print >>csv, line
-    csv.close()
-
-    clip = runStage(measPipe.PsfDeterminationStage,
-        """#<?cfg paf policy?>
-        inputKeys: {
-            exposure: visitExposure
-            sourceSet: sourceSet
-        }
-        outputKeys: {
-            psf: measuredPsf
-            cellSet: cellSet
-            sdqa: sdqa
-        }
-        """, clip)
-    print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
-    outButler.put(clip['measuredPsf'], "psf", **keys)
-
-    clip = runStage(measPipe.WcsDeterminationStage,
-        """#<?cfg paf policy?>
-        inputExposureKey: visitExposure
-        inputSourceSetKey: sourceSet
-        outputWcsKey: measuredWcs
-        outputMatchListKey: matchList
-        numBrightStars: 75
-        defaultFilterName: mag
-        """, clip)
-
-    print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
-
-    if clip['matchList'] is not None and len(clip['matchList']) > 0:
-        csv = open("wcsMatches-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys,
-                "w")
-        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
-                "ImgRA,ImgDec,ImgPsfFlux,Distance"
-        for m in clip['matchList']:
-            print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
-                    m.first.getRa(), m.first.getDec(),
-                    m.first.getPsfFlux(),
-                    m.second.getRa(), m.second.getDec(),
-                    m.second.getPsfFlux(),
-                    m.distance)
+        fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
+                "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
+                "IyyErr", "Ixy", "IxyErr")
+        csv = open("imgCharSources-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys, "w")
+        print >>csv, "FlagForDetection," + ",".join(fields)
+        for s in clip['sourceSet']:
+            line = "%d" % (s.getFlagForDetection(),)
+            for f in fields:
+                func = getattr(s, "get" + f)
+                line += ",%g" % (func(),)
+            print >>csv, line
         csv.close()
 
+    if stages & PSF:
+        clip = runStage(measPipe.PsfDeterminationStage,
+            """#<?cfg paf policy?>
+            inputKeys: {
+                exposure: visitExposure
+                sourceSet: sourceSet
+            }
+            outputKeys: {
+                psf: measuredPsf
+                cellSet: cellSet
+                sdqa: sdqa
+            }
+            """, clip)
+
+        print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
+        outButler.put(clip['measuredPsf'], "psf", **keys)
+
+    if stages & WCS:
+        clip = runStage(measPipe.WcsDeterminationStage,
+            """#<?cfg paf policy?>
+            inputExposureKey: visitExposure
+            inputSourceSetKey: sourceSet
+            outputWcsKey: measuredWcs
+            outputMatchListKey: matchList
+            numBrightStars: 75
+            defaultFilterName: mag
+            """, clip)
+
+        print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
+
+        if clip['matchList'] is None or len(clip['matchList']) == 0:
+            stages &= ~(WCS_VERIFY | PHOTO_CAL)
+        else:
+            csv = open("wcsMatches-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys,
+                    "w")
+            print >>csv, "CatRA,CatDec,CatPsfFlux," + \
+                    "ImgRA,ImgDec,ImgPsfFlux,Distance"
+            for m in clip['matchList']:
+                print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
+                        m.first.getRa(), m.first.getDec(),
+                        m.first.getPsfFlux(),
+                        m.second.getRa(), m.second.getDec(),
+                        m.second.getPsfFlux(),
+                        m.distance)
+            csv.close()
+
+    if stages & WCS_VERIFY:
         clip = runStage(measPipe.WcsVerificationStage,
             """#<?cfg paf policy?>
             sourceMatchSetKey: matchList
@@ -115,6 +132,7 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             """, clip)
         print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
 
+    if stages & PHOTO_CAL:
         clip = runStage(measPipe.PhotoCalStage,
             """#<?cfg paf policy?>
             sourceMatchSetKey: matchList
@@ -124,13 +142,12 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
         print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
         print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
 
-    outButler.put(clip['visitExposure'], "calexp", **keys)
+        outButler.put(clip['visitExposure'], "calexp", **keys)
 
-def test():
-    imgCharProcess(
-            root=".",
-    #        root=os.path.join(os.environ['AFWDATA_DIR'], "ImSim"),
-            outRoot=".", visit=85471048, raft="2,2", sensor="1,1")
+def test(root=".", outRoot=".",
+         visit=85471048, raft="2,2", sensor="1,1", stages=None):
+    """Run the specified visit/ccd.  If stages is omitted (or None) all available stages will be run"""
+    imgCharProcess(root=root, outRoot=outRoot, visit=visit, raft=raft, sensor=sensor, stages=stages)
 
 def main():
     lsstSimMain(imgCharProcess, "calexp", "sensor")

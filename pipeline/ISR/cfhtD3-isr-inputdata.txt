@@ -1,0 +1,2 @@
+>intids visit ccd amp
+#raw field=D2 visit=793310 filter=r ccd=9 amp=1

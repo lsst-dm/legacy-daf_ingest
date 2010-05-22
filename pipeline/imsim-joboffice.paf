@@ -1,0 +1,11 @@
+#<?cfg paf policy ?>
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
+   exec: "$DATAREL_DIR/pipeline/imsim-joboffice.sh"
+}
+
+execute: {
+   eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+   shutdownTopic: workflowShutdown
+}

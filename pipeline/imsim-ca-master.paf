@@ -3,7 +3,7 @@
 # ImSim CcdAssembly master.paf
 framework: {
    type: standard
-   environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
+   environment: "$DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse.sh"
    exec: "$PEX_HARNESS_DIR/bin/launchPipeline.py"
 }
 

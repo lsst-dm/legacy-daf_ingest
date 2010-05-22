@@ -50,7 +50,7 @@ database: {
 
 workflow: {
     shortName: PT1Workflow
-    platform:  @platform/lsstcluster_nfs.paf
+    platform:  @platform/cfhtD3-lsstcluster-nfs.paf
     shutdownTopic:       workflowShutdown
 
     configurationClass: lsst.ctrl.orca.GenericPipelineWorkflowConfigurator
@@ -60,7 +60,7 @@ workflow: {
         deployData: {
             dataRepository: /lsst/DC3/data/obstest
             collection: CFHTLS/D3 
-            script: $DATAREL_DIR/pipeline/deployData.sh 
+            script: $DATAREL_DIR/bin/runOrca/deployData.sh 
         }
         # launchScript: 
     }

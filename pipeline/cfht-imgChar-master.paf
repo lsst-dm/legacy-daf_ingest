@@ -91,7 +91,7 @@ execute: {
 #============================================================================
 
    appStage: {
-      name: "090-output"
+      name: "090-cfht-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
       stagePolicy: @ImgChar/090-cfht-output.paf

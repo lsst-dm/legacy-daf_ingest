@@ -14,7 +14,6 @@ execute: {
    shutdownTopic: shutdownISR
    dir: {
       shortName: ISR
-      defaultRoot: .
       # Following directory info is OVERLAID by imsim-orca.paf:platform  defn
       defaultRoot: .
       runDirPattern: "../../%(runid)s/%(shortname)s"

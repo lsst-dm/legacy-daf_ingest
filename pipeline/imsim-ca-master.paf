@@ -11,7 +11,7 @@ execute: {
    nSlices: 1
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-   shutdownTopic: shutdownCcdAssembly
+   shutdownTopic: shutdownCA
    dir: {
       shortName: CA
       # Following directory info is OVERLAID by imsim-orca.paf:platform  defn
@@ -35,7 +35,7 @@ execute: {
       name: "010-imsim-input"
       parallelClass: "lsst.pex.harness.IOStage.InputStageParallel"
       eventTopic: "None"
-      stagePolicy: @CcdAssembly/010-input.paf
+      stagePolicy: @CcdAssembly/010-imsim-input.paf
    }
 
    appStage: {
@@ -56,7 +56,7 @@ execute: {
       name: "040-imsim-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"
-      stagePolicy: @CcdAssembly/040-output.paf
+      stagePolicy: @CcdAssembly/040-imsim-output.paf
    }
 
    appStage: {

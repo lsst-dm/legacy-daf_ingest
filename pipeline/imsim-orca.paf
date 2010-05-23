@@ -60,7 +60,7 @@ workflow: {
         deployData: {
             dataRepository: /lsst/DC3/data/obstest
             collection: ImSim
-            script: $DATAREL_DIR/bin/runOrca/deployData.sh 
+            script: /home/rallsman/datarel/bin/runOrca/deployData.sh 
         }
         # launchScript: 
     }

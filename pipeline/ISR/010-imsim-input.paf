@@ -18,19 +18,19 @@ parameters: {
         biasExposure: {
             datasetType: bias
             datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+                fromJobIdentity: "visit" "raft" "sensor" "channel"
             }
         }
         darkExposure: {
             datasetType: dark
             datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+                fromJobIdentity: "visit" "raft" "sensor" "channel"
             }
         }
         flatExposure: {
             datasetType: flat
             datasetId: {
-                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+                fromJobIdentity: "visit" "raft" "sensor" "channel"
             }
         }
 #        fringeExposure: {

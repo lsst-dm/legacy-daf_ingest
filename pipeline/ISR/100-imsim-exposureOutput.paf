@@ -12,7 +12,7 @@ parameters: {
         isrExposure: {
             datasetId: {
                 datasetType: postISR
-                fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
+                fromJobIdentity: "visit" "filter" "snap" "raft" "sensor" "channel"
             }
         }
     }

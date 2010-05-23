@@ -19,7 +19,7 @@ if [ "$coll" == "ImSim" ]; then
   [ -e "$RunIdDir/input/dark" ] || ln -s $repository/$coll/dark $RunIdDir/input/dark
   [ -e "$RunIdDir/input/bias" ] || ln -s $repository/$coll/bias $RunIdDir/input/bias
   [ -e "$RunIdDir/input/flat" ] || ln -s $repository/$coll/flat $RunIdDir/input/flat
-  [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/registry.sqlite3 $RunIdDir/input/registry.sqlite3
+  [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/input/registry.sqlite3
 else
   mkdir -p $RunIdDir/input/$set
   [ -e "$RunIdDir/input/$set/raw"  ] || ln -s $repository/$coll/raw  $RunIdDir/input/$set/raw

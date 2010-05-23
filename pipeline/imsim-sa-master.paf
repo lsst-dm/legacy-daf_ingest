@@ -20,12 +20,12 @@ execute: {
    nSlices: 1
    localLogMode: true
    eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-   shutdownTopic: shutdownSourceAssoc
+   shutdownTopic: shutdownSA
    dir: {
-      shortName: SourceAssoc
+      shortName: SA
+      # Following directory info is OVERLAID by cfht-orca.paf:platform  defn
       defaultRoot: .
-      #runDirPattern: "../../%(runid)s/%(shortname)s"
-      runDirPattern: "../../JOTest"
+      runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
       input: update
       output: output

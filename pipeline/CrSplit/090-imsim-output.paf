@@ -4,14 +4,15 @@ parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
         mapperPolicy: {
-            root: %(update)
+            root: %(input)
         }
     }
    outputItems: {
-      visitExposure: {
+      crSubCcdExposure: {
+         required: true
          datasetId: {
             datasetType: visitim
-            fromJobIdentity: "visit" "raft" "sensor" 
+            fromJobIdentity: "visit" "filter" "raft" "sensor" 
          }
       }
    }

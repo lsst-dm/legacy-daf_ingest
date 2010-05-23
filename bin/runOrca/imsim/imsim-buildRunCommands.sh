@@ -14,7 +14,7 @@ fi
 echo -e "\n"
 cd $DATAREL_DIR; echo moving into: $DATAREL_DIR
 echo -e "============================\n"
-echo "     cd $DATAREL_DIR/pipeline; orca.py -r $DATAREL_DIR/pipeline -e $DATAREL_DIR/bin/runOrca/imsim/imsim-setupForOrcaUse.sh -V 10 -P 10 imsim-orca.paf $1 "
+echo "     cd $DATAREL_DIR/pipeline; orca.py -r $DATAREL_DIR/pipeline -e $DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse.sh -V 10 -P 10 imsim-orca.paf $1 "
 echo -e "============================\n"
 echo "     cd $DATAREL_DIR/pipeline; announceDataset.py -r $1 -b lsst8.ncsa.uiuc.edu -t RawAvailable $2"
 echo "==========================="

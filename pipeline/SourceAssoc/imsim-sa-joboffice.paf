@@ -31,7 +31,13 @@ schedule: {
               name: filter
             }
             id: {
-              name: ccd
+              name: snap
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
             }
         }
         output: {

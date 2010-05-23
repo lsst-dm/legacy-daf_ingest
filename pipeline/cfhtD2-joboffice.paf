@@ -1,8 +1,8 @@
 #<?cfg paf policy ?>
 framework: {
    type: standard
-   environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
-   exec: "$DATAREL_DIR/bin/runOrca/imsim/imsim-joboffice.sh"
+   environment: "$DATAREL_DIR/bin/runOrca/cfht-setupForOrcaUse.sh"
+   exec: "$DATAREL_DIR/bin/runOrca/cfhtD2/cfht-joboffice.sh"
 }
 
 execute: {

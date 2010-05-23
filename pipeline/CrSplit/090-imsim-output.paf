@@ -8,7 +8,7 @@ parameters: {
         }
     }
    outputItems: {
-      crSubCcdExposure: {
+      crSubCcdExposure0: {
          required: true
          datasetId: {
             datasetType: visitim

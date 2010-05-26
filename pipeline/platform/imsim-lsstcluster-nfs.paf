@@ -41,7 +41,7 @@ hw: {
    nodeCount:  4
 
    # the minimum number of cores per node
-   minCoresPerNode:  2
+   minCoresPerNode:  5
 
    # the maximum number of cores per node; if not specified, this will 
    # default to the minimum number.

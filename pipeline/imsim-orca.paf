@@ -89,7 +89,7 @@ workflow: {
     pipeline: {
        shortName:     isr
        definition:    @imsim-isr-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst5:2
        }
@@ -98,7 +98,7 @@ workflow: {
     pipeline: {
        shortName:     ccdassembly
        definition:    @imsim-ca-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst6:2
        }
@@ -107,7 +107,7 @@ workflow: {
     pipeline: {
        shortName:     crsplit
        definition:    @imsim-crSplit-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst7:2
        }
@@ -116,17 +116,16 @@ workflow: {
     pipeline: {
        shortName:     imgchar
        definition:    @imsim-imgChar-master.paf
-       runCount: 1
+       runCount: 3
        deploy: {
-          processesOnNode: lsst5:2
-          processesOnNode: lsst6:2
+          processesOnNode: lsst5:3
        }
        launch: true
     }
     pipeline: {
        shortName:     sfm
        definition:    @imsim-sfm-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst7:2
        }

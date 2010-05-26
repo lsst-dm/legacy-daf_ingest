@@ -7,7 +7,7 @@ parameters: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
             root: %(input)
-            calibRoot: %(input)
+            calibRoot: %(input)/calib
         }
     }
     inputItems: {

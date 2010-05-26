@@ -17,4 +17,7 @@ echo -e "============================\n"
 echo "     cd $DATAREL_DIR/pipeline; orca.py -r $DATAREL_DIR/pipeline -e $DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse.sh -V 10 -P 10 imsim-orca.paf $1 "
 echo -e "============================\n"
 echo "     cd $DATAREL_DIR/pipeline; announceDataset.py -r $1 -b lsst8.ncsa.uiuc.edu -t RawAvailable $2"
-echo "==========================="
+echo -e "===========================\n"
+echo "     shutprod.py 1 $1"
+echo -e "===========================\n"
+

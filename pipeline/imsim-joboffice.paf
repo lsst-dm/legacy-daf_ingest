@@ -2,7 +2,7 @@
 framework: {
    type: standard
    environment: "$DATAREL_DIR/pipeline/imsim-setupForOrcaUse.sh"
-   exec: "$DATAREL_DIR/bin/runOrca/imsim/imsim-joboffice.sh"
+   exec: "$DATAREL_DIR/bin/runOrca/imsim-joboffice.sh"
 }
 
 execute: {

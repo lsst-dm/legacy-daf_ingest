@@ -1,3 +1,4 @@
 >intids visit ccd amp
-raw field=D2 visit=793310 filter=r ccd=0 amp=0
-raw field=D2 visit=793310 filter=r ccd=0 amp=1
+#D2
+raw  visit=793310 filter=r ccd=0 amp=0
+raw  visit=793310 filter=r ccd=0 amp=1

@@ -4,7 +4,7 @@
 #
 shortName:           DataRelease
 eventBrokerHost:     lsst8.ncsa.uiuc.edu
-repositoryDirectory: /home/rallsman/datarel/pipeline
+repositoryDirectory: /home/rallsman/test/datarel/pipeline
 productionShutdownTopic:       productionShutdown
 
 # if a special productionRunConfigurator class is needed, specify it
@@ -50,7 +50,7 @@ database: {
 
 workflow: {
     shortName: PT1Workflow
-    platform:  @platform/cfhtD3-lsstcluster-nfs.paf
+    platform:  @platform/cfht-lsstcluster-nfs.paf
     shutdownTopic:       workflowShutdown
 
     configurationClass: lsst.ctrl.orca.GenericPipelineWorkflowConfigurator
@@ -59,15 +59,15 @@ workflow: {
         #    <script> <runid> <dataRepository> <collection>
         deployData: {
             dataRepository: /lsst/DC3/data/obstest
-            collection: CFHTLS/D3 
-            script: /home/rallsman/datarel/bin/runOrca/deployData.sh 
+            collection: CFHTLS
+            script: /home/rallsman/test/datarel/bin/runOrca/deployData.sh 
         }
         # launchScript: 
     }
 
     pipeline: {
        shortName:     joboffices
-       definition:    @cfhtD3-joboffice.paf
+       definition:    @cfht-joboffice.paf
        runCount: 1
        deploy: {
           # the schema for this node is determined by the above 

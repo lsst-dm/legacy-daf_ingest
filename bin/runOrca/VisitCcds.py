@@ -37,11 +37,11 @@ else:
    bf = dafPersist.ButlerFactory( mapper=CfhtMapper( root=cfhtRoot ))
    butler = bf.create()
    print ">intids visit ccd amp"
-   for field, visit, filter, ccd, amp in \
+   for visit, filter, ccd, amp in \
            butler.queryMetadata( "raw", "ccd", \
-               ( "field", "visit", "filter", "ccd", "amp" ), \
+               ( "visit", "filter", "ccd", "amp" ), \
                visit=visitSelected ):
-        print "raw field=%s visit=%d filter=%s ccd=%s amp=%s"  \
-                 % ( field, visit, filter, ccd, amp )
+        print "raw visit=%d filter=%s ccd=%s amp=%s"  \
+                 % ( visit, filter, ccd, amp )
 
    

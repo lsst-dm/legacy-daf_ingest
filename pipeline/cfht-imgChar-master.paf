@@ -19,7 +19,7 @@ execute: {
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
       input: update
-      output: output
+      output: update
       update: update
       scratch: scratch
    }
@@ -60,10 +60,10 @@ execute: {
    }
 
    appStage: {
-      name: "050-wcsDetermination"
+      name: "050-cfht-wcsDetermination"
       parallelClass: "lsst.meas.pipeline.WcsDeterminationStageParallel"
       eventTopic: "None"
-      stagePolicy: @ImgChar/050-wcsDetermination.paf
+      stagePolicy: @ImgChar/050-cfht-wcsDetermination.paf
    }
 
    appStage: {

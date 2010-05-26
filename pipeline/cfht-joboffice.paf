@@ -2,7 +2,7 @@
 framework: {
    type: standard
    environment: "$DATAREL_DIR/bin/runOrca/cfht-setupForOrcaUse.sh"
-   exec: "$DATAREL_DIR/bin/runOrca/cfhtD3/cfht-joboffice.sh"
+   exec: "$DATAREL_DIR/bin/runOrca/cfht-joboffice.sh"
 }
 
 execute: {

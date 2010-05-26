@@ -28,7 +28,7 @@ dir: {
    #
    work:     work    # the working directory, where the pipeline is started
    input:    input   # the directory to cache/find input data
-   output:   output  # the directory to write output data
+   output:   update  # the directory to write output data
    update:   update  # the directory where updatable data is deployed
    scratch:  scr     # a directory for temporary files that may be deleted 
                      #   upon completion of the pipeline

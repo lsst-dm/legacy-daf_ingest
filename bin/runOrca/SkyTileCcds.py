@@ -44,11 +44,11 @@ else:
    for visitRet, ccdRet in \
            butler.queryMetadata( "raw", "ccd", ( "visit", "ccd" ), \
               skytile=skyTile):
-       for field, visit, filter, ccd, amp in \
+       for visit, filter, ccd, amp in \
            butler.queryMetadata( "raw", "ccd", \
-               ( "field", "visit", "filter", "ccd", "amp" ), \
+               ( "visit", "filter", "ccd", "amp" ), \
                visit=visitRet,ccd=ccdRet ):
-           print "raw field=%s visit=%d filter=%s ccd=%s amp=%s"  \
-                 % ( field, visit, filter, ccd, amp )
+           print "raw visit=%d filter=%s ccd=%s amp=%s"  \
+                 % ( visit, filter, ccd, amp )
 
    

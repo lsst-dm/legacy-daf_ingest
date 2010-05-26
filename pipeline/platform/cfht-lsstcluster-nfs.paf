@@ -8,7 +8,7 @@ dir: {
    # deployed on this platform.  This must be an absolute directory.  
    # This can be overriden by any of the "named role" directories below.
    #
-   defaultRoot:  /lsst/DC3/data/datarel/CFHTLS/D2/
+   defaultRoot:  /lsst/DC3/data/datarel/CFHTLS
 
    # the pattern to use for setting the root directory for a production
    # run.  The result is a directory relative to the default root directory 
@@ -28,7 +28,7 @@ dir: {
    #
    work:     work    # the working directory, where the pipeline is started
    input:    input   # the directory to cache/find input data
-   output:   output  # the directory to write output data
+   output:   update  # the directory to write output data
    update:   update  # the directory where updatable data is deployed
    scratch:  scr     # a directory for temporary files that may be deleted 
                      #   upon completion of the pipeline

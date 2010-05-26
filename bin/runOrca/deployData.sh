@@ -1,12 +1,12 @@
 #! /bin/sh
 
-# E.G. /lsst/DC3/data/datarel/CFHTLS/D3/%(runid)s
+# E.G. /lsst/DC3/data/datarel/CFHTLS/%(runid)s
 RunIdDir=$1
 
 # e.g. /lsst/DC3/data/obstest
 repository=$2
 
-# e.g. CFHTLS/D3
+# e.g. CFHTLS
 coll=$3
 
 set=`basename $coll`
@@ -21,10 +21,11 @@ if [ "$coll" == "ImSim" ]; then
   [ -e "$RunIdDir/input/flat" ] || ln -s $repository/$coll/flat $RunIdDir/input/flat
   [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/input/registry.sqlite3
 else
-  mkdir -p $RunIdDir/input/$set
-  [ -e "$RunIdDir/input/$set/raw"  ] || ln -s $repository/$coll/raw  $RunIdDir/input/$set/raw
-  [ -e "$RunIdDir/input/bias" ] || ln -s $repository/$coll/../calib/bias $RunIdDir/input/bias
-  [ -e "$RunIdDir/input/flat" ] || ln -s $repository/$coll/../calib/flat $RunIdDir/input/flat
-  [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/$coll/../registry.sqlite3 $RunIdDir/input/registry.sqlite3
-  [ -e "$RunIdDir/input/calibRegistry.sqlite3" ] || ln -s $repository/$coll/../calib/calibRegistry.sqlite3 $RunIdDir/input/calibRegistry.sqlite3
+  mkdir -p $RunIdDir/input
+  [ -e "$RunIdDir/input/D1"  ] || ln -s $repository/$coll/D1  $RunIdDir/input/D1
+  [ -e "$RunIdDir/input/D2"  ] || ln -s $repository/$coll/D2  $RunIdDir/input/D2
+  [ -e "$RunIdDir/input/D3"  ] || ln -s $repository/$coll/D3  $RunIdDir/input/D3
+  [ -e "$RunIdDir/input/D4"  ] || ln -s $repository/$coll/D4  $RunIdDir/input/D4
+  [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/input/registry.sqlite3
+  [ -e "$RunIdDir/input/calib"  ] || ln -s $repository/$coll/calib  $RunIdDir/input/calib
 fi  

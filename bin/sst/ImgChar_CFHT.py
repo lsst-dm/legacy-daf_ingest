@@ -64,6 +64,7 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
                 sources: sourceSet
             }
             """, clip)
+        outButler.put(clip['sourceSet_persistable'], "icSrc", **keys)
 
         fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
                 "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",

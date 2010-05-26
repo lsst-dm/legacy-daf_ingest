@@ -23,7 +23,7 @@ elif [ $okToProcess -eq 0 ]; then
 fi
 
 
-for i in `sqlite3 $registry "select skyTile from raw_skyTile" | sort -u` ; do
+for i in `sqlite3 $registry "SELECT DISTINCT(skyTile) FROM raw_skyTile ORDER BY skyTile"` ; do
     echo $label Processing: $i
     ./SkyTileCcds.py $1 $i > $type-isr-skytileInput-$i.txt
 done

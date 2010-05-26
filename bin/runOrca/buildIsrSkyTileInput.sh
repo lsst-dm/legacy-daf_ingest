@@ -2,7 +2,7 @@
 
 cfhtRegistry="/lsst/DC3/data/obstest/CFHTLS/registry.sqlite3"
 imsimRegistry="/lsst/DC3/data/obstest/ImSim/registry.sqlite3"
-error="Use:   buildIsrSkyTileInput.sh  -c | -i \nwhere \n    -c indicates cfht data\n    -i indicates ImSim data\nExample:  buildIsrInput.sh  -c\nExample:  buildIsrInput.sh  -i\n"
+error="Use:   buildIsrSkyTileInput.sh  -c | -i \nwhere \n    -c indicates cfht data\n    -i indicates ImSim data\nExample:  buildIsrSkyTileInput.sh  -c\nExample:  buildIsrSkyTileInput.sh  -i\n"
 
 if [ $# -lt 1 ] ; then
     echo -e $error

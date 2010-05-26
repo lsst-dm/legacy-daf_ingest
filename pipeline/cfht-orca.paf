@@ -89,7 +89,7 @@ workflow: {
     pipeline: {
        shortName:     isr
        definition:    @cfht-isr-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst5:1
        }
@@ -98,7 +98,7 @@ workflow: {
     pipeline: {
        shortName:     ccdassembly
        definition:    @cfht-ca-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst6:1
        }
@@ -107,7 +107,7 @@ workflow: {
     pipeline: {
        shortName:     crsplit
        definition:    @cfht-crSplit-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
           processesOnNode: lsst7:1
        }
@@ -116,18 +116,19 @@ workflow: {
     pipeline: {
        shortName:     imgchar
        definition:    @cfht-imgChar-master.paf
-       runCount: 1
+       runCount: 4
        deploy: {
           processesOnNode: lsst5:1
+          processesOnNode: lsst6:1
        }
        launch: true
     }
     pipeline: {
        shortName:     sfm
        definition:    @cfht-sfm-master.paf
-       runCount: 1
+       runCount: 2
        deploy: {
-          processesOnNode: lsst6:1
+          processesOnNode: lsst7:1
        }
        launch: true
     }

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# E.G. /lsst/DC3/data/datarel/CFHTLS/%(runid)s
+# E.G. /lsst/DC3/data/datarel-test/CFHTLS/%(runid)s
 RunIdDir=$1
 
 # e.g. /lsst/DC3/data/obstest

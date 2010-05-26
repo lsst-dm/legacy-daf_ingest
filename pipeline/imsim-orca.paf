@@ -91,7 +91,7 @@ workflow: {
        definition:    @imsim-isr-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst5:1
+          processesOnNode: lsst5:2
        }
        launch: true
     }
@@ -100,7 +100,7 @@ workflow: {
        definition:    @imsim-ca-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst6:1
+          processesOnNode: lsst6:2
        }
        launch: true
     }
@@ -109,7 +109,7 @@ workflow: {
        definition:    @imsim-crSplit-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst7:1
+          processesOnNode: lsst7:2
        }
        launch: true
     }
@@ -118,7 +118,8 @@ workflow: {
        definition:    @imsim-imgChar-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst5:1
+          processesOnNode: lsst5:2
+          processesOnNode: lsst6:2
        }
        launch: true
     }
@@ -127,7 +128,7 @@ workflow: {
        definition:    @imsim-sfm-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst6:1
+          processesOnNode: lsst7:2
        }
        launch: true
     }

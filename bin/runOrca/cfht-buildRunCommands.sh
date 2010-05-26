@@ -1,11 +1,11 @@
 #!/bin/sh
 if [ "x$DATAREL_DIR" == "x" ]; then
-   echo "You must 'setup datarel' before use."
+   echo -e "You must 'setup datarel' before use."
    exit 0
 fi
 
 if [ $# -lt 2 ] ; then
-   echo "cfht-buildRunCommands.sh <runid> <inputlist>\nwhere\n   runid : unique ID for run\n    inputlist : full pathname to list of visit/ccd/amp to process.\nExample: cfht-buildRunCommands.sh raa20100521_01 /tmp/TestCfhtInput.txt"
+   echo -e "cfht-buildRunCommands.sh <runid> <inputlist>\nwhere\n   runid : unique ID for run\n   inputlist : full pathname to list of visit/ccd/amp to process.\nExample: cfht-buildRunCommands.sh raa20100521_01 /tmp/TestCfhtInput.txt"
    exit 0
 fi
 

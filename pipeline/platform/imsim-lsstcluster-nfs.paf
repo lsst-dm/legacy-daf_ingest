@@ -8,7 +8,7 @@ dir: {
    # deployed on this platform.  This must be an absolute directory.  
    # This can be overriden by any of the "named role" directories below.
    #
-   defaultRoot:  /lsst/DC3/data/datarel/ImSim/
+   defaultRoot:  /lsst/DC3/data/datarel-test/ImSim/
 
    # the pattern to use for setting the root directory for a production
    # run.  The result is a directory relative to the default root directory 
@@ -68,14 +68,10 @@ deploy:  {
 
    # the node names and the number of cores available to them
    # 
-   #nodes:  "lsst5:8"
-   #nodes:  "lsst6:8"
-   #nodes:  "lsst7:8"
-   #nodes:  "lsst8:8"
-   #nodes:  "lsst9:8"
-   #nodes:  "lsst10:6"
-   nodes:  "lsst5:2"
-   nodes:  "lsst6:2"
-   nodes:  "lsst7:2"
-   nodes:  "lsst8:2"
+   nodes:  "lsst5:8"
+   nodes:  "lsst6:8"
+   nodes:  "lsst7:8"
+   nodes:  "lsst8:8"
+   nodes:  "lsst9:8"
+   nodes:  "lsst10:6"
 }

@@ -20,7 +20,7 @@ execute: {
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
       input: input
-      output: update
+      output: output
       update: update
       scratch: scratch
    }

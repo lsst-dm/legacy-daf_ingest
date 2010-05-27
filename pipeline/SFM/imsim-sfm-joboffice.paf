@@ -23,9 +23,6 @@ schedule: {
               name: visit
             }
             id: {
-              name: filter
-            }
-            id: {
               name: snap 
             }
             id: {
@@ -41,9 +38,6 @@ schedule: {
               name: visit
             }
             id: {
-              name: filter
-            }
-            id: {
               name: snap 
             }
             id: {
@@ -57,9 +51,6 @@ schedule: {
             datasetType: src
             id: {
               name: visit
-            }
-            id: {
-              name: filter
             }
             id: {
               name: snap 

@@ -5,7 +5,7 @@ parameters: {
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
-            root: %(input)
+            root: %(update)
         }
     }
 
@@ -14,7 +14,7 @@ parameters: {
           required: true
           datasetId: {
              datasetType: Src
-             fromJobIdentity: "visit"  "filter" "raft" "sensor"
+             fromJobIdentity: "visit"   "raft" "sensor"
           }
        }
     }

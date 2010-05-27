@@ -15,9 +15,6 @@ schedule: {
     trigger: {
         datasetType: visitim
         id: {
-            name: filter
-            }
-        id: {
             name: visit
             }
         id: {
@@ -29,9 +26,6 @@ schedule: {
         input: {
             datasetType: visitim
             id: {
-                name: filter
-            }
-            id: {
                 name: visit
             }
             id: {
@@ -40,9 +34,6 @@ schedule: {
         }
         output: {
             datasetType: calexp
-            id: {
-                name: filter
-            }
             id: {
                 name: visit
             }
@@ -53,9 +44,6 @@ schedule: {
         output: {
             datasetType: psf
             id: {
-                name: filter
-            }
-            id: {
                 name: visit
             }
             id: {
@@ -65,9 +53,6 @@ schedule: {
 #        output: {
 #            datasetType: cellSet
 #            id: {
-#                name: filter
-#            }
-#            id: {
 #                name: visit
 #            }
 #            id: {
@@ -76,9 +61,6 @@ schedule: {
 #        }
 #        output: { 
 #            datasetType: sourceMatchSet
-#            id: {
-#                name: filter
-#            }
 #            id: {
 #                name: visit
 #            }

@@ -28,9 +28,6 @@ schedule: {
               name: visit
             }
             id: {
-              name: filter
-            }
-            id: {
               name: ccd
             }
         }

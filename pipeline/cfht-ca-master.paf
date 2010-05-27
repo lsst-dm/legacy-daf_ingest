@@ -14,12 +14,12 @@ execute: {
    shutdownTopic: shutdownCA
    dir: {
       shortName: CA
-      # Following directory info is OVERLAID by cfht-orca.paf:platform  defn
+      # Following info will be OVERLAID by any cfht-orca.paf:platform defns
       defaultRoot: .
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
-      input: update
-      output: update
+      input: input
+      output: output
       update: update
       scratch: scratch
    }

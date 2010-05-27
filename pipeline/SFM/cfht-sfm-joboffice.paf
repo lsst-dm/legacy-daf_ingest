@@ -23,9 +23,6 @@ schedule: {
               name: visit
             }
             id: {
-              name: filter
-            }
-            id: {
               name: ccd
             }
         }
@@ -35,9 +32,6 @@ schedule: {
               name: visit
             }
             id: {
-              name: filter
-            }
-            id: {
               name: ccd
             }
         }
@@ -45,9 +39,6 @@ schedule: {
             datasetType: src
             id: {
               name: visit
-            }
-            id: {
-              name: filter
             }
             id: {
               name: ccd

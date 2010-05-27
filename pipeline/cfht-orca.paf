@@ -4,7 +4,7 @@
 #
 shortName:           DataRelease
 eventBrokerHost:     lsst8.ncsa.uiuc.edu
-repositoryDirectory: /home/rallsman/test/datarel/pipeline
+repositoryDirectory: /home/rallsman/datarel/pipeline
 productionShutdownTopic:       productionShutdown
 
 # if a special productionRunConfigurator class is needed, specify it
@@ -60,7 +60,7 @@ workflow: {
         deployData: {
             dataRepository: /lsst/DC3/data/obstest
             collection: CFHTLS
-            script: /home/rallsman/test/datarel/bin/runOrca/deployData.sh 
+            script: /home/rallsman/datarel/bin/runOrca/deployData.sh 
         }
         # launchScript: 
     }
@@ -89,45 +89,45 @@ workflow: {
     pipeline: {
        shortName:     isr
        definition:    @cfht-isr-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
-          processesOnNode: lsst5:2
+          processesOnNode: lsst5:1
        }
        launch: true
     }
     pipeline: {
        shortName:     ccdassembly
        definition:    @cfht-ca-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
-          processesOnNode: lsst6:2
+          processesOnNode: lsst6:1
        }
        launch: true
     }
     pipeline: {
        shortName:     crsplit
        definition:    @cfht-crSplit-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
-          processesOnNode: lsst7:2
+          processesOnNode: lsst7:1
        }
        launch: true
     }
     pipeline: {
        shortName:     imgchar
        definition:    @cfht-imgChar-master.paf
-       runCount: 3
+       runCount: 1
        deploy: {
-          processesOnNode: lsst5:3
+          processesOnNode: lsst5:1
        }
        launch: true
     }
     pipeline: {
        shortName:     sfm
        definition:    @cfht-sfm-master.paf
-       runCount: 2
+       runCount: 1
        deploy: {
-          processesOnNode: lsst7:2
+          processesOnNode: lsst6:1
        }
        launch: true
     }

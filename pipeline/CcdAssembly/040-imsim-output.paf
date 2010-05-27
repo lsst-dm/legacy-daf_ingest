@@ -4,7 +4,7 @@ parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
         mapperPolicy: {
-            root: %(input)
+            root: %(update)
         }
     }
 
@@ -13,7 +13,7 @@ parameters: {
             required: true
             datasetId: {
                 datasetType: postISRCCD
-                fromJobIdentity:  "visit" "filter" "raft" "sensor"  "snap"
+                fromJobIdentity:  "visit"  "raft" "sensor"  "snap"
             }
         }
     }

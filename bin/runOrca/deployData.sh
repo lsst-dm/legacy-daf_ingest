@@ -20,6 +20,8 @@ if [ "$coll" == "ImSim" ]; then
   [ -e "$RunIdDir/input/bias" ] || ln -s $repository/$coll/bias $RunIdDir/input/bias
   [ -e "$RunIdDir/input/flat" ] || ln -s $repository/$coll/flat $RunIdDir/input/flat
   [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/input/registry.sqlite3
+  mkdir -p $RunIdDir/update
+  [ -e "$RunIdDir/update/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/update/registry.sqlite3
 else
   mkdir -p $RunIdDir/input
   [ -e "$RunIdDir/input/D1"  ] || ln -s $repository/$coll/D1  $RunIdDir/input/D1
@@ -28,4 +30,6 @@ else
   [ -e "$RunIdDir/input/D4"  ] || ln -s $repository/$coll/D4  $RunIdDir/input/D4
   [ -e "$RunIdDir/input/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/input/registry.sqlite3
   [ -e "$RunIdDir/input/calib"  ] || ln -s $repository/$coll/calib  $RunIdDir/input/calib
+  mkdir -p $RunIdDir/update
+  [ -e "$RunIdDir/update/registry.sqlite3" ] || ln -s $repository/$coll/registry.sqlite3 $RunIdDir/update/registry.sqlite3
 fi  

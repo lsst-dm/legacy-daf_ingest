@@ -15,9 +15,6 @@ schedule: {
     trigger: {
         datasetType: postISRCCD
         id: {
-            name: filter
-            }
-        id: {
             name: visit
             }
         id: {
@@ -29,9 +26,6 @@ schedule: {
         input: {
             datasetType: postISRCCD
             id: {
-                name: filter
-            }
-            id: {
                 name: visit
             }
             id: {
@@ -40,9 +34,6 @@ schedule: {
         }
         output: {
             datasetType: visitim
-            id: {
-                name: filter
-            }
             id: {
                 name: visit
             }

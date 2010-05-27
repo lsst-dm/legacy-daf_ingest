@@ -5,8 +5,8 @@ parameters: {
     butler: {
         mapperName: lsst.obs.lsstSim.LsstSimMapper
         mapperPolicy: {
-            root: %(input)
-            calibRoot: %(input)
+            root: %(update)
+            calibRoot: %(update)
         }
     }
     inputItems: {

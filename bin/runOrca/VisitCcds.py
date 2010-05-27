@@ -27,21 +27,21 @@ if options.imsim:
    bf = dafPersist.ButlerFactory( mapper=LsstSimMapper( root=imsimRoot ))
    butler = bf.create()
    print ">intids visit snap"
-   for visit, filter, snap, raft, sensor, channel in \
+   for visit, snap, raft, sensor, channel in \
            butler.queryMetadata("raw", "channel", \
-                ("visit", "filter", "snap", "raft", "sensor", "channel"), visit=visitSelected):
-       print "raw visit=%d filter=%s snap=%d raft=%s sensor=%s channel=%s" \
-                 % ( visit, filter, snap, raft, sensor, channel )
+                ("visit", "snap", "raft", "sensor", "channel"), visit=visitSelected):
+       print "raw visit=%d snap=%d raft=%s sensor=%s channel=%s" \
+                 % ( visit,  snap, raft, sensor, channel )
 else:
    cfhtRoot="/lsst/DC3/data/obstest/CFHTLS/"
    bf = dafPersist.ButlerFactory( mapper=CfhtMapper( root=cfhtRoot ))
    butler = bf.create()
    print ">intids visit ccd amp"
-   for visit, filter, ccd, amp in \
+   for visit, ccd, amp in \
            butler.queryMetadata( "raw", "ccd", \
-               ( "visit", "filter", "ccd", "amp" ), \
+               ( "visit", "ccd", "amp" ), \
                visit=visitSelected ):
-        print "raw visit=%d filter=%s ccd=%s amp=%s"  \
-                 % ( visit, filter, ccd, amp )
+        print "raw visit=%d  ccd=%s amp=%s"  \
+                 % ( visit,  ccd, amp )
 
    

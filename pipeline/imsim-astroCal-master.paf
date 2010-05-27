@@ -17,7 +17,7 @@ execute: {
       defaultRoot: .
       runDirPattern: "../../%(runid)s/%(shortname)s"
       work: work
-      input: update
+      input: input
       output: output
       update: update
       scratch: scratch

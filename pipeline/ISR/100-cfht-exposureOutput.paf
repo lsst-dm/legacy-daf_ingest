@@ -5,7 +5,7 @@ parameters: {
     butler: {
         mapperName: lsst.obs.cfht.CfhtMapper
         mapperPolicy: {
-            root: %(input)
+            root: %(update)
         }
     }
     outputItems: {

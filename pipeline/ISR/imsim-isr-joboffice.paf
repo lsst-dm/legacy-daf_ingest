@@ -24,9 +24,6 @@ schedule: {
               name: visit
             }
             id: {
-              name: filter
-            }
-            id: {
               name: snap
             }
             id: {
@@ -43,9 +40,6 @@ schedule: {
             datasetType: postISR
             id: {
               name: visit
-            }
-            id: {
-              name: filter
             }
             id: {
               name: snap

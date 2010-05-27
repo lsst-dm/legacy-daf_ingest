@@ -13,9 +13,6 @@ schedule: {
     trigger: {
         datasetType: postISR
         id: {
-            name: filter
-            }
-        id: {
             name: visit
             }
         id: {
@@ -32,16 +29,12 @@ schedule: {
         identity: {
             datasetType: postISRCCD
             id: visit
-            id: filter
             id: ccd
         }
         input: {
             datasetType: postISR
             id: {
               name: visit
-            }
-            id: {
-              name: filter
             }
             id: {
               name: ccd
@@ -56,9 +49,6 @@ schedule: {
             datasetType: postISRCCD
             id: {
               name: visit
-            }
-            id: {
-              name: filter
             }
             id: {
               name: ccd

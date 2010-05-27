@@ -5,7 +5,7 @@ parameters: {
    butler: {
       mapperName: lsst.obs.lsstSim.LsstSimMapper
       mapperPolicy: {
-         root: %(input)
+         root: %(update)
       }
    }
 
@@ -14,26 +14,26 @@ parameters: {
          datasetId: {
             required: true
             datasetType: calexp
-            fromJobIdentity: "visit" "filter" "raft" "sensor" 
+            fromJobIdentity: "visit"  "raft" "sensor" 
          }
       }
       measuredPsf: {
          datasetId: {
             required: true
             datasetType: psf
-            fromJobIdentity: "visit" "filter" "raft" "sensor"
+            fromJobIdentity: "visit"  "raft" "sensor"
          }
       }
 #      matchList: {
 #         datasetId: {
 #            datasetType: sourceMatchSet
-#            fromJobIdentity: "visit" "filter" "raft" "sensor"
+#            fromJobIdentity: "visit"  "raft" "sensor"
 #         }
 #      }
 #      sourceSet: {
 #         datasetId: {
 #            datasetType: sourceSet
-#            fromJobIdentity: "visit" "filter" "raft" "sensor"
+#            fromJobIdentity: "visit"  "raft" "sensor"
 #         }
 #      }
  

@@ -30,12 +30,12 @@ if options.imsim:
    for visitRet, snapRet, raftRet, sensorRet in \
            butler.queryMetadata("raw", "sensor", \
                 ("visit", "snap", "raft", "sensor"), skytile=skyTile):
-       for visit, filter, snap, raft, sensor, channel in \
+       for visit,  snap, raft, sensor, channel in \
            butler.queryMetadata("raw", "channel", \
-                ( "visit", "filter", "snap", "raft", "sensor", "channel" ), \
+                ( "visit", "snap", "raft", "sensor", "channel" ), \
                 visit=visitRet, snap=snapRet, raft=raftRet, sensor=sensorRet ):
-           print "raw visit=%d filter=%s snap=%d raft=%s sensor=%s channel=%s" \
-                 % ( visit, filter, snap, raft, sensor, channel )
+           print "raw visit=%d  snap=%d raft=%s sensor=%s channel=%s" \
+                 % ( visit,  snap, raft, sensor, channel )
 else:
    cfhtRoot="/lsst/DC3/data/obstest/CFHTLS/"
    bf = dafPersist.ButlerFactory( mapper=CfhtMapper( root=cfhtRoot ))
@@ -44,11 +44,11 @@ else:
    for visitRet, ccdRet in \
            butler.queryMetadata( "raw", "ccd", ( "visit", "ccd" ), \
               skytile=skyTile):
-       for visit, filter, ccd, amp in \
+       for visit,  ccd, amp in \
            butler.queryMetadata( "raw", "ccd", \
-               ( "visit", "filter", "ccd", "amp" ), \
+               ( "visit",  "ccd", "amp" ), \
                visit=visitRet,ccd=ccdRet ):
-           print "raw visit=%d filter=%s ccd=%s amp=%s"  \
-                 % ( visit, filter, ccd, amp )
+           print "raw visit=%d  ccd=%s amp=%s"  \
+                 % ( visit,  ccd, amp )
 
    

@@ -140,8 +140,9 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             outputValueKey: photometricMagnitudeObject
             """, clip)
         photoObj = clip['photometricMagnitudeObject']
-        print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
-        print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
+        if photoObj is not None:
+            print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
+            print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
 
         outButler.put(clip['visitExposure'], "calexp", **keys)
 

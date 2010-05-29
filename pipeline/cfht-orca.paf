@@ -2,9 +2,11 @@
 #
 # Orchestration Layer Policy for a DC3 production
 #
+# Copy this file and modify as needed.
+#
 shortName:           DataRelease
 eventBrokerHost:     lsst8.ncsa.uiuc.edu
-repositoryDirectory: /home/rallsman/datarel/pipeline
+repositoryDirectory: ./pipeline
 productionShutdownTopic:       productionShutdown
 
 # if a special productionRunConfigurator class is needed, specify it
@@ -60,7 +62,7 @@ workflow: {
         deployData: {
             dataRepository: /lsst/DC3/data/obstest
             collection: CFHTLS
-            script: /home/rallsman/datarel/bin/runOrca/deployData.sh 
+            script: "$DATAREL_DIR/bin/runOrca/deployData.sh"
         }
         # launchScript: 
     }

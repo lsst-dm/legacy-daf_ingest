@@ -47,6 +47,16 @@ def isrProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
+    clip = runStage(ipPipe.IsrVarianceStage,
+        """#<?cfg paf policy?>
+        inputKeys: {
+            exposure: isrExposure
+        }
+        outputKeys: {
+            varianceAddedExposure: isrExposure
+        }
+        """, clip)
+
     clip = runStage(ipPipe.IsrDarkStage,
         """#<?cfg paf policy?>
         inputKeys: {

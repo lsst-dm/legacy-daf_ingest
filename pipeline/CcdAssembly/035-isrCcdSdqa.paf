@@ -1,0 +1,7 @@
+#<?cfg paf policy ?>
+inputKeys: {
+   ccdExposure: isrExposure
+}
+outputKeys: {
+   sdqaCcdExposure: isrExposure
+}

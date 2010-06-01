@@ -53,6 +53,13 @@ execute: {
    }
 
    appStage: {
+      name: "035-isrCcdSdqa"
+      parallelClass: "lsst.ip.pipeline.IsrCcdSdqaStageParallel"
+      eventTopic: "None"
+      stagePolicy: @CcdAssembly/035-isrCcdSdqa.paf
+   }
+
+   appStage: {
       name: "040-imsim-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"

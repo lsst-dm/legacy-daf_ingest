@@ -68,6 +68,13 @@ execute: {
       stagePolicy: @ISR/060-bias.paf
    }
 
+   appStage: {
+      name: "065-variance"
+      parallelClass: "lsst.ip.pipeline.IsrVarianceStageParallel"
+      eventTopic: "None"
+      stagePolicy: @ISR/065-variance.paf
+   }
+
 # Darks are not processed for CFHT-LS dataset
 
    appStage: {

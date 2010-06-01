@@ -68,6 +68,13 @@ execute: {
    }
 
    appStage: {
+      name: "065-variance"
+      parallelClass: "lsst.ip.pipeline.IsrVarianceStageParallel"
+      eventTopic: "None"
+      stagePolicy: @ISR/065-variance.paf
+   }
+
+   appStage: {
       name: "070-dark"
       parallelClass: "lsst.ip.pipeline.IsrDarkStageParallel"
       eventTopic: "None"

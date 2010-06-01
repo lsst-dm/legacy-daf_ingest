@@ -1,0 +1,8 @@
+#<?cfg paf policy ?>
+# isrVariance.paf
+inputKeys: {
+   exposure: "isrExposure"
+}
+outputKeys: {
+   varianceAddedExposure: "isrExposure"
+}

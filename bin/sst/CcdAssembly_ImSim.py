@@ -32,8 +32,17 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
             ccdExposure: isrExposure
         }
         """, clip)
+    clip = runStage(ipPipe.IsrCcdSdqaStage,
+        """#<?cfg paf policy?>
+        inputKeys: {
+            ccdExposure: isrExposure
+        }
+        outputKeys: {
+            sdqaCcdExposure: isrExposure
+        }
+        """, clip)
 
-    outButler.put(clip['defectMaskedCcdExposure'], "postISRCCD", **keys)
+    outButler.put(clip['isrExposure'], "postISRCCD", **keys)
 
 def test():
     root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")

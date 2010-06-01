@@ -60,10 +60,10 @@ execute: {
    }
 
    appStage: {
-      name: "050-cfht-wcsDetermination"
+      name: "050-wcsDetermination"
       parallelClass: "lsst.meas.pipeline.WcsDeterminationStageParallel"
       eventTopic: "None"
-      stagePolicy: @ImgChar/050-cfht-wcsDetermination.paf
+      stagePolicy: @ImgChar/050-wcsDetermination.paf
    }
 
    appStage: {

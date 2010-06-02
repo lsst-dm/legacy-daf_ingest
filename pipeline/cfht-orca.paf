@@ -2,8 +2,6 @@
 #
 # Orchestration Layer Policy for a DC3 production
 #
-# Copy this file and modify as needed.
-#
 shortName:           DataRelease
 eventBrokerHost:     lsst8.ncsa.uiuc.edu
 repositoryDirectory: ./pipeline
@@ -52,7 +50,7 @@ database: {
 
 workflow: {
     shortName: PT1Workflow
-    platform:  @platform/cfht-lsstcluster-nfs.paf
+    platform:  @urn:eupspkg:datarel:pipeline:platform/cfht-lsstcluster-nfs.paf
     shutdownTopic:       workflowShutdown
 
     configurationClass: lsst.ctrl.orca.GenericPipelineWorkflowConfigurator
@@ -69,7 +67,7 @@ workflow: {
 
     pipeline: {
        shortName:     joboffices
-       definition:    @cfht-joboffice.paf
+       definition:    @urn:eupspkg:datarel:pipeline:cfht-joboffice.paf
        runCount: 1
        deploy: {
           # the schema for this node is determined by the above 
@@ -90,7 +88,7 @@ workflow: {
     }
     pipeline: {
        shortName:     isr
-       definition:    @cfht-isr-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:cfht-isr-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst5:1
@@ -99,7 +97,7 @@ workflow: {
     }
     pipeline: {
        shortName:     ccdassembly
-       definition:    @cfht-ca-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:cfht-ca-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst6:1
@@ -108,7 +106,7 @@ workflow: {
     }
     pipeline: {
        shortName:     crsplit
-       definition:    @cfht-crSplit-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:cfht-crSplit-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst7:1
@@ -117,7 +115,7 @@ workflow: {
     }
     pipeline: {
        shortName:     imgchar
-       definition:    @cfht-imgChar-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:cfht-imgChar-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst5:1
@@ -126,7 +124,7 @@ workflow: {
     }
     pipeline: {
        shortName:     sfm
-       definition:    @cfht-sfm-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:cfht-sfm-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst6:1

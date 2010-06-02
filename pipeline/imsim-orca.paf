@@ -52,7 +52,7 @@ database: {
 
 workflow: {
     shortName: PT1Workflow
-    platform:  @platform/imsim-lsstcluster-nfs.paf
+    platform:  @urn:eupspkg:datarel:pipeline:platform/imsim-lsstcluster-nfs.paf
     shutdownTopic:       workflowShutdown
 
     configurationClass: lsst.ctrl.orca.GenericPipelineWorkflowConfigurator
@@ -69,7 +69,7 @@ workflow: {
 
     pipeline: {
        shortName:     joboffices
-       definition:    @imsim-joboffice.paf
+       definition:    @urn:eupspkg:datarel:pipeline:imsim-joboffice.paf
        runCount: 1
        deploy: {
           # the schema for this node is determined by the above 
@@ -90,7 +90,7 @@ workflow: {
     }
     pipeline: {
        shortName:     isr
-       definition:    @imsim-isr-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:imsim-isr-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst5:1
@@ -99,7 +99,7 @@ workflow: {
     }
     pipeline: {
        shortName:     ccdassembly
-       definition:    @imsim-ca-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:imsim-ca-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst6:1
@@ -108,7 +108,7 @@ workflow: {
     }
     pipeline: {
        shortName:     crsplit
-       definition:    @imsim-crSplit-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:imsim-crSplit-master.paf
        runCount: 1
        deploy: {
           processesOnNode: lsst7:1
@@ -117,19 +117,19 @@ workflow: {
     }
     pipeline: {
        shortName:     imgchar
-       definition:    @imsim-imgChar-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:imsim-imgChar-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst5:1
+          processesOnNode: lsst6:1
        }
        launch: true
     }
     pipeline: {
        shortName:     sfm
-       definition:    @imsim-sfm-master.paf
+       definition:    @urn:eupspkg:datarel:pipeline:imsim-sfm-master.paf
        runCount: 1
        deploy: {
-          processesOnNode: lsst6:1
+          processesOnNode: lsst7:1
        }
        launch: true
     }

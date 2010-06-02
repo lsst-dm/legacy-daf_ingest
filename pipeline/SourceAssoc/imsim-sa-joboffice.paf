@@ -13,77 +13,67 @@ schedule: {
     trigger: {
         datasetType: src
         id: {
-            name: visit
+            name: skyTile
         }
     }
 
     job: {
-        identity: {
-            datasetType: src
-            id: visit
-        }
         input: {
             datasetType: src
             id: {
               name: visit
             }
             id: {
-              name: snap
-            }
-            id: {
-              name: raft
-            }
-            id: {
-              name: sensor
+              name: skyTile
             }
         }
         output: {
             # from clipboard: sources
             datasetType: source
             id: {
-              name: skytile
+              name: skyTile
             }
         }
         output: {
             # from clipboard: badSources
             datasetType: badSource
             id: {
-              name: skytile
+              name: skyTile
             }
         }
         output: {
             # from clipboard: invalidSources
             datasetType: invalidSource
             id: {
-              name: skytile
+              name: skyTile
             }
         }
         output: {
             # from clipboard: goodSourceHistogram
             datasetType: sourceHist
             id: {
-              name: skytile
+              name: skyTile
             }
         }
         output: {
             # from clipboard: badSourceHistogram
             datasetType: badSourceHist
             id: {
-              name: skytile
+              name: skyTile
             }
         }
         output: {
             # from clipboard: sourceClusterAttributes
             datasetType: object
             id: {
-              name: skytile
+              name: skyTile
             }
         }
         output: {
             # from clipboard: badSourceClusterAttributes
             datasetType: badObject
             id: {
-              name: skytile
+              name: skyTile
             }
         }
     }

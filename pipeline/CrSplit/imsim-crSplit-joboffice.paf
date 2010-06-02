@@ -19,6 +19,8 @@ schedule: {
         }
         id: {
             name: snap
+            min: 0
+            lim: 2
         }
         id: {
             name: raft
@@ -28,8 +30,6 @@ schedule: {
         }
         id: {
             name: sensor
-#            min:0
-#            lim:2
         }
     }
 
@@ -53,9 +53,6 @@ schedule: {
             datasetType: visitim
             id: {
               name: visit
-            }
-            id: {
-              name: snap
             }
             id: {
               name: raft

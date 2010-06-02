@@ -3,7 +3,7 @@
 
 parameters: {
     butler: {
-        mapperName: lsst.obs.cfht.CfhtMapper
+        mapperName: lsst.obs.lsstSim.LsstSimMapper
         mapperPolicy: {
             root: %(update)
         }

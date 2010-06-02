@@ -13,7 +13,7 @@ parameters: {
        sourceSet_persistable: {
           required: true
           datasetId: {
-             datasetType: Src
+             datasetType: src
              fromJobIdentity: "visit"   "raft" "sensor"
           }
        }

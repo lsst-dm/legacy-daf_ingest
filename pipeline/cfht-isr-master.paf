@@ -92,34 +92,20 @@ execute: {
 #     stagePolicy: @ISR/090-fringe.paf
 #  }
 
-
    appStage: {
-      name: "100-cfht-exposureOutput"
-      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      name: "110-sdqa"
+      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/100-cfht-exposureOutput.paf
+      stagePolicy: @ISR/110-sdqa.paf
    }
 
-#============================================================================
-#                   Need once correctly running through ISR algorithms
-#
-#  22 April 2010...ISR has SDQA metric generation in a comment block
-#
-#   appStage: {
-#      name: "110-sdqa"
-#      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @ISR/110-sdqa.paf
-#   }
-#
-#   appStage: {
-#      name: "120-sdqaOutput"
-#      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @ISR/120-sdqaOutput.paf
-#   }
-#
-#============================================================================
+   appStage: {
+      name: "120-cfht-output"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @ISR/120-cfht-output.paf
+   }
+
    appStage: {
       name: "130-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"

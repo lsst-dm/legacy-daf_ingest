@@ -1,0 +1,17 @@
+#<?cfg paf policy ?>
+inputKeys: {
+   exposureKey: isrExposure
+}
+parameters: {
+    sdqaRatingScope: 1
+    sdqaMetricNames: "imageClipMean4Sig3Pass"
+    sdqaMetricNames: "imageMedian"
+    sdqaMetricNames: "imageSigma"
+    sdqaMetricNames: "nBadCalibPix"
+    sdqaMetricNames: "nSaturatePix"
+    sdqaMetricNames: "imageMin"
+    sdqaMetricNames: "imageMax"
+}
+outputKeys: {
+    isrPersistableSdqaRatingVectorKey: "sdqaRatingVector"
+}

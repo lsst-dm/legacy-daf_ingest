@@ -3,6 +3,7 @@
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
 import lsst.ip.pipeline as ipPipe
+import lsst.sdqa.pipeline as sdqa
 
 def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
         inButler=None, outButler=None, **keys):
@@ -41,8 +42,28 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
             sdqaCcdExposure: isrExposure
         }
         """, clip)
+    clip = runStage(sdqa.IsrSdqaStage,
+        """#<?cfg paf policy?>
+        inputKeys: {
+            exposure: isrExposure
+        }
+        parameters: {
+            sdqaRatingScope: 1
+            sdqaMetricNames: "imageClipMean4Sig3Pass"
+            sdqaMetricNames: "imageMedian"
+            sdqaMetricNames: "imageSigma"
+            sdqaMetricNames: "nBadCalibPix"
+            sdqaMetricNames: "nSaturatePix"
+            sdqaMetricNames: "imageMin"
+            sdqaMetricNames: "imageMax"
+        }
+        outputKeys: {
+            isrPersistableSdqaRatingVectorKey: sdqaRatingVector
+        }
+        """, clip)
 
     outButler.put(clip['isrExposure'], "postISRCCD", **keys)
+#    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
 
 def test():
     root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")

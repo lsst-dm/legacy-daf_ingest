@@ -3,6 +3,7 @@
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
 import lsst.ip.pipeline as ipPipe
+import lsst.sdqa.pipeline as sdqa
 
 def isrProcess(root=None, outRoot=None, registry=None,
         calibRoot=None, inButler=None, outButler=None, **keys):
@@ -82,7 +83,26 @@ def isrProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
+    clip = runStage(sdqa.IsrSdqaStage,
+        """#<?cfg paf policy?>
+        inputKeys: {
+            exposureKey: isrExposure
+        }
+        parameters: {
+            sdqaRatingScope: 0
+            sdqaMetricNames: "overscanMean"
+            sdqaMetricNames: "overscanMedian"
+            sdqaMetricNames: "overscanStdDev"
+            sdqaMetricNames: "overscanMin"
+            sdqaMetricNames: "overscanMax"
+        }
+        outputKeys: {
+            isrPersistableSdqaRatingVectorKey: sdqaRatingVector
+        }
+        """, clip)
+
     outButler.put(clip['isrExposure'], "postISR", **keys)
+#    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
 
 def test():
     root = "/lsst/DC3/data/obstest/ImSim"

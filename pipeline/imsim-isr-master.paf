@@ -96,31 +96,20 @@ execute: {
 #     stagePolicy: @ISR/090-fringe.paf
 #  }
 
-
    appStage: {
-      name: "100-imsim-exposureOutput"
-      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      name: "110-sdqa"
+      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
       eventTopic: "None"
-      stagePolicy: @ISR/100-imsim-exposureOutput.paf
+      stagePolicy: @ISR/110-sdqa.paf
    }
 
-#============================================================================
-#                   Need once correctly running through ISR algorithms
-#   appStage: {
-#      name: "110-sdqa"
-#      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @ISR/110-sdqa.paf
-#   }
-#
-#   appStage: {
-#      name: "120-sdqaOutput"
-#      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
-#      eventTopic: "None"
-#      stagePolicy: @ISR/120-sdqaOutput.paf
-#   }
+   appStage: {
+      name: "120-imsim-output"
+      parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
+      eventTopic: "None"
+      stagePolicy: @ISR/120-imsim-output.paf
+   }
 
-#============================================================================
    appStage: {
       name: "130-jobDone"
       parallelClass: "lsst.ctrl.sched.pipeline.JobDoneParallelProcessing"

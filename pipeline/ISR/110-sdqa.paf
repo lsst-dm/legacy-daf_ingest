@@ -1,21 +1,16 @@
 #<?cfg paf dictionary ?>
-#
 
 inputKeys: {
     exposureKey: "isrExposure"
-    nBadCalibPixKey: "nBadCalibPix"
-    nSaturatePixKey: "nSaturatePix"
-    overscanMeanKey: "overscanMean"
-    overscanMeanUncKey: "overscanMeanUnc"
-    overscanStdDevKey: "overscanStdDev"
-    overscanMedianKey: "overscanMedian"
-    imageMedianKey: "imageMedian"
-    imageMinKey: "imageMin"
-    imageMaxKey: "imageMax"
-    xImageGradientKey: "imageGradientX"
-    yImageGradientKey: "imageGradientY"
+}
+parameters: {
+    sdqaRatingScope: 0
+    sdqaMetricNames: "overscanMean"
+    sdqaMetricNames: "overscanMedian"
+    sdqaMetricNames: "overscanStdDev"
+    sdqaMetricNames: "overscanMin"
+    sdqaMetricNames: "overscanMax"
 }
 outputKeys: {
-    isrPersistableSdqaRatingVectorKey: "isrPersistableSdqaRatingVector"
+    isrPersistableSdqaRatingVectorKey: "sdqaRatingVector"
 }
-

@@ -60,6 +60,13 @@ execute: {
    }
 
    appStage: {
+      name: "038-sdqa"
+      parallelClass: "lsst.sdqa.pipeline.IsrSdqaStageParallel"
+      eventTopic: "None"
+      stagePolicy: @CcdAssembly/038-sdqa.paf
+   }
+
+   appStage: {
       name: "040-cfht-output"
       parallelClass: "lsst.pex.harness.IOStage.OutputStageParallel"
       eventTopic: "None"

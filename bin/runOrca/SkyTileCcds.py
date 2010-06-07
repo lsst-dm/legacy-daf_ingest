@@ -23,19 +23,20 @@ if options.imsim and options.cfht:
     parser.error("options --imsim and --cfht are mutually exclusive")
 
 if options.imsim:
-   imsimRoot="/lsst/DC3/data/obstest/ImSim"
-   bf = dafPersist.ButlerFactory( mapper=LsstSimMapper( root=imsimRoot ))
+   bf = dafPersist.ButlerFactory(
+           mapper=LsstSimMapper(
+               registry="/lsst/DC3/data/obstest/ImSim/registry.sqlite3"))
    butler = bf.create()
    print ">intids visit snap"
    for visitRet, snapRet, raftRet, sensorRet in \
            butler.queryMetadata("raw", "sensor", \
-                ("visit", "snap", "raft", "sensor"), skytile=skyTile):
-       for visit,  snap, raft, sensor, channel in \
+                ("visit", "raft", "sensor"), skytile=skyTile):
+       for visit, raft, sensor, channel, snap in \
            butler.queryMetadata("raw", "channel", \
-                ( "visit", "snap", "raft", "sensor", "channel" ), \
-                visit=visitRet, snap=snapRet, raft=raftRet, sensor=sensorRet ):
-           print "raw visit=%d  snap=%d raft=%s sensor=%s channel=%s" \
-                 % ( visit,  snap, raft, sensor, channel )
+                ( "visit", "raft", "sensor", "channel", "snap" ), \
+                visit=visitRet, raft=raftRet, sensor=sensorRet ):
+           print "raw visit=%d snap=%d raft=%s sensor=%s channel=%s" \
+                 % ( visit, snap, raft, sensor, channel )
 else:
    cfhtRoot="/lsst/DC3/data/obstest/CFHTLS/"
    bf = dafPersist.ButlerFactory( mapper=CfhtMapper( root=cfhtRoot ))

@@ -16,7 +16,7 @@ parameters: {
                 fromJobIdentity:  "visit"  "ccd" 
             }
         }
-        sdqaRatingsVector: {
+        sdqaRatingVector: {
             datasetId: {
                 datasetType: sdqaCcd
                 fromJobIdentity: "visit" "ccd"

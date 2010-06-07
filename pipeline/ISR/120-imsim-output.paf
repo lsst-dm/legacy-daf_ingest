@@ -15,7 +15,7 @@ parameters: {
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"
             }
         }
-        sdqaRatingsVector: {
+        sdqaRatingVector: {
             datasetId: {
                 datasetType: sdqaAmp
                 fromJobIdentity: "visit" "snap" "raft" "sensor" "channel"

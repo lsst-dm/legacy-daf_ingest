@@ -1,10 +1,11 @@
-setupRequired(meas_pipeline >= 3.0.10)
+setupRequired(meas_pipeline >= 3.2.0)
 setupRequired(ip_pipeline >= 3.0.3)
 setupRequired(ap >= 3.2.1)
 setupRequired(ctrl_sched >= 3.0.4)
+setupRequired(sdqa >= 3.0.12)
 
-setupOptional(obs_cfht >= 3.0.6)
-setupOptional(obs_lsstSim >= 3.0.9)
+setupOptional(obs_cfht >= 3.0.7)
+setupOptional(obs_lsstSim >= 3.0.10)
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envAppend(PATH, ${PRODUCT_DIR}/bin/sst)

@@ -63,7 +63,7 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
         """, clip)
 
     outButler.put(clip['isrExposure'], "postISRCCD", **keys)
-#    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
+    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
 
 def test():
     root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")

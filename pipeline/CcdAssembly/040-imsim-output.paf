@@ -16,12 +16,12 @@ parameters: {
                 fromJobIdentity:  "visit"  "raft" "sensor"  "snap"
             }
         }
-#        sdqaRatingsVector: {
-#            datasetId: {
-#                datasetType: sdqaCcd
-#                fromJobIdentity: "visit" "raft" "sensor" "snap"
-#            }
-#        }
+        sdqaRatingsVector: {
+            datasetId: {
+                datasetType: sdqaCcd
+                fromJobIdentity: "visit" "raft" "sensor" "snap"
+            }
+        }
     }
 }
 

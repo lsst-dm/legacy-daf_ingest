@@ -15,11 +15,11 @@ parameters: {
                 fromJobIdentity: "visit" "ccd" "amp"
             }
         }
-#        sdqaRatingsVector: {
-#            datasetId: {
-#                datasetType: sdqaAmp
-#                fromJobIdentity: "visit" "ccd" "amp"
-#            }
-#        }
+        sdqaRatingsVector: {
+            datasetId: {
+                datasetType: sdqaAmp
+                fromJobIdentity: "visit" "ccd" "amp"
+            }
+        }
     }
 }

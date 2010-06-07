@@ -102,7 +102,7 @@ def isrProcess(root=None, outRoot=None, registry=None,
         """, clip)
 
     outButler.put(clip['isrExposure'], "postISR", **keys)
-#    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
+    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
 
 def test():
     root = "/lsst/DC3/data/obstest/ImSim"

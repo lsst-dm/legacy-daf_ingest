@@ -42,7 +42,7 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
     clip = runStage(sdqa.IsrSdqaStage,
         """#<?cfg paf policy?>
         inputKeys: {
-            exposure: isrExposure
+            exposureKey: isrExposure
         }
         parameters: {
             sdqaRatingScope: 1

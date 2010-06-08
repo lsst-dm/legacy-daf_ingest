@@ -26,16 +26,16 @@ parameters: {
       }
 #      matchList: {
 #         datasetId: {
-#            datasetType: sourceMatchSet
+#            datasetType: icMatch
 #            fromJobIdentity: "visit"  "raft" "sensor"
 #         }
 #      }
-#      sourceSet: {
-#         datasetId: {
-#            datasetType: sourceSet
-#            fromJobIdentity: "visit"  "raft" "sensor"
-#         }
-#      }
+      sourceSet_persistable: {
+         datasetId: {
+            datasetType: icSrc
+            fromJobIdentity: "visit"  "raft" "sensor"
+         }
+      }
  
    }
 }

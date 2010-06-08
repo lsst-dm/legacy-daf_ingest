@@ -6,7 +6,7 @@ import os.path, re, os
 import lsst.SConsUtils as scons
 
 env = scons.makeEnv("datarel",
-                    r"$HeadURL: svn+ssh://svn.lsstcorp.org/DMS/datarel/trunk/SConstruct $",
+                    r"$HeadURL$",
                     []
                     )
 #

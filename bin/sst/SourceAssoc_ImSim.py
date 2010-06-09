@@ -21,13 +21,13 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
     if 'skyTile' in keys:
         skyTiles = [(keys['skyTile'],)]
     else:
-        skyTiles = inButler.queryMetadata("raw", "skytile", ("skytile",))
+        skyTiles = inButler.queryMetadata("raw", "skytile")
         if len(skyTiles) == 0:
             raise RuntimeError('No sky-tiles found')
 
     srcList = []
     while len(skyTiles) > 0 and len(srcList) == 0:
-        skyTile = skyTiles.pop()[0]
+        skyTile = skyTiles.pop()
         raftSensorList = inButler.queryMetadata(
             "raw", "raft", ("visit", "raft", "sensor"), skyTile=skyTile)
         for visit, raft, sensor in raftSensorList:

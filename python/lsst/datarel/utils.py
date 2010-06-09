@@ -70,22 +70,19 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
 
     if options.visit is None:
         print >>sys.stderr, "Running over all input visits"
-        options.visit = [x[0] for x in
-                inButler.queryMetadata("raw", "visit", ("visit",))]
+        options.visit = inButler.queryMetadata("raw", "visit")
     elif not hasattr(options.visit, "__iter__"):
         options.visit = [options.visit]
     if "ccd" in need or "amp" in need:
         if options.ccd is None:
             print >>sys.stderr, "Running over all CCDs"
-            options.ccd = [x[0] for x in
-                    inButler.queryMetadata("raw", "ccd", ("ccd",))]
+            options.ccd = inButler.queryMetadata("raw", "ccd")
         elif not hasattr(options.ccd, "__iter__"):
             options.ccd = [options.ccd]
     if "amp" in need:
         if options.amp is None:
             print >>sys.stderr, "Running over all amps"
-            options.amp = [x[0] for x in
-                    inButler.queryMetadata("raw", "amp", ("amp",))]
+            options.amp = inButler.queryMetadata("raw", "amp")
         elif not hasattr(options.amp, "__iter__"):
             options.amp = [options.amp]
 
@@ -168,16 +165,14 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
 
     if options.visit is None:
         print >>sys.stderr, "Running over all input visits"
-        options.visit = [x[0] for x in
-                inButler.queryMetadata("raw", "visit", ("visit",))]
+        options.visit = inButler.queryMetadata("raw", "visit")
     elif not hasattr(options.visit, "__iter__"):
         options.visit = [options.visit]
 
     if "snap" in need:
         if options.snap is None:
             print >>sys.stderr, "Running over all snaps"
-            options.snap = [x[0] for x in
-                    inButler.queryMetadata("raw", "snap", ("snap",))]
+            options.snap = inButler.queryMetadata("raw", "snap")
         elif not hasattr(options.snap, "__iter__"):
             options.snap = [options.snap]
     else:
@@ -186,24 +181,21 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
     if "sensor" in need or "channel" in need:
         if options.raft is None:
             print >>sys.stderr, "Running over all rafts"
-            options.raft = [x[0] for x in
-                    inButler.queryMetadata("raw", "raft", ("raft",))]
+            options.raft = inButler.queryMetadata("raw", "raft")
         elif not hasattr(options.raft, "__iter__"):
             options.raft = [options.raft]
 
     if "sensor" in need or "channel" in need:
         if options.sensor is None:
             print >>sys.stderr, "Running over all sensors"
-            options.sensor = [x[0] for x in
-                    inButler.queryMetadata("raw", "sensor", ("sensor",))]
+            options.sensor = inButler.queryMetadata("raw", "sensor")
         elif not hasattr(options.sensor, "__iter__"):
             options.sensor = [options.sensor]
 
     if "channel" in need:
         if options.channel is None:
             print >>sys.stderr, "Running over all channels"
-            options.channel = [x[0] for x in
-                    inButler.queryMetadata("raw", "channel", ("channel",))]
+            options.channel = inButler.queryMetadata("raw", "channel")
         elif not hasattr(options.channel, "__iter__"):
             options.channel = [options.channel]
 

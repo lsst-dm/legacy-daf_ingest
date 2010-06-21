@@ -61,7 +61,7 @@ def main():
             help="visit numbers (can be repeated)")
     parser.add_option("-r", "--raft", action="append", type="string",
             help="raft name (can be repeated)")
-    pafser.add_option("-s", "--sensor", action="append", type="string",
+    parser.add_option("-s", "--sensor", action="append", type="string",
             help="sensor name (can be repeated)")
     (options, args) = parser.parse_args()
 

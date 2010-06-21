@@ -31,7 +31,7 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
         raftSensorList = inButler.queryMetadata(
             "raw", "raft", ("visit", "raft", "sensor"), skyTile=skyTile)
         for visit, raft, sensor in raftSensorList:
-            if inButler.fileExists("src", visit=visit, raft=raft, sensor=sensor):
+            if inButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
                 srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
                 srcList.append(srcs)
     if len(srcList) == 0:

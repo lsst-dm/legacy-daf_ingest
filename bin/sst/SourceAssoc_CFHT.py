@@ -30,7 +30,7 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
         skyTile = skyTiles.pop()
         ccdList = inButler.queryMetadata("raw", "ccd", ("visit", "ccd"), skyTile=skyTile)
         for visit, ccd in ccdList:
-            if inButler.fileExists("src", visit=visit, ccd=ccd):
+            if inButler.datasetExists("src", visit=visit, ccd=ccd):
                 srcs = inButler.get("src", visit=visit, ccd=ccd)
                 srcList.append(srcs)
     if len(srcList) == 0:

@@ -27,17 +27,18 @@ def process(inButler, outButler, visit, raft, sensor, force=False):
             visit=visit, raft=raft, sensor=sensor):
         if force or not outButler.datasetExists("visitim",
                 visit=visit, raft=raft, sensor=sensor):
-            if force or not outButler.datasetExists("postISRCCD",
-                    visit=visit, raft=raft, sensor=sensor):
-                for channel in inButler.queryMetadata("raw", "channel"):
-                    if force or not outButler.datasetExists("postISR",
-                            visit=visit, raft=raft, sensor=sensor,
-                            channel=channel):
-                        isrProcess(inButler=inButler, outButler=outButler,
-                                visit=visit, raft=raft, sensor=sensor,
-                                channel=channel)
-                ccdAssemblyProcess(inButler=outButler, outButler=outButler,
-                        visit=visit, raft=raft, sensor=sensor)
+            for snap in inButler.queryMetadata("raw", "snap"):
+                if force or not outButler.datasetExists("postISRCCD",
+                        visit=visit, snap=snap, raft=raft, sensor=sensor):
+                    for channel in inButler.queryMetadata("raw", "channel"):
+                        if force or not outButler.datasetExists("postISR",
+                                visit=visit, snap=snap,
+                                raft=raft, sensor=sensor, channel=channel):
+                            isrProcess(inButler=inButler, outButler=outButler,
+                                    visit=visit, snap=snap,
+                                    raft=raft, sensor=sensor, channel=channel)
+                    ccdAssemblyProcess(inButler=outButler, outButler=outButler,
+                            visit=visit, snap=snap, raft=raft, sensor=sensor)
             crSplitProcess(inButler=outButler, outButler=outButler,
                     visit=visit, raft=raft, sensor=sensor)
         imgCharProcess(inButler=outButler, outButler=outButler,

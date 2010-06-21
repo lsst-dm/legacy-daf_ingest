@@ -28,7 +28,7 @@ if options.imsim:
                registry="/lsst/DC3/data/obstest/ImSim/registry.sqlite3"))
    butler = bf.create()
    print ">intids visit snap"
-   for visitRet, snapRet, raftRet, sensorRet in \
+   for visitRet, raftRet, sensorRet in \
            butler.queryMetadata("raw", "sensor", \
                 ("visit", "raft", "sensor"), skytile=skyTile):
        for visit, raft, sensor, channel, snap in \

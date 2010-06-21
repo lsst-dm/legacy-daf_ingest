@@ -92,7 +92,7 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                 if "amp" in need:
                     for amp in options.amp:
                         if options.force or \
-                                not outButler.fileExists(outDatasetType,
+                                not outButler.datasetExists(outDatasetType,
                                         visit=visit, ccd=ccd, amp=amp):
                             print >>sys.stderr, \
                                     "***** Processing visit %d ccd %d amp %d" % \
@@ -102,7 +102,7 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                     visit=visit, ccd=ccd, amp=amp)
                 else:
                     if options.force or \
-                            not outButler.fileExists(outDatasetType,
+                            not outButler.datasetExists(outDatasetType,
                                     visit=visit, ccd=ccd):
                         print >>sys.stderr, \
                                 "***** Processing visit %d ccd %d" % \
@@ -111,7 +111,7 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                 visit=visit, ccd=ccd)
         else:
             if options.force or \
-                    not outButler.fileExists(outDatasetType, visit=visit):
+                    not outButler.datasetExists(outDatasetType, visit=visit):
                 print >>sys.stderr, "***** Processing visit %d" % (visit,)
                 processFunction(inButler=inButler, outButler=outButler,
                         visit=visit)
@@ -208,7 +208,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                             if "channel" in need:
                                 for channel in options.channel:
                                     if options.force or \
-                                            not outButler.fileExists(
+                                            not outButler.datasetExists(
                                                     outDatasetType,
                                                     visit=visit, snap=snap,
                                                     raft=raft, sensor=sensor,
@@ -226,7 +226,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                                 channel=channel)
                             else:
                                 if options.force or \
-                                        not outButler.fileExists(
+                                        not outButler.datasetExists(
                                                 outDatasetType,
                                                 visit=visit, snap=snap,
                                                 raft=raft, sensor=sensor):
@@ -243,7 +243,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                         if "channel" in need:
                             for channel in options.channel:
                                 if options.force or \
-                                        not outButler.fileExists(
+                                        not outButler.datasetExists(
                                                 outDatasetType, visit=visit,
                                                 raft=raft, sensor=sensor,
                                                 channel=channel):
@@ -257,7 +257,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                             sensor=sensor, channel=channel)
                         else:
                             if options.force or \
-                                    not outButler.fileExists(outDatasetType,
+                                    not outButler.datasetExists(outDatasetType,
                                             visit=visit, raft=raft,
                                             sensor=sensor):
                                 print >>sys.stderr, \
@@ -269,7 +269,7 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                                         raft=raft, sensor=sensor)
         else: # raft, sensor
              if options.force or \
-                     not outButler.fileExists(outDatasetType, visit=visit):
+                     not outButler.datasetExists(outDatasetType, visit=visit):
                  print >>sys.stderr, "***** Processing visit %d" % (visit,)
                  processFunction(inButler=inButler, outButler=outButler,
                          visit=visit)

@@ -2,24 +2,24 @@
 #
 # Platform Description: the LSST cluster at NCSA
 #
+shortname: abe
 
 dir: {
+
    # the default root directory all files read or written by pipelines
    # deployed on this platform.  This must be an absolute directory.  
    # This can be overriden by any of the "named role" directories below.
    #
    # defaultRoot:  /lsst/DC3root
-   defaultRoot:  /u/ac/srp/orca_scratch
+   defaultRoot:  /cfs/projects/lsst/DC3/data/datarel-runs
 
-   # shortname = iSDshort
-   shortname: emops
    # the pattern to use for setting the root directory for a production
    # run.  The result is a directory relative to the default root directory 
    # (set via defaultRoot).  The format is a python formatting string using the 
    # following dictionary keys:
    #   runid     the unique identifier for the production run
    # 
-   runDirPattern:  "%(runid)s/%(shortname)s"
+   runDirPattern:  "%(runid)s"
 
    # These indicate the directory that should be used for a named purpose.
    # If relative paths are given, the resulting directory will be relative
@@ -30,7 +30,7 @@ dir: {
    # production runs.)
    #
    work:     work    # the working directory, where the pipeline is started
-   input:    input   # the directory to cache/find input data
+   input:    /cfs/projects/lsst/DC3/data/obs  # the input data directory
    output:   output  # the directory to write output data
    update:   update  # the directory where updatable data is deployed
    scratch:  scr     # a directory for temporary files that may be deleted 
@@ -43,14 +43,14 @@ hw: {
    nodeCount:  500
 
    # the minimum number of cores per node
-   minCoresPerNode:  2
+   minCoresPerNode:  8
 
    # the maximum number of cores per node; if not specified, this will 
    # default to the minimum number.
    maxCoresPerNode:  8
 
    # the minimum RAM available per node in GB
-   minRamPerNode:  2.0
+   minRamPerNode:  8.0
 
    # the maximum RAM available per node in GB
    maxRamPerNode: 16.0

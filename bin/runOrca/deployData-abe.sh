@@ -10,9 +10,9 @@ repository=$2
 coll=$3
 
 
-[ -e $RunIdDir/input ] || \
-    mkdir -p $RunIdDir/input && ln -s $repository/$coll/* $RunIdDir/input/
-
+# removed to map to Abe Cluster's preferred production run directory layout
+# [ -e $RunIdDir/input ] || \
+#     mkdir -p $RunIdDir/input && ln -s $repository/$coll/* $RunIdDir/input/
 
 [ -e $RunIdDir/update ] || \
     mkdir -p $RunIdDir/update && \

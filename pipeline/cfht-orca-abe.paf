@@ -77,6 +77,7 @@ workflow: {
                 CPU_COUNT: 8 # number of cpus per machine
                 MACHINE_COUNT: 1 # number of machines requested
                 MAX_WALLTIME: 15 # maximum time to hold machines, in minutes
+                QUEUE: debug  # condor queue to use
             }
             templateFileName: $CTRL_ORCA_DIR/etc/glidein_run.submit.dc3b
             outputFileName: glidein_request.condor

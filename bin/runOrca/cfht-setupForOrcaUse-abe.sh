@@ -15,6 +15,7 @@ setup -j meas_astrom 3.2.0+svn15916
 setup -j meas_utils 3.2.0+svn15840
 setup -j meas_pipeline 3.2.0+svn15431
 setup -j daf_persistence 3.3.13+svn15478
+setup -j ctrl_provenance 3.1
 setup -j obs_cfht 3.0.7+svn15480
 setup astrometry_net_data cfhtlsDeep
 eups list --setup

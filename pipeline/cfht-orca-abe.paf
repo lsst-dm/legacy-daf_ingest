@@ -87,7 +87,7 @@ workflow: {
     pipeline: {
        shortName:     joboffices
        definition:    @cfht-joboffice-abe.paf
-       runCount: 4
+       runCount: 1
        deploy: {
           # the schema for this node is determined by the above 
           # configuration class.  In this case, we run on the first

@@ -37,14 +37,18 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
         parser.add_option("-C", "--calibRoot", dest="calibRoot",
                 help="calibration root")
     parser.add_option("-R", "--registry", help="registry")
-    parser.add_option("-v", "--visit", action="append", type="int",
-            help="visit numbers (can be repeated)")
-    if "ccd" in need or "amp" in need:
-        parser.add_option("-c", "--ccd", action="append", type="int",
-                help="ccd number (can be repeated)")
-    if "amp" in need:
-        parser.add_option("-a", "--amp", action="append", type="int",
-                help="amp number (can be repeated)")
+    if "skyTile" in need:
+        parser.add_option("-t", "--skyTile", action="append", type="int",
+                help="sky tile numbers (can be repeated)")
+    else:
+        parser.add_option("-v", "--visit", action="append", type="int",
+                help="visit numbers (can be repeated)")
+        if "ccd" in need or "amp" in need:
+            parser.add_option("-c", "--ccd", action="append", type="int",
+                    help="ccd number (can be repeated)")
+        if "amp" in need:
+            parser.add_option("-a", "--amp", action="append", type="int",
+                    help="amp number (can be repeated)")
     (options, args) = parser.parse_args()
 
     if options.registry is None:
@@ -67,6 +71,20 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
     obf = dafPersist.ButlerFactory(mapper=CfhtMapper(
         root=options.outRoot, registry=options.registry))
     outButler = obf.create()
+
+    if "skyTile" in need:
+        if options.skyTile is None:
+            print >>sys.stderr, "Running over all sky tiles"
+            options.skyTile = inButler.queryMetadata("raw", "skyTile")
+        elif not hasattr(options.skyTile, "__iter__"):
+            options.skyTile = [options.skyTile]
+        if options.force or not outButler.datasetExists(outDatasetType,
+                skyTile=skyTile):
+            print >>sys.stderr, \
+                    "***** Processing skyTile %d" % (skyTile,)
+            processFunction(inButler=inButler, outButler=outButler,
+                    skyTile=skyTile)
+        return
 
     if options.visit is None:
         print >>sys.stderr, "Running over all input visits"
@@ -129,19 +147,23 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
         parser.add_option("-C", "--calibRoot", dest="calibRoot",
                 help="calibration root")
     parser.add_option("-R", "--registry", help="registry")
-    parser.add_option("-v", "--visit", action="append", type="int",
-            help="visit number (can be repeated)")
-    if "snap" in need:
-        parser.add_option("-S", "--snap", action="append", type="int",
-                help="snap number (can be repeated)")
-    if "sensor" in need or "channel" in need:
-        parser.add_option("-r", "--raft", action="append",
-                help="raft coords (can be repeated)")
-        parser.add_option("-s", "--sensor", action="append",
-                help="sensor coords (can be repeated)")
-    if "channel" in need:
-        parser.add_option("-a", "--channel", action="append",
-                help="channel coords (can be repeated)")
+    if "skyTile" in need:
+        parser.add_option("-t", "--skyTile", action="append", type="int",
+                help="sky tile numbers (can be repeated)")
+    else:
+        parser.add_option("-v", "--visit", action="append", type="int",
+                help="visit number (can be repeated)")
+        if "snap" in need:
+            parser.add_option("-S", "--snap", action="append", type="int",
+                    help="snap number (can be repeated)")
+        if "sensor" in need or "channel" in need:
+            parser.add_option("-r", "--raft", action="append",
+                    help="raft coords (can be repeated)")
+            parser.add_option("-s", "--sensor", action="append",
+                    help="sensor coords (can be repeated)")
+        if "channel" in need:
+            parser.add_option("-a", "--channel", action="append",
+                    help="channel coords (can be repeated)")
     (options, args) = parser.parse_args()
 
     if options.registry is None:
@@ -168,6 +190,20 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
         options.visit = inButler.queryMetadata("raw", "visit")
     elif not hasattr(options.visit, "__iter__"):
         options.visit = [options.visit]
+
+    if "skyTile" in need:
+        if options.skyTile is None:
+            print >>sys.stderr, "Running over all sky tiles"
+            options.skyTile = inButler.queryMetadata("raw", "skyTile")
+        elif not hasattr(options.skyTile, "__iter__"):
+            options.skyTile = [options.skyTile]
+        if options.force or not outButler.datasetExists(outDatasetType,
+                skyTile=skyTile):
+            print >>sys.stderr, \
+                    "***** Processing skyTile %d" % (skyTile,)
+            processFunction(inButler=inButler, outButler=outButler,
+                    skyTile=skyTile)
+        return
 
     if "snap" in need:
         if options.snap is None:

@@ -1,68 +1,45 @@
 #!/usr/bin/env python
 
-import os
-import lsst.pex.policy as pexPolicy
-import lsst.daf.persistence as dafPersist
+from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
+
 import lsst.ap.cluster as apCluster
 
-from lsst.obs.lsstSim import LsstSimMapper
-from lsst.pex.harness.simpleStageTester import SimpleStageTester
+def sourceAssocProcess(root=None, outRoot=None, registry=None,
+        inButler=None, outButler=None, **keys):
+    inButler, outButler = lsstSimSetup(root, outRoot, registry,
+            None, inButler, outButler)
 
-
-def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, **keys):
-
-    if inButler is None:
-        bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=root))
-        inButler = bf.create()
-    if outButler is None:
-        obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outRoot))
-        outButler = obf.create()
-
-    if 'skyTile' in keys:
-        skyTiles = [(keys['skyTile'],)]
-    else:
-        skyTiles = inButler.queryMetadata("raw", "skytile")
-        if len(skyTiles) == 0:
-            raise RuntimeError('No sky-tiles found')
-
+    skyTile = keys['skyTile']
     srcList = []
-    while len(skyTiles) > 0 and len(srcList) == 0:
-        skyTile = skyTiles.pop()
-        raftSensorList = inButler.queryMetadata(
-            "raw", "raft", ("visit", "raft", "sensor"), skyTile=skyTile)
-        for visit, raft, sensor in raftSensorList:
-            if inButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
-                srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
-                srcList.append(srcs)
+    for visit, raft, sensor in inButler.queryMetadata("raw", "sensor",
+            ("visit", "raft", "sensor"), skyTile=skyTile)
+        if inButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
+            srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
+            srcList.append(srcs)
     if len(srcList) == 0:
         raise RuntimeError("No sources found")
-    keys['skyTile'] = skyTile
 
     clip = {
         'sources': srcList,
         'jobIdentity': { 'skyTileId': skyTile },
     }
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(apCluster.SourceClusteringStage,
         """#<?cfg paf policy?>
         inputKeys: {
         }
         outputKeys: {
         }
-        """))
-    sc = SimpleStageTester(apCluster.SourceClusteringStage(pol))
+        """, clip)
 
-    pol = pexPolicy.Policy.createPolicy(pexPolicy.PolicyString(
+    clip = runStage(apCluster,SourceClusterAttributesStage,
         """#<?cfg paf policy?>
         inputKeys: {
         }
         outputKeys: {
         }
-        """))
-    sca = SimpleStageTester(apCluster.SourceClusterAttributesStage(pol))
+        """, clip)
 
-    clip = sc.runWorker(clip)
-    clip = sca.runWorker(clip)
     if clip.contains('sources'):
         outButler.put(clip['sources'], 'source', **keys)
     if clip.contains('badSources'):
@@ -78,8 +55,11 @@ def sourceAssocProcess(root=None, outRoot=None, inButler=None, outButler=None, *
     if clip.contains('badSourceClusterAttributes'):
         outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
 
-def run():
+def test():
     sourceAssocProcess(root=".", outRoot=".")
 
+def main():
+    lsstSimMain(sourceAssocProcess, "source", "skyTile")
+
 if __name__ == "__main__":
-    run()
+    main()

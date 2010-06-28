@@ -76,9 +76,9 @@ workflow: {
                 CONDOR_SBIN: /cfs/projects/lsst/DC3/opt/condor_glidein/7.4.2
                 #CONDOR_ADMIN: srp@ncsa.uiuc.edu # should be filled in
                 #START_OWNER: srp # user that will run job on remote system
-                CPU_COUNT: 8 # number of cpus per machine
-                MACHINE_COUNT: 1 # number of machines requested
-                MAX_WALLTIME: 15 # maximum time to hold machines, in minutes
+                CPU_COUNT: 1 # number of cpus per machine
+                MACHINE_COUNT: 16 # number of machines requested
+                MAX_WALLTIME: 30 # maximum time to hold machines, in minutes
                 QUEUE: debug # condor queue to use
             }
             templateFileName: $CTRL_ORCA_DIR/etc/glidein_run.submit.dc3b
@@ -102,7 +102,7 @@ workflow: {
     pipeline: {
        shortName:     isr
        definition:    @imsim-isr-master-abe.paf
-       runCount: 4
+       runCount: 15
        deploy: {
           # the schema for this node is determined by the above 
           # configuration class.  In this case, we run on the first

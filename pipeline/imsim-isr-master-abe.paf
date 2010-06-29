@@ -1,6 +1,11 @@
 #<?cfg paf policy ?>
 
 # ISR Master.paf
+framework: {
+   type: standard
+   environment: "$DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse-abe.sh"
+   exec: "$PEX_HARNESS_DIR/bin/launchPipeline.py"
+}
 
 execute: {
    nSlices: 1

@@ -11,10 +11,13 @@ fi
 
 cat <<EOF
 ===========================
-     orca.py -r ./pipeline -e $DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse-abe.sh -V 10 -P 10 imsim-orca-abe.paf $1
+     orca.py -r pipeline -e $DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse-abe.sh -V 10 -P 10 pipeline/imsim-orca-abe.paf $1
 ===========================
      announceDataset.py -r $1 -b lsst8.ncsa.uiuc.edu -t RawAvailable $2
 ===========================
      shutprod.py 1 $1
 ===========================
+     killcondor.py pipeline/imsim-orca-abe.paf $1
+===========================
+
 EOF

@@ -11,7 +11,7 @@ setup -j ip_isr 3.4.5+3
 setup -j ip_utils 3.0.0+1
 setup -j ip_pipeline  3.2.0+svn15431
 setup -j meas_algorithms meas_algorithms_3.2.0+2
-setup -j meas_astrom meas_astrom_3.2.0+svn15995
+setup -j meas_astrom meas_astrom_svn16008
 setup -j meas_utils meas_utils_3.2.1
 setup -j meas_pipeline meas_pipeline_3.2.0+svn15995
 setup -j daf_persistence daf_persistence_3.3.14
@@ -19,7 +19,7 @@ setup -j pex_harness pex_harness_3.6.10
 setup -j pex_policy pex_policy_3.5.2
 setup -j ctrl_provenance 3.1
 # only for ImSim run
-setup -j obs_lsstSim 3.0.10+svn15481
+setup -j obs_lsstSim obs_lsstSim_svn16025
 setup astrometry_net_data imsim_20100611_robyn
 #
 eups list --setup

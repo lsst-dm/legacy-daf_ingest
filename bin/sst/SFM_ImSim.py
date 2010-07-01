@@ -50,18 +50,18 @@ def sfmProcess(root=None, outRoot=None, registry=None,
 
     outButler.put(clip['sourceSet_persistable'], "src", **keys)
 
-    fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr", 
-            "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
-            "IyyErr", "Ixy", "IxyErr")
-    csv = open("sources-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys, "w")
-    print >>csv, "FlagForDetection," + ",".join(fields)
-    for s in clip['sourceSet']:
-        line = "%d" % (s.getFlagForDetection(),)
-        for f in fields:
-            func = getattr(s, "get" + f)
-            line += ",%g" % (func(),)
-        print >>csv, line
-    csv.close()
+#    fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr", 
+#            "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
+#            "IyyErr", "Ixy", "IxyErr")
+#    csv = open("sources-v%(visit)d-R%(raft)s-S%(sensor)s.csv" % keys, "w")
+#    print >>csv, "FlagForDetection," + ",".join(fields)
+#    for s in clip['sourceSet']:
+#        line = "%d" % (s.getFlagForDetection(),)
+#        for f in fields:
+#            func = getattr(s, "get" + f)
+#            line += ",%g" % (func(),)
+#        print >>csv, line
+#    csv.close()
 
 def test():
     sfmProcess(root=".", outRoot=".", visit=85751839, raft="2,3", sensor="1,1")

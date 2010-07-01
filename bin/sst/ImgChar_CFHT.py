@@ -66,18 +66,18 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             """, clip)
         outButler.put(clip['sourceSet_persistable'], "icSrc", **keys)
 
-        fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
-                "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
-                "IyyErr", "Ixy", "IxyErr")
-        csv = open("imgCharSources-v%(visit)d-c%(ccd)d.csv" % keys, "w")
-        print >>csv, "FlagForDetection," + ",".join(fields)
-        for s in clip['sourceSet']:
-            line = "%d" % (s.getFlagForDetection(),)
-            for f in fields:
-                func = getattr(s, "get" + f)
-                line += ",%g" % (func(),)
-            print >>csv, line
-        csv.close()
+#         fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
+#                 "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
+#                 "IyyErr", "Ixy", "IxyErr")
+#         csv = open("imgCharSources-v%(visit)d-c%(ccd)d.csv" % keys, "w")
+#         print >>csv, "FlagForDetection," + ",".join(fields)
+#         for s in clip['sourceSet']:
+#             line = "%d" % (s.getFlagForDetection(),)
+#             for f in fields:
+#                 func = getattr(s, "get" + f)
+#                 line += ",%g" % (func(),)
+#             print >>csv, line
+#         csv.close()
 
     if stages & PSF:
         clip = runStage(measPipe.PsfDeterminationStage,
@@ -93,7 +93,7 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             }
             """, clip)
 
-        print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
+#        print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
         outButler.put(clip['measuredPsf'], "psf", **keys)
 
     if stages & WCS:
@@ -107,27 +107,27 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             defaultFilterName: mag
             """, clip)
 
-        print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
-        csv = open("wcsMatches-v%(visit)d-c%(ccd)d.csv" % keys, "w")
-        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
-                "ImgRA,ImgDec,ImgPsfFlux,Distance"
-        for m in clip['matchList']:
-            print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
-                    m.first.getRa(), m.first.getDec(),
-                    m.first.getPsfFlux(),
-                    m.second.getRa(), m.second.getDec(),
-                    m.second.getPsfFlux(),
-                    m.distance)
-        csv.close()
+#        print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
+#        csv = open("wcsMatches-v%(visit)d-c%(ccd)d.csv" % keys, "w")
+#        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
+#                "ImgRA,ImgDec,ImgPsfFlux,Distance"
+#        for m in clip['matchList']:
+#            print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
+#                    m.first.getRa(), m.first.getDec(),
+#                    m.first.getPsfFlux(),
+#                    m.second.getRa(), m.second.getDec(),
+#                    m.second.getPsfFlux(),
+#                    m.distance)
+#        csv.close()
 
-    if stages & WCS_VERIFY:
-        clip = runStage(measPipe.WcsVerificationStage,
-            """#<?cfg paf policy?>
-            sourceMatchSetKey: matchList
-            outputDictKey: wcsVerifyStats
-            """, clip)
-
-        print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
+#    if stages & WCS_VERIFY:
+#        clip = runStage(measPipe.WcsVerificationStage,
+#            """#<?cfg paf policy?>
+#            sourceMatchSetKey: matchList
+#            outputDictKey: wcsVerifyStats
+#            """, clip)
+#
+#         print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
 
     if stages & PHOTO_CAL:
         clip = runStage(measPipe.PhotoCalStage,
@@ -136,10 +136,10 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             outputValueKey: photometricMagnitudeObject
             """, clip)
 
-        photoObj = clip['photometricMagnitudeObject']
-        if photoObj is not None:
-            print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
-            print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
+#        photoObj = clip['photometricMagnitudeObject']
+#        if photoObj is not None:
+#            print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
+#            print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
 
         outButler.put(clip['visitExposure'], "calexp", **keys)
 

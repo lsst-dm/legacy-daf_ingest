@@ -2,10 +2,11 @@
 
 # setup datarel
 # setup obs_lsstSim
-# setup astrometry_net_data imsim_20100611
+# setup astrometry_net_data imsim_20100625
 
 from optparse import OptionParser
 import os
+import subprocess
 import sys
 import traceback
 
@@ -14,15 +15,34 @@ from CcdAssembly_ImSim import ccdAssemblyProcess
 from CrSplit_ImSim import crSplitProcess
 from ImgChar_ImSim import imgCharProcess
 from SFM_ImSim import sfmProcess
+import lsst.daf.base as dafBase
 
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
-def process(inButler, outButler, visit, raft, sensor, force=False):
-    print >>sys.stderr, "****** Processing visit %d raft %s sensor %s" % \
-            (visit, raft, sensor)
+def process(inButler, tmpButler, outButler, visit, raft, sensor, force=False):
+    print >>sys.stderr, "****** Processing visit %d raft %s sensor %s: %s" % \
+            (visit, raft, sensor, dafBase.DateTime.now().toString())
     if outButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
         return
+    if tmpButler is not None:
+        if force or not outButler.datasetExists("calexp",
+                visit=visit, raft=raft, sensor=sensor):
+            for snap in inButler.queryMetadata("raw", "snap"):
+                for channel in inButler.queryMetadata("raw", "channel"):
+                    isrProcess(inButler=inButler, outButler=tmpButler,
+                            visit=visit, snap=snap,
+                            raft=raft, sensor=sensor, channel=channel)
+                ccdAssemblyProcess(inButler=tmpButler, outButler=tmpButler,
+                        visit=visit, snap=snap, raft=raft, sensor=sensor)
+            crSplitProcess(inButler=tmpButler, outButler=tmpButler,
+                    visit=visit, raft=raft, sensor=sensor)
+            imgCharProcess(inButler=tmpButler, outButler=outButler,
+                    visit=visit, raft=raft, sensor=sensor)
+        sfmProcess(inButler=outButler, outButler=outButler,
+                visit=visit, raft=raft, sensor=sensor)
+        return
+
     if force or not outButler.datasetExists("calexp",
             visit=visit, raft=raft, sensor=sensor):
         if force or not outButler.datasetExists("visitim",
@@ -53,11 +73,12 @@ def main():
     parser.add_option("-o", "--output", dest="outRoot", default=".",
             help="output root")
     parser.add_option("-f", "--force", action="store_true",
-            default=False,
-            help="execute even if output dataset exists")
+            default=False, help="execute even if output dataset exists")
     parser.add_option("-C", "--calibRoot", dest="calibRoot",
             help="calibration root")
     parser.add_option("-R", "--registry", help="registry")
+    parser.add_option("-T", "--tmp", action="store_true",
+            default=False, help="use /tmp for intermediates")
     parser.add_option("-v", "--visit", action="append", type="int",
             help="visit numbers (can be repeated)")
     parser.add_option("-r", "--raft", action="append", type="string",
@@ -83,6 +104,28 @@ def main():
     obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(
         root=options.outRoot, registry=options.registry))
     outButler = obf.create()
+    tmpButler = None
+    if options.tmp:
+        if not os.path.exists("/tmp/DC3"):
+            os.mkdir("/tmp/DC3")
+        tmpDir = os.path.join("/tmp/DC3", str(os.getpid()))
+        if os.path.exists(tmpDir):
+            print >>sys.stderr, "WARNING: %s exists, reusing" % (tmpDir,)
+        else:
+            os.mkdir(tmpDir)
+        tbf = dafPersist.ButlerFactory(mapper=LsstSimMapper(
+            root=tmpDir, registry=options.registry))
+        tmpButler = tbf.create()
+
+        tmpSdqaAmp = os.path.join(tmpDir, "sdqaAmp/")
+        sdqaAmp = os.path.join(options.outRoot, "sdqaAmp")
+        if not os.path.exists(sdqaAmp):
+            os.mkdir(sdqaAmp)
+
+        tmpSdqaCcd = os.path.join(tmpDir, "sdqaCcd/")
+        sdqaCcd = os.path.join(options.outRoot, "sdqaCcd")
+        if not os.path.exists(sdqaCcd):
+            os.mkdir(sdqaCcd)
 
     if options.visit is None:
         print >>sys.stderr, "Running over all input visits"
@@ -104,8 +147,16 @@ def main():
         for raft in options.raft:
             for sensor in options.sensor:
                 try:
-                    process(inButler, outButler, visit, raft, sensor,
-                            options.force)
+                    process(inButler, tmpButler, outButler,
+                            visit, raft, sensor, options.force)
+                    if options.tmp:
+                        if os.path.exists(tmpSdqaAmp):
+                            subprocess.call(["rsync", "-a",
+                                tmpSdqaAmp, sdqaAmp])
+                        if os.path.exists(tmpSdqaCcd):
+                            subprocess.call(["rsync", "-a",
+                                tmpSdqaCcd, sdqaCcd])
+                        subprocess.call(["rm", "-r", tmpDir])
                 except Exception, e:
                     traceback.print_exc()
                     print >>sys.stderr, "Continuing..."

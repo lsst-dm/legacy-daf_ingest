@@ -80,18 +80,14 @@ class CrSplitStageTestCase(unittest.TestCase):
                                                  "crSplitStages_policy.paf", "tests")
         policy = pexPolicy.Policy.createPolicy(policyFile)
         #
-        # Modify the policy;  delete the CRs even if the policy wants to keep them,
-        # and set policy.exposure from policy.exposure
+        # Modify the policy;  delete the CRs even if the policy wants to keep them.
         #
         policy.set("CrRejectStage.parameters.keepCRs", False)
-        for io in ["input", "output"]:
-            policy.set("CrRejectStage.%sKeys.exposure" % io,
-                       policy.get("CrRejectStage.%sKeys.exposure" % io))
 
         stage = ipPipe.CrRejectStage(policy.get("CrRejectStage"))
         tester = SimpleStageTester(stage)
         
-        clipboard = pexClipboard.Clipboard()         
+        clipboard = pexClipboard.Clipboard()
         clipboard.put(policy.get("CrRejectStage.inputKeys.exposure"), exposure)
 
         tester.runWorker(clipboard)
@@ -101,7 +97,9 @@ class CrSplitStageTestCase(unittest.TestCase):
     def setUp(self):
         filename = os.path.join(eups.productDir("afwdata"), "CFHT", "D4", "cal-53535-i-797722_1")
         bbox = afwImage.BBox(afwImage.PointI(32,32), 512, 512)
-        exposure = afwImage.ExposureF(filename, 0,bbox)
+        exposure = afwImage.ExposureF(filename, 0, bbox)
+        # Hack to fix up exposure's WCS.  See #1365.
+        exposure.setWcs(afwImage.makeWcs(exposure.getWcs().getFitsMetadata()))
 
         self.exposures = self.fakeCRSplitExposures(exposure)
 

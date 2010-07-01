@@ -80,13 +80,9 @@ class CrSplitStagesImSimTestCase(unittest.TestCase):
                                                  "crSplitStagesImSim_policy.paf", "tests")
         policy = pexPolicy.Policy.createPolicy(policyFile)
         #
-        # Modify the policy;  delete the CRs even if the policy wants to keep them,
-        # and set policy.exposure from policy.exposure
+        # Modify the policy;  delete the CRs even if the policy wants to keep them.
         #
         policy.set("CrRejectStage.parameters.keepCRs", False)
-        for io in ["input", "output"]:
-            policy.set("CrRejectStage.%sKeys.exposure" % io,
-                       policy.get("CrRejectStage.%sKeys.exposure" % io))
 
         stage = ipPipe.CrRejectStage(policy.get("CrRejectStage"))
         tester = SimpleStageTester(stage)
@@ -99,12 +95,11 @@ class CrSplitStagesImSimTestCase(unittest.TestCase):
         omask <<= mask
 
     def setUp(self):
-        #  filename = os.path.join(eups.productDir("afwdata"), "CFHT", "D4", "cal-53535-i-797722_1")
+        filename = os.path.join(eups.productDir("afwdata"), "ImSim",
+                "postISR", "v85751839-fr", "s0", "R23", "S11", "C00.fits")
 
-        filename="/lsst/daues/ipac/add_ons/afwdata-ImSim/processed/imsim_85751839_R23_S11_C00_E000.fits"
-
-        bbox = afwImage.BBox(afwImage.PointI(32,32), 512, 512)
-        exposure = afwImage.ExposureF(filename, 0,bbox)
+        bbox = afwImage.BBox(afwImage.PointI(0,0), 512, 512)
+        exposure = afwImage.ExposureF(filename, 0, bbox)
 
         self.exposures = self.fakeCRSplitExposures(exposure)
 

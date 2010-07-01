@@ -6,8 +6,7 @@ BackgroundEstimationStage: {
         exposure: "calibratedExposure"
     }
     outputKeys: {
-        backgroundSubtractedExposure:
-        background: 
+        backgroundSubtractedExposure: "calibratedExposure"
     }
     parameters: {
         subtractBackground: true

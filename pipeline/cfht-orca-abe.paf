@@ -82,6 +82,12 @@ workflow: {
             templateFileName: $CTRL_ORCA_DIR/etc/glidein_run.submit.dc3b
             outputFileName: glidein_request.condor
         }
+        announceData: {
+            script: $CTRL_SCHED_DIR/bin/announceDataset.py
+            topic: RawAvailable
+            inputdata: $DATAREL_DIR/bin/runOrca/cfht-productionDataList.txt
+        }
+
     }
 
     pipeline: {

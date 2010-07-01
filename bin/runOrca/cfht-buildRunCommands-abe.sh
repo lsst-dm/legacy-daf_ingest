@@ -15,8 +15,12 @@ cat <<EOF
 ===========================
      announceDataset.py -r $1 -b lsst8.ncsa.uiuc.edu -t RawAvailable $2
 ===========================
-     killcondor.py pipeline/cfht-orca-abe.paf $1
-===========================
      shutprod.py 1 $1
 ===========================
+     killcondor.py pipeline/cfht-orca-abe.paf $1
+     killcondor.py -g pipeline/cfht-orca-abe.paf $1
+===========================
+     condor_rm <condor q id>
+===========================
+
 EOF

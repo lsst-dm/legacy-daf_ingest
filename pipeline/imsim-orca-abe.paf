@@ -87,7 +87,7 @@ workflow: {
         announceData: {
             script: $CTRL_SCHED_DIR/bin/announceDataset.py
             topic: RawAvailable
-            inputdata: $DATAREL_DIR/bin/runOrca/imsim-ByVisitCcd_85408535.txt
+            inputdata: $DATAREL_DIR/bin/runOrca/imsim-productionDataList.txt
         }
     }
 
@@ -120,7 +120,6 @@ workflow: {
        definition:    @imsim-ca-master.paf
        runCount: 3
        deploy: {
-          processesOnNode: lsst6:1
        }
        launch: true
     }
@@ -129,7 +128,6 @@ workflow: {
        definition:    @imsim-crSplit-master.paf
        runCount: 2
        deploy: {
-          processesOnNode: lsst7:1
        }
        launch: true
     }
@@ -138,7 +136,6 @@ workflow: {
        definition:    @imsim-imgChar-master.paf
        runCount: 4
        deploy: {
-          processesOnNode: lsst6:1
        }
        launch: true
     }
@@ -147,7 +144,6 @@ workflow: {
        definition:    @imsim-sfm-master.paf
        runCount: 4
        deploy: {
-          processesOnNode: lsst7:1
        }
        launch: true
     }

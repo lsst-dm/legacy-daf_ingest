@@ -18,6 +18,9 @@ cat <<EOF
      shutprod.py 1 $1
 ===========================
      killcondor.py pipeline/imsim-orca-abe.paf $1
+     killcondor.py -g pipeline/imsim-orca-abe.paf $1
 ===========================
+     condor_rm <condor q id>
+
 
 EOF

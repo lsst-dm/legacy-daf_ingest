@@ -125,13 +125,11 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
 #                        m.distance)
 #            csv.close()
 
-#    if stages & WCS_VERIFY:
-#        clip = runStage(measPipe.WcsVerificationStage,
-#            """#<?cfg paf policy?>
-#            sourceMatchSetKey: matchList
-#            outputDictKey: wcsVerifyStats
-#            """, clip)
-#        print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
+    if stages & WCS_VERIFY:
+        clip = runStage(measPipe.WcsVerificationStage,
+            """#<?cfg paf policy?>
+            sourceMatchSetKey: matchList
+            """, clip)
 
     if stages & PHOTO_CAL:
         clip = runStage(measPipe.PhotoCalStage,

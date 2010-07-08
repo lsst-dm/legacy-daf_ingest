@@ -18,8 +18,8 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
     #
     stages = setPrerequisites(stages)
 
-    if not os.environ.has_key("ASTROMETRY_NET_DATA_DIR") or \
-            os.environ['ASTROMETRY_NET_DATA_DIR'].find("cfhtlsDeep") == -1:
+    if not os.environ.has_key("SETUP_ASTROMETRY_NET_DATA") or \
+            os.environ['SETUP_ASTROMETRY_NET_DATA'].find("cfhtlsDeep") == -1:
         msg = "astrometry_net_data is not setup to cfhtlsDeep"
         if stages & WCS:
             raise RuntimeError, msg
@@ -105,29 +105,31 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             outputMatchListKey: matchList
             numBrightStars: 75
             defaultFilterName: mag
+            distanceForCatalogueMatchinArcsec: 1.5
             """, clip)
 
-#        print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
-#        csv = open("wcsMatches-v%(visit)d-c%(ccd)d.csv" % keys, "w")
-#        print >>csv, "CatRA,CatDec,CatPsfFlux," + \
-#                "ImgRA,ImgDec,ImgPsfFlux,Distance"
-#        for m in clip['matchList']:
-#            print >>csv, "%f,%f,%g,%f,%f,%g,%f" % (
-#                    m.first.getRa(), m.first.getDec(),
-#                    m.first.getPsfFlux(),
-#                    m.second.getRa(), m.second.getDec(),
-#                    m.second.getPsfFlux(),
-#                    m.distance)
-#        csv.close()
+        if False:
+            print >>sys.stderr, "WCS:", clip['measuredWcs'].getFitsMetadata().toString()
+            csv = open("wcsMatches-v%(visit)d-c%(ccd)02d.csv" % keys, "w")
+            print >>csv, "id1,x1,y1," + "CatRA,CatDec,CatPsfFlux," + \
+                    "ImgRA,ImgDec,ImgPsfFlux,Distance" + ",id2,x2,y2"
+            for m in clip['matchList']:
+                print >>csv, ("%d,%f,%f," + "%f,%f,%g,%f,%f,%g,%f" + ",%d,%f,%f") % (
+                    m.first.getId(), m.first.getXAstrom(), m.first.getYAstrom(),
+                    m.first.getRa(), m.first.getDec(),
+                    m.first.getPsfFlux(),
+                    m.second.getRa(), m.second.getDec(),
+                    m.second.getPsfFlux(),
+                    m.distance,
+                    m.second.getId(), m.second.getXAstrom(), m.second.getYAstrom(),
+                    )
+            csv.close()
 
-#    if stages & WCS_VERIFY:
-#        clip = runStage(measPipe.WcsVerificationStage,
-#            """#<?cfg paf policy?>
-#            sourceMatchSetKey: matchList
-#            outputDictKey: wcsVerifyStats
-#            """, clip)
-#
-#         print >>sys.stderr, "WCS verify:", clip['wcsVerifyStats']
+    if stages & WCS_VERIFY:
+        clip = runStage(measPipe.WcsVerificationStage,
+            """#<?cfg paf policy?>
+            sourceMatchSetKey: matchList
+            """, clip)
 
     if stages & PHOTO_CAL:
         clip = runStage(measPipe.PhotoCalStage,

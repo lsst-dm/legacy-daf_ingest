@@ -63,7 +63,7 @@ execute: {
       name: "050-wcsDetermination"
       parallelClass: "lsst.meas.pipeline.WcsDeterminationStageParallel"
       eventTopic: "None"
-      stagePolicy: @ImgChar/050-wcsDetermination.paf
+      stagePolicy: @ImgChar/050-imsim-wcsDetermination.paf
    }
 
    appStage: {

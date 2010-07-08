@@ -19,8 +19,8 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
     stages = setPrerequisites(stages)
 
     if not os.environ.has_key("SETUP_ASTROMETRY_NET_DATA") or \
-            os.environ['SETUP_ASTROMETRY_NET_DATA'].find("cfhtlsDeep") == -1:
-        msg = "astrometry_net_data is not setup to cfhtlsDeep"
+            os.environ['SETUP_ASTROMETRY_NET_DATA'].find("cfht") == -1:
+        msg = "astrometry_net_data is not setup to a cfht catalog"
         if stages & WCS:
             raise RuntimeError, msg
         else:

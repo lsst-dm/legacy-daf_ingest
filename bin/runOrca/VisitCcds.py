@@ -23,13 +23,13 @@ if options.imsim and options.cfht:
     parser.error("options --imsim and --cfht are mutually exclusive")
 
 if options.imsim:
-   imsimRoot="/lsst/DC3/data/obstest/ImSim"
+   imsimRoot="/lsst/DC3/data/obs/ImSim"
    bf = dafPersist.ButlerFactory( mapper=LsstSimMapper( root=imsimRoot ))
    butler = bf.create()
    print ">intids visit snap"
-   for visit, snap, raft, sensor, channel in \
+   for visit, raft, sensor, snap, channel in \
            butler.queryMetadata("raw", "channel", \
-                ("visit", "snap", "raft", "sensor", "channel"), visit=visitSelected):
+                ("visit", "raft", "sensor", "snap", "channel"), visit=visitSelected):
        print "raw visit=%d snap=%d raft=%s sensor=%s channel=%s" \
                  % ( visit,  snap, raft, sensor, channel )
 else:

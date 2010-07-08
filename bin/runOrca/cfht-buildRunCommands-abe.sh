@@ -4,16 +4,14 @@ if [ "x$DATAREL_DIR" == "x" ]; then
    exit 0
 fi
 
-if [ $# -lt 2 ] ; then
-   echo -e "cfht-buildRunCommands.sh <runid> <inputlist>\nwhere\n   runid : unique ID for run\n   inputlist : full pathname to list of visit/ccd/amp to process.\nExample: cfht-buildRunCommands.sh raa20100521_01 /tmp/TestCfhtInput.txt"
+if [ $# -lt 1 ] ; then
+   echo -e "cfht-buildRunCommands.sh <runid> \nwhere\n   runid : unique ID for run\n   \nExample: cfht-buildRunCommands.sh raa20100521_01 "
    exit 0
 fi
 
 cat <<EOF
 ===========================
-     orca.py -r pipeline -e $DATAREL_DIR/bin/runOrca/cfht-setupForOrcaUse-abe.sh -V 10 -P 10 pipeline/cfht-orca-abe.paf $1
-===========================
-     announceDataset.py -r $1 -b lsst8.ncsa.uiuc.edu -t RawAvailable $2
+     orca.py -r pipeline -e $DATAREL_DIR/bin/runOrca/cfht-setupForOrcaUse-abe.sh -V 10 -P 3 pipeline/cfht-orca-abe.paf $1
 ===========================
      shutprod.py 1 $1
 ===========================

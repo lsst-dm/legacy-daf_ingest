@@ -25,7 +25,7 @@ if options.imsim and options.cfht:
 if options.imsim:
    bf = dafPersist.ButlerFactory(
            mapper=LsstSimMapper(
-               registry="/lsst/DC3/data/obstest/ImSim/registry.sqlite3"))
+               registry="/lsst/DC3/data/obs/ImSim/registry.sqlite3"))
    butler = bf.create()
    print ">intids visit snap"
    for visitRet, raftRet, sensorRet in \

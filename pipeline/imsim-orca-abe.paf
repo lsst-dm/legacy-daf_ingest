@@ -78,8 +78,11 @@ workflow: {
                 #START_OWNER: srp # user that will run job on remote system
                 CPU_COUNT: 8 # number of cpus per machine
                 MACHINE_COUNT: 2 # number of machines requested
-                MAX_WALLTIME: 30 # maximum time to hold machines, in minutes
-                QUEUE: debug # condor queue to use
+                QUEUE: normal # condor queue to use
+                MAX_WALLTIME: 60 # maximum time to hold machines, in minutes
+                #QUEUE: debug # condor queue to use
+                #MAX_WALLTIME: 30 # maximum time to hold machines, in minutes
+
             }
             templateFileName: $CTRL_ORCA_DIR/etc/glidein_run.submit.dc3b
             outputFileName: glidein_request.condor

@@ -23,7 +23,7 @@ from lsst.obs.cfht import CfhtMapper
 def process(inButler, tmpButler, outButler, visit, ccd, force=False):
     print >>sys.stderr, "****** Processing visit %d ccd %d: %s" % \
             (visit, ccd, dafBase.DateTime.now().toString())
-    if outButler.datasetExists("src", visit=visit, ccd=ccd):
+    if not force and outButler.datasetExists("src", visit=visit, ccd=ccd):
         return
     if tmpButler is not None:
         if force or not outButler.datasetExists("calexp",

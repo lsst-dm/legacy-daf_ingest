@@ -7,6 +7,7 @@ import lsst.utils.tests as utilsTests
 
 import glob
 import os
+import re
 import subprocess
 import sys
 
@@ -17,57 +18,129 @@ from ImgChar_ImSim import imgCharProcess
 from SFM_ImSim import sfmProcess
 
 import eups
+import lsst.afw.detection as afwDet
+import lsst.afw.math as afwMath
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
-def process(inButler, tmpButler, outButler, visit, raft, sensor, force=False):
-    print >>sys.stderr, "****** Processing visit %d raft %s sensor %s" % \
-            (visit, raft, sensor)
-    if tmpButler is not None:
-        if force or not outButler.datasetExists("calexp",
-                visit=visit, raft=raft, sensor=sensor):
-            for snap in inButler.queryMetadata("raw", "snap"):
-                for channel in inButler.queryMetadata("raw", "channel"):
-                    isrProcess(inButler=inButler, outButler=tmpButler,
-                            visit=visit, snap=snap,
-                            raft=raft, sensor=sensor, channel=channel)
-                ccdAssemblyProcess(inButler=tmpButler, outButler=tmpButler,
-                        visit=visit, snap=snap, raft=raft, sensor=sensor)
-            crSplitProcess(inButler=tmpButler, outButler=tmpButler,
-                    visit=visit, raft=raft, sensor=sensor)
-            imgCharProcess(inButler=tmpButler, outButler=outButler,
-                    visit=visit, raft=raft, sensor=sensor)
-        sfmProcess(inButler=outButler, outButler=outButler,
-                visit=visit, raft=raft, sensor=sensor)
-        return
+def calexpCompare(o1, o2):
+    w1 = o1.getWcs().getFitsMetadata().toString()
+    w2 = o2.getWcs().getFitsMetadata().toString()
+    if w1 != w2:
+        return "calexp WCS:\n%s\n%s" % (w1, w2)
+    m1 = o1.getMetadata().toString()
+    m2 = o2.getMetadata().toString()
+    if m1 != m2:
+        return "calexp metadata:\n%s\n%s" % (m1, m2)
+    c1 = o1.getCalib()
+    c2 = o2.getCalib()
+    if c1.getMidTime().nsecs() != c2.getMidTime().nsecs():
+        return "calexp calib midTime: %s %s" % (
+                c1.getMidTime().toString(), c2.getMidTime().toString())
+    if c1.getExptime() != c2.getExptime():
+        return "calexp calib exptime: %s %s" % (
+                c1.getExptime(), c2.getExptime())
+    if c1.getFluxMag0() != c2.getFluxMag0():
+        return "calexp calib exptime: %s %s" % (
+                str(c1.getFluxMag0()), str(c2.getFluxMag0()))
+    if o1.getHeight() != o2.getHeight():
+        return "calexp height: %s %s" % (o1.getHeight(), o2.getHeight())
+    if o1.getWidth() != o2.getWidth():
+        return "calexp width: %s %s" % (o1.getWidth(), o2.getWidth())
 
-    if force or not outButler.datasetExists("calexp",
-            visit=visit, raft=raft, sensor=sensor):
-        if force or not outButler.datasetExists("visitim",
-                visit=visit, raft=raft, sensor=sensor):
-            for snap in inButler.queryMetadata("raw", "snap"):
-                if force or not outButler.datasetExists("postISRCCD",
-                        visit=visit, snap=snap, raft=raft, sensor=sensor):
-                    for channel in inButler.queryMetadata("raw", "channel"):
-                        if force or not outButler.datasetExists("postISR",
-                                visit=visit, snap=snap,
-                                raft=raft, sensor=sensor, channel=channel):
-                            isrProcess(inButler=inButler, outButler=outButler,
-                                    visit=visit, snap=snap,
-                                    raft=raft, sensor=sensor, channel=channel)
-                    ccdAssemblyProcess(inButler=outButler, outButler=outButler,
-                            visit=visit, snap=snap, raft=raft, sensor=sensor)
-            crSplitProcess(inButler=outButler, outButler=outButler,
-                    visit=visit, raft=raft, sensor=sensor)
-        imgCharProcess(inButler=outButler, outButler=outButler,
-                visit=visit, raft=raft, sensor=sensor)
-    sfmProcess(inButler=outButler, outButler=outButler,
-            visit=visit, raft=raft, sensor=sensor)
+    im = o1.getMaskedImage().getImage()
+    im -= o2.getMaskedImage().getImage()
+    st = afwMath.makeStatistics(im, afwMath.MAX | afwMath.MIN)
+    if st.getValue(afwMath.MAX) > 1.0e-8:
+        return "calexp img max diff = %g" % (st.getValue(afwMath.MAX),)
+    if st.getValue(afwMath.MIN) < -1.0e-8:
+        return "calexp img min diff = %g" % (st.getValue(afwMath.MIN),)
 
-def compare(fname):
-    stat = subprocess.call(["cmp", fname,
-        os.path.join(eups.productDir("afwdata"), "ImSim", fname)])
-    return stat == 0
+    var = o1.getMaskedImage().getVariance()
+    var -= o2.getMaskedImage().getVariance()
+    st = afwMath.makeStatistics(var, afwMath.MAX | afwMath.MIN)
+    if st.getValue(afwMath.MAX) > 1.0e-8:
+        return "calexp var max diff = %g" % (st.getValue(afwMath.MAX),)
+    if st.getValue(afwMath.MIN) < -1.0e-8:
+        return "calexp var min diff = %g" % (st.getValue(afwMath.MIN),)
+
+    mask = o1.getMaskedImage().getMask()
+    mask ^= o2.getMaskedImage().getMask()
+    for y in xrange(o1.getHeight()):
+        for x in xrange(o1.getWidth()):
+            if mask.get(x, y):
+                return "calexp mask @ (%d, %d)" % (x, y)
+    return None
+
+def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):
+    for getField in dir(s1):
+        if not getField.startswith("get"):
+            continue
+
+        nullField = getField[3:]
+        nullField = re.sub(r'.[A-Z]',
+                lambda m: m.group(0)[0] + '_' + m.group(0)[1], nullField)
+        nullField = nullField.upper()
+        if hasattr(afwDet, nullField):
+            num = getattr(afwDet, nullField)
+            if s1.isNull(num) != s2.isNull(num):
+                return "%s %s null: %s %s" % (t, field,
+                        str(s1.isNull(num)), str(s2.isNull(num)))
+            if s1.isNull(num):
+                continue
+
+        v1 = getattr(s1, getField)()
+        v2 = getattr(s2, getField)()
+        if str(v1) == "nan" and str(v2) == "nan":
+            continue
+        if abs(v1 - v2) <= atol and (v1 == 0 or abs(v1 - v2) / v1 <= rtol):
+            continue
+        return "%s %s: %g %g" % (t, getField, v1, v2)
+
+    return None
+
+def srcCompare(o1, o2, t="src"):
+    src1 = o1.getSources()
+    src2 = o2.getSources()
+    if len(src1) != len(src2):
+        return "%s length: %d %d" % (t, len(src1), len(src2))
+    for s1, s2 in zip(src1, src2):
+        msg = cmpSrc(t, s1, s2)
+        if msg is not None:
+            return msg
+
+def icSrcCompare(o1, o2):
+    return srcCompare(o1, o2, t="icSrc")
+
+def sdqaCompare(t, o1, o2):
+    r1 = o1.getSdqaRatings()
+    r2 = o2.getSdqaRatings()
+    if len(r1) != len(r2):
+        return "%s lengths: %d, %d" % (t, len(r1), len(r2))
+    for i in xrange(len(r1)):
+        if r1[i].getName() != r2[i].getName():
+            return "%s names: %s, %s" % (t, r1[i].getName(), r2[i].getName())
+        if r1[i].getValue() != r2[i].getValue():
+            return "%s %s values: %g, %g" % (t, r1[i].getName(),
+                    r1[i].getValue(), r2[i].getValue())
+        if r1[i].getErr() != r2[i].getErr():
+            return "%s %s errors: %g, %g" % (t, r1[i].getName(),
+                    r1[i].getErr(), r2[i].getErr())
+        if r1[i].getRatingScope() != r2[i].getRatingScope():
+            return "%s %s scope: %d, %d" % (t, r1[i].getName(),
+                    r1[i].getRatingScope(), r2[i].getRatingScope())
+    return None
+
+def sdqaAmpCompare(o1, o2):
+    return sdqaCompare("sdqaAmp", o1, o2)
+
+def sdqaCcdCompare(o1, o2):
+    return sdqaCompare("sdqaCcd", o1, o2)
+
+def compare(butler, cmpButler, datasetType, **keys):
+    o1 = butler.get(datasetType, **keys)
+    o2 = cmpButler.get(datasetType, **keys)
+    return eval(datasetType + "Compare(o1, o2)")
 
 class EndToEndTestCase(unittest.TestCase):
     """Testing end to end (through SFM) PT1 processing"""
@@ -88,51 +161,31 @@ class EndToEndTestCase(unittest.TestCase):
         obf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outputRoot,
             registry=registryPath))
         outButler = obf.create()
-        if not os.path.exists("/tmp/DC3"):
-            os.mkdir("/tmp/DC3")
-        tmpDir = os.path.join("/tmp/DC3", str(os.getpid()))
-        if os.path.exists(tmpDir):
-            print >>sys.stderr, "WARNING: %s exists, reusing" % (tmpDir,)
-        else:
-            os.mkdir(tmpDir)
-        tbf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=tmpDir,
-            registry=registryPath))
-        tmpButler = tbf.create()
 
-        tmpSdqaAmp = os.path.join(tmpDir, "sdqaAmp/")
-        sdqaAmp = os.path.join(outputRoot, "sdqaAmp")
-        if not os.path.exists(sdqaAmp):
-            os.mkdir(sdqaAmp)
+        stat = subprocess.call(["runImSim.py", "-T", "--force",
+            "-i", inputRoot, "-o", outputRoot,
+            "-v", "85408556", "-r", "2,3", "-s", "1,1"])
+        self.assertEqual(stat, 0, "Error while running end to end test")
 
-        tmpSdqaCcd = os.path.join(tmpDir, "sdqaCcd/")
-        sdqaCcd = os.path.join(outputRoot, "sdqaCcd")
-        if not os.path.exists(sdqaCcd):
-            os.mkdir(sdqaCcd)
+        fname = "psf/v85408556-fr/R23/S11.boost"
+        stat = subprocess.call(["cmp",
+            os.path.join(outputRoot, fname), os.path.join(inputRoot, fname)])
+        self.assertEqual(stat, 0, "psf differs")
 
-        process(inButler, tmpButler, outButler, 85408556, "2,3", "1,1", True)
-        if os.path.exists(tmpSdqaAmp):
-            subprocess.call(["rsync", "-a", tmpSdqaAmp, sdqaAmp])
-        if os.path.exists(tmpSdqaCcd):
-            subprocess.call(["rsync", "-a", tmpSdqaCcd, sdqaCcd])
-        subprocess.call(["rm", "-r", tmpDir])
+        for datasetType in ("icSrc", "src", "calexp"):
+            msg = compare(outButler, inButler, datasetType,
+                    visit=85408556, raft="2,3", sensor="1,1")
+            self.assert_(msg is None, msg)
 
-        os.chdir("tests")
-
-        # SDQA boost persistence saves some uninitialized values that will be
-        # set later upon database ingest, so those cannot be compared in this
-        # naive way.
-
-        for fname in (
-                "calexp/v85408556-fr/R23/S11.fits",
-                "icSrc/v85408556-fr/R23/S11.boost",
-                "psf/v85408556-fr/R23/S11.boost", 
-                # "sdqaCcd/v85408556-fr/s0/R23/S11.boost",
-                # "sdqaCcd/v85408556-fr/s1/R23/S11.boost",
-                "src/v85408556-fr/R23/S11.boost"):
-            self.assert_(compare(fname), "%s is different" % (fname,))
-
-        # for fname in glob.glob("sdqaAmp/v85408556-fr/s*/R23/S11/C*.boost"):
-        #     self.assert_(compare(fname), "%s is different" % (fname,))
+        for snap in (0, 1):
+            msg = compare(outButler, inButler, "sdqaCcd",
+                visit=85408556, snap=snap, raft="2,3", sensor="1,1")
+            self.assert_(msg is None, msg)
+            for channel in inButler.queryMetadata("raw", "channel"):
+                msg = compare(outButler, inButler, "sdqaAmp",
+                    visit=85408556, snap=snap, raft="2,3", sensor="1,1",
+                    channel=channel)
+                self.assert_(msg is None, msg)
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

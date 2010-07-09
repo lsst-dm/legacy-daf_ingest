@@ -23,7 +23,8 @@ from lsst.obs.lsstSim import LsstSimMapper
 def process(inButler, tmpButler, outButler, visit, raft, sensor, force=False):
     print >>sys.stderr, "****** Processing visit %d raft %s sensor %s: %s" % \
             (visit, raft, sensor, dafBase.DateTime.now().toString())
-    if outButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
+    if not force and outButler.datasetExists("src",
+            visit=visit, raft=raft, sensor=sensor):
         return
     if tmpButler is not None:
         if force or not outButler.datasetExists("calexp",

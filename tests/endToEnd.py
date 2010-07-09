@@ -66,10 +66,10 @@ def calexpCompare(o1, o2):
 
     mask = o1.getMaskedImage().getMask()
     mask ^= o2.getMaskedImage().getMask()
-    for y in xrange(o1.getHeight()):
-        for x in xrange(o1.getWidth()):
-            if mask.get(x, y):
-                return "calexp mask @ (%d, %d)" % (x, y)
+    st = afwMath.makeStatistics(mask, afwMath.SUM)
+    if st.getValue(afwMath.SUM) != 0:
+        return "calexp mask sum = %d" % (st.getValue(afwMath.SUM),)
+
     return None
 
 def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):

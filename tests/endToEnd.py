@@ -19,6 +19,7 @@ from SFM_ImSim import sfmProcess
 
 import eups
 import lsst.afw.detection as afwDet
+import lsst.afw.math as afwMath
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
@@ -46,13 +47,29 @@ def calexpCompare(o1, o2):
         return "calexp height: %s %s" % (o1.getHeight(), o2.getHeight())
     if o1.getWidth() != o2.getWidth():
         return "calexp width: %s %s" % (o1.getWidth(), o2.getWidth())
-    mi1 = o1.getMaskedImage()
-    mi2 = o2.getMaskedImage()
+
+    im = o1.getMaskedImage().getImage()
+    im -= o2.getMaskedImage().getImage()
+    st = afwMath.makeStatistics(im, afwMath.MAX | afwMath.MIN)
+    if st.getValue(afwMath.MAX) > 1.0e-8:
+        return "calexp img max diff = %g" % (st.getValue(afwMath.MAX),)
+    if st.getValue(afwMath.MIN) < -1.0e-8:
+        return "calexp img min diff = %g" % (st.getValue(afwMath.MIN),)
+
+    var = o1.getMaskedImage().getVariance()
+    var -= o2.getMaskedImage().getVariance()
+    st = afwMath.makeStatistics(var, afwMath.MAX | afwMath.MIN)
+    if st.getValue(afwMath.MAX) > 1.0e-8:
+        return "calexp var max diff = %g" % (st.getValue(afwMath.MAX),)
+    if st.getValue(afwMath.MIN) < -1.0e-8:
+        return "calexp var min diff = %g" % (st.getValue(afwMath.MIN),)
+
+    mask = o1.getMaskedImage().getMask()
+    mask ^= o2.getMaskedImage().getMask()
     for y in xrange(o1.getHeight()):
         for x in xrange(o1.getWidth()):
-            if mi1.get(x, y) != mi2.get(x, y):
-                return "calexp maskedIm: %s != %s @ (%d, %d)" % (
-                        str(mi1.get(x, y)), str(mi2.get(x, y)), x, y)
+            if mask.get(x, y):
+                return "calexp mask @ (%d, %d)" % (x, y)
     return None
 
 def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):

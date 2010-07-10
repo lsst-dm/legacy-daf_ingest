@@ -78,12 +78,13 @@ def cfhtMain(processFunction, outDatasetType, need=(), defaultRoot="."):
             options.skyTile = inButler.queryMetadata("raw", "skyTile")
         elif not hasattr(options.skyTile, "__iter__"):
             options.skyTile = [options.skyTile]
-        if options.force or not outButler.datasetExists(outDatasetType,
-                skyTile=skyTile):
-            print >>sys.stderr, \
-                    "***** Processing skyTile %d" % (skyTile,)
-            processFunction(inButler=inButler, outButler=outButler,
-                    skyTile=skyTile)
+        for skyTile in options.skyTile:
+            if options.force or not outButler.datasetExists(outDatasetType,
+                    skyTile=skyTile):
+                print >>sys.stderr, \
+                        "***** Processing skyTile %d" % (skyTile,)
+                processFunction(inButler=inButler, outButler=outButler,
+                        skyTile=skyTile)
         return
 
     if options.visit is None:
@@ -197,12 +198,13 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
             options.skyTile = inButler.queryMetadata("raw", "skyTile")
         elif not hasattr(options.skyTile, "__iter__"):
             options.skyTile = [options.skyTile]
-        if options.force or not outButler.datasetExists(outDatasetType,
-                skyTile=skyTile):
-            print >>sys.stderr, \
-                    "***** Processing skyTile %d" % (skyTile,)
-            processFunction(inButler=inButler, outButler=outButler,
-                    skyTile=skyTile)
+        for skyTile in options.skyTile:
+            if options.force or not outButler.datasetExists(outDatasetType,
+                    skyTile=skyTile):
+                print >>sys.stderr, \
+                        "***** Processing skyTile %d" % (skyTile,)
+                processFunction(inButler=inButler, outButler=outButler,
+                        skyTile=skyTile)
         return
 
     if "snap" in need:

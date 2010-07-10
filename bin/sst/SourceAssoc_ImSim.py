@@ -12,7 +12,7 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
     skyTile = keys['skyTile']
     srcList = []
     for visit, raft, sensor in inButler.queryMetadata("raw", "sensor",
-            ("visit", "raft", "sensor"), skyTile=skyTile)
+            ("visit", "raft", "sensor"), skyTile=skyTile):
         if inButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
             srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
             srcList.append(srcs)
@@ -32,7 +32,7 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    clip = runStage(apCluster,SourceClusterAttributesStage,
+    clip = runStage(apCluster.SourceClusterAttributesStage,
         """#<?cfg paf policy?>
         inputKeys: {
         }

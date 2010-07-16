@@ -10,7 +10,7 @@ parameters: {
         }
     }
     inputItems: {
-        sources: {
+        inputSources: {
             datasetType: src
             datasetId: {
                 fromInputDatasets: true

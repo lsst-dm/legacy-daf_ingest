@@ -20,7 +20,7 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
         raise RuntimeError("No sources found")
 
     clip = {
-        'sources': srcList,
+        'inputSources': srcList,
         'jobIdentity': { 'skyTileId': skyTile },
     }
 

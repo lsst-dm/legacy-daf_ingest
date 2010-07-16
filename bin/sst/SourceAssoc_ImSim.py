@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
 import lsst.ap.cluster as apCluster
@@ -20,7 +19,7 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
         raise RuntimeError("No sources found")
 
     clip = {
-        'sources': srcList,
+        'inputSources': srcList,
         'jobIdentity': { 'skyTileId': skyTile },
     }
 

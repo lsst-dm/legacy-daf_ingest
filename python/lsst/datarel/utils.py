@@ -186,12 +186,6 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
         root=options.outRoot, registry=options.registry))
     outButler = obf.create()
 
-    if options.visit is None:
-        print >>sys.stderr, "Running over all input visits"
-        options.visit = inButler.queryMetadata("raw", "visit")
-    elif not hasattr(options.visit, "__iter__"):
-        options.visit = [options.visit]
-
     if "skyTile" in need:
         if options.skyTile is None:
             print >>sys.stderr, "Running over all sky tiles"
@@ -206,6 +200,12 @@ def lsstSimMain(processFunction, outDatasetType, need=(), defaultRoot="."):
                 processFunction(inButler=inButler, outButler=outButler,
                         skyTile=skyTile)
         return
+
+    if options.visit is None:
+        print >>sys.stderr, "Running over all input visits"
+        options.visit = inButler.queryMetadata("raw", "visit")
+    elif not hasattr(options.visit, "__iter__"):
+        options.visit = [options.visit]
 
     if "snap" in need:
         if options.snap is None:

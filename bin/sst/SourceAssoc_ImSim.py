@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # 
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
@@ -43,7 +42,7 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
         raise RuntimeError("No sources found")
 
     clip = {
-        'sources': srcList,
+        'inputSources': srcList,
         'jobIdentity': { 'skyTileId': skyTile },
     }
 

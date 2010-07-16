@@ -1,6 +1,6 @@
 setupRequired(meas_pipeline >= 3.2.0)
 setupRequired(ip_pipeline >= 3.0.3)
-setupRequired(ap >= 3.2.1)
+setupRequired(ap >= 3.2.3)
 setupRequired(ctrl_sched >= 3.0.4)
 setupRequired(sdqa >= 3.0.12)
 

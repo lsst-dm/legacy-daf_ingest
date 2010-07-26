@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import sys
 
@@ -78,7 +80,7 @@ class CsvGenerator(object):
                 obsStart.get(dafBase.DateTime.MJD, dafBase.DateTime.TAI),
                 obsStart,
                 md.get('TIME-MID'), md.get('EXPTIME'),
-                2, 1, 1,
+                1, 1, 1,
                 md.get('RDNOISE'), md.get('SATURATE'), md.get('GAINEFF'),
                 md.get('FLUXMAG0'), md.get('FLUXMAG0ERR'),
                 fwhm)

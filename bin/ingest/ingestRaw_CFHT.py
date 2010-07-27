@@ -59,7 +59,7 @@ class CsvGenerator(object):
             obsMidpoint = dafBase.DateTime(obsStart.nsecs() +
                     long(expTime * 1000000000L / 2))
             self.expFile.write(rawAmpExposureId,
-                    visit, 0, ccd, amp,
+                    visit, 0, 0, ccd, amp,
                     filterMap.index(md.get('FILTER').strip()),
                     md.get('RA_DEG'), md.get('DEC_DEG'),
                     md.get('EQUINOX'),

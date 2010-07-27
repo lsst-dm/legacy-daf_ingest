@@ -42,7 +42,7 @@ class CsvGenerator(object):
         for amp in (0, 1):
             rawAmpExposureId = (sciCcdExposureId << 1) + amp
 
-            self.rToSFile.write(rawAmpExposureId, sciCcdExposureId, amp)
+            self.rToSFile.write(rawAmpExposureId, sciCcdExposureId, 0, amp)
 
             md = self.getFullMetadata("raw", visit=visit, ccd=ccd, amp=amp)
 

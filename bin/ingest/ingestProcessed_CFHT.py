@@ -41,7 +41,7 @@ class CsvGenerator(object):
         md = self.getFullMetadata("calexp", visit=visit, ccd=ccd)
         width = md.get('NAXIS1')
         height = md.get('NAXIS2')
-        wcs = afwImage.makeWcs(md)
+        wcs = afwImage.makeWcs(md.deepCopy())
         llc = wcs.pixelToSky(0, 0).toIcrs()
         ulc = wcs.pixelToSky(0, height - 1).toIcrs()
         urc = wcs.pixelToSky(width - 1, height - 1).toIcrs()

@@ -38,7 +38,7 @@ class CsvGenerator(object):
         for amp in xrange(2):
             rawAmpExposureId = (rawCcdExposureId << 1) + amp
 
-            prv = self.butler.get("sdqaCcd", visit=visit, ccd=ccd, amp=amp)
+            prv = self.butler.get("sdqaAmp", visit=visit, ccd=ccd, amp=amp)
             for r in prv.getSdqaRatings():
                 self.ampFile.write(r.getName(), rawAmpExposureId,
                         r.getValue(), r.getErr())

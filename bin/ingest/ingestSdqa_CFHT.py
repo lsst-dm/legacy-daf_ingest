@@ -29,24 +29,19 @@ class CsvGenerator(object):
     def toCsv(self, visit, ccd):
         sciCcdExposureId = (long(visit) << 6) + ccd
 
-        for snap in xrange(2):
-            # PT1 obs_cfht generates incorrect exposureIds without snaps.
-            # Replace them with the correct ones.
-            rawCcdExposureId = (sciCcdExposureId << 1) + snap
-            prv = self.butler.get("sdqaCcd",
-                    visit=visit, snap=snap, ccd=ccd)
+        rawCcdExposureId = sciCcdExposureId
+        prv = self.butler.get("sdqaCcd", visit=visit, ccd=ccd)
+        for r in prv.getSdqaRatings():
+            self.ccdFile.write(r.getName(), rawCcdExposureId,
+                    r.getValue(), r.getErr())
+
+        for amp in xrange(2):
+            rawAmpExposureId = (rawCcdExposureId << 1) + amp
+
+            prv = self.butler.get("sdqaCcd", visit=visit, ccd=ccd, amp=amp)
             for r in prv.getSdqaRatings():
-                self.ccdFile.write(r.getName(), rawCcdExposureId,
+                self.ampFile.write(r.getName(), rawAmpExposureId,
                         r.getValue(), r.getErr())
-
-            for amp in xrange(2):
-                rawAmpExposureId = (rawCcdExposureId << 1) + amp
-
-                prv = self.butler.get("sdqaCcd", visit=visit, snap=snap,
-                        ccd=ccd, amp=amp)
-                for r in prv.getSdqaRatings():
-                    self.ampFile.write(r.getName(), rawAmpExposureId,
-                            r.getValue(), r.getErr())
         print "Processed visit %d ccd %d" % (visit, ccd)
 
 def main():

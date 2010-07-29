@@ -24,6 +24,9 @@ class CsvGenerator(object):
 
         self.ampFile = CsvFileWriter("sdqa_Rating_ForScienceAmpExposure.csv")
         self.ccdFile = CsvFileWriter("sdqa_Rating_ForScienceCcdExposure.csv")
+        self.rawToSnapFile = CsvFileWrite("Raw_Amp_To_Snap_Ccd_Exposure.csv")
+        self.snapToSciFile = \
+                CsvFileWrite("Snap_Ccd_To_Science_Ccd_Exposure.csv")
 
     def csvAll(self):
         for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
@@ -43,20 +46,24 @@ class CsvGenerator(object):
         for snap in xrange(2):
             # PT1 obs_lsstSim generates incorrect exposureIds without snaps.
             # Replace them with the correct ones.
-            rawCcdExposureId = (sciCcdExposureId << 1) + snap
+            snapCcdExposureId = (sciCcdExposureId << 1) + snap
+            self.snapToSciFile.write(snapCcdExposureId, snap, sciCcdExposureId)
+
             prv = self.butler.get("sdqaCcd",
                     visit=visit, snap=snap, raft=raft, sensor=sensor)
             for r in prv.getSdqaRatings():
-                self.ccdFile.write(r.getName(), rawCcdExposureId,
+                self.ccdFile.write(r.getName(), snapCcdExposureId,
                         r.getValue(), r.getErr())
 
             for channelY in xrange(2):
                 for channelX in xrange(8):
                     channel = "%d,%d" % (channelY, channelX)
                     channelNum = (channelY << 3) + channelX
-                    rawAmpExposureId = (rawCcdExposureId << 4) + channelNum
+                    rawAmpExposureId = (snapCcdExposureId << 4) + channelNum
+                    self.rawToSnapFile.write(rawAmpExposureId, channelNum,
+                            snapCcdExposureId)
 
-                    prv = self.butler.get("sdqaCcd", visit=visit, snap=snap,
+                    prv = self.butler.get("sdqaAmp", visit=visit, snap=snap,
                             raft=raft, sensor=sensor, channel=channel)
                     for r in prv.getSdqaRatings():
                         self.ampFile.write(r.getName(), rawAmpExposureId,

@@ -18,6 +18,9 @@ class CsvGenerator(object):
 
         self.ampFile = CsvFileWriter("sdqa_Rating_ForScienceAmpExposure.csv")
         self.ccdFile = CsvFileWriter("sdqa_Rating_ForScienceCcdExposure.csv")
+        self.rawToSnapFile = CsvFileWrite("Raw_Amp_To_Snap_Ccd_Exposure.csv")
+        self.snapToSciFile = \
+                CsvFileWrite("Snap_Ccd_To_Science_Ccd_Exposure.csv")
 
     def csvAll(self):
         for visit, ccd in self.butler.queryMetadata("raw", "ccd",
@@ -29,14 +32,17 @@ class CsvGenerator(object):
     def toCsv(self, visit, ccd):
         sciCcdExposureId = (long(visit) << 6) + ccd
 
-        rawCcdExposureId = sciCcdExposureId
+        snapCcdExposureId = sciCcdExposureId
+        self.snapToSciFile.write(snapCcdExposureId, 0, sciCcdExposureId)
+
         prv = self.butler.get("sdqaCcd", visit=visit, ccd=ccd)
         for r in prv.getSdqaRatings():
-            self.ccdFile.write(r.getName(), rawCcdExposureId,
+            self.ccdFile.write(r.getName(), snapCcdExposureId,
                     r.getValue(), r.getErr())
 
         for amp in xrange(2):
-            rawAmpExposureId = (rawCcdExposureId << 1) + amp
+            rawAmpExposureId = (snapCcdExposureId << 1) + amp
+            self.rawToSnapFile.write(rawAmpExposureId, amp, snapCcdExposureId)
 
             prv = self.butler.get("sdqaAmp", visit=visit, ccd=ccd, amp=amp)
             for r in prv.getSdqaRatings():

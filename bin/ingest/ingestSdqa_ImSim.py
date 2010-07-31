@@ -24,9 +24,9 @@ class CsvGenerator(object):
 
         self.ampFile = CsvFileWriter("sdqa_Rating_ForScienceAmpExposure.csv")
         self.ccdFile = CsvFileWriter("sdqa_Rating_ForScienceCcdExposure.csv")
-        self.rawToSnapFile = CsvFileWrite("Raw_Amp_To_Snap_Ccd_Exposure.csv")
+        self.rawToSnapFile = CsvFileWriter("Raw_Amp_To_Snap_Ccd_Exposure.csv")
         self.snapToSciFile = \
-                CsvFileWrite("Snap_Ccd_To_Science_Ccd_Exposure.csv")
+                CsvFileWriter("Snap_Ccd_To_Science_Ccd_Exposure.csv")
 
     def csvAll(self):
         for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",

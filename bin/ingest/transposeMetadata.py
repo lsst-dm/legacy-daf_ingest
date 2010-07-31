@@ -1,9 +1,12 @@
+#! /usr/bin/env python
+
 import getpass
 import optparse
 import MySQLdb as sql
 from textwrap import dedent
 
 renames = { 'DEC': 'DECL',
+            'OUTFILE': 'OUTFILE_'
           }
 
 class Column(object):

@@ -176,7 +176,11 @@ class EndToEndTestCase(unittest.TestCase):
         self.assert_(eups.Eups().findSetupVersion("astrometry_net_data")[0].startswith("imsim_"))
 
         inputRoot = os.path.join(eups.productDir("afwdata"), "ImSim")
-        outputRoot = "tests"
+        if os.path.exists("endToEnd.py"):
+            outputRoot = "."
+        else:
+            outputRoot = "tests"
+
         registryPath = os.path.join(inputRoot, "registry.sqlite3")
 
         bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=inputRoot))

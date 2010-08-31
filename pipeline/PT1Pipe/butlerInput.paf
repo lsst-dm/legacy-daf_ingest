@@ -1,0 +1,6 @@
+#<?cfg paf policy ?>
+
+mapperName: lsst.obs.lsstSim.lsstSimMapper
+mapperPolicy: {
+    root: %(input)
+}

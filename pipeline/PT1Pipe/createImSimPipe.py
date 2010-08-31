@@ -3,6 +3,8 @@
 from __future__ import with_statement
 import sys
 
+# TODO - Extract out common IOStage params and science params into separate
+# files
 
 def pipelinePolicy(f):
     print >>f, """#<?cfg paf policy ?>
@@ -51,12 +53,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {"""
     for channelX in (0, 1):
         for channelY in (0, 1, 2, 3, 4, 5, 6, 7):
@@ -90,12 +87,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -210,30 +202,21 @@ def isrProcess(f):
             outputKeys: {
                 darkSubtractedExposure: isrExposure""" + channelSnap + """
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure""" + channelSnap + """
             }
         }
     }
     appStage: {
-        name: isrSdqa""" + channelSnap + """
+        name: isrSdqaAmp""" + channelSnap + """
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure""" + channelSnap + """
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
             }
@@ -248,12 +231,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -284,8 +262,8 @@ def ccdAssemblyProcess(f):
     for snap in (0, 1):
         print >>f, """
     appStage: {
-        name: ccdList""" + str(snap) + """
-        parallelClass: lsst.datarel.CcdListStageParallel
+        name: ccdAssemblyCcdList""" + str(snap) + """
+        parallelClass: lsst.datarel.ObjectListStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {"""
@@ -293,17 +271,16 @@ def ccdAssemblyProcess(f):
             for channelY in (0, 1, 2, 3, 4, 5, 6, 7):
                 channelId = "%d%d" % (channelX, channelY)
                 channelSnap = "%d%d_%d" % (channelX, channelY, snap)
-                print >>f, """
-                exposure""" + channelId + ": isrExposure" + channelSnap
+                print >>f, "            object: isrExposure" + channelSnap
         print >>f, """
             }
             outputKeys: {
-                exposureList: exposureList""" + str(snap) + """
+                objectList: exposureList""" + str(snap) + """
             }
         }
     }
     appStage: {
-        name: isrCcdAssembly""" + str(snap) + """
+        name: ccdAssemblyIsrCcdAssembly""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
         outputKeys: {
@@ -311,7 +288,7 @@ def ccdAssemblyProcess(f):
         }
     }
     appStage: {
-        name: isrCcdDefect""" + str(snap) + """
+        name: ccdAssemblyIsrCcdDefect""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdDefectStageParallel
         eventTopic: None
         inputKeys: {
@@ -322,7 +299,7 @@ def ccdAssemblyProcess(f):
         }
     }
     appStage: {
-        name: isrCcdSdqa""" + str(snap) + """
+        name: ccdAssemblyIsrCcdSdqa""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
         eventTopic: None
         inputKeys: {
@@ -333,22 +310,13 @@ def ccdAssemblyProcess(f):
         }
     }
     appStage: {
-        name: isrSdqa""" + str(snap) + """
+        name: ccdAssemblySdqaCcd""" + str(snap) + """
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         inputKeys: {
             exposureKey: isrExposure""" + str(snap) + """
         }
-        parameters: {
-            sdqaRatingScope: 1
-            sdqaMetricNames: "imageClipMean4Sig3Pass"
-            sdqaMetricNames: "imageMedian"
-            sdqaMetricNames: "imageSigma"
-            sdqaMetricNames: "nBadCalibPix"
-            sdqaMetricNames: "nSaturatePix"
-            sdqaMetricNames: "imageMin"
-            sdqaMetricNames: "imageMax"
-        }
+        parameters: @ISR-sdqaCcd.paf
         outputKeys: {
             isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
         }
@@ -360,12 +328,7 @@ def ccdAssemblyProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaCcd
@@ -392,15 +355,16 @@ def ccdAssemblyProcess(f):
     print >>f, """
     appStage: {
         name: ccdAssemblyFixup
-        parallelClass: lsst.datarel.CcdAssemblyFixupStageParallel
+        parallelClass: lsst.datarel.FixupStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 isrCcdExposure0: isrExposure0
                 isrCcdExposure1: isrExposure1
             }
-            # Set exposure midtimes
-            # Delete all other items on the clipboard
+            parameters: {
+                pipeline: CcdAssembly
+            }
             outputKeys: {
                 isrCcdExposure0: isrCcdExposure0
                 isrCcdExposure1: isrCcdExposure1
@@ -411,7 +375,7 @@ def ccdAssemblyProcess(f):
 def crSplitProcess(f):
     print >>f, """
     appStage: {
-        name: backgroundEstimation0
+        name: crSplitBackgroundEstimation0
         parallelClass: lsst.meas.pipeline.BackgroundEstimationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -421,15 +385,10 @@ def crSplitProcess(f):
             outputKeys: {
                 backgroundSubtractedExposure: bkgSubCcdExposure0
             }
-            parameters: {
-                subtractBackground: true
-                backgroundPolicy: {
-                    binsize: 512
-                }
-            }
+            parameters: @CrSplit-backgroundEstimation.paf
     }
     appStage: {
-        name: backgroundEstimation1
+        name: crSplitBackgroundEstimation1
         parallelClass: lsst.meas.pipeline.BackgroundEstimationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -439,16 +398,11 @@ def crSplitProcess(f):
             outputKeys: {
                 backgroundSubtractedExposure: bkgSubCcdExposure1
             }
-            parameters: {
-                subtractBackground: true
-                backgroundPolicy: {
-                    binsize: 512
-                }
-            }
+            parameters: @CrSplit-backgroundEstimation.paf
         }
     }
     appStage: {
-        name: crReject0
+        name: crSplitCrReject0
         parallelClass: lsst.ip.pipeline.CrRejectStageParallel
         eventTopic: None
         stagePolicy: {
@@ -459,17 +413,12 @@ def crSplitProcess(f):
                 exposure: visitim
                 exposure: crSubCcdExposure0
             }
-            parameters: {
-                defaultFwhm: 1.0
-                keepCRs: false
-            }
-            crRejectPolicy: {
-                nCrPixelMax: 100000
-            }
+            parameters: @CrSplit-crReject.paf
+            crRejectPolicy: @CrSplit-crReject-algorithm.paf
         }
     }
     appStage: {
-        name: crReject1
+        name: crSplitCrReject1
         parallelClass: lsst.ip.pipeline.CrRejectStageParallel
         eventTopic: None
         stagePolicy: {
@@ -479,27 +428,23 @@ def crSplitProcess(f):
             outputKeys: {
                 exposure: crSubCcdExposure1
             }
-            parameters: {
-                defaultFwhm: 1.0
-                keepCRs: false
-            }
-            crRejectPolicy: {
-                nCrPixelMax: 100000
-            }
+            parameters: @CrSplit-crReject.paf
+            crRejectPolicy: @CrSplit-crReject-algorithm.paf
         }
     }
     """
     print >>f, """
     appStage: {
-        name: crRejectFixup
-        parallelClass: lsst.datarel.CrRejectFixupStageParallel
+        name: crSplitFixup
+        parallelClass: lsst.datarel.FixupStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 visitExposure: crSubCcdExposure0
             }
-            # Handle any processing due to use of only one snap
-            # Delete all other items on the clipboard
+            parameters: {
+                pipeline: CrSplit
+            }
             outputKeys: {
                 visitExposure: visitExposure
             }
@@ -521,14 +466,8 @@ def imgCharProcess(f):
                 negativeDetection: negativeFootprintSet
                 psf: simplePsf
             }
-            psfPolicy: {
-                height: 5
-                width: 5
-                parameter: 1.0
-            }
-            backgroundPolicy: {
-                algorithm: NONE
-            }
+            psfPolicy: @ImgChar-sourceDetect-psf.paf
+            backgroundPolicy: @ImgChar-sourceDetect-background.paf
         }
     }
     appStage: {
@@ -548,7 +487,7 @@ def imgCharProcess(f):
         }
     }
     appStage: {
-        name: psfDetermination
+        name: icPsfDetermination
         parallelClass: lsst.meas.pipeline.PsfDeterminationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -564,20 +503,13 @@ def imgCharProcess(f):
         }
     }
     appStage: {
-        name: wcsDetermination
+        name: icWcsDetermination
         parallelClass: lsst.meas.pipeline.WcsDeterminationStageParallel
         eventTopic: None
-        stagePolicy: {
-            inputExposureKey: visitExposure
-            inputSourceSetKey: sourceSet
-            outputWcsKey: measuredWcs
-            outputMatchListKey: matchList
-            numBrightStars: 150
-            defaultFilterName: mag
-        }
+        stagePolicy: @ImgChar-wcsDetermination.paf
     }
     appStage: {
-        name: wcsVerification
+        name: icWcsVerification
         parallelClass: lsst.meas.pipeline.WcsVerificationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -585,7 +517,7 @@ def imgCharProcess(f):
         }
     }
     appStage: {
-        name: photoCal
+        name: icPhotoCal
         parallelClass: lsst.meas.pipeline.PhotoCalStageParallel
         eventTopic: None
         stagePolicy: {
@@ -595,17 +527,12 @@ def imgCharProcess(f):
     }"""
     print >>f, """
     appStage: {
-        name: imgCharOutput
+        name: icOutput
         parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetType: icSrc
@@ -631,15 +558,17 @@ def imgCharProcess(f):
     }"""
     print >>f, """
     appStage: {
-        name: imgCharCleanup
-        parallelClass: lsst.datarel.CleanupStageParallel
+        name: icFixup
+        parallelClass: lsst.datarel.FixupStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 calibratedExposure: visitExposure
                 psf: measuredPsf
             }
-            # Delete all other items on the clipboard
+            parameters: {
+                pipeline: ImgChar
+            }
             outputKeys: {
                 calibratedExposure: scienceExposure
                 psf: psf
@@ -661,9 +590,7 @@ def sfmProcess(f):
             outputKeys: {
                 positiveDetection: positiveFootprintSet
             }
-            backgroundPolicy: {
-                algorithm: NONE
-            }
+            backgroundPolicy: @SFM-sourceDetect-background.paf
         }
     }
     appStage: {
@@ -682,7 +609,7 @@ def sfmProcess(f):
         }
     }
     appStage: {
-        name: computeSourceSkyCoords
+        name: sfmComputeSourceSkyCoords
         parallelClass: lsst.meas.pipeline.ComputeSourceSkyCoordsStageParallel
         eventTopic: None
         stagePolicy: {
@@ -699,12 +626,7 @@ def sfmProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetType: src

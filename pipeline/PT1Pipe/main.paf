@@ -40,12 +40,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
 
                     isrExposure00_0: {
@@ -411,12 +406,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -529,30 +519,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure00_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure00_0
             }
         }
     }
     appStage: {
-        name: isrSdqa00_0
+        name: isrSdqaAmp00_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure00_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -638,30 +619,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure00_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure00_1
             }
         }
     }
     appStage: {
-        name: isrSdqa00_1
+        name: isrSdqaAmp00_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure00_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -674,12 +646,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -712,12 +679,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -830,30 +792,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure01_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure01_0
             }
         }
     }
     appStage: {
-        name: isrSdqa01_0
+        name: isrSdqaAmp01_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure01_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -939,30 +892,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure01_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure01_1
             }
         }
     }
     appStage: {
-        name: isrSdqa01_1
+        name: isrSdqaAmp01_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure01_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -975,12 +919,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -1013,12 +952,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -1131,30 +1065,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure02_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure02_0
             }
         }
     }
     appStage: {
-        name: isrSdqa02_0
+        name: isrSdqaAmp02_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure02_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -1240,30 +1165,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure02_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure02_1
             }
         }
     }
     appStage: {
-        name: isrSdqa02_1
+        name: isrSdqaAmp02_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure02_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -1276,12 +1192,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -1314,12 +1225,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -1432,30 +1338,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure03_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure03_0
             }
         }
     }
     appStage: {
-        name: isrSdqa03_0
+        name: isrSdqaAmp03_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure03_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -1541,30 +1438,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure03_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure03_1
             }
         }
     }
     appStage: {
-        name: isrSdqa03_1
+        name: isrSdqaAmp03_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure03_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -1577,12 +1465,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -1615,12 +1498,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -1733,30 +1611,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure04_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure04_0
             }
         }
     }
     appStage: {
-        name: isrSdqa04_0
+        name: isrSdqaAmp04_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure04_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -1842,30 +1711,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure04_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure04_1
             }
         }
     }
     appStage: {
-        name: isrSdqa04_1
+        name: isrSdqaAmp04_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure04_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -1878,12 +1738,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -1916,12 +1771,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -2034,30 +1884,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure05_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure05_0
             }
         }
     }
     appStage: {
-        name: isrSdqa05_0
+        name: isrSdqaAmp05_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure05_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -2143,30 +1984,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure05_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure05_1
             }
         }
     }
     appStage: {
-        name: isrSdqa05_1
+        name: isrSdqaAmp05_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure05_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -2179,12 +2011,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -2217,12 +2044,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -2335,30 +2157,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure06_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure06_0
             }
         }
     }
     appStage: {
-        name: isrSdqa06_0
+        name: isrSdqaAmp06_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure06_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -2444,30 +2257,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure06_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure06_1
             }
         }
     }
     appStage: {
-        name: isrSdqa06_1
+        name: isrSdqaAmp06_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure06_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -2480,12 +2284,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -2518,12 +2317,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -2636,30 +2430,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure07_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure07_0
             }
         }
     }
     appStage: {
-        name: isrSdqa07_0
+        name: isrSdqaAmp07_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure07_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -2745,30 +2530,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure07_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure07_1
             }
         }
     }
     appStage: {
-        name: isrSdqa07_1
+        name: isrSdqaAmp07_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure07_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -2781,12 +2557,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -2819,12 +2590,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -2937,30 +2703,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure10_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure10_0
             }
         }
     }
     appStage: {
-        name: isrSdqa10_0
+        name: isrSdqaAmp10_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure10_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -3046,30 +2803,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure10_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure10_1
             }
         }
     }
     appStage: {
-        name: isrSdqa10_1
+        name: isrSdqaAmp10_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure10_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -3082,12 +2830,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -3120,12 +2863,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -3238,30 +2976,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure11_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure11_0
             }
         }
     }
     appStage: {
-        name: isrSdqa11_0
+        name: isrSdqaAmp11_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure11_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -3347,30 +3076,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure11_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure11_1
             }
         }
     }
     appStage: {
-        name: isrSdqa11_1
+        name: isrSdqaAmp11_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure11_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -3383,12 +3103,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -3421,12 +3136,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -3539,30 +3249,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure12_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure12_0
             }
         }
     }
     appStage: {
-        name: isrSdqa12_0
+        name: isrSdqaAmp12_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure12_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -3648,30 +3349,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure12_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure12_1
             }
         }
     }
     appStage: {
-        name: isrSdqa12_1
+        name: isrSdqaAmp12_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure12_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -3684,12 +3376,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -3722,12 +3409,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -3840,30 +3522,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure13_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure13_0
             }
         }
     }
     appStage: {
-        name: isrSdqa13_0
+        name: isrSdqaAmp13_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure13_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -3949,30 +3622,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure13_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure13_1
             }
         }
     }
     appStage: {
-        name: isrSdqa13_1
+        name: isrSdqaAmp13_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure13_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -3985,12 +3649,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -4023,12 +3682,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -4141,30 +3795,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure14_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure14_0
             }
         }
     }
     appStage: {
-        name: isrSdqa14_0
+        name: isrSdqaAmp14_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure14_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -4250,30 +3895,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure14_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure14_1
             }
         }
     }
     appStage: {
-        name: isrSdqa14_1
+        name: isrSdqaAmp14_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure14_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -4286,12 +3922,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -4324,12 +3955,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -4442,30 +4068,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure15_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure15_0
             }
         }
     }
     appStage: {
-        name: isrSdqa15_0
+        name: isrSdqaAmp15_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure15_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -4551,30 +4168,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure15_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure15_1
             }
         }
     }
     appStage: {
-        name: isrSdqa15_1
+        name: isrSdqaAmp15_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure15_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -4587,12 +4195,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -4625,12 +4228,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -4743,30 +4341,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure16_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure16_0
             }
         }
     }
     appStage: {
-        name: isrSdqa16_0
+        name: isrSdqaAmp16_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure16_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -4852,30 +4441,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure16_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure16_1
             }
         }
     }
     appStage: {
-        name: isrSdqa16_1
+        name: isrSdqaAmp16_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure16_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -4888,12 +4468,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -4926,12 +4501,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(input)
-                    }
-                }
+                butler: @butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -5044,30 +4614,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure17_0
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure17_0
             }
         }
     }
     appStage: {
-        name: isrSdqa17_0
+        name: isrSdqaAmp17_0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure17_0
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
             }
@@ -5153,30 +4714,21 @@ execute: {
             outputKeys: {
                 darkSubtractedExposure: isrExposure17_1
             }
-            parameters: {
-                flatScalingValue: 1.0
-            }
+            parameters: @ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure17_1
             }
         }
     }
     appStage: {
-        name: isrSdqa17_1
+        name: isrSdqaAmp17_1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 exposure: isrExposure17_1
             }
-            parameters: {
-                sdqaRatingScope: 0
-                sdqaMetricNames: "overscanMean"
-                sdqaMetricNames: "overscanMedian"
-                sdqaMetricNames: "overscanStdDev"
-                sdqaMetricNames: "overscanMin"
-                sdqaMetricNames: "overscanMax"
-            }
+            parameters: @ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
             }
@@ -5189,12 +4741,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -5222,52 +4769,36 @@ execute: {
     }
 
     appStage: {
-        name: ccdList0
-        parallelClass: lsst.datarel.CcdListStageParallel
+        name: ccdAssemblyCcdList0
+        parallelClass: lsst.datarel.ObjectListStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-
-                exposure00: isrExposure00_0
-
-                exposure01: isrExposure01_0
-
-                exposure02: isrExposure02_0
-
-                exposure03: isrExposure03_0
-
-                exposure04: isrExposure04_0
-
-                exposure05: isrExposure05_0
-
-                exposure06: isrExposure06_0
-
-                exposure07: isrExposure07_0
-
-                exposure10: isrExposure10_0
-
-                exposure11: isrExposure11_0
-
-                exposure12: isrExposure12_0
-
-                exposure13: isrExposure13_0
-
-                exposure14: isrExposure14_0
-
-                exposure15: isrExposure15_0
-
-                exposure16: isrExposure16_0
-
-                exposure17: isrExposure17_0
+            object: isrExposure00_0
+            object: isrExposure01_0
+            object: isrExposure02_0
+            object: isrExposure03_0
+            object: isrExposure04_0
+            object: isrExposure05_0
+            object: isrExposure06_0
+            object: isrExposure07_0
+            object: isrExposure10_0
+            object: isrExposure11_0
+            object: isrExposure12_0
+            object: isrExposure13_0
+            object: isrExposure14_0
+            object: isrExposure15_0
+            object: isrExposure16_0
+            object: isrExposure17_0
 
             }
             outputKeys: {
-                exposureList: exposureList0
+                objectList: exposureList0
             }
         }
     }
     appStage: {
-        name: isrCcdAssembly0
+        name: ccdAssemblyIsrCcdAssembly0
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
         outputKeys: {
@@ -5275,7 +4806,7 @@ execute: {
         }
     }
     appStage: {
-        name: isrCcdDefect0
+        name: ccdAssemblyIsrCcdDefect0
         parallelClass: lsst.ip.pipeline.IsrCcdDefectStageParallel
         eventTopic: None
         inputKeys: {
@@ -5286,7 +4817,7 @@ execute: {
         }
     }
     appStage: {
-        name: isrCcdSdqa0
+        name: ccdAssemblyIsrCcdSdqa0
         parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
         eventTopic: None
         inputKeys: {
@@ -5297,74 +4828,49 @@ execute: {
         }
     }
     appStage: {
-        name: isrSdqa0
+        name: ccdAssemblySdqaCcd0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         inputKeys: {
             exposureKey: isrExposure0
         }
-        parameters: {
-            sdqaRatingScope: 1
-            sdqaMetricNames: "imageClipMean4Sig3Pass"
-            sdqaMetricNames: "imageMedian"
-            sdqaMetricNames: "imageSigma"
-            sdqaMetricNames: "nBadCalibPix"
-            sdqaMetricNames: "nSaturatePix"
-            sdqaMetricNames: "imageMin"
-            sdqaMetricNames: "imageMax"
-        }
+        parameters: @ISR-sdqaCcd.paf
         outputKeys: {
             isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
         }
     }
 
     appStage: {
-        name: ccdList1
-        parallelClass: lsst.datarel.CcdListStageParallel
+        name: ccdAssemblyCcdList1
+        parallelClass: lsst.datarel.ObjectListStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-
-                exposure00: isrExposure00_1
-
-                exposure01: isrExposure01_1
-
-                exposure02: isrExposure02_1
-
-                exposure03: isrExposure03_1
-
-                exposure04: isrExposure04_1
-
-                exposure05: isrExposure05_1
-
-                exposure06: isrExposure06_1
-
-                exposure07: isrExposure07_1
-
-                exposure10: isrExposure10_1
-
-                exposure11: isrExposure11_1
-
-                exposure12: isrExposure12_1
-
-                exposure13: isrExposure13_1
-
-                exposure14: isrExposure14_1
-
-                exposure15: isrExposure15_1
-
-                exposure16: isrExposure16_1
-
-                exposure17: isrExposure17_1
+            object: isrExposure00_1
+            object: isrExposure01_1
+            object: isrExposure02_1
+            object: isrExposure03_1
+            object: isrExposure04_1
+            object: isrExposure05_1
+            object: isrExposure06_1
+            object: isrExposure07_1
+            object: isrExposure10_1
+            object: isrExposure11_1
+            object: isrExposure12_1
+            object: isrExposure13_1
+            object: isrExposure14_1
+            object: isrExposure15_1
+            object: isrExposure16_1
+            object: isrExposure17_1
 
             }
             outputKeys: {
-                exposureList: exposureList1
+                objectList: exposureList1
             }
         }
     }
     appStage: {
-        name: isrCcdAssembly1
+        name: ccdAssemblyIsrCcdAssembly1
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
         outputKeys: {
@@ -5372,7 +4878,7 @@ execute: {
         }
     }
     appStage: {
-        name: isrCcdDefect1
+        name: ccdAssemblyIsrCcdDefect1
         parallelClass: lsst.ip.pipeline.IsrCcdDefectStageParallel
         eventTopic: None
         inputKeys: {
@@ -5383,7 +4889,7 @@ execute: {
         }
     }
     appStage: {
-        name: isrCcdSdqa1
+        name: ccdAssemblyIsrCcdSdqa1
         parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
         eventTopic: None
         inputKeys: {
@@ -5394,22 +4900,13 @@ execute: {
         }
     }
     appStage: {
-        name: isrSdqa1
+        name: ccdAssemblySdqaCcd1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
         inputKeys: {
             exposureKey: isrExposure1
         }
-        parameters: {
-            sdqaRatingScope: 1
-            sdqaMetricNames: "imageClipMean4Sig3Pass"
-            sdqaMetricNames: "imageMedian"
-            sdqaMetricNames: "imageSigma"
-            sdqaMetricNames: "nBadCalibPix"
-            sdqaMetricNames: "nSaturatePix"
-            sdqaMetricNames: "imageMin"
-            sdqaMetricNames: "imageMax"
-        }
+        parameters: @ISR-sdqaCcd.paf
         outputKeys: {
             isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
         }
@@ -5421,12 +4918,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaCcd
@@ -5453,15 +4945,16 @@ execute: {
 
     appStage: {
         name: ccdAssemblyFixup
-        parallelClass: lsst.datarel.CcdAssemblyFixupStageParallel
+        parallelClass: lsst.datarel.FixupStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 isrCcdExposure0: isrExposure0
                 isrCcdExposure1: isrExposure1
             }
-            # Set exposure midtimes
-            # Delete all other items on the clipboard
+            parameters: {
+                pipeline: CcdAssembly
+            }
             outputKeys: {
                 isrCcdExposure0: isrCcdExposure0
                 isrCcdExposure1: isrCcdExposure1
@@ -5470,7 +4963,7 @@ execute: {
     }
 
     appStage: {
-        name: backgroundEstimation0
+        name: crSplitBackgroundEstimation0
         parallelClass: lsst.meas.pipeline.BackgroundEstimationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5480,15 +4973,10 @@ execute: {
             outputKeys: {
                 backgroundSubtractedExposure: bkgSubCcdExposure0
             }
-            parameters: {
-                subtractBackground: true
-                backgroundPolicy: {
-                    binsize: 512
-                }
-            }
+            parameters: @CrSplit-backgroundEstimation.paf
     }
     appStage: {
-        name: backgroundEstimation1
+        name: crSplitBackgroundEstimation1
         parallelClass: lsst.meas.pipeline.BackgroundEstimationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5498,16 +4986,11 @@ execute: {
             outputKeys: {
                 backgroundSubtractedExposure: bkgSubCcdExposure1
             }
-            parameters: {
-                subtractBackground: true
-                backgroundPolicy: {
-                    binsize: 512
-                }
-            }
+            parameters: @CrSplit-backgroundEstimation.paf
         }
     }
     appStage: {
-        name: crReject0
+        name: crSplitCrReject0
         parallelClass: lsst.ip.pipeline.CrRejectStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5518,17 +5001,12 @@ execute: {
                 exposure: visitim
                 exposure: crSubCcdExposure0
             }
-            parameters: {
-                defaultFwhm: 1.0
-                keepCRs: false
-            }
-            crRejectPolicy: {
-                nCrPixelMax: 100000
-            }
+            parameters: @CrSplit-crReject.paf
+            crRejectPolicy: @CrSplit-crReject-algorithm.paf
         }
     }
     appStage: {
-        name: crReject1
+        name: crSplitCrReject1
         parallelClass: lsst.ip.pipeline.CrRejectStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5538,27 +5016,23 @@ execute: {
             outputKeys: {
                 exposure: crSubCcdExposure1
             }
-            parameters: {
-                defaultFwhm: 1.0
-                keepCRs: false
-            }
-            crRejectPolicy: {
-                nCrPixelMax: 100000
-            }
+            parameters: @CrSplit-crReject.paf
+            crRejectPolicy: @CrSplit-crReject-algorithm.paf
         }
     }
     
 
     appStage: {
-        name: crRejectFixup
-        parallelClass: lsst.datarel.CrRejectFixupStageParallel
+        name: crSplitFixup
+        parallelClass: lsst.datarel.FixupStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 visitExposure: crSubCcdExposure0
             }
-            # Handle any processing due to use of only one snap
-            # Delete all other items on the clipboard
+            parameters: {
+                pipeline: CrSplit
+            }
             outputKeys: {
                 visitExposure: visitExposure
             }
@@ -5578,14 +5052,8 @@ execute: {
                 negativeDetection: negativeFootprintSet
                 psf: simplePsf
             }
-            psfPolicy: {
-                height: 5
-                width: 5
-                parameter: 1.0
-            }
-            backgroundPolicy: {
-                algorithm: NONE
-            }
+            psfPolicy: @ImgChar-sourceDetect-psf.paf
+            backgroundPolicy: @ImgChar-sourceDetect-background.paf
         }
     }
     appStage: {
@@ -5605,7 +5073,7 @@ execute: {
         }
     }
     appStage: {
-        name: psfDetermination
+        name: icPsfDetermination
         parallelClass: lsst.meas.pipeline.PsfDeterminationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5621,20 +5089,13 @@ execute: {
         }
     }
     appStage: {
-        name: wcsDetermination
+        name: icWcsDetermination
         parallelClass: lsst.meas.pipeline.WcsDeterminationStageParallel
         eventTopic: None
-        stagePolicy: {
-            inputExposureKey: visitExposure
-            inputSourceSetKey: sourceSet
-            outputWcsKey: measuredWcs
-            outputMatchListKey: matchList
-            numBrightStars: 150
-            defaultFilterName: mag
-        }
+        stagePolicy: @ImgChar-wcsDetermination.paf
     }
     appStage: {
-        name: wcsVerification
+        name: icWcsVerification
         parallelClass: lsst.meas.pipeline.WcsVerificationStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5642,7 +5103,7 @@ execute: {
         }
     }
     appStage: {
-        name: photoCal
+        name: icPhotoCal
         parallelClass: lsst.meas.pipeline.PhotoCalStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5652,17 +5113,12 @@ execute: {
     }
 
     appStage: {
-        name: imgCharOutput
+        name: icOutput
         parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetType: icSrc
@@ -5688,15 +5144,17 @@ execute: {
     }
 
     appStage: {
-        name: imgCharCleanup
-        parallelClass: lsst.datarel.CleanupStageParallel
+        name: icFixup
+        parallelClass: lsst.datarel.FixupStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
                 calibratedExposure: visitExposure
                 psf: measuredPsf
             }
-            # Delete all other items on the clipboard
+            parameters: {
+                pipeline: ImgChar
+            }
             outputKeys: {
                 calibratedExposure: scienceExposure
                 psf: psf
@@ -5716,9 +5174,7 @@ execute: {
             outputKeys: {
                 positiveDetection: positiveFootprintSet
             }
-            backgroundPolicy: {
-                algorithm: NONE
-            }
+            backgroundPolicy: @SFM-sourceDetect-background.paf
         }
     }
     appStage: {
@@ -5737,7 +5193,7 @@ execute: {
         }
     }
     appStage: {
-        name: computeSourceSkyCoords
+        name: sfmComputeSourceSkyCoords
         parallelClass: lsst.meas.pipeline.ComputeSourceSkyCoordsStageParallel
         eventTopic: None
         stagePolicy: {
@@ -5754,12 +5210,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: {
-                    mapperName: lsst.obs.lsstSim.lsstSimMapper
-                    mapperPolicy: {
-                        root: %(update)
-                    }
-                }
+                butler: @butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetType: src

@@ -20,4 +20,6 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+from fixupStage import *
+from objectListStage import *
 from utils import *

@@ -1,0 +1,8 @@
+#<?cfg paf policy ?>
+
+sdqaRatingScope: 0
+sdqaMetricNames: "overscanMean"
+sdqaMetricNames: "overscanMedian"
+sdqaMetricNames: "overscanStdDev"
+sdqaMetricNames: "overscanMin"
+sdqaMetricNames: "overscanMax"

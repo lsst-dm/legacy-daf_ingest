@@ -1,0 +1,6 @@
+#<?cfg paf policy ?>
+
+subtractBackground: true
+backgroundPolicy: {
+    binsize: 512
+}

@@ -283,6 +283,9 @@ def ccdAssemblyProcess(f):
         name: ccdAssemblyIsrCcdAssembly""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
+        inputKeys: {
+            exposureList: exposureList""" + str(snap) + """
+        }
         outputKeys: {
             assembledCcdExposure: isrExposure""" + str(snap) + """
         }

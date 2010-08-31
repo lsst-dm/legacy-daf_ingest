@@ -4801,6 +4801,9 @@ execute: {
         name: ccdAssemblyIsrCcdAssembly0
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
+        inputKeys: {
+            exposureList: exposureList0
+        }
         outputKeys: {
             assembledCcdExposure: isrExposure0
         }
@@ -4873,6 +4876,9 @@ execute: {
         name: ccdAssemblyIsrCcdAssembly1
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
+        inputKeys: {
+            exposureList: exposureList1
+        }
         outputKeys: {
             assembledCcdExposure: isrExposure1
         }

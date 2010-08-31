@@ -413,7 +413,6 @@ def crSplitProcess(f):
                 exposure: bkgSubCcdExposure0
             }
             outputKeys: {
-                exposure: visitim
                 exposure: crSubCcdExposure0
             }
             parameters: @CrSplit-crReject.paf

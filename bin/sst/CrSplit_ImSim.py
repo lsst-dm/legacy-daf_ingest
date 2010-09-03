@@ -23,6 +23,7 @@
 #
 
 
+import os
 import sys
 
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
@@ -35,9 +36,20 @@ def crSplitProcess(root=None, outRoot=None, registry=None,
     inButler, outButler = lsstSimSetup(root, outRoot, registry, None,
             inButler, outButler)
 
+    snap0 = inButler.get("postISRCCD", snap=0, **keys)
+#    snap1 = inButler.get("postISRCCD", snap=0, **keys)
+    snap1 = None
+
+    clip = crSplitPipe(snap0, snap1)
+
+    outButler.put(clip['crSubCcdExposure0'], "visitim", **keys)
+#     outButler.put(clip['visitexposure'], "visitim", **keys)
+
+
+def crSplitPipe(snap0, snap1):
     clip = {
-        'isrCcdExposure0': inButler.get("postISRCCD", snap=0, **keys),
-#        'isrCcdExposure1': inButler.get("postISRCCD", snap=1, **keys)
+        'isrCcdExposure0': snap0
+#        'isrCcdExposure1': snap1
     }
 
     clip = runStage(measPipe.BackgroundEstimationStage,
@@ -155,13 +167,14 @@ def crSplitProcess(root=None, outRoot=None, registry=None,
 #         }
 #         """, clip)
 
-    outButler.put(clip['crSubCcdExposure0'], "visitim", **keys)
-#     outButler.put(clip['visitexposure'], "visitim", **keys)
+    return clip
 
-def test():
-    root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
-    crSplitProcess(root=root, outRoot=".",
-            visit=85751839, raft="2,3", sensor="1,1")
+def run(root, visit, raft, sensor):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/ImSim/registry.sqlite3"
+    crSplitProcess(root, ".", registry, visit=visit, raft=raft, sensor=sensor)
 
 def main():
     lsstSimMain(crSplitProcess, "visitim", "sensor")

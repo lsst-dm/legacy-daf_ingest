@@ -20,6 +20,7 @@ env['IgnoreFiles'] = r"(~$|\.pyc$|^\.svn$|\.o$)"
 Alias("install", env.Install(env['prefix'], "bin"))
 Alias("install", env.Install(env['prefix'], "etc"))
 Alias("install", env.Install(env['prefix'], "pipeline"))
+Alias("install", env.Install(env['prefix'], "policy"))
 Alias("install", env.Install(env['prefix'], "python"))
 Alias("install", env.InstallEups(os.path.join(env['prefix'], "ups")))
 

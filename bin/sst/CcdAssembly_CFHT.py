@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import os
 
 from lsst.datarel import cfhtMain, cfhtSetup, runStage
 
@@ -37,6 +38,12 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
     for amp in (0, 1):
         expList.append(inButler.get("postISR", amp=amp, **keys))
 
+    clip = ccdAssemblyPipe(expList)
+
+    outButler.put(clip['isrExposure'], "postISRCCD", **keys)
+    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
+
+def ccdAssemblyPipe(expList):
     clip = {
         'exposureList': expList
     }
@@ -82,12 +89,14 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    outButler.put(clip['isrExposure'], "postISRCCD", **keys)
-    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
+    return clip
 
-def test():
-    root="."
-    ccdAssemblyProcess(root=root, outRoot=".", visit=788965, ccd=0)
+def run(root, visit, ccd):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/CFHTLS/registry.sqlite3"
+    ccdAssemblyProcess(root, ".", registry, visit=visit, ccd=ccd) 
 
 def main():
     cfhtMain(ccdAssemblyProcess, "postISRCCD", "ccd")

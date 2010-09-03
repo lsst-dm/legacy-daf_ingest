@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import os
 
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
@@ -32,9 +33,17 @@ def sfmProcess(root=None, outRoot=None, registry=None,
     inButler, outButler = lsstSimSetup(root, outRoot, registry, None,
             inButler, outButler)
 
+    calexp = inButler.get("calexp", **keys)
+    psf = inButler.get("psf", **keys)
+
+    clip = sfmPipe(calexp, psf)
+
+    outButler.put(clip['sourceSet_persistable'], "src", **keys)
+
+def sfmPipe(calexp, psf):
     clip = {
-        'scienceExposure': inButler.get("calexp", **keys),
-        'psf': inButler.get("psf", **keys)
+        'scienceExposure': calexp,
+        'psf': psf
     }
 
     clip = runStage(measPipe.SourceDetectionStage,
@@ -71,8 +80,6 @@ def sfmProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    outButler.put(clip['sourceSet_persistable'], "src", **keys)
-
 #    fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr", 
 #            "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
 #            "IyyErr", "Ixy", "IxyErr")
@@ -86,8 +93,14 @@ def sfmProcess(root=None, outRoot=None, registry=None,
 #        print >>csv, line
 #    csv.close()
 
-def test():
-    sfmProcess(root=".", outRoot=".", visit=85751839, raft="2,3", sensor="1,1")
+    return clip
+
+def run(root, visit, raft, sensor):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/ImSim/registry.sqlite3"
+    sfmProcess(root, ".", registry, visit=visit, raft=raft, sensor=sensor)
 
 def main():
     lsstSimMain(sfmProcess, "src", "sensor")

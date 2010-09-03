@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import os
 
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
@@ -33,11 +34,22 @@ def isrProcess(root=None, outRoot=None, registry=None,
     inButler, outButler = lsstSimSetup(root, outRoot, registry, calibRoot,
             inButler, outButler)
 
+    raw = inButler.get("raw", **keys)
+    bias = inButler.get("bias", **keys)
+    dark = inButler.get("dark", **keys)
+    flat = inButler.get("flat", **keys)
+
+    clip = isrPipe(raw, bias, dark, flat)
+
+    outButler.put(clip['isrExposure'], "postISR", **keys)
+    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
+
+def isrPipe(raw, bias, dark, flat):
     clip = {
-        'isrExposure': inButler.get("raw", **keys),
-        'biasExposure': inButler.get("bias", **keys),
-        'darkExposure': inButler.get("dark", **keys),
-        'flatExposure': inButler.get("flat", **keys)
+        'isrExposure': raw,
+        'biasExposure': bias,
+        'darkExposure': dark,
+        'flatExposure': flat
     }
 
     clip = runStage(ipPipe.IsrSaturationStage,
@@ -124,16 +136,20 @@ def isrProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    outButler.put(clip['isrExposure'], "postISR", **keys)
-    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
+    return clip
 
-def test():
-    root = "/lsst/DC3/data/obstest/ImSim"
-    if not os.path.exists("registry.sqlite3"):
-        os.symlink(os.path.join(root, "registry.sqlite3"),
-                "./registry.sqlite3")
-    isrProcess(root=root, outRoot=".", visit=85470982, snap=0,
-            raft="2,3", sensor="1,1", channel="0,0")
+
+def run(root, visit, snap, raft, sensor, channel):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/ImSim/registry.sqlite3"
+    if os.path.exists(os.path.join(root, "bias")):
+        calibRoot = root
+    else:
+        calibRoot = "/lsst/DC3/data/obstest/ImSim"
+    isrProcess(root, ".", registry, calibRoot,
+            visit=visit, snap=snap, raft=raft, sensor=sensor, channel=channel)
 
 def main():
     lsstSimMain(isrProcess, "postISR", ("calib", "channel", "snap"),

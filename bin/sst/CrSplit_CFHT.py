@@ -23,6 +23,7 @@
 #
 
 
+import os
 import sys
 
 from lsst.datarel import cfhtMain, cfhtSetup, runStage
@@ -35,8 +36,15 @@ def crSplitProcess(root=None, outRoot=None, registry=None,
     inButler, outButler = cfhtSetup(root, outRoot, registry, None,
             inButler, outButler)
 
+    postIsr = inButler.get("postISRCCD", **keys)
+
+    clip = crSplitPipe(postIsr)
+
+    outButler.put(clip['crSubCcdExposure'], "visitim", **keys)
+
+def crSplitPipe(postIsr):
     clip = {
-        'isrCcdExposure': inButler.get("postISRCCD", **keys),
+        'isrCcdExposure': postIsr
     }
 
     clip = runStage(measPipe.BackgroundEstimationStage,
@@ -72,11 +80,15 @@ def crSplitProcess(root=None, outRoot=None, registry=None,
         """, clip)
 
     print >>sys.stderr, clip['nCR'], "cosmic rays"
-    outButler.put(clip['crSubCcdExposure'], "visitim", **keys)
 
-def test():
-    root = "."
-    crSplitProcess(root=root, outRoot=".", visit=788965, ccd=6)
+    return clip
+
+def run(root, visit, ccd):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/CFHTLS/registry.sqlite3"
+    crSplitProcess(root, ".", registry, visit=visit, ccd=ccd)
 
 def main():
     cfhtMain(crSplitProcess, "visitim", "ccd")

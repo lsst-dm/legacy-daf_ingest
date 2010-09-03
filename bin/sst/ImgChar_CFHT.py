@@ -36,6 +36,16 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
                    inButler=None, outButler=None, stages=None, **keys):
     inButler, outButler = cfhtSetup(root, outRoot, registry, None,
                                     inButler, outButler)
+
+    visitim = inButler.get("visitim", **keys)
+
+    clip = imgCharPipe(visitim, stages)
+
+    outButler.put(clip['sourceSet_persistable'], "icSrc", **keys)
+    outButler.put(clip['measuredPsf'], "psf", **keys)
+    outButler.put(clip['visitExposure'], "calexp", **keys)
+
+def imgCharPipe(visitim, stages=None):
     #
     # Which stages to run, and prerequisites
     #
@@ -50,7 +60,7 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             print >> sys.stderr, msg
 
     clip = {
-        'visitExposure': inButler.get("visitim", **keys),
+        'visitExposure': visitim
     }
 
     if stages & DETECT:
@@ -87,7 +97,6 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
                 sources: sourceSet
             }
             """, clip)
-        outButler.put(clip['sourceSet_persistable'], "icSrc", **keys)
 
 #         fields = ("XAstrom", "XAstromErr", "YAstrom", "YAstromErr",
 #                 "PsfFlux", "ApFlux", "Ixx", "IxxErr", "Iyy",
@@ -117,7 +126,6 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
             """, clip)
 
 #        print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
-        outButler.put(clip['measuredPsf'], "psf", **keys)
 
     if stages & WCS:
         clip = runStage(measPipe.WcsDeterminationStage,
@@ -166,11 +174,15 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
 #            print >>sys.stderr, "Photometric zero:", photoObj.getMag(1)
 #            print >>sys.stderr, "Flux of a 20th mag object:", photoObj.getFlux(20)
 
-        outButler.put(clip['visitExposure'], "calexp", **keys)
+    return clip
 
-def test(root=".", outRoot=".", visit=788965, ccd=6, stages=None):
+def run(root, visit, ccd, stages=None):
     """Run the specified visit/ccd.  If stages is omitted (or None) all available stages will be run"""
-    imgCharProcess(root=root, outRoot=outRoot, visit=visit, ccd=ccd, stages=stages)
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/CFHTLS/registry.sqlite3"
+    imgCharProcess(root, ".", registry, visit=visit, ccd=ccd, stages=stages)
 
 def main():
     cfhtMain(imgCharProcess, "calexp", "ccd")

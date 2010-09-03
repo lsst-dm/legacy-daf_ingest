@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import os
 
 from lsst.datarel import cfhtMain, cfhtSetup, runStage
 
@@ -42,6 +43,24 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
     if len(srcList) == 0:
         raise RuntimeError("No sources found")
 
+    clip = sourceAssocPipe(srcList, skyTile)
+
+    if clip.contains('sources'):
+        outButler.put(clip['sources'], 'source', **keys)
+    if clip.contains('badSources'):
+        outButler.put(clip['badSources'], 'badSource', **keys)
+    if clip.contains('invalidSources'):
+        outButler.put(clip['invalidSources'], 'invalidSource', **keys)
+    if clip.contains('goodSourceHistogram'):
+        outButler.put(clip['goodSourceHistogram'], 'sourceHist', **keys)
+    if clip.contains('badSourceHistogram'):
+        outButler.put(clip['badSourceHistogram'], 'badSourceHist', **keys)
+    if clip.contains('sourceClusterAttributes'):
+        outButler.put(clip['sourceClusterAttributes'], 'object', **keys)
+    if clip.contains('badSourceClusterAttributes'):
+        outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
+
+def sourceAssocPipe(srcList, skyTile):
     clip = {
         'inputSources': srcList,
         'jobIdentity': { 'skyTileId': skyTile },
@@ -63,23 +82,14 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    if clip.contains('sources'):
-        outButler.put(clip['sources'], 'source', **keys)
-    if clip.contains('badSources'):
-        outButler.put(clip['badSources'], 'badSource', **keys)
-    if clip.contains('invalidSources'):
-        outButler.put(clip['invalidSources'], 'invalidSource', **keys)
-    if clip.contains('goodSourceHistogram'):
-        outButler.put(clip['goodSourceHistogram'], 'sourceHist', **keys)
-    if clip.contains('badSourceHistogram'):
-        outButler.put(clip['badSourceHistogram'], 'badSourceHist', **keys)
-    if clip.contains('sourceClusterAttributes'):
-        outButler.put(clip['sourceClusterAttributes'], 'object', **keys)
-    if clip.contains('badSourceClusterAttributes'):
-        outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
+    return clip
 
-def test():
-    sourceAssocProcess(root=".", outRoot=".")
+def run(root, skyTile):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/CFHTLS/registry.sqlite3"
+    sourceAssocProcess(root, ".", registry, skyTile=skyTile)
 
 def main():
     cfhtMain(sourceAssocProcess, "source", "skyTile")

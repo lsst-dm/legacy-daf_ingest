@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import os
 
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
@@ -40,6 +41,12 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
             ampName = "%d,%d" % (ampX, ampY)
             expList.append(inButler.get("postISR", channel=ampName, **keys))
 
+    clip = ccdAssemblyPipe(expList)
+
+    outButler.put(clip['isrExposure'], "postISRCCD", **keys)
+    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
+
+def ccdAssemblyPipe(expList):
     clip = {
         'exposureList': expList
     }
@@ -85,13 +92,15 @@ def ccdAssemblyProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    outButler.put(clip['isrExposure'], "postISRCCD", **keys)
-    outButler.put(clip['sdqaRatingVector'], "sdqaCcd", **keys)
+    return clip
 
-def test():
-    root = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
-    ccdAssemblyProcess(root=root, outRoot=".",
-            visit=85751839, snap=0, raft="2,3", sensor="1,1", filter="r")
+def run(root, visit, snap, raft, sensor):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/ImSim/registry.sqlite3"
+    ccdAssemblyProcess(root, ".", registry,
+            visit=visit, snap=snap, raft=raft, sensor=sensor)
 
 def main():
     lsstSimMain(ccdAssemblyProcess, "postISRCCD", ("sensor", "snap"))

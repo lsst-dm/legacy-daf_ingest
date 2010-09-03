@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import os
 
 from lsst.datarel import cfhtMain, cfhtSetup, runStage
 
@@ -33,11 +34,20 @@ def isrProcess(root=None, outRoot=None, registry=None,
     inButler, outButler = cfhtSetup(root, outRoot, registry, calibRoot,
             inButler, outButler)
 
+    raw = inButler.get("raw", **keys)
+    bias = inButler.get("bias", **keys)
+    flat = inButler.get("flat", **keys)
+
+    clip = isrPipe(raw, bias, flat)
+
+    outButler.put(clip['isrExposure'], "postISR", **keys)
+    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
+
+def isrPipe(raw, bias, flat):
     clip = {
-        'isrExposure': inButler.get("raw", **keys),
-        'biasExposure': inButler.get("bias", **keys),
-#         'darkExposure': inButler.get("dark", **keys),
-        'flatExposure': inButler.get("flat", **keys)
+        'isrExposure': raw,
+        'biasExposure': bias,
+        'flatExposure': flat
     }
 
     clip = runStage(ipPipe.IsrSaturationStage,
@@ -124,13 +134,18 @@ def isrProcess(root=None, outRoot=None, registry=None,
         }
         """, clip)
 
-    outButler.put(clip['isrExposure'], "postISR", **keys)
-    outButler.put(clip['sdqaRatingVector'], "sdqaAmp", **keys)
+    return clip
 
-def test():
-    root = "/lsst/DC3/data/obstest/CFHTLS"
-    isrProcess(root=root, outRoot=".", visit=788965, ccd=6, amp=0)
-    isrProcess(root=root, outRoot=".", visit=788965, ccd=6, amp=1)
+def run(root, visit, ccd, amp):
+    if os.path.exists(os.path.join(root, "registry.sqlite3")):
+        registry = os.path.join(root, "registry.sqlite3")
+    else:
+        registry = "/lsst/DC3/data/obs/CFHTLS/registry.sqlite3"
+    if os.path.exists(os.path.join(root, "calib")):
+        calibRoot = os.path.join(root, "calib")
+    else:
+        calibRoot = "/lsst/DC3/data/obstest/CFHTLS/calib"
+    isrProcess(root, ".", registry, calibRoot, visit=visit, ccd=ccd, amp=amp)
 
 def main():
     cfhtMain(isrProcess, "postISR", ("calib", "amp"),

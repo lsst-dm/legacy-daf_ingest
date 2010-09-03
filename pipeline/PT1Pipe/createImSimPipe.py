@@ -53,7 +53,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @butlerInput.paf
+                butler: @PT1Pipe/butlerInput.paf
                 inputItems: {"""
     for channelX in (0, 1):
         for channelY in (0, 1, 2, 3, 4, 5, 6, 7):
@@ -87,7 +87,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @butlerInput.paf
+                butler: @PT1Pipe/butlerInput.paf
                 inputItems: {
                     biasExposure: {
                         datasetType: bias
@@ -202,7 +202,7 @@ def isrProcess(f):
             outputKeys: {
                 darkSubtractedExposure: isrExposure""" + channelSnap + """
             }
-            parameters: @ISR-flat.paf
+            parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure""" + channelSnap + """
             }
@@ -216,7 +216,7 @@ def isrProcess(f):
             inputKeys: {
                 exposure: isrExposure""" + channelSnap + """
             }
-            parameters: @ISR-sdqaAmp.paf
+            parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
                 isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
             }
@@ -231,7 +231,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @butlerUpdate.paf
+                butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaAmp
@@ -319,7 +319,7 @@ def ccdAssemblyProcess(f):
         inputKeys: {
             exposureKey: isrExposure""" + str(snap) + """
         }
-        parameters: @ISR-sdqaCcd.paf
+        parameters: @PT1Pipe/ISR-sdqaCcd.paf
         outputKeys: {
             isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
         }
@@ -331,7 +331,7 @@ def ccdAssemblyProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @butlerUpdate.paf
+                butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
                         datasetType: sdqaCcd
@@ -388,7 +388,7 @@ def crSplitProcess(f):
             outputKeys: {
                 backgroundSubtractedExposure: bkgSubCcdExposure0
             }
-            parameters: @CrSplit-backgroundEstimation.paf
+            parameters: @PT1Pipe/CrSplit-backgroundEstimation.paf
     }
     appStage: {
         name: crSplitBackgroundEstimation1
@@ -401,7 +401,7 @@ def crSplitProcess(f):
             outputKeys: {
                 backgroundSubtractedExposure: bkgSubCcdExposure1
             }
-            parameters: @CrSplit-backgroundEstimation.paf
+            parameters: @PT1Pipe/CrSplit-backgroundEstimation.paf
         }
     }
     appStage: {
@@ -415,8 +415,8 @@ def crSplitProcess(f):
             outputKeys: {
                 exposure: crSubCcdExposure0
             }
-            parameters: @CrSplit-crReject.paf
-            crRejectPolicy: @CrSplit-crReject-algorithm.paf
+            parameters: @PT1Pipe/CrSplit-crReject.paf
+            crRejectPolicy: @PT1Pipe/CrSplit-crReject-algorithm.paf
         }
     }
     appStage: {
@@ -430,8 +430,8 @@ def crSplitProcess(f):
             outputKeys: {
                 exposure: crSubCcdExposure1
             }
-            parameters: @CrSplit-crReject.paf
-            crRejectPolicy: @CrSplit-crReject-algorithm.paf
+            parameters: @PT1Pipe/CrSplit-crReject.paf
+            crRejectPolicy: @PT1Pipe/CrSplit-crReject-algorithm.paf
         }
     }
     """
@@ -468,8 +468,8 @@ def imgCharProcess(f):
                 negativeDetection: negativeFootprintSet
                 psf: simplePsf
             }
-            psfPolicy: @ImgChar-sourceDetect-psf.paf
-            backgroundPolicy: @ImgChar-sourceDetect-background.paf
+            psfPolicy: @PT1Pipe/ImgChar-sourceDetect-psf.paf
+            backgroundPolicy: @PT1Pipe/ImgChar-sourceDetect-background.paf
         }
     }
     appStage: {
@@ -508,7 +508,7 @@ def imgCharProcess(f):
         name: icWcsDetermination
         parallelClass: lsst.meas.pipeline.WcsDeterminationStageParallel
         eventTopic: None
-        stagePolicy: @ImgChar-wcsDetermination.paf
+        stagePolicy: @PT1Pipe/ImgChar-wcsDetermination.paf
     }
     appStage: {
         name: icWcsVerification
@@ -534,7 +534,7 @@ def imgCharProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @butlerUpdate.paf
+                butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetType: icSrc
@@ -592,7 +592,7 @@ def sfmProcess(f):
             outputKeys: {
                 positiveDetection: positiveFootprintSet
             }
-            backgroundPolicy: @SFM-sourceDetect-background.paf
+            backgroundPolicy: @PT1Pipe/SFM-sourceDetect-background.paf
         }
     }
     appStage: {
@@ -628,7 +628,7 @@ def sfmProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @butlerUpdate.paf
+                butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetType: src

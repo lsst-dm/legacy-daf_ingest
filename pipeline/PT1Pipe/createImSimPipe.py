@@ -389,6 +389,7 @@ def crSplitProcess(f):
                 backgroundSubtractedExposure: bkgSubCcdExposure0
             }
             parameters: @PT1Pipe/CrSplit-backgroundEstimation.paf
+        }
     }
     appStage: {
         name: crSplitBackgroundEstimation1

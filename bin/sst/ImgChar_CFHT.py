@@ -75,9 +75,9 @@ def imgCharPipe(visitim, stages=None):
                 psf: simplePsf
             }
             psfPolicy: {
-                height: 5
-                width: 5
-                parameter: 1.0
+                height: 15
+                width: 15
+                parameter: 2.12
             }
             backgroundPolicy: {
                 algorithm: NONE

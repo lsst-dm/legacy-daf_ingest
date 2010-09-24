@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 from __future__ import with_statement
+from optparse import OptionParser
 import sys
-
-# TODO - Extract out common IOStage params and science params into separate
-# files
 
 def pipelinePolicy(f):
     print >>f, """#<?cfg paf policy ?>
@@ -45,12 +43,12 @@ def jobStart(f):
         }
     }"""
 
-def isrProcess(f):
+def isrProcess(f, doJobOffice=False):
     print >>f, """
     appStage: {
         name: isrInputRaw
         parallelClass: lsst.pex.harness.IOStage.InputStageParallel
-        eventTopic: None
+        eventTopic: """ + ("None" if doJobOffice else "jobIdentity") + """
         stagePolicy: {
             parameters: {
                 butler: @PT1Pipe/butlerInput.paf
@@ -199,9 +197,6 @@ def isrProcess(f):
                 exposure: isrExposure""" + channelSnap + """
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure""" + channelSnap + """
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure""" + channelSnap + """
@@ -214,7 +209,7 @@ def isrProcess(f):
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure""" + channelSnap + """
+                exposureKey: isrExposure""" + channelSnap + """
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -283,45 +278,53 @@ def ccdAssemblyProcess(f):
         name: ccdAssemblyIsrCcdAssembly""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
-        inputKeys: {
-            exposureList: exposureList""" + str(snap) + """
-        }
-        outputKeys: {
-            assembledCcdExposure: isrExposure""" + str(snap) + """
+        stagePolicy: {
+            inputKeys: {
+                exposureList: exposureList""" + str(snap) + """
+            }
+            outputKeys: {
+                assembledCcdExposure: isrExposure""" + str(snap) + """
+            }
         }
     }
     appStage: {
         name: ccdAssemblyIsrCcdDefect""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdDefectStageParallel
         eventTopic: None
-        inputKeys: {
-            ccdExposure: isrExposure""" + str(snap) + """
-        }
-        outputKeys: {
-            ccdExposure: isrExposure""" + str(snap) + """
+        stagePolicy: {
+            inputKeys: {
+                ccdExposure: isrExposure""" + str(snap) + """
+            }
+            outputKeys: {
+                defectMaskedCcdExposure: isrExposure""" + str(snap) + """
+            }
         }
     }
     appStage: {
         name: ccdAssemblyIsrCcdSdqa""" + str(snap) + """
         parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
         eventTopic: None
-        inputKeys: {
-            ccdExposure: isrExposure""" + str(snap) + """
-        }
-        outputKeys: {
-            sdqaCcdExposure: isrExposure""" + str(snap) + """
+        stagePolicy: {
+            inputKeys: {
+                ccdExposure: isrExposure""" + str(snap) + """
+            }
+            outputKeys: {
+                sdqaCcdExposure: isrExposure""" + str(snap) + """
+            }
         }
     }
     appStage: {
         name: ccdAssemblySdqaCcd""" + str(snap) + """
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
-        inputKeys: {
-            exposureKey: isrExposure""" + str(snap) + """
-        }
-        parameters: @PT1Pipe/ISR-sdqaCcd.paf
-        outputKeys: {
-            isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
+        stagePolicy: {
+            inputKeys: {
+                exposureKey: isrExposure""" + str(snap) + """
+            }
+            parameters: @PT1Pipe/ISR-sdqaCcd.paf
+            outputKeys: {
+                isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
+            }
         }
     }"""
     print >>f, """
@@ -513,7 +516,7 @@ def imgCharProcess(f):
     }
     appStage: {
         name: icWcsVerification
-        parallelClass: lsst.meas.pipeline.WcsVerificationStageParallel
+        parallelClass: lsst.meas.pipeline.WcsVerificationParallel
         eventTopic: None
         stagePolicy: {
             sourceMatchSetKey: matchList
@@ -667,23 +670,29 @@ def jobFinish(f):
 
 ###############################################################################
 
-def createPolicy(f):
+def createPolicy(f, doJobOffice=False):
     pipelinePolicy(f)
-    jobStart(f)
+    if doJobOffice:
+        jobStart(f)
     isrProcess(f)
     ccdAssemblyProcess(f)
     crSplitProcess(f)
     imgCharProcess(f)
     sfmProcess(f)
-    jobFinish(f)
+    if doJobOffice:
+        jobFinish(f)
     print >>f, "}"
 
 def main():
-    if len(sys.argv) > 1: 
-        with open(sys.argv[1], "w") as f:
-            createPolicy(f)
+    parser = OptionParser()
+    parser.add_option("-j", "--jobOffice", action="store_true",
+            default=False, help="write JobOffice stages into the pipeline")
+    options, args = parser.parse_args()
+    if len(args) > 0:
+        with open(args[0], "w") as f:
+            createPolicy(f, options.jobOffice)
     else:
-        createPolicy(sys.stdout)
+        createPolicy(sys.stdout, options.jobOffice)
 
 if __name__ == "__main__":
     main()

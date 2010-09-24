@@ -42,5 +42,29 @@ schedule: {
               name: sensor
             }
         }
+        output: {
+            datasetType: psf
+            id: {
+              name: visit
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
+        }
+        output: {
+            datasetType: src
+            id: {
+              name: visit
+            }
+            id: {
+              name: raft
+            }
+            id: {
+              name: sensor
+            }
+        }
     }
 }

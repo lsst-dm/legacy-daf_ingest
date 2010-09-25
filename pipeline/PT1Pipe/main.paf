@@ -37,7 +37,7 @@ execute: {
     appStage: {
         name: isrInputRaw
         parallelClass: lsst.pex.harness.IOStage.InputStageParallel
-        eventTopic: None
+        eventTopic: jobIdentity
         stagePolicy: {
             parameters: {
                 butler: @PT1Pipe/butlerInput.paf
@@ -516,9 +516,6 @@ execute: {
                 exposure: isrExposure00_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure00_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure00_0
@@ -531,7 +528,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure00_0
+                exposureKey: isrExposure00_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -616,9 +613,6 @@ execute: {
                 exposure: isrExposure00_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure00_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure00_1
@@ -631,7 +625,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure00_1
+                exposureKey: isrExposure00_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -789,9 +783,6 @@ execute: {
                 exposure: isrExposure01_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure01_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure01_0
@@ -804,7 +795,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure01_0
+                exposureKey: isrExposure01_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -889,9 +880,6 @@ execute: {
                 exposure: isrExposure01_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure01_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure01_1
@@ -904,7 +892,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure01_1
+                exposureKey: isrExposure01_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1062,9 +1050,6 @@ execute: {
                 exposure: isrExposure02_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure02_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure02_0
@@ -1077,7 +1062,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure02_0
+                exposureKey: isrExposure02_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1162,9 +1147,6 @@ execute: {
                 exposure: isrExposure02_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure02_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure02_1
@@ -1177,7 +1159,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure02_1
+                exposureKey: isrExposure02_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1335,9 +1317,6 @@ execute: {
                 exposure: isrExposure03_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure03_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure03_0
@@ -1350,7 +1329,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure03_0
+                exposureKey: isrExposure03_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1435,9 +1414,6 @@ execute: {
                 exposure: isrExposure03_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure03_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure03_1
@@ -1450,7 +1426,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure03_1
+                exposureKey: isrExposure03_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1608,9 +1584,6 @@ execute: {
                 exposure: isrExposure04_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure04_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure04_0
@@ -1623,7 +1596,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure04_0
+                exposureKey: isrExposure04_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1708,9 +1681,6 @@ execute: {
                 exposure: isrExposure04_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure04_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure04_1
@@ -1723,7 +1693,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure04_1
+                exposureKey: isrExposure04_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1881,9 +1851,6 @@ execute: {
                 exposure: isrExposure05_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure05_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure05_0
@@ -1896,7 +1863,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure05_0
+                exposureKey: isrExposure05_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -1981,9 +1948,6 @@ execute: {
                 exposure: isrExposure05_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure05_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure05_1
@@ -1996,7 +1960,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure05_1
+                exposureKey: isrExposure05_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2154,9 +2118,6 @@ execute: {
                 exposure: isrExposure06_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure06_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure06_0
@@ -2169,7 +2130,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure06_0
+                exposureKey: isrExposure06_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2254,9 +2215,6 @@ execute: {
                 exposure: isrExposure06_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure06_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure06_1
@@ -2269,7 +2227,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure06_1
+                exposureKey: isrExposure06_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2427,9 +2385,6 @@ execute: {
                 exposure: isrExposure07_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure07_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure07_0
@@ -2442,7 +2397,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure07_0
+                exposureKey: isrExposure07_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2527,9 +2482,6 @@ execute: {
                 exposure: isrExposure07_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure07_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure07_1
@@ -2542,7 +2494,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure07_1
+                exposureKey: isrExposure07_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2700,9 +2652,6 @@ execute: {
                 exposure: isrExposure10_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure10_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure10_0
@@ -2715,7 +2664,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure10_0
+                exposureKey: isrExposure10_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2800,9 +2749,6 @@ execute: {
                 exposure: isrExposure10_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure10_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure10_1
@@ -2815,7 +2761,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure10_1
+                exposureKey: isrExposure10_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -2973,9 +2919,6 @@ execute: {
                 exposure: isrExposure11_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure11_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure11_0
@@ -2988,7 +2931,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure11_0
+                exposureKey: isrExposure11_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3073,9 +3016,6 @@ execute: {
                 exposure: isrExposure11_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure11_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure11_1
@@ -3088,7 +3028,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure11_1
+                exposureKey: isrExposure11_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3246,9 +3186,6 @@ execute: {
                 exposure: isrExposure12_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure12_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure12_0
@@ -3261,7 +3198,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure12_0
+                exposureKey: isrExposure12_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3346,9 +3283,6 @@ execute: {
                 exposure: isrExposure12_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure12_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure12_1
@@ -3361,7 +3295,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure12_1
+                exposureKey: isrExposure12_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3519,9 +3453,6 @@ execute: {
                 exposure: isrExposure13_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure13_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure13_0
@@ -3534,7 +3465,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure13_0
+                exposureKey: isrExposure13_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3619,9 +3550,6 @@ execute: {
                 exposure: isrExposure13_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure13_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure13_1
@@ -3634,7 +3562,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure13_1
+                exposureKey: isrExposure13_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3792,9 +3720,6 @@ execute: {
                 exposure: isrExposure14_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure14_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure14_0
@@ -3807,7 +3732,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure14_0
+                exposureKey: isrExposure14_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -3892,9 +3817,6 @@ execute: {
                 exposure: isrExposure14_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure14_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure14_1
@@ -3907,7 +3829,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure14_1
+                exposureKey: isrExposure14_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4065,9 +3987,6 @@ execute: {
                 exposure: isrExposure15_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure15_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure15_0
@@ -4080,7 +3999,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure15_0
+                exposureKey: isrExposure15_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4165,9 +4084,6 @@ execute: {
                 exposure: isrExposure15_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure15_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure15_1
@@ -4180,7 +4096,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure15_1
+                exposureKey: isrExposure15_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4338,9 +4254,6 @@ execute: {
                 exposure: isrExposure16_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure16_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure16_0
@@ -4353,7 +4266,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure16_0
+                exposureKey: isrExposure16_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4438,9 +4351,6 @@ execute: {
                 exposure: isrExposure16_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure16_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure16_1
@@ -4453,7 +4363,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure16_1
+                exposureKey: isrExposure16_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4611,9 +4521,6 @@ execute: {
                 exposure: isrExposure17_0
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure17_0
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure17_0
@@ -4626,7 +4533,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure17_0
+                exposureKey: isrExposure17_0
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4711,9 +4618,6 @@ execute: {
                 exposure: isrExposure17_1
                 flatexposure: flatExposure
             }
-            outputKeys: {
-                darkSubtractedExposure: isrExposure17_1
-            }
             parameters: @PT1Pipe/ISR-flat.paf
             outputKeys: {
                 flatCorrectedExposure: isrExposure17_1
@@ -4726,7 +4630,7 @@ execute: {
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: isrExposure17_1
+                exposureKey: isrExposure17_1
             }
             parameters: @PT1Pipe/ISR-sdqaAmp.paf
             outputKeys: {
@@ -4801,45 +4705,53 @@ execute: {
         name: ccdAssemblyIsrCcdAssembly0
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
-        inputKeys: {
-            exposureList: exposureList0
-        }
-        outputKeys: {
-            assembledCcdExposure: isrExposure0
+        stagePolicy: {
+            inputKeys: {
+                exposureList: exposureList0
+            }
+            outputKeys: {
+                assembledCcdExposure: isrExposure0
+            }
         }
     }
     appStage: {
         name: ccdAssemblyIsrCcdDefect0
         parallelClass: lsst.ip.pipeline.IsrCcdDefectStageParallel
         eventTopic: None
-        inputKeys: {
-            ccdExposure: isrExposure0
-        }
-        outputKeys: {
-            ccdExposure: isrExposure0
+        stagePolicy: {
+            inputKeys: {
+                ccdExposure: isrExposure0
+            }
+            outputKeys: {
+                defectMaskedCcdExposure: isrExposure0
+            }
         }
     }
     appStage: {
         name: ccdAssemblyIsrCcdSdqa0
         parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
         eventTopic: None
-        inputKeys: {
-            ccdExposure: isrExposure0
-        }
-        outputKeys: {
-            sdqaCcdExposure: isrExposure0
+        stagePolicy: {
+            inputKeys: {
+                ccdExposure: isrExposure0
+            }
+            outputKeys: {
+                sdqaCcdExposure: isrExposure0
+            }
         }
     }
     appStage: {
         name: ccdAssemblySdqaCcd0
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
-        inputKeys: {
-            exposureKey: isrExposure0
-        }
-        parameters: @PT1Pipe/ISR-sdqaCcd.paf
-        outputKeys: {
-            isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+        stagePolicy: {
+            inputKeys: {
+                exposureKey: isrExposure0
+            }
+            parameters: @PT1Pipe/ISR-sdqaCcd.paf
+            outputKeys: {
+                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+            }
         }
     }
 
@@ -4876,45 +4788,53 @@ execute: {
         name: ccdAssemblyIsrCcdAssembly1
         parallelClass: lsst.ip.pipeline.IsrCcdAssemblyStageParallel
         eventTopic: None
-        inputKeys: {
-            exposureList: exposureList1
-        }
-        outputKeys: {
-            assembledCcdExposure: isrExposure1
+        stagePolicy: {
+            inputKeys: {
+                exposureList: exposureList1
+            }
+            outputKeys: {
+                assembledCcdExposure: isrExposure1
+            }
         }
     }
     appStage: {
         name: ccdAssemblyIsrCcdDefect1
         parallelClass: lsst.ip.pipeline.IsrCcdDefectStageParallel
         eventTopic: None
-        inputKeys: {
-            ccdExposure: isrExposure1
-        }
-        outputKeys: {
-            ccdExposure: isrExposure1
+        stagePolicy: {
+            inputKeys: {
+                ccdExposure: isrExposure1
+            }
+            outputKeys: {
+                defectMaskedCcdExposure: isrExposure1
+            }
         }
     }
     appStage: {
         name: ccdAssemblyIsrCcdSdqa1
         parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
         eventTopic: None
-        inputKeys: {
-            ccdExposure: isrExposure1
-        }
-        outputKeys: {
-            sdqaCcdExposure: isrExposure1
+        stagePolicy: {
+            inputKeys: {
+                ccdExposure: isrExposure1
+            }
+            outputKeys: {
+                sdqaCcdExposure: isrExposure1
+            }
         }
     }
     appStage: {
         name: ccdAssemblySdqaCcd1
         parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
         eventTopic: None
-        inputKeys: {
-            exposureKey: isrExposure1
-        }
-        parameters: @PT1Pipe/ISR-sdqaCcd.paf
-        outputKeys: {
-            isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+        stagePolicy: {
+            inputKeys: {
+                exposureKey: isrExposure1
+            }
+            parameters: @PT1Pipe/ISR-sdqaCcd.paf
+            outputKeys: {
+                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+            }
         }
     }
 
@@ -5102,7 +5022,7 @@ execute: {
     }
     appStage: {
         name: icWcsVerification
-        parallelClass: lsst.meas.pipeline.WcsVerificationStageParallel
+        parallelClass: lsst.meas.pipeline.WcsVerificationParallel
         eventTopic: None
         stagePolicy: {
             sourceMatchSetKey: matchList

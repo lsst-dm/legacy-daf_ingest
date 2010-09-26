@@ -90,7 +90,7 @@ def isrProcess(f, doJobOffice=False):
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: """ + channelName + """
                             }
@@ -99,7 +99,7 @@ def isrProcess(f, doJobOffice=False):
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: """ + channelName + """
                             }
@@ -108,7 +108,7 @@ def isrProcess(f, doJobOffice=False):
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: """ + channelName + """
                             }
@@ -229,8 +229,8 @@ def isrProcess(f, doJobOffice=False):
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -239,8 +239,8 @@ def isrProcess(f, doJobOffice=False):
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -337,8 +337,8 @@ def ccdAssemblyProcess(f):
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaCcd
                         datasetId: {
+                            datasetType: sdqaCcd
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -346,8 +346,8 @@ def ccdAssemblyProcess(f):
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaCcd
                         datasetId: {
+                            datasetType: sdqaCcd
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -541,20 +541,20 @@ def imgCharProcess(f):
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
-                        datasetType: icSrc
                         datasetId: {
+                            datasetType: icSrc
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
                     measuredPsf: {
-                        datasetType: psf
                         datasetId: {
+                            datasetType: psf
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
                     visitExposure: {
-                        datasetType: calexp
                         datasetId: {
+                            datasetType: calexp
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
@@ -635,8 +635,8 @@ def sfmProcess(f):
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
-                        datasetType: src
                         datasetId: {
+                            datasetType: src
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }

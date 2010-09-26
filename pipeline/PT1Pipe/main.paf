@@ -411,7 +411,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,0"
                             }
@@ -420,7 +420,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,0"
                             }
@@ -429,7 +429,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,0"
                             }
@@ -643,8 +643,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -653,8 +653,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -678,7 +678,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,1"
                             }
@@ -687,7 +687,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,1"
                             }
@@ -696,7 +696,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,1"
                             }
@@ -910,8 +910,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -920,8 +920,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -945,7 +945,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,2"
                             }
@@ -954,7 +954,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,2"
                             }
@@ -963,7 +963,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,2"
                             }
@@ -1177,8 +1177,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -1187,8 +1187,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -1212,7 +1212,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,3"
                             }
@@ -1221,7 +1221,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,3"
                             }
@@ -1230,7 +1230,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,3"
                             }
@@ -1444,8 +1444,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -1454,8 +1454,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -1479,7 +1479,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,4"
                             }
@@ -1488,7 +1488,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,4"
                             }
@@ -1497,7 +1497,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,4"
                             }
@@ -1711,8 +1711,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -1721,8 +1721,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -1746,7 +1746,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,5"
                             }
@@ -1755,7 +1755,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,5"
                             }
@@ -1764,7 +1764,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,5"
                             }
@@ -1978,8 +1978,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -1988,8 +1988,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -2013,7 +2013,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,6"
                             }
@@ -2022,7 +2022,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,6"
                             }
@@ -2031,7 +2031,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,6"
                             }
@@ -2245,8 +2245,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -2255,8 +2255,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -2280,7 +2280,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,7"
                             }
@@ -2289,7 +2289,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,7"
                             }
@@ -2298,7 +2298,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "0,7"
                             }
@@ -2512,8 +2512,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -2522,8 +2522,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -2547,7 +2547,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,0"
                             }
@@ -2556,7 +2556,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,0"
                             }
@@ -2565,7 +2565,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,0"
                             }
@@ -2779,8 +2779,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -2789,8 +2789,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -2814,7 +2814,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,1"
                             }
@@ -2823,7 +2823,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,1"
                             }
@@ -2832,7 +2832,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,1"
                             }
@@ -3046,8 +3046,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -3056,8 +3056,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -3081,7 +3081,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,2"
                             }
@@ -3090,7 +3090,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,2"
                             }
@@ -3099,7 +3099,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,2"
                             }
@@ -3313,8 +3313,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -3323,8 +3323,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -3348,7 +3348,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,3"
                             }
@@ -3357,7 +3357,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,3"
                             }
@@ -3366,7 +3366,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,3"
                             }
@@ -3580,8 +3580,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -3590,8 +3590,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -3615,7 +3615,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,4"
                             }
@@ -3624,7 +3624,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,4"
                             }
@@ -3633,7 +3633,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,4"
                             }
@@ -3847,8 +3847,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -3857,8 +3857,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -3882,7 +3882,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,5"
                             }
@@ -3891,7 +3891,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,5"
                             }
@@ -3900,7 +3900,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,5"
                             }
@@ -4114,8 +4114,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -4124,8 +4124,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -4149,7 +4149,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,6"
                             }
@@ -4158,7 +4158,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,6"
                             }
@@ -4167,7 +4167,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,6"
                             }
@@ -4381,8 +4381,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -4391,8 +4391,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -4416,7 +4416,7 @@ execute: {
                     biasExposure: {
                         datasetType: bias
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,7"
                             }
@@ -4425,7 +4425,7 @@ execute: {
                     darkExposure: {
                         datasetType: dark
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,7"
                             }
@@ -4434,7 +4434,7 @@ execute: {
                     flatExposure: {
                         datasetType: flat
                         datasetId: {
-                            fromJobIdentity: "raft" "sensor"
+                            fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 channel: "1,7"
                             }
@@ -4648,8 +4648,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -4658,8 +4658,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaAmp
                         datasetId: {
+                            datasetType: sdqaAmp
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -4847,8 +4847,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sdqaRatingVector0: {
-                        datasetType: sdqaCcd
                         datasetId: {
+                            datasetType: sdqaCcd
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 0
@@ -4856,8 +4856,8 @@ execute: {
                         }
                     }
                     sdqaRatingVector1: {
-                        datasetType: sdqaCcd
                         datasetId: {
+                            datasetType: sdqaCcd
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: 1
@@ -5047,20 +5047,20 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
-                        datasetType: icSrc
                         datasetId: {
+                            datasetType: icSrc
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
                     measuredPsf: {
-                        datasetType: psf
                         datasetId: {
+                            datasetType: psf
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
                     visitExposure: {
-                        datasetType: calexp
                         datasetId: {
+                            datasetType: calexp
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
@@ -5139,8 +5139,8 @@ execute: {
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {
                     sourceSet_persistable: {
-                        datasetType: src
                         datasetId: {
+                            datasetType: src
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }

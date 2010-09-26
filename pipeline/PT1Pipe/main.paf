@@ -37,7 +37,7 @@ execute: {
     appStage: {
         name: isrInputRaw
         parallelClass: lsst.pex.harness.IOStage.InputStageParallel
-        eventTopic: jobIdentity
+        eventTopic: None
         stagePolicy: {
             parameters: {
                 butler: @PT1Pipe/butlerInput.paf

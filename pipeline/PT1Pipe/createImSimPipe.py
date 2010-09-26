@@ -674,7 +674,7 @@ def createPolicy(f, doJobOffice=False):
     pipelinePolicy(f)
     if doJobOffice:
         jobStart(f)
-    isrProcess(f)
+    isrProcess(f, doJobOffice)
     ccdAssemblyProcess(f)
     crSplitProcess(f)
     imgCharProcess(f)

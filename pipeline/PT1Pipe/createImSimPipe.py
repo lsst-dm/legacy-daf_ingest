@@ -367,6 +367,7 @@ def ccdAssemblyProcess(f):
             inputKeys: {
                 isrCcdExposure0: isrExposure0
                 isrCcdExposure1: isrExposure1
+                jobIdentity: jobIdentity
             }
             parameters: {
                 pipeline: CcdAssembly
@@ -374,6 +375,7 @@ def ccdAssemblyProcess(f):
             outputKeys: {
                 isrCcdExposure0: isrCcdExposure0
                 isrCcdExposure1: isrCcdExposure1
+                jobIdentity: jobIdentity
             }
         }
     }"""
@@ -447,12 +449,14 @@ def crSplitProcess(f):
         stagePolicy: {
             inputKeys: {
                 visitExposure: crSubCcdExposure0
+                jobIdentity: jobIdentity
             }
             parameters: {
                 pipeline: CrSplit
             }
             outputKeys: {
                 visitExposure: visitExposure
+                jobIdentity: jobIdentity
             }
         }
     }"""
@@ -571,6 +575,7 @@ def imgCharProcess(f):
             inputKeys: {
                 calibratedExposure: visitExposure
                 psf: measuredPsf
+                jobIdentity: jobIdentity
             }
             parameters: {
                 pipeline: ImgChar
@@ -578,6 +583,7 @@ def imgCharProcess(f):
             outputKeys: {
                 calibratedExposure: scienceExposure
                 psf: psf
+                jobIdentity: jobIdentity
             }
         }
     }"""

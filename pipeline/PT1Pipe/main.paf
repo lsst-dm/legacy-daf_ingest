@@ -4877,6 +4877,7 @@ execute: {
             inputKeys: {
                 isrCcdExposure0: isrExposure0
                 isrCcdExposure1: isrExposure1
+                jobIdentity: jobIdentity
             }
             parameters: {
                 pipeline: CcdAssembly
@@ -4884,6 +4885,7 @@ execute: {
             outputKeys: {
                 isrCcdExposure0: isrCcdExposure0
                 isrCcdExposure1: isrCcdExposure1
+                jobIdentity: jobIdentity
             }
         }
     }
@@ -4955,12 +4957,14 @@ execute: {
         stagePolicy: {
             inputKeys: {
                 visitExposure: crSubCcdExposure0
+                jobIdentity: jobIdentity
             }
             parameters: {
                 pipeline: CrSplit
             }
             outputKeys: {
                 visitExposure: visitExposure
+                jobIdentity: jobIdentity
             }
         }
     }
@@ -5077,6 +5081,7 @@ execute: {
             inputKeys: {
                 calibratedExposure: visitExposure
                 psf: measuredPsf
+                jobIdentity: jobIdentity
             }
             parameters: {
                 pipeline: ImgChar
@@ -5084,6 +5089,7 @@ execute: {
             outputKeys: {
                 calibratedExposure: scienceExposure
                 psf: psf
+                jobIdentity: jobIdentity
             }
         }
     }

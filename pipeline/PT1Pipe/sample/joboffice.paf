@@ -1,0 +1,18 @@
+execute: {
+  dir: {
+    input: "input"
+    update: "update"
+    output: "output"
+    runDirPattern: "%(runid)s"
+    scratch: "scr"
+    defaultRoot: "/home/ktl/datarel-test/"
+    work: "work"
+  }
+  shutdownTopic: "workflowShutdown"
+  eventBrokerHost: "lsst8.ncsa.uiuc.edu"
+}
+framework: {
+  exec: "$DATAREL_DIR/pipeline/PT1Pipe/joboffice-ImSim.sh"
+  type: "standard"
+  environment: "/home/ktl/datarel-test/setup.sh"
+}

@@ -1,0 +1,72 @@
+#<?cfg paf policy ?>
+#
+# Platform Description: the LSST cluster at NCSA
+#
+
+dir: {
+   # the default root directory all files read or written by pipelines
+   # deployed on this platform.  This must be an absolute directory.  
+   # This can be overriden by any of the "named role" directories below.
+   #
+   defaultRoot:  /home/ktl/datarel-test/
+
+   # the pattern to use for setting the root directory for a production
+   # run.  The result is a directory relative to the default root directory 
+   # (set via defaultRoot).  The format is a python formatting string using the 
+   # following dictionary keys:
+   #   runid     the unique identifier for the production run
+   # 
+   runDirPattern:  "%(runid)s"
+
+   # These indicate the directory that should be used for a named purpose.
+   # If relative paths are given, the resulting directory will be relative
+   # to the default run directory (determined by defaultRoot and the 
+   # runDirPattern).  These can be given as patterns specified in the same 
+   # format as runDirPattern.  (If a directory is given as an absolute path,
+   # using a pattern is recommended in order to distinguish between different 
+   # production runs.)
+   #
+   work:     work    # the working directory, where the pipeline is started
+   input:    input   # the directory to cache/find input data
+   output:   output  # the directory to write output data
+   update:   update  # the directory where updatable data is deployed
+   scratch:  scr     # a directory for temporary files that may be deleted 
+                     #   upon completion of the pipeline
+}
+
+hw: {
+
+   # the number of available nodes
+   #nodeCount:  8
+   nodeCount:  1
+
+   # the minimum number of cores per node
+   minCoresPerNode:  1
+
+   # the maximum number of cores per node; if not specified, this will 
+   # default to the minimum number.
+   maxCoresPerNode:  1
+
+   # the minimum RAM available per node in GB
+   minRamPerNode:  1.0
+
+   # the maximum RAM available per node in GB
+   maxRamPerNode: 2.0
+}
+
+deploy:  {
+
+   # the class that should be used to deploy, launch, and monitor 
+   # a pipeline on this platform
+   #
+   #managerClass:  lsst.ctrl.orca.pipelines.SimplePipelineManager
+
+   # the default domain to assume for nodes listed below if a domain is 
+   # not specified in the name
+   #   
+   defaultDomain:  slac.stanford.edu
+
+   # the node names and the number of cores available to them
+   # 
+   nodes: "sccs-ktlim:2"
+}

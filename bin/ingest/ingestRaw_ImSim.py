@@ -102,7 +102,10 @@ class CsvGenerator(object):
                     ulc = wcs.pixelToSky(0, height - 1).toIcrs()
                     urc = wcs.pixelToSky(width - 1, height - 1).toIcrs()
                     lrc = wcs.pixelToSky(width - 1, 0).toIcrs()
-                    obsStart = dafBase.DateTime(md.get('MJD-OBS'),
+                    mjd = md.get('MJD-OBS')
+                    if mjd == 0.0:
+                        mjd = 49563.270671
+                    obsStart = dafBase.DateTime(mjd,
                             dafBase.DateTime.MJD, dafBase.DateTime.UTC)
                     expTime = md.get('EXPTIME')
                     obsMidpoint = dafBase.DateTime(obsStart.nsecs() +

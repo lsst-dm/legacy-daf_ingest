@@ -63,7 +63,7 @@ def crSplitPipe(snap0, snap1):
         parameters: {
             subtractBackground: true
             backgroundPolicy: {
-                binsize: 512
+                binsize: 2048
             }
         }
         """, clip)

@@ -2,5 +2,5 @@
 
 subtractBackground: true
 backgroundPolicy: {
-    binsize: 512
+    binsize: 2048
 }

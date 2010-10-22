@@ -1,11 +1,11 @@
-setupRequired(meas_pipeline >= 3.2.0)
-setupRequired(ip_pipeline >= 3.0.3)
-setupRequired(ap >= 3.2.3)
-setupRequired(ctrl_sched >= 3.0.4)
-setupRequired(sdqa >= 3.0.12)
+setupRequired(meas_pipeline >= 4.1.0.0)
+setupRequired(ip_pipeline >= 4.1.0.1)
+setupRequired(ap >= 4.1.0.0)
+setupRequired(ctrl_sched >= 3.0.5)
+setupRequired(sdqa >= 4.1.0.0)
 
-setupOptional(obs_cfht >= 3.0.7)
-setupOptional(obs_lsstSim >= 3.0.10)
+setupOptional(obs_cfht >= 4.1.0.0)
+setupOptional(obs_lsstSim >= 4.1.0.0)
 setupOptional(astrometry_net_data imsim_20100716)
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)

@@ -33,6 +33,7 @@ import os
 import re
 import subprocess
 import sys
+import shutil
 
 from ISR_ImSim import isrProcess
 from CcdAssembly_ImSim import ccdAssemblyProcess
@@ -169,6 +170,18 @@ def compare(butler, cmpButler, datasetType, **keys):
 
 class EndToEndTestCase(unittest.TestCase):
     """Testing end to end (through SFM) PT1 processing"""
+
+    tmpdir = "/tmp/DC3"
+
+    def _ensureClean(self):
+        if os.path.exists(self.tmpdir):
+            shutil.rmtree(self.tmpdir)
+
+    def setUp(self):
+        self._ensureClean()
+
+    def tearDown(self):
+        self._ensureClean()
 
     def testEndToEnd(self):
         """Test ISR, CcdAssembly, CrSplit, ImgChar, SFM pipelines"""

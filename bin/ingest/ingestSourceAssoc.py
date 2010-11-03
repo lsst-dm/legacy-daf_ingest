@@ -70,10 +70,11 @@ def convertAll(inputRoot, outputRoot, numWorkers):
             print >>sys.stderr, "Failed to convert %s to %s" % (tasks[i][1], tasks[i][2])
 
 def execStmt(stmt):
-    global password, user
+    global password, user, host
     print stmt
     sys.stdout.flush()
-    subprocess.call(['mysql', '-u', user, '-p' + password, '-e', stmt])
+    subprocess.call(['mysql', '-h', host, '-u', user, '-p' + password,
+                     '-e', stmt])
 
 def setupDb(database, tableSuffix=""):
     execStmt("CREATE DATABASE IF NOT EXISTS %s;" % database)
@@ -104,7 +105,9 @@ def load(outputRoot, database, tableSuffix=""):
                 (os.path.abspath(csv), database, tableName, tableSuffix))
 
 def main():
-    global user, password
+    global user, password, host
+    defuser = (os.environ.has_key('USER') and os.environ['USER']) or "serge"
+    
     # Setup command line options
     usage = dedent("""\
     usage: %prog [options] <database> <inputRoot> <outputRoot>
@@ -118,7 +121,11 @@ def main():
     """)
     parser = optparse.OptionParser(usage)
     parser.add_option(
-        "-u", "--user", dest="user", default="serge", help=dedent("""\
+        "-u", "--user", dest="user", default=defuser, help=dedent("""\
+        Database user name to use when connecting to MySQL servers."""))
+    parser.add_option(
+        "-H", "--dbhost", dest="host", default="lsst10.ncsa.uiuc.edu",
+        help=dedent("""\
         Database user name to use when connecting to MySQL servers."""))
     parser.add_option(
         "-s", "--suffix", dest="suffix", default="",
@@ -133,8 +140,9 @@ def main():
     opts, args = parser.parse_args()
     if len(args) != 3 or not os.path.isdir(args[1]) or not os.path.isdir(args[2]):
         parser.error("A database name and input/output directories must be specified")
+    host = opts.host
     user = opts.user
-    password = getpass.getpass()
+    password = getpass.getpass("%s's MySQL password: " % user)
     database, inputRoot, outputRoot = args
     setupDb(database, opts.suffix)
     convertAll(inputRoot, outputRoot, opts.numWorkers)

@@ -27,7 +27,9 @@
 DETECT =                0x1
 MEASURE = DETECT        << 1
 PSF = MEASURE           << 1
-WCS = PSF               << 1
+APCORR = PSF            << 1
+APCORR_APPLY = APCORR   << 1
+WCS = APCORR_APPLY      << 1
 WCS_VERIFY = WCS        << 1
 PHOTO_CAL = WCS_VERIFY  << 1
 ALL_STAGES = (PHOTO_CAL << 1) - 1

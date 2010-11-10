@@ -186,9 +186,16 @@ class EndToEndTestCase(unittest.TestCase):
     def testEndToEnd(self):
         """Test ISR, CcdAssembly, CrSplit, ImgChar, SFM pipelines"""
 
+        #Setup up astrometry_net_data
+        # Note - one of datarel's dependencies causes setup of
+        #        'astrometry_net_data cfhttemplate' version; 
+        #        datarel needs imsim_*.
+        print "Setting up meas_astrom imsim_20100716"
+        ok, version, reason = eups.Eups().setup("astrometry_net_data", versionName="imsim_20100716")
+        if not ok:
+            raise ValueError("Couldn't set up imsim_20100716 version of astrometry_net_data: %s" %(reason))
+
         self.assert_(eups.Eups().isSetup("obs_lsstSim"))
-        self.assert_(eups.Eups().isSetup("astrometry_net_data"))
-        self.assert_(eups.Eups().findSetupVersion("astrometry_net_data")[0].startswith("imsim_"))
 
         inputRoot = os.path.join(eups.productDir("afwdata"), "ImSim")
         if os.path.exists("endToEnd.py"):

@@ -35,6 +35,7 @@ def sfmProcess(root=None, outRoot=None, registry=None,
 
     calexp = inButler.get("calexp", **keys)
     psf = inButler.get("psf", **keys)
+    apCorr = inButler.get("apCorr", **keys)
 
     clip = sfmPipe(calexp, psf)
 
@@ -69,6 +70,14 @@ def sfmPipe(calexp, psf):
         }
         outputKeys: {
             sources: sourceSet
+        }
+        """, clip)
+
+    clip = runStage(measPipe.ComputeSourceSkyCoordsStage,
+        """#<?cfg paf policy?>
+        inputKeys: {
+            apCorr: apCorr
+            sourceSet: sourceSet
         }
         """, clip)
 

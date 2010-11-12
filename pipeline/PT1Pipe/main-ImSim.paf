@@ -5019,6 +5019,21 @@ execute: {
         }
     }
     appStage: {
+        name: icApCorrect
+        parallelClass: lsst.meas.pipeline.ApertureCorrectionStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                exposure: visitExposure
+                cellSet: cellSet
+            }
+            outputKeys: {
+                apCorr: apCorr
+                sdqa: sdqa
+            }
+        }
+    }
+    appStage: {
         name: icWcsDetermination
         parallelClass: lsst.meas.pipeline.WcsDeterminationStageParallel
         eventTopic: None
@@ -5056,9 +5071,21 @@ execute: {
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
+                    matchList_persistable: {
+                        datasetId: {
+                            datasetType: icMatch
+                            fromJobIdentity: "visit" "raft" "sensor"
+                        }
+                    }
                     measuredPsf: {
                         datasetId: {
                             datasetType: psf
+                            fromJobIdentity: "visit" "raft" "sensor"
+                        }
+                    }
+                    apCorr: {
+                        datasetId: {
+                            datasetType: apCorr
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
@@ -5082,6 +5109,7 @@ execute: {
                 calibratedExposure: visitExposure
                 psf: measuredPsf
                 jobIdentity: jobIdentity
+                apCorr: apCorr
             }
             parameters: {
                 pipeline: ImgChar
@@ -5090,6 +5118,7 @@ execute: {
                 calibratedExposure: scienceExposure
                 psf: psf
                 jobIdentity: jobIdentity
+                apCorr: apCorr
             }
         }
     }
@@ -5121,6 +5150,17 @@ execute: {
             }
             outputKeys: {
                 sources: sourceSet
+            }
+        }
+    }
+    appStage: {
+        name: sfmApCorrectApply
+        parallelClass: lsst.meas.pipeline.ApertureCorrectionApplyStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                apCorr: apCorr
+                sourceSet: sourceSet
             }
         }
     }

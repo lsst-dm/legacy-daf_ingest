@@ -41,9 +41,11 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
 
     clip = imgCharPipe(visitim, stages)
 
-    outButler.put(clip['sourceSet_persistable'], "icSrc", **keys)
-    outButler.put(clip['measuredPsf'], "psf", **keys)
-    outButler.put(clip['visitExposure'], "calexp", **keys)
+    outButler.put(clip['matchList_persistable'], 'icMatch', **keys)
+    outButler.put(clip['apCorr'], 'apCorr', **keys)
+    outButler.put(clip['sourceSet_persistable'], 'icSrc', **keys)
+    outButler.put(clip['measuredPsf'], 'psf', **keys)
+    outButler.put(clip['visitExposure'], 'calexp', **keys)
 
 def imgCharPipe(visitim, stages=None):
     #
@@ -138,19 +140,9 @@ def imgCharPipe(visitim, stages=None):
             }
             outputKeys: {
                 apCorr: apCorr
-                sdqa: sdqa
+                sdqa: sdqaApCorr
             }
             """, clip)
-
-    if stages & APCORR_APPLY:
-        clip = runStage(measPipe.ApertureCorrectionApplyStage,
-            """#<?cfg paf policy?>
-            inputKeys: {
-                sourceSet: sourceSet
-                apCorr: apCorr
-            }
-            """, clip)
-
 
     if stages & WCS:
         clip = runStage(measPipe.WcsDeterminationStage,

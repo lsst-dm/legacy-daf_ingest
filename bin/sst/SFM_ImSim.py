@@ -37,14 +37,15 @@ def sfmProcess(root=None, outRoot=None, registry=None,
     psf = inButler.get("psf", **keys)
     apCorr = inButler.get("apCorr", **keys)
 
-    clip = sfmPipe(calexp, psf)
+    clip = sfmPipe(calexp, psf, apCorr)
 
     outButler.put(clip['sourceSet_persistable'], "src", **keys)
 
-def sfmPipe(calexp, psf):
+def sfmPipe(calexp, psf, apCorr):
     clip = {
         'scienceExposure': calexp,
-        'psf': psf
+        'psf': psf,
+        'apCorr': apCorr
     }
 
     clip = runStage(measPipe.SourceDetectionStage,
@@ -73,7 +74,7 @@ def sfmPipe(calexp, psf):
         }
         """, clip)
 
-    clip = runStage(measPipe.ComputeSourceSkyCoordsStage,
+    clip = runStage(measPipe.ApertureCorrectionApplyStage,
         """#<?cfg paf policy?>
         inputKeys: {
             apCorr: apCorr

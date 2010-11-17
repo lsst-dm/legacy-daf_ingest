@@ -508,6 +508,7 @@ def imgCharProcess(f):
             outputKeys: {
                 psf: measuredPsf
                 cellSet: cellSet
+                sourceSet: psfSourceSet
                 sdqa: sdqa
             }
         }

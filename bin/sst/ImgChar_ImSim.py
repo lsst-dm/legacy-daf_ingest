@@ -41,9 +41,9 @@ def imgCharProcess(root=None, outRoot=None, registry=None,
 
     clip = imgCharPipe(visitim, stages)
 
-    outButler.put(clip['matchList_persistable'], 'icMatch', **keys)
     outButler.put(clip['apCorr'], 'apCorr', **keys)
     outButler.put(clip['sourceSet_persistable'], 'icSrc', **keys)
+    outButler.put(clip['matchList_persistable'], 'icMatch', **keys)
     outButler.put(clip['measuredPsf'], 'psf', **keys)
     outButler.put(clip['visitExposure'], 'calexp', **keys)
 

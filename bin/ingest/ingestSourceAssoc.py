@@ -41,6 +41,7 @@ AP_DIR = os.environ['AP_DIR']
 cnvSource = os.path.join(AP_DIR, 'bin', 'boostPt1Source2CSV.py')
 cnvObject = os.path.join(AP_DIR, 'bin', 'boostPt1Object2CSV.py')
 refPosMatch = os.path.join(AP_DIR, 'bin', 'qa', 'refPosMatch.py')
+refCcdFilter = os.path.join(AP_DIR, 'bin', 'qa', 'refCcdFilter.py')
 
 def convert(kind, boostPath, csvPath):
     global cnvSource, cnvObject
@@ -105,19 +106,35 @@ def load(outputRoot, database, tableSuffix=""):
             execStmt("LOAD DATA INFILE '%s' INTO TABLE %s.%s%s FIELDS TERMINATED BY ',';" %
                 (os.path.abspath(csv), database, tableName, tableSuffix))
 
-def referenceMatch(outputRoot, database, refCatalog, radius, tableSuffix=""):
+def referenceMatch(inputRoot, outputRoot, database, refCatalog, radius, tableSuffix=""):
     objectCsv = os.path.join(outputRoot, 'objDump.csv')
+    filtCsv = os.path.join(outputRoot, 'refFilt.csv')
     matchCsv = os.path.join(outputRoot, 'refObjMatch.csv')
+    # Filter reference catalog
+    subprocess.call(['python', refCcdFilter, refCatalog, filtCsv,
+                     '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
+                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift'])
+    # Dump object table
     execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
              FROM %s.Object%s AS o INNER JOIN %s.Source%s AS s ON (s.objectId = o.objectId)
              ORDER BY o.decl_PS
              INTO OUTFILE '%s'
              FIELDS TERMINATED BY ',';
              """ % (database, tableSuffix, database, tableSuffix, objectCsv))
-    subprocess.call(['python', refPosMatch, refCatalog, objectCsv, matchCsv,
-                     '-s', '-r', str(radius), '-f', 'objectId,ra,dec,epoch'])
-    execStmt("LOAD DATA INFILE '%s' INTO TABLE %s.RefObjMatch%s FIELDS TERMINATED BY ',';" %
+    # Match reference objects to objects
+    subprocess.call(['python', refPosMatch, filtCsv, objectCsv, matchCsv,
+                     '-s', '-r', str(radius), '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
+                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift,' +
+                     'uCov,gCov,rCov,iCov,zCov,yCov', '-f', 'objectId,ra,dec,epoch'])
+    # Load filtered reference catalog and matches
+    execStmt("""LOAD DATA INFILE '%s' INTO TABLE %s.SimRefObject%s
+             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';""" %
+             (filtCsv, database, tableSuffix))
+    execStmt("""LOAD DATA INFILE '%s' INTO TABLE %s.RefObjMatch%s
+             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';""" %
              (matchCsv, database, tableSuffix))
+    execStmt("ALTER TABLE %s.SimRefObject%s ADD PRIMARY KEY (refObjectId);" % (database, tableSuffix))
+    execStmt("ALTER TABLE %s.SimRefObject%s ADD KEY (decl);" % (database, tableSuffix))
     execStmt("ALTER TABLE %s.RefObjMatch%s ADD KEY (refObjectId);" % (database, tableSuffix))
     execStmt("ALTER TABLE %s.RefObjMatch%s ADD KEY (objectId);" % (database, tableSuffix))
 
@@ -149,21 +166,26 @@ def main():
         "-s", "--suffix", dest="suffix", default="",
         help=dedent("""\
         Specifies a table name suffix to append to the standard table
-        names (BadSource, Source, Object)."""))
+        names (BadSource, Source, Object, ...)."""))
     parser.add_option(
         "-j", "--num-workers", type="int", dest="numWorkers",
         default=4, help=dedent("""\
         Number of parallel job processes to split boost->csv conversion
         over."""))
     parser.add_option(
+        "-m", "--match", action="store_true", dest="match",
+        help=dedent("""\
+        Turn on reference catalog to source cluster matching. This
+        currently only works for LSST Sim runs."""))
+    parser.add_option(
         "-R", "--ref-catalog", dest="refCatalog",
         default="/lsst/DC3/data/obs/ImSim/ref/simRefObject_1032010.csv",
-        help="Reference catalog CSV file.")
+        help="Reference catalog CSV file (%default).")
     parser.add_option(
         "-r", "--radius", type="float", dest="radius", default=2.0,
         help=dedent("""\
-        Reference source to object match radius, arcsec. The default is
-        %default arcsec."""))
+        Reference object to source cluster match radius, arcsec. The default
+        is %default arcsec."""))
     opts, args = parser.parse_args()
     if len(args) != 3 or not os.path.isdir(args[1]) or not os.path.isdir(args[2]):
         parser.error("A database name and input/output directories must be specified")
@@ -175,7 +197,9 @@ def main():
     convertAll(inputRoot, outputRoot, opts.numWorkers)
     load(outputRoot, database, opts.suffix)
     fixupDb(database, opts.suffix)
-    referenceMatch(outputRoot, database, opts.refCatalog, opts.radius, opts.suffix)
+    if opts.match:
+        referenceMatch(inputRoot, outputRoot, database,
+                       opts.refCatalog, opts.radius, opts.suffix)
 
 if __name__ == "__main__":
     main()

@@ -10,22 +10,44 @@ listen: {
 }
 
 schedule: {
+    className: "ButlerTriggeredScheduler"
     trigger: {
-        datasetType: src
-        id: {
-            name: skyTile
+        className: MapperTrigger
+        mapper: {
+           className:  lsst.obs.lsstSim.LsstSimMapper
+           configuration: {
+               root:  %(input)
+           }
+           lookupType: raw
+           idGranularity: sensor
         }
+
+        datasetType: src   # the dataset type listened for
+        triggerId: visit   # the input ids that will get mapped
+        triggerId: raft
+        triggerId: sensor
+        targetType:  source
+        targetId: skyTile  # the ids that input ids will get mapped into
     }
 
     job: {
         input: {
-            datasetType: src
-            id: {
-              name: visit
+            className: MapperTrigger
+            mapper: {
+               className:  lsst.obs.lsstSim.LsstSimMapper
+               configuration: {
+                   root:  %(input)
+               }
+               lookupType: raw
+               idGranularity: sensor
             }
-            id: {
-              name: skyTile
-            }
+
+            triggerId: skyTile   # the input ids that will get mapped
+            targetId: visit  # the ids that input ids will get mapped into
+            targetId: raft
+            targetId: sensor
+            targetType: src
+            prerequisites: true
         }
         output: {
             # from clipboard: sources

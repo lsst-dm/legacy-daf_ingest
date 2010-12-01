@@ -80,7 +80,7 @@ def execStmt(stmt):
 
 def setupDb(database, tableSuffix=""):
     execStmt("CREATE DATABASE IF NOT EXISTS %s;" % database)
-    for tableName in ('BadSource', 'Source', 'Object'):
+    for tableName in ('BadSource', 'Source', 'Object', 'SimRefObject', 'RefObjMatch'):
         execStmt("CREATE TABLE %s.%s%s LIKE pt1_templates.%s" %
             (database, tableName, tableSuffix, tableName))
 

@@ -107,9 +107,9 @@ def load(outputRoot, database, tableSuffix=""):
                 (os.path.abspath(csv), database, tableName, tableSuffix))
 
 def referenceMatch(inputRoot, outputRoot, database, refCatalog, radius, tableSuffix=""):
-    objectCsv = os.path.join(outputRoot, 'objDump.csv')
-    filtCsv = os.path.join(outputRoot, 'refFilt.csv')
-    matchCsv = os.path.join(outputRoot, 'refObjMatch.csv')
+    objectCsv = os.path.abspath(os.path.join(outputRoot, 'objDump.csv'))
+    filtCsv = os.path.abspath(os.path.join(outputRoot, 'refFilt.csv'))
+    matchCsv = os.path.abspath(os.path.join(outputRoot, 'refObjMatch.csv'))
     # Filter reference catalog
     subprocess.call(['python', refCcdFilter, refCatalog, filtCsv, inputRoot,
                      '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +

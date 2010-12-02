@@ -117,6 +117,7 @@ def referenceMatch(inputRoot, outputRoot, database, refCatalog, radius, tableSuf
     # Dump object table
     execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
              FROM %s.Object%s AS o INNER JOIN %s.Source%s AS s ON (s.objectId = o.objectId)
+             GROUP BY o.objectId
              ORDER BY o.decl_PS
              INTO OUTFILE '%s'
              FIELDS TERMINATED BY ',';

@@ -111,7 +111,7 @@ def referenceMatch(inputRoot, outputRoot, database, refCatalog, radius, tableSuf
     filtCsv = os.path.join(outputRoot, 'refFilt.csv')
     matchCsv = os.path.join(outputRoot, 'refObjMatch.csv')
     # Filter reference catalog
-    subprocess.call(['python', refCcdFilter, refCatalog, filtCsv,
+    subprocess.call(['python', refCcdFilter, refCatalog, filtCsv, inputRoot,
                      '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
                      'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift'])
     # Dump object table

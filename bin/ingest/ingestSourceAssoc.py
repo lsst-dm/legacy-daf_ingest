@@ -126,7 +126,7 @@ def referenceMatch(inputRoot, outputRoot, database, refCatalog, radius, tableSuf
     subprocess.call(['python', refPosMatch, filtCsv, objectCsv, matchCsv,
                      '-s', '-r', str(radius), '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
                      'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift,' +
-                     'uCov,gCov,rCov,iCov,zCov,yCov', '-f', 'objectId,ra,dec,epoch'])
+                     'uCov,gCov,rCov,iCov,zCov,yCov', '-f', 'objectId,ra,decl,epoch'])
     # Load filtered reference catalog and matches
     execStmt("""LOAD DATA INFILE '%s' INTO TABLE %s.SimRefObject%s
              FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';""" %

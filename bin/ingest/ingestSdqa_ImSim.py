@@ -22,13 +22,16 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import optparse
 import os
 import sys
+from textwrap import dedent
 
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
 from lsst.datarel.csvFileWriter import CsvFileWriter
+from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 rafts = [       "0,1", "0,2", "0,3",
          "1,0", "1,1", "1,2", "1,3", "1,4",
@@ -37,18 +40,21 @@ rafts = [       "0,1", "0,2", "0,3",
                 "4,1", "4,2", "4,3"]
 
 class CsvGenerator(object):
-    def __init__(self, root, registry=None):
+    def __init__(self, root, registry=None, compress=True):
         if registry is None:
             registry = os.path.join(root, "registry.sqlite3")
         bf = dafPersist.ButlerFactory(
                 mapper=LsstSimMapper(root=root, registry=registry))
         self.butler = bf.create()
 
-        self.ampFile = CsvFileWriter("sdqa_Rating_ForScienceAmpExposure.csv")
-        self.ccdFile = CsvFileWriter("sdqa_Rating_ForScienceCcdExposure.csv")
-        self.rawToSnapFile = CsvFileWriter("Raw_Amp_To_Snap_Ccd_Exposure.csv")
-        self.snapToSciFile = \
-                CsvFileWriter("Snap_Ccd_To_Science_Ccd_Exposure.csv")
+        self.ampFile = CsvFileWriter("sdqa_Rating_ForScienceAmpExposure.csv",
+                                     compress=compress)
+        self.ccdFile = CsvFileWriter("sdqa_Rating_ForScienceCcdExposure.csv",
+                                     compress=compress)
+        self.rawToSnapFile = CsvFileWriter("Raw_Amp_To_Snap_Ccd_Exposure.csv",
+                                           compress=compress)
+        self.snapToSciFile = CsvFileWriter("Snap_Ccd_To_Science_Ccd_Exposure.csv",
+                                           compress=compress)
 
     def csvAll(self):
         for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
@@ -56,6 +62,10 @@ class CsvGenerator(object):
             if self.butler.datasetExists("sdqaCcd", visit=visit, snap=0,
                     raft=raft, sensor=sensor):
                 self.toCsv(visit, raft, sensor)
+        self.ampFile.flush()
+        self.ccdFile.flush()
+        self.rawToSnapFile.flush()
+        self.snapToSciFile.flush()
 
     def toCsv(self, visit, raft, sensor):
         r1, comma, r2 = raft
@@ -92,17 +102,71 @@ class CsvGenerator(object):
                                 r.getValue(), r.getErr())
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
 
+def dbLoad(sql):
+    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE sdqa_Rating_ForScienceAmpExposure
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+                    (@name, ampExposureId, metricValue, metricSigma)
+                    SET sdqa_metricId = (
+                            SELECT sdqa_metricId FROM sdqa_Metric
+                            WHERE metricName = @name), 
+                        sdqa_thresholdId =  (
+                            SELECT sdqa_thresholdId FROM sdqa_Threshold
+                            WHERE sdqa_Threshold.sdqa_metricId = sdqa_metricId
+                            ORDER BY createdDate DESC LIMIT 1);
+                    SHOW WARNINGS;
+                 """ % os.path.abspath("sdqa_Rating_ForScienceAmpExposure.csv"))
+    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE sdqa_Rating_ForScienceCcdExposure 
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+                    (@name, ccdExposureId, metricValue, metricSigma)
+                    SET sdqa_metricId = (
+                            SELECT sdqa_metricId FROM sdqa_Metric
+                            WHERE metricName = @name), 
+                        sdqa_thresholdId =  (
+                            SELECT sdqa_thresholdId FROM sdqa_Threshold
+                            WHERE sdqa_Threshold.sdqa_metricId = sdqa_metricId
+                            ORDER BY createdDate DESC LIMIT 1);
+                    SHOW WARNINGS;
+                 """ % os.path.abspath("sdqa_Rating_ForScienceCcdExposure.csv"))
+    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE Raw_Amp_To_Snap_Ccd_Exposure
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+                        rawAmpExposureId,
+                        amp,
+                        snapCcdExposureId
+                    );
+                    SHOW WARNINGS;
+                 """ % os.path.abspath("Raw_Amp_To_Snap_Ccd_Exposure.csv"))
+
 def main():
-    registry = None
-    if len(sys.argv) >= 3:
-        root = sys.argv[1]
-        registry = sys.argv[2]
-    elif len(sys.argv) >= 2:
-        root = sys.argv[1]
-    else:
-        root = "/lsst/DC3/data/datarel/ImSim/ktl20100701"
-    c = CsvGenerator(root, registry)
+    usage = dedent("""\
+    usage: %prog [options] <root> [<registry>]
+
+    Program which converts LSST Sim SDQA ratings to CSV files suitable
+    for loading into MySQL. If a database name is specified in the options,
+    the CSVs are also loaded into that database.
+
+    Make sure to run prepareDb.py before database loads - this instantiates
+    the LSST schema in the target database.
+    """)
+    parser = optparse.OptionParser(usage)
+    addDbOptions(parser)
+    parser.add_option(
+        "-d", "--database", dest="database",
+        help="MySQL database to load CSV files into.")
+    opts, args = parser.parse_args()
+    if len(args) == 2:
+        root, registry = args
+    elif len(args) == 1:
+        root, registry = args[0], None
+    load = opts.database != None
+    if load :
+        if opts.user == None:
+            parser.error("No database user name specified and $USER " +
+                         "is undefined or empty")
+        sql = MysqlExecutor(opts.host, opts.database, opts.user, opts.port)
+    c = CsvGenerator(root, registry, not load)
     c.csvAll()
+    if load:
+        dbLoad(sql)
 
 if __name__ == '__main__':
     main()

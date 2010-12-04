@@ -21,11 +21,14 @@
 # the GNU General Public License along with this program.  If not, 
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-
+from __future__ import with_statement
+from contextlib import closing
 import getpass
 import optparse
 import MySQLdb as sql
 from textwrap import dedent
+
+from lsst.datarel.mysqlExecutor import addDbOptions
 
 renames = { 'DEC': 'DECL',
             'OUTFILE': 'OUTFILE_'
@@ -142,7 +145,7 @@ class OutputTable(object):
                     """UPDATE %s AS a INNER JOIN %s AS b
                        ON (a.%s = b.%s AND b.metadataKey = '%s')
                        SET a.%s = b.%sValue;""" %
-                    (self.name, metadataTable, self.idCol, self.idCol, c.name, c.getDbName(), c.type))
+                    (self.name, metadataTable, self.idCol, self.idCol,c.name, c.getDbName(), c.type))
                 cursor.fetchall()
 
 
@@ -172,6 +175,29 @@ def hostPort(sv):
     else:
         return (hp[0], None)
 
+def run(host, port, user, passwd, database,
+        metadataTable, idCol, outputTable,
+        skipCols=set(), compress=True):
+    with closing(sql.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=database)) as conn:
+        with closing(conn.cursor()) as cursor:
+            cursor.execute("SELECT COUNT(*) FROM " + metadataTable)
+            nrows = cursor.fetchall()[0][0]
+            if nrows == 0:
+                return
+            columns = getColumns(cursor, metadataTable, skipCols)
+            dbnames = set()
+            for c in columns:
+                if c.getDbName() in dbnames:
+                    raise RuntimeError(
+                        "Column %s renamed to %s conflicts with another column!" %
+                        (c.name, c.getDbName()))
+                dbnames.add(c.getDbName())
+                c.computeAttributes(cursor, metadataTable, compress)
+            table = OutputTable(outputTable, idCol, columns)
+            table.create(cursor, metadataTable)
+            table.populate(cursor, metadataTable)
+
 def main():
     # Setup command line options
     usage = dedent("""\
@@ -186,12 +212,7 @@ def main():
     <outputTable>:    Name of output table to create.
     """)
     parser = optparse.OptionParser(usage)
-    parser.add_option(
-        "-u", "--user", dest="user", default="serge",
-        help="Database user name to use when connecting to MySQL.")
-    parser.add_option(
-        "-S", "--server", dest="server", default="lsst10.ncsa.uiuc.edu:3306",
-        help="host:port of MySQL server to connect to; defaults to %default")
+    addDbOptions(parser)
     parser.add_option(
         "-s", "--skip-keys", dest="skipKeys",
         help="Comma separated list of metadata keys to omit in the output table")
@@ -203,23 +224,12 @@ def main():
         parser.error("Invalid number of arguments")
     db, metadataTable, idCol, outputTable = args
     passwd = getpass.getpass()
-    host, port = hostPort(opts.server)
-    conn = sql.connect(host=host, port=port, user=opts.user, passwd=passwd, db=db)
-    cursor = conn.cursor()
-    skipCols = set() 
+    skipCols = set()
     if opts.skipKeys != None:
         skipCols = set(map(lambda x: x.strip(), opts.skipKeys.split(",")))
-    columns = getColumns(cursor, metadataTable, skipCols)
-    dbnames = set()
-    for c in columns:
-        if c.getDbName() in dbnames:
-            raise RuntimeError("Column %s renamed to %s conflicts with another column!" %
-                               (c.name, c.getDbName()))
-        dbnames.add(c.getDbName())
-        c.computeAttributes(cursor, metadataTable, opts.compress)
-    table = OutputTable(outputTable, idCol, columns)
-    table.create(cursor, metadataTable)
-    table.populate(cursor, metadataTable)
+    run(opts.host, opts.port, opts.user, passwd, db, metadataTable,
+        idCol, outputTable, skipCols, opts.compress)
  
 if __name__ == "__main__":
     main()
+

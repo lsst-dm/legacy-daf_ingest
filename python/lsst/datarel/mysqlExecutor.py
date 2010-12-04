@@ -87,12 +87,13 @@ class MysqlExecutor(object):
             sys.stderr.flush()
 
     def runQuery(self, query):
-        if not isinstance(script, basestring):
+        if not isinstance(query, basestring):
             raise TypeError('Query is not a string')
         kw = { 'host': self.host,
                'port': self.port,
                'user': self.user,
-               'passwd': self.passwd }
+               'db': self.database,
+               'passwd': self.password }
         with closing(sql.connect(**kw)) as conn:
             with closing(conn.cursor()) as cursor:
                 print query

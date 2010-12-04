@@ -63,18 +63,16 @@ def main():
     database = args[0]
     if opts.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
-    if 'CAT_DIR' in os.environ and os.environ['CAT_DIR']:
-        schema = os.path.join(os.environ['CAT_DIR'], 'sql', 'lsstSchema4mysqlDC3b.sql')
-        setupSdqa = os.path.join(os.environ['CAT_DIR'], 'sql', 'setup_sdqa.sql')
-        storedFuncs = os.path.join(os.environ['CAT_DIR'], 'sql', 'setup_storedFunctions.sql')
-    else:
+    if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
         parser.error("$CAT_DIR is undefined or empty - please setup the cat " +
                      "package and try again.")
+    catDir = os.environ['CAT_DIR']
     sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
     sql.createDb(database)
-    sql.execScript(schema)
-    sql.execScript(storedFuncs)
-    sql.execScript(setupSdqa)
+    sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlDC3b.sql'))
+    sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
+    sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
+    sql.execScript(os.path.join(catDir, 'sql', 'setup_sdqa.sql'))
     # BadSource is exactly like Source, and may not be present in the schema
     sql.execStmt("CREATE TABLE IF NOT EXISTS BadSource LIKE Source;")
     # Disable indexes on tables for faster loading

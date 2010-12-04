@@ -12,11 +12,14 @@ class CsvFileWriter(object):
     def __del__(self):
         self.f.close()
 
+    def flush(self):
+        self.f.flush()
+
     def quote(self, value):
         if value is None:
             return '\N'
         if isinstance(value, float):
-            return "%.15g" % (value,)
+            return "%.17g" % (value,)
         if isinstance(value, str):
             value = re.sub(r'"', r'\"', value)
             return '"' + value.strip() + '"'

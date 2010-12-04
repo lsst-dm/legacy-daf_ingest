@@ -22,8 +22,10 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import optparse
 import os
 import sys
+from textwrap import dedent
 
 import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersist
@@ -32,6 +34,7 @@ import lsst.afw.coord as afwCoord
 import lsst.afw.image as afwImage
 
 from lsst.datarel.csvFileWriter import CsvFileWriter
+from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 rafts = [       "0,1", "0,2", "0,3",
          "1,0", "1,1", "1,2", "1,3", "1,4",
@@ -42,16 +45,19 @@ rafts = [       "0,1", "0,2", "0,3",
 filterMap = ["u", "g", "r", "i", "z", "y"]
 
 class CsvGenerator(object):
-    def __init__(self, root, registry=None):
+    def __init__(self, root, registry=None, compress=True):
         if registry is None:
             registry = os.path.join(root, "registry.sqlite3")
         self.mapper = LsstSimMapper(root=root, registry=registry)
         bf = dafPersist.ButlerFactory(mapper=self.mapper)
         self.butler = bf.create()
 
-        self.expFile = CsvFileWriter("Raw_Amp_Exposure.csv")
-        self.mdFile = CsvFileWriter("Raw_Amp_Exposure_Metadata.csv")
-        self.rToSFile = CsvFileWriter("Raw_Amp_To_Science_Ccd_Exposure.csv")
+        self.expFile = CsvFileWriter("Raw_Amp_Exposure.csv",
+                                     compress=compress)
+        self.mdFile = CsvFileWriter("Raw_Amp_Exposure_Metadata.csv",
+                                    compress=compress)
+        self.rToSFile = CsvFileWriter("Raw_Amp_To_Science_Ccd_Exposure.csv",
+                                      compress=compress)
 
     def csvAll(self):
         for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
@@ -59,6 +65,9 @@ class CsvGenerator(object):
             if self.butler.datasetExists("raw", visit=visit, snap=0,
                     raft=raft, sensor=sensor, channel="0,0"):
                 self.toCsv(visit, raft, sensor)
+        self.expFile.flush()
+        self.mdFile.flush()
+        self.rToSFile.flush()
 
     def getFullMetadata(self, datasetType, **keys):
         filename = self.mapper.map(datasetType, keys).getLocations()[0]
@@ -149,17 +158,78 @@ class CsvGenerator(object):
 
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
 
+def dbLoad(sql):
+    sql.execStmt(dedent("""\
+        LOAD DATA INFILE '%s' INTO TABLE Raw_Amp_Exposure
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+            rawAmpExposureId, visit, snap, raft, ccd, amp, filterId,
+            ra, decl,
+            equinox, raDeSys,
+            ctype1, ctype2,
+            crpix1, crpix2,
+            crval1, crval2,
+            cd1_1, cd1_2, cd2_1, cd2_2,
+            llcRa, llcDecl,
+            ulcRa, ulcDecl,
+            urcRa, urcDecl,
+            lrcRa, lrcDecl,
+            taiMjd, obsStart, expMidpt, expTime,
+            airmass, darkTime, zd);
+        SHOW WARNINGS;
+        """ % os.path.abspath("Raw_Amp_Exposure.csv")))
+    sql.execStmt(dedent("""\
+        LOAD DATA INFILE '%s' INTO TABLE Raw_Amp_Exposure_Metadata
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+            rawAmpExposureId,
+            exposureType,
+            metadataKey,
+            intValue,
+            doubleValue,
+            stringValue);
+        SHOW WARNINGS;
+        """ % os.path.abspath("Raw_Amp_Exposure_Metadata.csv")))
+    sql.execStmt(dedent("""\
+        LOAD DATA INFILE '%s' INTO TABLE Raw_Amp_To_Science_Ccd_Exposure
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+            rawAmpExposureId,
+            scienceCcdExposureId,
+            snap,
+            amp);
+        SHOW WARNINGS;
+        """ % os.path.abspath("Raw_Amp_To_Science_Ccd_Exposure.csv")))
+
 def main():
-    registry = None
-    if len(sys.argv) >= 3:
-        root = sys.argv[1]
-        registry = sys.argv[2]
-    elif len(sys.argv) >= 2:
-        root = sys.argv[1]
-    else:
-        root = "/lsst/DC3/data/obstest/ImSim"
-    c = CsvGenerator(root, registry)
+    usage = dedent("""\
+    usage: %prog [options] <root> [<registry>]
+
+    Program which converts raw LSST Sim exposure metadata to CSV files suitable
+    for loading into MySQL. If a database name is specified in the options,
+    the CSVs are also loaded into that database.
+
+    Make sure to run prepareDb.py before database loads - this instantiates
+    the LSST schema in the target database.
+    """)
+    parser = optparse.OptionParser(usage)
+    addDbOptions(parser)
+    parser.add_option(
+        "-d", "--database", dest="database",
+        help="MySQL database to load CSV files into.")
+    opts, args = parser.parse_args()
+    if len(args) == 2:
+        root, registry = args
+    elif len(args) == 1:
+        root, registry = args[0], None
+    load = opts.database != None
+    if load :
+        if opts.user == None:
+            parser.error("No database user name specified and $USER " +
+                         "is undefined or empty")
+        sql = MysqlExecutor(opts.host, opts.database, opts.user, opts.port)
+    c = CsvGenerator(root, registry, not load)
     c.csvAll()
+    if load:
+        dbLoad(sql)
 
 if __name__ == '__main__':
     main()
+

@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-import errno
 
 # 
 # LSST Data Management System
@@ -23,6 +22,7 @@ import errno
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import errno
 import getpass
 import glob
 import os, os.path
@@ -30,7 +30,9 @@ import optparse
 import subprocess
 import sys
 from textwrap import dedent
+
 from lsst.datarel.pmap import pmap
+from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 
 if not 'AP_DIR' in os.environ:
@@ -50,15 +52,15 @@ def convert(kind, boostPath, csvPath):
     else:
         return subprocess.call(['python', cnvSource, boostPath, csvPath])
 
-def convertAll(inputRoot, outputRoot, numWorkers):
+def convertAll(root, scratch, numWorkers):
     kinds = ('badSource', 'source', 'object')
     tasks = []
     for kind in kinds:
-        boostPaths = glob.glob(os.path.join(inputRoot, 'results', '*', kind + '.boost'))
+        boostPaths = glob.glob(os.path.join(root, 'results', '*', kind + '.boost'))
         for boostPath in boostPaths:
             boostDir, boostFile = os.path.split(boostPath)
             skyTile = os.path.split(boostDir)[1]
-            skyTileDir = os.path.join(outputRoot, skyTile)
+            skyTileDir = os.path.join(scratch, skyTile)
             try:
                 os.mkdir(skyTileDir, 0755)
             except OSError, ex:
@@ -71,103 +73,212 @@ def convertAll(inputRoot, outputRoot, numWorkers):
         if r != 0:
             print >>sys.stderr, "Failed to convert %s to %s" % (tasks[i][1], tasks[i][2])
 
-def execStmt(stmt):
-    global password, user, host
-    print stmt
-    sys.stdout.flush()
-    subprocess.call(['mysql', '-h', host, '-u', user, '-p' + password,
-                     '-e', stmt])
+def load(sql, scratch):
+    for table, fileName in (('BadSource', 'badSource.csv'),
+                            ('Source', 'source.csv')):
+        for csv in glob.glob(os.path.join(scratch, '*', fileName)):
+            sql.execStmt(dedent("""\
+                LOAD DATA INFILE '%s' INTO TABLE %s
+                FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+                    sourceId, scienceCcdExposureId, filterId,
+                    objectId, movingObjectId, procHistoryId,
+                    ra, raErrForDetection, raErrForWcs,
+                    decl, declErrForDetection, declErrForWcs,
+                    xFlux, xFluxErr, yFlux, yFluxErr,
+                    raFlux, raFluxErr, declFlux, declFluxErr,
+                    xPeak, yPeak,
+                    raPeak, declPeak,
+                    xAstrom, xAstromErr, yAstrom, yAstromErr,
+                    raAstrom, raAstromErr, declAstrom, declAstromErr,
+                    raObject, declObject,
+                    taiMidPoint, taiRange,
+                    psfFlux, psfFluxErr,
+                    apFlux, apFluxErr,
+                    modelFlux, modelFluxErr,
+                    petroFlux, petroFluxErr,
+                    instFlux, instFluxErr,
+                    nonGrayCorrFlux, nonGrayCorrFluxErr,
+                    atmCorrFlux, atmCorrFluxErr,
+                    apDia,
+                    Ixx, IxxErr, Iyy, IyyErr, Ixy, IxyErr,
+                    snr, chi2,
+                    sky,skyErr,
+                    flagForAssociation, flagForDetection, flagForWcs);
+                """ % (os.path.abspath(csv), table)))
+    for csv in glob.glob(os.path.join(scratch, '*', 'object.csv')):
+        sql.execStmt(dedent("""\
+            LOAD DATA INFILE '%s' INTO TABLE Object
+            FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+                objectId, iauId,
+                ra_PS, ra_PS_Sigma, decl_PS, decl_PS_Sigma, radecl_PS_Cov,
+                ra_SG, ra_SG_Sigma, decl_SG, decl_SG_Sigma, radecl_SG_Cov,
+                raRange, declRange,
+                muRa_PS, muRa_PS_Sigma,
+                muDecl_PS, muDecl_PS_Sigma,
+                muRaDecl_PS_Cov,
+                parallax_PS, parallax_PS_Sigma,
+                canonicalFilterId,
+                extendedness, varProb,
+                earliestObsTime, latestObsTime,
+                flags,
+                uNumObs, uExtendedness, uVarProb,
+                uRaOffset_PS, uRaOffset_PS_Sigma,
+                uDeclOffset_PS, uDeclOffset_PS_Sigma,
+                uRaDeclOffset_PS_Cov,
+                uRaOffset_SG, uRaOffset_SG_Sigma,
+                uDeclOffset_SG, uDeclOffset_SG_Sigma,
+                uRaDeclOffset_SG_Cov,
+                uLnL_PS, uLnL_SG,
+                uFlux_PS, uFlux_PS_Sigma,
+                uFlux_SG, uFlux_SG_Sigma,
+                uFlux_CSG, uFlux_CSG_Sigma,
+                uTimescale, uEarliestObsTime, uLatestObsTime,
+                uSersicN_SG, uSersicN_SG_Sigma,
+                uE1_SG, uE1_SG_Sigma, uE2_SG, uE2_SG_Sigma,
+                uRadius_SG, uRadius_SG_Sigma,
+                uFlags,
+                gNumObs, gExtendedness, gVarProb,
+                gRaOffset_PS, gRaOffset_PS_Sigma,
+                gDeclOffset_PS, gDeclOffset_PS_Sigma,
+                gRaDeclOffset_PS_Cov,
+                gRaOffset_SG, gRaOffset_SG_Sigma,
+                gDeclOffset_SG, gDeclOffset_SG_Sigma,
+                gRaDeclOffset_SG_Cov,
+                gLnL_PS, gLnL_SG,
+                gFlux_PS, gFlux_PS_Sigma,
+                gFlux_SG, gFlux_SG_Sigma,
+                gFlux_CSG, gFlux_CSG_Sigma,
+                gTimescale, gEarliestObsTime, gLatestObsTime,
+                gSersicN_SG, gSersicN_SG_Sigma,
+                gE1_SG, gE1_SG_Sigma, gE2_SG, gE2_SG_Sigma,
+                gRadius_SG, gRadius_SG_Sigma,
+                gFlags,
+                rNumObs, rExtendedness, rVarProb,
+                rRaOffset_PS, rRaOffset_PS_Sigma,
+                rDeclOffset_PS, rDeclOffset_PS_Sigma,
+                rRaDeclOffset_PS_Cov,
+                rRaOffset_SG, rRaOffset_SG_Sigma,
+                rDeclOffset_SG, rDeclOffset_SG_Sigma,
+                rRaDeclOffset_SG_Cov,
+                rLnL_PS, rLnL_SG,
+                rFlux_PS, rFlux_PS_Sigma,
+                rFlux_SG, rFlux_SG_Sigma,
+                rFlux_CSG, rFlux_CSG_Sigma,
+                rTimescale, rEarliestObsTime, rLatestObsTime,
+                rSersicN_SG, rSersicN_SG_Sigma,
+                rE1_SG, rE1_SG_Sigma, rE2_SG, rE2_SG_Sigma,
+                rRadius_SG, rRadius_SG_Sigma,
+                rFlags,
+                iNumObs, iExtendedness, iVarProb,
+                iRaOffset_PS, iRaOffset_PS_Sigma,
+                iDeclOffset_PS, iDeclOffset_PS_Sigma,
+                iRaDeclOffset_PS_Cov,
+                iRaOffset_SG, iRaOffset_SG_Sigma,
+                iDeclOffset_SG, iDeclOffset_SG_Sigma,
+                iRaDeclOffset_SG_Cov,
+                iLnL_PS, iLnL_SG,
+                iFlux_PS, iFlux_PS_Sigma,
+                iFlux_SG, iFlux_SG_Sigma,
+                iFlux_CSG, iFlux_CSG_Sigma,
+                iTimescale, iEarliestObsTime, iLatestObsTime,
+                iSersicN_SG, iSersicN_SG_Sigma,
+                iE1_SG, iE1_SG_Sigma, iE2_SG, iE2_SG_Sigma,
+                iRadius_SG, iRadius_SG_Sigma,
+                iFlags,
+                zNumObs, zExtendedness, zVarProb,
+                zRaOffset_PS, zRaOffset_PS_Sigma,
+                zDeclOffset_PS, zDeclOffset_PS_Sigma,
+                zRaDeclOffset_PS_Cov,
+                zRaOffset_SG, zRaOffset_SG_Sigma,
+                zDeclOffset_SG, zDeclOffset_SG_Sigma,
+                zRaDeclOffset_SG_Cov,
+                zLnL_PS, zLnL_SG,
+                zFlux_PS, zFlux_PS_Sigma,
+                zFlux_SG, zFlux_SG_Sigma,
+                zFlux_CSG, zFlux_CSG_Sigma,
+                zTimescale, zEarliestObsTime, zLatestObsTime,
+                zSersicN_SG, zSersicN_SG_Sigma,
+                zE1_SG, zE1_SG_Sigma, zE2_SG, zE2_SG_Sigma,
+                zRadius_SG, zRadius_SG_Sigma,
+                zFlags,
+                yNumObs, yExtendedness, yVarProb,
+                yRaOffset_PS, yRaOffset_PS_Sigma,
+                yDeclOffset_PS, yDeclOffset_PS_Sigma,
+                yRaDeclOffset_PS_Cov,
+                yRaOffset_SG, yRaOffset_SG_Sigma,
+                yDeclOffset_SG, yDeclOffset_SG_Sigma,
+                yRaDeclOffset_SG_Cov,
+                yLnL_PS, yLnL_SG,
+                yFlux_PS, yFlux_PS_Sigma,
+                yFlux_SG, yFlux_SG_Sigma,
+                yFlux_CSG, yFlux_CSG_Sigma,
+                yTimescale, yEarliestObsTime, yLatestObsTime,
+                ySersicN_SG, ySersicN_SG_Sigma,
+                yE1_SG, yE1_SG_Sigma, yE2_SG, yE2_SG_Sigma,
+                yRadius_SG, yRadius_SG_Sigma,
+                yFlags);
+            """ % os.path.abspath(csv)))
 
-def setupDb(database, tableSuffix=""):
-    execStmt("CREATE DATABASE IF NOT EXISTS %s;" % database)
-    for tableName in ('BadSource', 'Source', 'Object', 'SimRefObject', 'RefObjMatch'):
-        execStmt("CREATE TABLE %s.%s%s LIKE pt1_templates.%s" %
-            (database, tableName, tableSuffix, tableName))
-
-def fixupDb(database, tableSuffix=""):
-    # Generate indexes, etc...
-    for tableName in ('BadSource', 'Source'):
-        execStmt("ALTER TABLE %s.%s%s ADD PRIMARY KEY (sourceId);" %
-            (database, tableName, tableSuffix))
-        execStmt("ALTER TABLE %s.%s%s ADD KEY (decl);" %
-            (database, tableName, tableSuffix))
-    execStmt("ALTER TABLE %s.Source%s ADD KEY (objectId);" % (database, tableSuffix))
-    for filter in "ugrizy":
-        execStmt("UPDATE %s.Object%s SET %sNumObs = 0 WHERE %sNumObs IS NULL;" %
-            (database, tableSuffix, filter, filter))
-    execStmt("ALTER TABLE %s.Object%s ADD PRIMARY KEY (objectId);" % (database, tableSuffix))
-    execStmt("ALTER TABLE %s.Object%s ADD KEY (decl_PS);" % (database, tableSuffix))
-
-def load(outputRoot, database, tableSuffix=""):
-    for tableName, fileName in (('BadSource', 'badSource.csv'),
-                                ('Source', 'source.csv'),
-                                ('Object', 'object.csv')):
-        for csv in glob.glob(os.path.join(outputRoot, '*', fileName)):
-            execStmt("LOAD DATA INFILE '%s' INTO TABLE %s.%s%s FIELDS TERMINATED BY ',';" %
-                (os.path.abspath(csv), database, tableName, tableSuffix))
-
-def referenceMatch(inputRoot, outputRoot, database, refCatalog, radius, tableSuffix=""):
-    objectCsv = os.path.abspath(os.path.join(outputRoot, 'objDump.csv'))
-    filtCsv = os.path.abspath(os.path.join(outputRoot, 'refFilt.csv'))
-    matchCsv = os.path.abspath(os.path.join(outputRoot, 'refObjMatch.csv'))
+def referenceMatch(sql, root, scratch, refCatalog, radius):
+    objectCsv = os.path.abspath(os.path.join(scratch, 'objDump.csv'))
+    filtCsv = os.path.abspath(os.path.join(scratch, 'refFilt.csv'))
+    matchCsv = os.path.abspath(os.path.join(scratch, 'refObjMatch.csv'))
     # Filter reference catalog
-    subprocess.call(['python', refCcdFilter, refCatalog, filtCsv, inputRoot,
+    subprocess.call(['python', refCcdFilter, refCatalog, filtCsv, root,
                      '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
                      'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift'])
     # Dump object table
-    execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
-             FROM %s.Object%s AS o INNER JOIN %s.Source%s AS s ON (s.objectId = o.objectId)
-             GROUP BY o.objectId
-             ORDER BY o.decl_PS
-             INTO OUTFILE '%s'
-             FIELDS TERMINATED BY ',';
-             """ % (database, tableSuffix, database, tableSuffix, objectCsv))
+    sql.execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
+                    FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
+                    GROUP BY o.objectId
+                    ORDER BY o.decl_PS
+                    INTO OUTFILE '%s'
+                    FIELDS TERMINATED BY ',';
+                 """ % objectCsv)
     # Match reference objects to objects
     subprocess.call(['python', refPosMatch, filtCsv, objectCsv, matchCsv,
                      '-s', '-r', str(radius), '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
                      'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift,' +
                      'uCov,gCov,rCov,iCov,zCov,yCov', '-f', 'objectId,ra,decl,epoch'])
     # Load filtered reference catalog and matches
-    execStmt("""LOAD DATA INFILE '%s' INTO TABLE %s.SimRefObject%s
-             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';""" %
-             (filtCsv, database, tableSuffix))
-    execStmt("""LOAD DATA INFILE '%s' INTO TABLE %s.RefObjMatch%s
-             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';""" %
-             (matchCsv, database, tableSuffix))
-    execStmt("ALTER TABLE %s.SimRefObject%s ADD PRIMARY KEY (refObjectId);" % (database, tableSuffix))
-    execStmt("ALTER TABLE %s.SimRefObject%s ADD KEY (decl);" % (database, tableSuffix))
-    execStmt("ALTER TABLE %s.RefObjMatch%s ADD KEY (refObjectId);" % (database, tableSuffix))
-    execStmt("ALTER TABLE %s.RefObjMatch%s ADD KEY (objectId);" % (database, tableSuffix))
-
+    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE SimRefObject
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+                        refObjectId, isStar,
+                        ra, decl, gLat, gLon,
+                        sedName,
+                        uMag, gMag, rMag, iMag, zMag, yMag,
+                        muRa, muDecl, parallax, vRad,
+                        isVar, redshift,
+                        uCov, gCov, rCov, iCov, zCov, yCov);
+                 """ % filtCsv)
+    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE RefObjMatch
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+                        refObjectId, objectId,
+                        refRa, refDec, angSep,
+                        nRefMatches, nObjMatches,
+                        closestToRef, closestToObj,
+                        flags);
+                """ % matchCsv)
 
 def main():
-    global user, password, host
-    defuser = (os.environ.has_key('USER') and os.environ['USER']) or "serge"
-    
     # Setup command line options
     usage = dedent("""\
-    usage: %prog [options] <database> <inputRoot> <outputRoot>
+    usage: %prog [options] <database> <root> <scratch>
 
     Program which populates a mysql database with SourceAssoc results.
 
-    <database>:   Name of database to create tables in.
-    <inputRoot>:  Root directory containing SourceAssoc results (boost
-                  archives for sources and objects)
-    <outputRoot>: Directory to store CSV files in.
+    <database>:   Name of database to create tables in. Note that the LSST
+                  schema is assumed to have been loaded into this database
+                  via prepareDb.py
+    <root>:       Root directory containing pipeline results (boost
+                  archives for sources and objects, and a pipeline output
+                  registry)
+    <scratch>:    A temporary directory used as scratch space when converting
+                  boost persisted Source and SourceClusterAttributes vectors
+                  to CSV form suitable for loading into MySQL.
     """)
     parser = optparse.OptionParser(usage)
-    parser.add_option(
-        "-u", "--user", dest="user", default=defuser, help=dedent("""\
-        Database user name to use when connecting to MySQL servers."""))
-    parser.add_option(
-        "-H", "--dbhost", dest="host", default="lsst10.ncsa.uiuc.edu",
-        help=dedent("""\
-        Database user name to use when connecting to MySQL servers."""))
-    parser.add_option(
-        "-s", "--suffix", dest="suffix", default="",
-        help=dedent("""\
-        Specifies a table name suffix to append to the standard table
-        names (BadSource, Source, Object, ...)."""))
+    addDbOptions(parser)
     parser.add_option(
         "-j", "--num-workers", type="int", dest="numWorkers",
         default=4, help=dedent("""\
@@ -189,18 +300,16 @@ def main():
         is %default arcsec."""))
     opts, args = parser.parse_args()
     if len(args) != 3 or not os.path.isdir(args[1]) or not os.path.isdir(args[2]):
-        parser.error("A database name and input/output directories must be specified")
-    host = opts.host
-    user = opts.user
-    password = getpass.getpass("%s's MySQL password: " % user)
-    database, inputRoot, outputRoot = args
-    setupDb(database, opts.suffix)
-    convertAll(inputRoot, outputRoot, opts.numWorkers)
-    load(outputRoot, database, opts.suffix)
-    fixupDb(database, opts.suffix)
+        parser.error("A database name and root/scratch directories must be specified")
+    if opts.user == None:
+        parser.error("No database user name specified and $USER " +
+                     "is undefined or empty")
+    database, root, scratch = args
+    sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
+    convertAll(root, scratch, opts.numWorkers)
+    load(sql, scratch)
     if opts.match:
-        referenceMatch(inputRoot, outputRoot, database,
-                       opts.refCatalog, opts.radius, opts.suffix)
+        referenceMatch(sql, root, scratch, opts.refCatalog, opts.radius)
 
 if __name__ == "__main__":
     main()

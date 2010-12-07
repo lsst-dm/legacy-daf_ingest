@@ -68,11 +68,8 @@ def main():
                      "package and try again.")
     catDir = os.environ['CAT_DIR']
     sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
-    #sql.createDb(database)
-    #try:
-    #    sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlDC3b.sql'))
-    #except:
-    #    pass
+    sql.createDb(database)
+    sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlDC3b.sql'))
     sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
     sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
     sql.execScript(os.path.join(catDir, 'sql', 'setup_sdqa.sql'))

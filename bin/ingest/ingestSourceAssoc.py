@@ -78,7 +78,7 @@ def load(sql, scratch):
                             ('Source', 'source.csv')):
         for csv in glob.glob(os.path.join(scratch, '*', fileName)):
             sql.execStmt(dedent("""\
-                LOAD DATA INFILE '%s' INTO TABLE %s
+                LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE %s
                 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
                     sourceId, scienceCcdExposureId, filterId,
                     objectId, movingObjectId, procHistoryId,
@@ -107,7 +107,7 @@ def load(sql, scratch):
                 """ % (os.path.abspath(csv), table)))
     for csv in glob.glob(os.path.join(scratch, '*', 'object.csv')):
         sql.execStmt(dedent("""\
-            LOAD DATA INFILE '%s' INTO TABLE Object
+            LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Object
             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
                 objectId, iauId,
                 ra_PS, ra_PS_Sigma, decl_PS, decl_PS_Sigma, radecl_PS_Cov,
@@ -241,7 +241,7 @@ def referenceMatch(sql, root, scratch, refCatalog, radius):
                      'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift,' +
                      'uCov,gCov,rCov,iCov,zCov,yCov', '-f', 'objectId,ra,decl,epoch'])
     # Load filtered reference catalog and matches
-    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE SimRefObject
+    sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE SimRefObject
                     FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
                         refObjectId, isStar,
                         ra, decl, gLat, gLon,
@@ -251,7 +251,7 @@ def referenceMatch(sql, root, scratch, refCatalog, radius):
                         isVar, redshift,
                         uCov, gCov, rCov, iCov, zCov, yCov);
                  """ % filtCsv)
-    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE RefObjMatch
+    sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE RefObjMatch
                     FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
                         refObjectId, objectId,
                         refRa, refDec, angSep,

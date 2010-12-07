@@ -127,7 +127,7 @@ class CsvGenerator(object):
 
 def dbLoad(sql):
     sql.execStmt(dedent("""\
-        LOAD DATA INFILE '%s' INTO TABLE Science_Ccd_Exposure
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' (
             scienceCcdExposureId, visit, raft, ccd, filterId,
             ra, decl,
@@ -147,7 +147,7 @@ def dbLoad(sql):
         SHOW WARNINGS;
         """ % os.path.abspath("Science_Ccd_Exposure.csv")))
     sql.execStmt(dedent("""\
-        LOAD DATA INFILE '%s' INTO TABLE Science_Ccd_Exposure_Metadata
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure_Metadata
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
             scienceCcdExposureId,
             exposureType,

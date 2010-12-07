@@ -103,38 +103,40 @@ class CsvGenerator(object):
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
 
 def dbLoad(sql):
-    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE sdqa_Rating_ForScienceAmpExposure
-                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
-                    (@name, ampExposureId, metricValue, metricSigma)
-                    SET sdqa_metricId = (
-                            SELECT sdqa_metricId FROM sdqa_Metric
-                            WHERE metricName = @name), 
-                        sdqa_thresholdId =  (
-                            SELECT sdqa_thresholdId FROM sdqa_Threshold
-                            WHERE sdqa_Threshold.sdqa_metricId = sdqa_metricId
-                            ORDER BY createdDate DESC LIMIT 1);
-                    SHOW WARNINGS;
-                 """ % os.path.abspath("sdqa_Rating_ForScienceAmpExposure.csv"))
-    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE sdqa_Rating_ForScienceCcdExposure 
-                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
-                    (@name, ccdExposureId, metricValue, metricSigma)
-                    SET sdqa_metricId = (
-                            SELECT sdqa_metricId FROM sdqa_Metric
-                            WHERE metricName = @name), 
-                        sdqa_thresholdId =  (
-                            SELECT sdqa_thresholdId FROM sdqa_Threshold
-                            WHERE sdqa_Threshold.sdqa_metricId = sdqa_metricId
-                            ORDER BY createdDate DESC LIMIT 1);
-                    SHOW WARNINGS;
-                 """ % os.path.abspath("sdqa_Rating_ForScienceCcdExposure.csv"))
-    sql.execStmt("""LOAD DATA INFILE '%s' INTO TABLE Raw_Amp_To_Snap_Ccd_Exposure
-                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
-                        rawAmpExposureId,
-                        amp,
-                        snapCcdExposureId
-                    );
-                    SHOW WARNINGS;
-                 """ % os.path.abspath("Raw_Amp_To_Snap_Ccd_Exposure.csv"))
+    sql.execStmt(dedent("""\
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE sdqa_Rating_ForScienceAmpExposure
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+        (@name, ampExposureId, metricValue, metricSigma)
+        SET sdqa_metricId = (
+                SELECT sdqa_metricId FROM sdqa_Metric
+                WHERE metricName = @name), 
+            sdqa_thresholdId =  (
+                SELECT sdqa_thresholdId FROM sdqa_Threshold
+                WHERE sdqa_Threshold.sdqa_metricId = sdqa_metricId
+                ORDER BY createdDate DESC LIMIT 1);
+        SHOW WARNINGS;
+        """ % os.path.abspath("sdqa_Rating_ForScienceAmpExposure.csv")))
+    sql.execStmt(dedent("""\
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE sdqa_Rating_ForScienceCcdExposure 
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+        (@name, ccdExposureId, metricValue, metricSigma)
+        SET sdqa_metricId = (
+                SELECT sdqa_metricId FROM sdqa_Metric
+                WHERE metricName = @name), 
+            sdqa_thresholdId =  (
+                SELECT sdqa_thresholdId FROM sdqa_Threshold
+                WHERE sdqa_Threshold.sdqa_metricId = sdqa_metricId
+                ORDER BY createdDate DESC LIMIT 1);
+        SHOW WARNINGS;
+        """ % os.path.abspath("sdqa_Rating_ForScienceCcdExposure.csv")))
+    sql.execStmt(dedent("""\
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Raw_Amp_To_Snap_Ccd_Exposure
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+            rawAmpExposureId,
+            amp,
+            snapCcdExposureId);
+        SHOW WARNINGS;
+        """ % os.path.abspath("Raw_Amp_To_Snap_Ccd_Exposure.csv")))
 
 def main():
     usage = dedent("""\

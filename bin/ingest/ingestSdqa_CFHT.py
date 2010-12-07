@@ -84,7 +84,7 @@ class CsvGenerator(object):
 
 def dbLoad(sql):
     sql.execStmt(dedent("""\
-        LOAD DATA INFILE '%s' INTO TABLE sdqa_Rating_ForScienceAmpExposure
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE sdqa_Rating_ForScienceAmpExposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
         (@name, ampExposureId, metricValue, metricSigma)
         SET sdqa_metricId = (
@@ -97,7 +97,7 @@ def dbLoad(sql):
         SHOW WARNINGS;
         """ % os.path.abspath("sdqa_Rating_ForScienceAmpExposure.csv")))
     sql.execStmt(dedent("""\
-        LOAD DATA INFILE '%s' INTO TABLE sdqa_Rating_ForScienceCcdExposure 
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE sdqa_Rating_ForScienceCcdExposure 
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
         (@name, ccdExposureId, metricValue, metricSigma)
         SET sdqa_metricId = (
@@ -110,7 +110,7 @@ def dbLoad(sql):
         SHOW WARNINGS;
         """ % os.path.abspath("sdqa_Rating_ForScienceCcdExposure.csv")))
     sql.execStmt(dedent("""\
-        LOAD DATA INFILE '%s' INTO TABLE Raw_Amp_To_Snap_Ccd_Exposure
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Raw_Amp_To_Snap_Ccd_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
             rawAmpExposureId,
             amp,

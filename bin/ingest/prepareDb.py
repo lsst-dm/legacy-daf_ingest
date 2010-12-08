@@ -73,8 +73,6 @@ def main():
     sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
     sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
     sql.execScript(os.path.join(catDir, 'sql', 'setup_sdqa.sql'))
-    # BadSource is exactly like Source, and may not be present in the schema
-    sql.execStmt("CREATE TABLE IF NOT EXISTS BadSource LIKE Source;")
     # Disable indexes on tables for faster loading
     for table in loadTables:
         sql.execStmt("ALTER TABLE %s DISABLE KEYS;" % table)

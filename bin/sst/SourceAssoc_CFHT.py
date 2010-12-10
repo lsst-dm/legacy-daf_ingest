@@ -28,6 +28,9 @@ from lsst.datarel import cfhtMain, cfhtSetup, runStage
 
 import lsst.ap.cluster as apCluster
 
+def getScienceCcdExposureId(visit, ccd):
+    return (long(visit) << 6) + ccd
+
 def sourceAssocProcess(root=None, outRoot=None, registry=None,
         inButler=None, outButler=None, **keys):
     inButler, outButler = cfhtSetup(root, outRoot, registry,
@@ -35,15 +38,20 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
 
     skyTile = keys['skyTile']
     srcList = []
+    calexpMdList = []
     for visit, ccd in inButler.queryMetadata("raw", "ccd",
             ("visit", "ccd"), skyTile=skyTile):
         if inButler.datasetExists("src", visit=visit, ccd=ccd):
             srcs = inButler.get("src", visit=visit, ccd=ccd)
             srcList.append(srcs)
+            calexpMd = inButler.get("calexp_md",  visit=visit, ccd=ccd)
+            calexpMd.setLong("scienceCcdExposureId",
+                             getScienceCcdExposureId(visit, ccd))
+            calexpMdList.append(calexpMd)
     if len(srcList) == 0:
         raise RuntimeError("No sources found")
 
-    clip = sourceAssocPipe(srcList, skyTile)
+    clip = sourceAssocPipe(srcList, calexpMdList, skyTile)
 
     if clip.contains('sources'):
         outButler.put(clip['sources'], 'source', **keys)
@@ -60,9 +68,10 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
     if clip.contains('badSourceClusterAttributes'):
         outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
 
-def sourceAssocPipe(srcList, skyTile):
+def sourceAssocPipe(srcList, calexpMdList, skyTile):
     clip = {
         'inputSources': srcList,
+        'inputExposures': calexpMdList,
         'jobIdentity': { 'skyTileId': skyTile },
     }
 

@@ -27,6 +27,13 @@ from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
 
 import lsst.ap.cluster as apCluster
 
+def getScienceCcdExposureId(visit, raft, sensor):
+    r1, comma, r2 = raft
+    s1, comma, s2 = sensor
+    raftId = int(r1)*5 + int(r2)
+    ccdNum = int(s1)*3 + int(s2)
+    return (long(visit) << 9) + raftId*10 + ccdNum
+
 def sourceAssocProcess(root=None, outRoot=None, registry=None,
         inButler=None, outButler=None, **keys):
     inButler, outButler = lsstSimSetup(root, outRoot, registry,
@@ -34,15 +41,19 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
 
     skyTile = keys['skyTile']
     srcList = []
+    calexpMdList = []
     for visit, raft, sensor in inButler.queryMetadata("raw", "sensor",
             ("visit", "raft", "sensor"), skyTile=skyTile):
         if inButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
             srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
             srcList.append(srcs)
+            calexpMd = inButler.get("calexp_md",  visit=visit, raft=raft, sensor=sensor)
+            calexpMd.setLong("scienceCcdExposureId",
+                             getScienceCcdExposureId(visit, raft, sensor))
+            calexpMdList.append(calexpMd) 
     if len(srcList) == 0:
         raise RuntimeError("No sources found")
-
-    clip = sourceAssocPipe(srcList, skyTile)
+    clip = sourceAssocPipe(srcList, calexpMdList, skyTile)
 
     if clip.contains('sources'):
         outButler.put(clip['sources'], 'source', **keys)
@@ -59,9 +70,10 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
     if clip.contains('badSourceClusterAttributes'):
         outButler.put(clip['badSourceClusterAttributes'], 'badObject', **keys)
 
-def sourceAssocPipe(srcList, skyTile):
+def sourceAssocPipe(srcList, calexpMdList, skyTile):
     clip = {
         'inputSources': srcList,
+        'inputExposures': calexpMdList,
         'jobIdentity': { 'skyTileId': skyTile },
     }
 

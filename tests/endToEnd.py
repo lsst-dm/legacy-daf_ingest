@@ -164,6 +164,10 @@ def sdqaCcdCompare(o1, o2):
     return sdqaCompare("sdqaCcd", o1, o2)
 
 def compare(butler, cmpButler, datasetType, **keys):
+    '''
+    butler: values to test
+    cmpButler: truth
+    '''
     o1 = butler.get(datasetType, **keys)
     o2 = cmpButler.get(datasetType, **keys)
     return eval(datasetType + "Compare(o1, o2)")
@@ -190,10 +194,11 @@ class EndToEndTestCase(unittest.TestCase):
         # Note - one of datarel's dependencies causes setup of
         #        'astrometry_net_data cfhttemplate' version; 
         #        datarel needs imsim_*.
-        print "Setting up meas_astrom imsim_20100716"
-        ok, version, reason = eups.Eups().setup("astrometry_net_data", versionName="imsim_20100716")
+        ver = 'imsim_20100716_b'
+        print "Setting up astrometry_net_data", ver
+        ok, version, reason = eups.Eups().setup("astrometry_net_data", versionName=ver)
         if not ok:
-            raise ValueError("Couldn't set up imsim_20100716 version of astrometry_net_data: %s" %(reason))
+            raise ValueError("Couldn't set up version '%s' of astrometry_net_data: %s" % (ver, reason))
 
         self.assert_(eups.Eups().isSetup("obs_lsstSim"))
 

@@ -115,13 +115,13 @@ class CsvGenerator(object):
                 fwhm)
         for name in md.paramNames():
             if md.typeOf(name) == md.TYPE_Int:
-                self.mdFile.write(sciCcdExposureId, 1, name,
+                self.mdFile.write(sciCcdExposureId, name, 1,
                         md.getInt(name), None, None)
             elif md.typeOf(name) == md.TYPE_Double:
-                self.mdFile.write(sciCcdExposureId, 1, name,
+                self.mdFile.write(sciCcdExposureId, name, 1,
                         None, md.getDouble(name), None)
             else:
-                self.mdFile.write(sciCcdExposureId, 1, name,
+                self.mdFile.write(sciCcdExposureId, name, 1,
                         None, None, str(md.get(name)))
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
 
@@ -150,8 +150,8 @@ def dbLoad(sql):
         LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure_Metadata
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
             scienceCcdExposureId,
-            exposureType,
             metadataKey,
+            exposureType,
             intValue,
             doubleValue,
             stringValue);

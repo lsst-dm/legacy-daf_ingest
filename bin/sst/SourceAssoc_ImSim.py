@@ -24,6 +24,7 @@
 import os
 
 from lsst.datarel import lsstSimMain, lsstSimSetup, runStage
+from lsst.pex.logging import Log
 
 import lsst.ap.cluster as apCluster
 
@@ -52,7 +53,9 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
                              getScienceCcdExposureId(visit, raft, sensor))
             calexpMdList.append(calexpMd) 
     if len(srcList) == 0:
-        raise RuntimeError("No sources found")
+        log = Log(Log.getDefaultLog(), "lsst.ap.cluster")
+        log.log(Log.WARN, "No sources found")
+        return
     clip = sourceAssocPipe(srcList, calexpMdList, skyTile)
 
     if clip.contains('sources'):

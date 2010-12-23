@@ -86,6 +86,10 @@ def sourceAssocPipe(srcList, calexpMdList, skyTile):
         }
         outputKeys: {
         }
+        sourceClusteringPolicy: {
+            epsilonArcsec: 0.5
+            minNeighbors: 5
+        }
         """, clip)
 
     clip = runStage(apCluster.SourceClusterAttributesStage,

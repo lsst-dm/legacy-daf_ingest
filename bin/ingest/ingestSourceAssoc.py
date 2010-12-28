@@ -219,14 +219,21 @@ def load(sql, scratch):
                 yFlags);
             """ % os.path.abspath(csv)))
 
-def referenceMatch(sql, root, scratch, refCatalog, radius):
+def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None):
     objectCsv = os.path.abspath(os.path.join(scratch, 'objDump.csv'))
     filtCsv = os.path.abspath(os.path.join(scratch, 'refFilt.csv'))
     matchCsv = os.path.abspath(os.path.join(scratch, 'refObjMatch.csv'))
     # Filter reference catalog
-    subprocess.call(['python', refCcdFilter, refCatalog, filtCsv, root,
-                     '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
-                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift'])
+    filtArgs = ['python', refCcdFilter, refCatalog, filtCsv, root,
+                '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
+                'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift']
+    if exposureMetadata != None:
+        if not hasattr(exposureMetadata, '__iter__'):
+            exposureMetadata = [exposureMetadata]
+        for f in exposureMetadata:
+            filtArgs.append('-e')
+            filtArgs.append(f)
+    subprocess.call(filtArgs)
     # Dump object table
     sql.execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
                     FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
@@ -272,7 +279,10 @@ def main():
                   via prepareDb.py
     <root>:       Root directory containing pipeline results (boost
                   archives for sources and objects, and a pipeline output
-                  registry)
+                  registry). If CCD exposure metadata CSV files are not
+                  available (these can be generated with ingestProcessed_*.py),
+                  then this directory must also contain all calexp outputs
+                  for the run.
     <scratch>:    A temporary directory used as scratch space when converting
                   boost persisted Source and SourceClusterAttributes vectors
                   to CSV form suitable for loading into MySQL.
@@ -291,13 +301,21 @@ def main():
         currently only works for LSST Sim runs."""))
     parser.add_option(
         "-R", "--ref-catalog", dest="refCatalog",
-        default="/lsst/DC3/data/obs/ImSim/ref/simRefObject_1032010.csv",
+        default="/lsst/DC3/data/obs/ImSim/ref/simRefObject_12142010.csv",
         help="Reference catalog CSV file (%default).")
     parser.add_option(
         "-r", "--radius", type="float", dest="radius", default=2.0,
         help=dedent("""\
         Reference object to source cluster match radius, arcsec. The default
         is %default arcsec."""))
+    parser.add_option(
+        "-e", "--exposure-metadata", action="append", type="string",
+        dest="exposureMetadata", help=dedent("""\
+        The name of an exposure metadata key-value CSV table. This option
+        may be specified more than once. If present, exposure metadata is
+        obtained from the given CSV file(s) rather than the butler, and
+        <root> need not contain calexp pipieline outputs."""))
+
     opts, args = parser.parse_args()
     if len(args) != 3 or not os.path.isdir(args[1]) or not os.path.isdir(args[2]):
         parser.error("A database name and root/scratch directories must be specified")
@@ -309,7 +327,8 @@ def main():
     convertAll(root, scratch, opts.numWorkers)
     load(sql, scratch)
     if opts.match:
-        referenceMatch(sql, root, scratch, opts.refCatalog, opts.radius)
+        referenceMatch(sql, root, scratch, opts.refCatalog, opts.radius,
+                       opts.exposureMetadata)
 
 if __name__ == "__main__":
     main()

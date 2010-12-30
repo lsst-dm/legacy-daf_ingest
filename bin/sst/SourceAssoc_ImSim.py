@@ -43,17 +43,24 @@ def sourceAssocProcess(root=None, outRoot=None, registry=None,
     skyTile = keys['skyTile']
     srcList = []
     calexpMdList = []
+    log = Log(Log.getDefaultLog(), "lsst.ap.cluster")
     for visit, raft, sensor in inButler.queryMetadata("raw", "sensor",
             ("visit", "raft", "sensor"), skyTile=skyTile):
         if inButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
             srcs = inButler.get("src", visit=visit, raft=raft, sensor=sensor)
-            srcList.append(srcs)
-            calexpMd = inButler.get("calexp_md",  visit=visit, raft=raft, sensor=sensor)
-            calexpMd.setLong("scienceCcdExposureId",
-                             getScienceCcdExposureId(visit, raft, sensor))
-            calexpMdList.append(calexpMd) 
+            # circumvent lazy-loading to make sure we can actually 
+            # sources
+            try:
+                srcs.getSources()
+                calexpMd = inButler.get("calexp_md",  visit=visit, raft=raft, sensor=sensor)
+                calexpMd.setLong("scienceCcdExposureId",
+                                 getScienceCcdExposureId(visit, raft, sensor))
+                srcList.append(srcs)
+                calexpMdList.append(calexpMd) 
+            except:
+                log.log(Log.WARN, "Failed to unpersist src or calexp_md for visit %s, R%s S%s" %
+                        (str(visit), raft, sensor)) 
     if len(srcList) == 0:
-        log = Log(Log.getDefaultLog(), "lsst.ap.cluster")
         log.log(Log.WARN, "No sources found")
         return
     clip = sourceAssocPipe(srcList, calexpMdList, skyTile)

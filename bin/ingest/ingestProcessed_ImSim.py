@@ -79,8 +79,13 @@ class CsvGenerator(object):
         ccdNum = int(s1) * 3 + int(s2)
         sciCcdExposureId = (long(visit) << 9) + raftId * 10 + ccdNum
 
-        md = self.getFullMetadata("calexp",
-                visit=visit, raft=raft, sensor=sensor)
+        filename = self.mapper.map("calexp",
+                visit=visit, raft=raft, sensor=sensor).getLocations()[0]
+        if os.stat(filename).st_size < (4+2+4)*4000*4000:
+            print >>sys.stderr, "*** Too small (possibly corrupt), skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
+            return
+
+        md = afwImage.readMetadata(filename)
         width = md.get('NAXIS1')
         height = md.get('NAXIS2')
         wcs = afwImage.makeWcs(md.deepCopy())
@@ -89,6 +94,14 @@ class CsvGenerator(object):
         urc = wcs.pixelToSky(width - 1, height - 1).toIcrs()
         lrc = wcs.pixelToSky(width - 1, 0).toIcrs()
         psf = self.butler.get("psf", visit=visit, raft=raft, sensor=sensor)
+        try:
+            if psf is None:
+                print >>sys.stderr, "*** PSF missing or corrupt, skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
+                return
+        except:
+            print >>sys.stderr, "*** PSF corrupt or missing, skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
+            return
+
         attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
         fwhm = attr.computeGaussianWidth()
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,

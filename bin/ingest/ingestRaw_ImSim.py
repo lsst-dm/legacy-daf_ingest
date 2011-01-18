@@ -119,9 +119,11 @@ class CsvGenerator(object):
                     expTime = md.get('EXPTIME')
                     obsMidpoint = dafBase.DateTime(obsStart.nsecs() +
                             long(expTime * 1000000000L / 2))
+                    filterName = md.get('FILTER').strip()
                     self.expFile.write(rawAmpExposureId,
-                            visit, snap, raftNum, ccdNum, channelNum,
-                            filterMap.index(md.get('FILTER').strip()),
+                            visit, snap, raftNum, raft, ccdNum,
+                            sensor, channelNum, channel,
+                            filterMap.index(filterName), filterName,
                             md.get('RA_DEG'), md.get('DEC_DEG'),
                             md.get('EQUINOX'), md.get('RADESYS'),
                             md.get('CTYPE1'), md.get('CTYPE2'),
@@ -162,7 +164,8 @@ def dbLoad(sql):
     sql.execStmt(dedent("""\
         LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Raw_Amp_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
-            rawAmpExposureId, visit, snap, raft, ccd, amp, filterId,
+            rawAmpExposureId, visit, snap, raft, raftName,
+            ccd, ccdName, amp, ampName, filterId, filterName,
             ra, decl,
             equinox, raDeSys,
             ctype1, ctype2,

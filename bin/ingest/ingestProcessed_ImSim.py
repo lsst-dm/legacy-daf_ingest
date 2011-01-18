@@ -106,8 +106,10 @@ class CsvGenerator(object):
         fwhm = attr.computeGaussianWidth()
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,
                 dafBase.DateTime.UTC)
-        self.expFile.write(sciCcdExposureId, visit, raftNum, ccdNum,
-                filterMap.index(md.get('FILTER').strip()),
+        filterName = md.get('FILTER').strip()
+        self.expFile.write(sciCcdExposureId, visit, raftNum, raft,
+                ccdNum, sensor,
+                filterMap.index(filterName), filterName,
                 md.get('RA_DEG'), md.get('DEC_DEG'),
                 md.get('EQUINOX'), md.get('RADESYS'),
                 md.get('CTYPE1'), md.get('CTYPE2'),
@@ -142,7 +144,8 @@ def dbLoad(sql):
     sql.execStmt(dedent("""\
         LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' (
-            scienceCcdExposureId, visit, raft, ccd, filterId,
+            scienceCcdExposureId, visit, raft, raftName, ccd, ccdName,
+            filterId, filterName,
             ra, decl,
             equinox, raDeSys,
             ctype1, ctype2,

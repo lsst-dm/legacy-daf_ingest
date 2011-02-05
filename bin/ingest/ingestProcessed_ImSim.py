@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import math
 import optparse
 import os
 import sys
@@ -44,6 +45,8 @@ rafts = [       "0,1", "0,2", "0,3",
                 "4,1", "4,2", "4,3"]
 
 filterMap = ["u", "g", "r", "i", "z", "y"]
+
+sigmaToFwhm = 2.0*math.sqrt(2.0*math.log(2.0))
 
 class CsvGenerator(object):
     def __init__(self, root, registry=None, compress=True):
@@ -103,7 +106,7 @@ class CsvGenerator(object):
             return
 
         attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
-        fwhm = attr.computeGaussianWidth()
+        fwhm = attr.computeGaussianWidth() * wcs.pixelScale() * sigmaToFwhm
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,
                 dafBase.DateTime.UTC)
         filterName = md.get('FILTER').strip()

@@ -22,6 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import math
 import optparse
 import os
 import sys
@@ -39,6 +40,8 @@ from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 
 filterMap = ["u", "g", "r", "i", "z", "i2"]
+
+sigmaToFwhm = 2.0*math.sqrt(2.0*math.log(2.0))
 
 class CsvGenerator(object):
     def __init__(self, root, registry=None, compress=True):
@@ -78,7 +81,7 @@ class CsvGenerator(object):
         lrc = wcs.pixelToSky(width - 1, 0).toIcrs()
         psf = self.butler.get("psf", visit=visit, ccd=ccd)
         attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
-        fwhm = attr.computeGaussianWidth()
+        fwhm = attr.computeGaussianWidth() * wcs.pixelScale() * sigmaToFwhm
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,
                 dafBase.DateTime.UTC)
         self.expFile.write(sciCcdExposureId, visit, 0, ccd,

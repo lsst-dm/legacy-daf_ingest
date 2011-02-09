@@ -27,6 +27,7 @@ import getpass
 import optparse
 import MySQLdb as sql
 from textwrap import dedent
+from lsst.daf.persistence import DbAuth
 
 from lsst.datarel.mysqlExecutor import addDbOptions
 
@@ -178,8 +179,18 @@ def hostPort(sv):
 def run(host, port, user, passwd, database,
         metadataTable, idCol, outputTable,
         skipCols=set(), compress=True):
-    with closing(sql.connect(host=host, port=port, user=user,
-                             passwd=passwd, db=database)) as conn:
+    kw = dict()
+    if host is not None:
+        kw['host'] = host
+    if port is not None:
+        kw['port'] = port
+    if user is not None:
+        kw['user'] = user
+    if passwd is not None:
+        kw['passwd'] = passwd
+    if database is not None:
+        kw['db'] = database
+    with closing(sql.connect(**kw)) as conn:
         with closing(conn.cursor()) as cursor:
             cursor.execute("SELECT COUNT(*) FROM " + metadataTable)
             nrows = cursor.fetchall()[0][0]
@@ -223,7 +234,14 @@ def main():
     if len(args) != 4:
         parser.error("Invalid number of arguments")
     db, metadataTable, idCol, outputTable = args
-    passwd = getpass.getpass()
+    if opts.host is not None and opts.port is not None and \
+            DbAuth.available(opts.host, str(opts.port)):
+        user = DbAuth.username(opts.host, str(opts.port))
+        passwd = DbAuth.password(opts.host, str(opts.port))
+    elif os.path.exists(os.path.join(os.environ['HOME'], ".mysql.cnf")):
+        passwd = None
+    else:
+        passwd = getpass.getpass()
     skipCols = set()
     if opts.skipKeys != None:
         skipCols = set(map(lambda x: x.strip(), opts.skipKeys.split(",")))

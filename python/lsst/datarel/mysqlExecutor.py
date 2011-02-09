@@ -28,6 +28,7 @@ import optparse
 import os
 import subprocess
 import sys
+from lsst.daf.persistence import DbAuth
 
 
 class MysqlExecutor(object):
@@ -35,37 +36,41 @@ class MysqlExecutor(object):
         self.host = host
         self.port = port
         self.user = user
-        if password == None:
-            self.password = getpass.getpass("%s's MySQL password: " % user)
-        else:
-            self.password = password
         self.database = database
+        if password == None:
+            if self.host is not None and self.port is not None and \
+                    DbAuth.available(self.host, str(self.port)):
+                self.user = DbAuth.username(self.host, str(self.port))
+                password = DbAuth.password(self.host, str(self.port))
+            elif not os.path.exists(os.path.join(os.environ['HOME'], ".my.cnf")):
+                password = getpass.getpass("%s's MySQL password: " % user)
+        self.password = password
+        self.mysqlCmd = ['mysql', '-vvv']
+        if host is not None:
+            self.mysqlCmd += ['-h', self.host]
+        if port is not None:
+            self.mysqlCmd += ['-P', str(self.port)]
+        if user is not None:
+            self.mysqlCmd += ['-u', self.user]
+        if password is not None:
+            self.mysqlCmd =+ ['-p', self.password]
 
     def createDb(self, database):
         if not isinstance(database, basestring):
             raise TypeError('database name is not a string')
-        subprocess.check_call(['mysql', '-vvv',
-                               '-h', self.host,
-                               '-P', str(self.port),
-                               '-u', self.user,
-                               '-p' + self.password,
-                               '-e', 'CREATE DATABASE %s;' % database],
-                              stdout=sys.stdout, stderr=sys.stderr)
+        cmd += ['-e', 'CREATE DATABASE %s;' % database]
+        subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
         sys.stdout.flush()
         sys.stderr.flush()
-
 
     def execStmt(self, stmt):
         if not isinstance(stmt, basestring):
             raise TypeError('SQL statement is not a string')
-        subprocess.check_call(['mysql', '-vvv',
-                               '-h', self.host,
-                               '-P', str(self.port),
-                               '-u', self.user,
-                               '-p' + self.password,
-                               '-D', self.database,
-                               '-e', stmt],
-                              stdout=sys.stdout, stderr=sys.stderr)
+        cmd = self.mysqlCmd
+        if self.database is not None:
+            cmd += ['-D', self.database]
+        cmd += ['-e', stmt]
+        subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
         sys.stdout.flush()
         sys.stderr.flush()
 
@@ -76,24 +81,28 @@ class MysqlExecutor(object):
             raise RuntimeError(
                 'Script %s does not exist or is not a file' % script)
         with open(script, 'rb') as f:
-            subprocess.check_call(['mysql', '-vvv',
-                                   '-h', self.host,
-                                   '-P', str(self.port),
-                                   '-u', self.user,
-                                   '-p' + self.password,
-                                   '-D', self.database],
-                                  stdin=f, stdout=sys.stdout, stderr=sys.stderr)
+            cmd = self.mysqlCmd
+            if self.database is not None:
+                cmd += ['-D', self.database]
+            subprocess.check_call(cmd, stdin=f,
+                    stdout=sys.stdout, stderr=sys.stderr)
             sys.stdout.flush()
             sys.stderr.flush()
 
     def runQuery(self, query):
         if not isinstance(query, basestring):
             raise TypeError('Query is not a string')
-        kw = { 'host': self.host,
-               'port': self.port,
-               'user': self.user,
-               'db': self.database,
-               'passwd': self.password }
+        kw = dict()
+        if self.host is not None:
+            kw['host'] = self.host
+        if self.port is not None:
+            kw['port'] = self.port
+        if self.user is not None:
+            kw['user'] = self.user
+        if self.database is not None:
+            kw['db'] = self.database
+        if self.password is not None:
+            kw['passwd'] = self.password
         with closing(sql.connect(**kw)) as conn:
             with closing(conn.cursor()) as cursor:
                 print query
@@ -115,4 +124,3 @@ def addDbOptions(parser):
     parser.add_option(
         "-P", "--port", dest="port", type="int", default=3306,
         help="MySQL database server port (%default).")
-

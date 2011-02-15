@@ -53,11 +53,12 @@ class MysqlExecutor(object):
         if user is not None:
             self.mysqlCmd += ['-u', self.user]
         if password is not None:
-            self.mysqlCmd =+ ['-p', self.password]
+            self.mysqlCmd += ['-p', self.password]
 
     def createDb(self, database):
         if not isinstance(database, basestring):
             raise TypeError('database name is not a string')
+        cmd = list(self.mysqlCmd)
         cmd += ['-e', 'CREATE DATABASE %s;' % database]
         subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
         sys.stdout.flush()
@@ -66,7 +67,7 @@ class MysqlExecutor(object):
     def execStmt(self, stmt):
         if not isinstance(stmt, basestring):
             raise TypeError('SQL statement is not a string')
-        cmd = self.mysqlCmd
+        cmd = list(self.mysqlCmd)
         if self.database is not None:
             cmd += ['-D', self.database]
         cmd += ['-e', stmt]
@@ -81,7 +82,7 @@ class MysqlExecutor(object):
             raise RuntimeError(
                 'Script %s does not exist or is not a file' % script)
         with open(script, 'rb') as f:
-            cmd = self.mysqlCmd
+            cmd = list(self.mysqlCmd)
             if self.database is not None:
                 cmd += ['-D', self.database]
             subprocess.check_call(cmd, stdin=f,

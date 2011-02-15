@@ -83,7 +83,7 @@ class CsvGenerator(object):
         sciCcdExposureId = (long(visit) << 9) + raftId * 10 + ccdNum
 
         filename = self.mapper.map("calexp",
-                visit=visit, raft=raft, sensor=sensor).getLocations()[0]
+                dict(visit=visit, raft=raft, sensor=sensor)).getLocations()[0]
         if os.stat(filename).st_size < (4+2+4)*4000*4000:
             print >>sys.stderr, "*** Too small (possibly corrupt), skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
             return

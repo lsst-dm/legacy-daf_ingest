@@ -6,7 +6,7 @@ setupRequired(sdqa >= 4.1.0.0)
 
 setupOptional(obs_cfht >= 4.1.0.0)
 setupOptional(obs_lsstSim >= 4.1.0.1)
-setupOptional(astrometry_net_data imsim_20100716)
+setupOptional(astrometry_net_data)
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envAppend(PATH, ${PRODUCT_DIR}/bin/sst)

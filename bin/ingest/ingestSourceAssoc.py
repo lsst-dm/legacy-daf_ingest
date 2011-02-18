@@ -22,6 +22,8 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+from __future__ import with_statement
+
 import errno
 import getpass
 import glob
@@ -220,7 +222,8 @@ def load(sql, scratch):
             """ % os.path.abspath(csv)))
 
 def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None):
-    objectCsv = os.path.abspath(os.path.join(scratch, 'objDump.csv'))
+    objectTsv = os.path.abspath(os.path.join(scratch, 'objDump.tsv'))
+    objectPaf = os.path.abspath(os.path.join(scratch, 'objDump.paf'))
     filtCsv = os.path.abspath(os.path.join(scratch, 'refFilt.csv'))
     matchCsv = os.path.abspath(os.path.join(scratch, 'refObjMatch.csv'))
     # Filter reference catalog
@@ -235,18 +238,23 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
             filtArgs.append(f)
     subprocess.call(filtArgs)
     # Dump object table
-    sql.execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
-                    FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
-                    GROUP BY o.objectId
-                    ORDER BY o.decl_PS
-                    INTO OUTFILE '%s'
-                    FIELDS TERMINATED BY ',';
-                 """ % objectCsv)
+    with open(objectTsv, "wb") as f:
+        sql.execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
+                        FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
+                        GROUP BY o.objectId
+                        ORDER BY o.decl_PS""", f, ['-B', '-N'])
+    with open(objectPaf, "wb") as f:
+        f.write("""fieldNames: "objectId" "ra" "decl" "epoch"
+                   csvDialect: {
+                       delimiter: "\t"
+                   }
+                """)
     # Match reference objects to objects
-    subprocess.call(['python', refPosMatch, filtCsv, objectCsv, matchCsv,
-                     '-s', '-r', str(radius), '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
-                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift,' +
-                     'uCov,gCov,rCov,iCov,zCov,yCov', '-f', 'objectId,ra,decl,epoch'])
+    subprocess.call(['python', refPosMatch, filtCsv, objectTsv, matchCsv,
+                     '-s', '-r', str(radius), '-P', objectPaf, '-F',
+                     'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
+                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,' +
+                     'vRad,isVar,redshift,uCov,gCov,rCov,iCov,zCov,yCov'])
     # Load filtered reference catalog and matches
     sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE SimRefObject
                     FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (

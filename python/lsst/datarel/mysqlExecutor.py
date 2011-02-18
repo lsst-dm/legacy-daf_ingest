@@ -45,7 +45,7 @@ class MysqlExecutor(object):
             elif not os.path.exists(os.path.join(os.environ['HOME'], ".my.cnf")):
                 password = getpass.getpass("%s's MySQL password: " % user)
         self.password = password
-        self.mysqlCmd = ['mysql', '-vvv']
+        self.mysqlCmd = ['mysql']
         if host is not None:
             self.mysqlCmd += ['-h', self.host]
         if port is not None:
@@ -53,29 +53,31 @@ class MysqlExecutor(object):
         if user is not None:
             self.mysqlCmd += ['-u', self.user]
         if password is not None:
-            self.mysqlCmd += ["-p='" + self.password + "'"]
+            self.mysqlCmd += ['-p' + self.password]
 
-    def createDb(self, database):
+    def createDb(self, database, options=['-vvv']):
         if not isinstance(database, basestring):
             raise TypeError('database name is not a string')
         cmd = list(self.mysqlCmd)
+        cmd += options
         cmd += ['-e', 'CREATE DATABASE %s;' % database]
         subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
         sys.stdout.flush()
         sys.stderr.flush()
 
-    def execStmt(self, stmt):
+    def execStmt(self, stmt, stdout=sys.stdout, options=['-vvv']):
         if not isinstance(stmt, basestring):
             raise TypeError('SQL statement is not a string')
         cmd = list(self.mysqlCmd)
         if self.database is not None:
             cmd += ['-D', self.database]
+        cmd += options
         cmd += ['-e', stmt]
-        subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
-        sys.stdout.flush()
+        subprocess.check_call(cmd, stdout=stdout, stderr=sys.stderr)
+        stdout.flush()
         sys.stderr.flush()
 
-    def execScript(self, script):
+    def execScript(self, script, options=['-vvv']):
         if not isinstance(script, basestring):
             raise TypeError('Script file name is not a string')
         if not os.path.isfile(script):
@@ -85,6 +87,7 @@ class MysqlExecutor(object):
             cmd = list(self.mysqlCmd)
             if self.database is not None:
                 cmd += ['-D', self.database]
+            cmd += options
             subprocess.check_call(cmd, stdin=f,
                     stdout=sys.stdout, stderr=sys.stderr)
             sys.stdout.flush()

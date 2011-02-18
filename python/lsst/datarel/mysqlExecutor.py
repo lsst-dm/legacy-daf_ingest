@@ -53,7 +53,7 @@ class MysqlExecutor(object):
         if user is not None:
             self.mysqlCmd += ['-u', self.user]
         if password is not None:
-            self.mysqlCmd += ['-p', self.password]
+            self.mysqlCmd += ["-p='" + self.password + "'"]
 
     def createDb(self, database):
         if not isinstance(database, basestring):

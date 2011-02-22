@@ -63,6 +63,8 @@ import transposeMetadata
 #     )
 # );
 fixupTemplate = string.Template("""
+    SET myisam_sort_buffer_size=1000000000;
+
     CREATE TABLE _Keys1 (metadataKey VARCHAR(255) NOT NULL PRIMARY KEY) ENGINE=MEMORY;
     CREATE TABLE _Keys2 (metadataKey VARCHAR(255) NOT NULL PRIMARY KEY) ENGINE=MEMORY;
 
@@ -108,6 +110,8 @@ def findInconsistentMetadataTypes(sql):
     needsFix = []
     for table in ("Raw_Amp_Exposure_Metadata", "Science_Ccd_Exposure_Metadata"):
         keys = sql.runQuery("""
+            SET myisam_sort_buffer_size=1000000000;
+
             SELECT t.metadataKey, count(*) AS n,
                    GROUP_CONCAT(t.type SEPARATOR ',') AS types
             FROM (
@@ -161,7 +165,7 @@ def main():
                      (filter, filter))
     # Enable indexes on tables for faster queries
     for table in loadTables:
-        sql.execStmt("ALTER TABLE %s ENABLE KEYS;" % table)
+        sql.execStmt("SET myisam_sort_buffer_size=1000000000; ALTER TABLE %s ENABLE KEYS;" % table)
     # fixup metadata tables if necessary
     fixTables = findInconsistentMetadataTypes(sql)
     if len(fixTables) > 0:

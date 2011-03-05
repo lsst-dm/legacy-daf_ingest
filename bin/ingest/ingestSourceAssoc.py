@@ -103,8 +103,14 @@ def load(sql, scratch):
                     atmCorrFlux, atmCorrFluxSigma,
                     apDia,
                     Ixx, IxxSigma, Iyy, IyySigma, Ixy, IxySigma,
+                    psfIxx, psfIxxSigma, psfIyy, psfIyySigma, psfIxy, psfIxySigma,
+                    e1_SG, e1_SG_Sigma, e2_SG, e2_SG_Sigma, 
+                    resolution_SG,
+                    shear1_SG, shear1_SG_Sigma, shear2_SG, shear2_SG_Sigma,
+                    sourceWidth_SG, sourceWidth_SG_Sigma,
+                    shapeFlag_SG,
                     snr, chi2,
-                    sky,skySigma,
+                    sky, skySigma,
                     flagForAssociation, flagForDetection, flagForWcs);
                 """ % (os.path.abspath(csv), table)))
     for csv in glob.glob(os.path.join(scratch, '*', 'object.csv')):

@@ -194,7 +194,7 @@ class EndToEndTestCase(unittest.TestCase):
         # Note - one of datarel's dependencies causes setup of
         #        'astrometry_net_data cfhttemplate' version; 
         #        datarel needs imsim_*.
-        ver = 'imsim_20100716_b'
+        ver = 'imsim-2010-12-17-1'
         print "Setting up astrometry_net_data", ver
         ok, version, reason = eups.Eups().setup("astrometry_net_data", versionName=ver)
         if not ok:

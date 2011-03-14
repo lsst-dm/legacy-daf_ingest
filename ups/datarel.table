@@ -3,6 +3,7 @@ setupRequired(ip_pipeline >= 4.1.0.1)
 setupRequired(ap >= 4.2.0.2)
 setupRequired(ctrl_sched >= 4.3.0.0)
 setupRequired(sdqa >= 4.1.0.0)
+setupRequired(ctrl_orca >= 4.3.0.1)
 
 setupOptional(obs_cfht >= 4.1.0.0)
 setupOptional(obs_lsstSim >= 4.1.0.1)

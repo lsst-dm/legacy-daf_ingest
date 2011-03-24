@@ -100,7 +100,8 @@ def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):
     for getField in dir(s1):
         if not getField.startswith("get"):
             continue
-        if getField in ("getAstrometry", "getPhotometry", "getShape"):
+        if getField in ("getAstrometry", "getPhotometry",
+                "getShape", "getFootprint"):
             continue
 
         nullField = getField[3:]

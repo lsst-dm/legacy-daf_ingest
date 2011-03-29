@@ -34,6 +34,7 @@ echo $i
 # Production will make a directory 'thisrun' under base.
 # 
 base="/lsst3/weekly"
+dbuser="buildbot"
 
 # stackType="tags" stackType="trunk"
 stackType=$1
@@ -67,21 +68,21 @@ echo "${DATAREL_DIR}/bin/sst/SourceAssoc_ImSim.py -i update -o SourceAssoc -R up
 ${DATAREL_DIR}/bin/sst/SourceAssoc_ImSim.py -i update -o SourceAssoc -R update/registry.sqlite3 >& SourceAssoc_ImSim.log 
 
 # Prepare DB
-echo "${DATAREL_DIR}/bin/ingest/prepareDb.py -u rplante -H lsst10.ncsa.uiuc.edu rplante_DC3b_u_${thisrun}_science";
-${DATAREL_DIR}/bin/ingest/prepareDb.py -u rplante -H lsst10.ncsa.uiuc.edu rplante_DC3b_u_${thisrun}_science >& prepareDb.log 
+echo "${DATAREL_DIR}/bin/ingest/prepareDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_DC3b_u_${thisrun}_science";
+${DATAREL_DIR}/bin/ingest/prepareDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_DC3b_u_${thisrun}_science >& prepareDb.log 
 
 # Ingest processed metadata
-echo "${DATAREL_DIR}/bin/ingest/ingestProcessed_ImSim.py -u rplante -d rplante_DC3b_u_${thisrun}_science update update/registry.sqlite3";
-${DATAREL_DIR}/bin/ingest/ingestProcessed_ImSim.py -u rplante -d rplante_DC3b_u_${thisrun}_science update update/registry.sqlite3 >& ingestProcessed_ImSim.log
+echo "${DATAREL_DIR}/bin/ingest/ingestProcessed_ImSim.py -u ${dbuser} -d ${dbuser}_DC3b_u_${thisrun}_science update update/registry.sqlite3";
+${DATAREL_DIR}/bin/ingest/ingestProcessed_ImSim.py -u ${dbuser} -d ${dbuser}_DC3b_u_${thisrun}_science update update/registry.sqlite3 >& ingestProcessed_ImSim.log
 
 # Ingest source association data
 mkdir csv-SourceAssoc
-echo "${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u rplante -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 rplante_DC3b_u_${thisrun}_science  SourceAssoc  csv-SourceAssoc";
-${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u rplante -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 rplante_DC3b_u_${thisrun}_science  SourceAssoc  csv-SourceAssoc >& ingestSourceAssoc.log 
+echo "${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_DC3b_u_${thisrun}_science  SourceAssoc  csv-SourceAssoc";
+${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_DC3b_u_${thisrun}_science  SourceAssoc  csv-SourceAssoc >& ingestSourceAssoc.log 
 
 # Run SQDA igestion script 
-echo "${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science  update update/registry.sqlite3 ";
-${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science update  update/registry.sqlite3 >& ingestSdqa_ImSim.log 
+echo "${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -d ${dbuser}_DC3b_u_${thisrun}_science  update update/registry.sqlite3 ";
+${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -d ${dbuser}_DC3b_u_${thisrun}_science update  update/registry.sqlite3 >& ingestSdqa_ImSim.log 
 
 # Run finishDb script 
 echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science";

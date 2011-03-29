@@ -1,10 +1,26 @@
 #!/bin/sh
 
+if [ $# -eq 0 ]
+then
+echo "$0 : You must supply 'trunk' or 'tags' as a command line argument"
+exit 1
+fi
+
+
+if [ $1 = 'tags' -o $1 = 'trunk' ]
+then
+echo "Running for stack: $1 "
+else
+echo "$1 : You must supply 'trunk' or 'tags' as a command line argument"
+exit 1
+fi
+
+
 # grab the date for labelling the run
 i=`date "+%Y_%m%d"`
 
-stackType="tags"
-# stackType="trunk"
+# stackType="trunk" stackType="tags"
+stackType=$1
 
 if [ $stackType = 'tags' ]
 then

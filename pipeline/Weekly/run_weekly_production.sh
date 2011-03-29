@@ -8,6 +8,24 @@
 #
 # from the current working directory 
 
+
+if [ $# -eq 0 ]
+then
+echo "$0 : You must supply 'trunk' or 'tags' as a command line argument"
+exit 1
+fi
+
+
+if [ $1 = 'tags' -o $1 = 'trunk' ]
+then
+echo "Running for stack: $1 "
+else
+echo "$1 : You must supply 'trunk' or 'tags' as a command line argument"
+exit 1
+fi
+
+echo "Starting run_weekly_production"
+
 # grab the date for labelling the run
 i=`date "+%Y_%m%d"`
 echo $i
@@ -17,36 +35,26 @@ echo $i
 # 
 base="/lsst3/weekly"
 
-stackType="tags"
-# stackType="trunk"
+# stackType="tags" stackType="trunk"
+stackType=$1
+echo "stackType ${stackType}"
 
-# thisrun="variability_trunk_prod_$i"
-thisrun="test_${stackType}_prod1_$i"
 
+# Runid for the weekly production 
+thisrun="weekly_production_${stackType}_$i"
+echo "runID ${thisrun}"
+
+echo "Running: source ./load_env_${stackType}.sh "
 source ./load_env_${stackType}.sh
-
-# check versions being used
-which orca.py
-which eups
 
 echo PWD 
 echo $PWD 
 
 echo RUNNING 
-
-cd /lsst3/weekly/pipeline
-
-# Runid for the weekly production 
-# thisrun="weekly_trunk_prod_$i"
-
-# echo "orca.py -r $PWD -e $PWD/stack_trunk.sh -V 30 -L 2 production.paf ${thisrun}"
 echo "orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun}"
-sleep 5
 
-# orca.py -r $PWD -e $PWD/stack_trunk.sh -V 30 -L 2 production.paf ${thisrun} >& unifiedPipeline.log
 orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun} >& unifiedPipeline.log
 
-# cd ${base}/datarel-runs/weeklytest_$i
 cd ${base}/datarel-runs/${thisrun}
 
 pwd
@@ -75,7 +83,9 @@ ${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u rplante -e /lsst3/weekly/da
 echo "${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science  update update/registry.sqlite3 ";
 ${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science update  update/registry.sqlite3 >& ingestSdqa_ImSim.log 
 
-
+# Run finishDb script 
+echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science";
+${DATAREL_DIR}/bin/ingest/finishDb.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science >& finishDb.log 
 
 
 

@@ -72,6 +72,12 @@ if [ "$stackType" = "tags" ] ; then
     export SHELL=/bin/bash
     export LSST_HOME=/lsst/DC3/stacks/default
     source /lsst/DC3/stacks/default/loadLSST.sh
+
+    # following: undo gratuitous set of svn+ssh  for all lsst users
+    export SVNROOT=svn://svn.lsstcorp.org
+    export LSST_SVN=svn://svn.lsstcorp.org
+    export LSST_DMS=svn://svn.lsstcorp.org/DMS
+
     setup datarel
 
 else
@@ -79,9 +85,17 @@ else
     export SHELL=/bin/bash
     export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox
     source /lsst/DC3/stacks/default/loadLSST.sh
+
+    # following: undo gratuitous set of svn+ssh  for all lsst users
+    export SVNROOT=svn://svn.lsstcorp.org
+    export LSST_SVN=svn://svn.lsstcorp.org
+    export LSST_DMS=svn://svn.lsstcorp.org/DMS
+
     setup datarel
 
 fi
+
+printenv | grep SVN
 
 eups list | grep Setup
 

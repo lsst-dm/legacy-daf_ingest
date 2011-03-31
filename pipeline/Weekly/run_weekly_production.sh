@@ -27,7 +27,7 @@ fi
 echo "Starting run_weekly_production"
 
 # grab the date for labelling the run
-i=`date "+%Y_%m%d"`
+i=`date "+%Y_%m%d_%H%M%S"`
 echo $i
 
 # Output directory space for the run:
@@ -85,8 +85,8 @@ echo "${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.
 ${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -d ${dbuser}_DC3b_u_${thisrun}_science update  update/registry.sqlite3 >& ingestSdqa_ImSim.log 
 
 # Run finishDb script 
-echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science";
-${DATAREL_DIR}/bin/ingest/finishDb.py -u rplante -H lsst10.ncsa.uiuc.edu -d rplante_DC3b_u_${thisrun}_science >& finishDb.log 
+echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_DC3b_u_${thisrun}_science";
+${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_DC3b_u_${thisrun}_science >& finishDb.log 
 
 
 

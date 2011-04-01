@@ -2,8 +2,10 @@
 
 from lsst.datarel import runStage
 from lsst.pex.harness.IOStage import InputStage, OutputStage
+import eups
 import os
 import subprocess
+import sys
 import time
 
 clip = {
@@ -14,13 +16,20 @@ clip = {
     }
 }
 
+if not os.environ.has_key('AFWDATA_DIR'):
+    (ok, ver, err) = eups.Eups().setup("afwdata")
+    if not ok:
+        print "Could not setup afwdata:", str(err)
+        sys.exit(1)
+
+inputDir = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
 clip = runStage(InputStage,
     """#<?cfg paf policy ?>
     parameters: {
         butler: {
             mapperName: lsst.obs.lsstSim.LsstSimMapper
             mapperPolicy: {
-                root: tests
+                root: """ + inputDir + """
             }
         }
         inputItems: {
@@ -65,11 +74,11 @@ clip = runStage(OutputStage,
         }
     }
     """, clip)
-assert os.path.exists("psf/v85408556-fr/R23/S11.boost")
-assert os.path.getmtime("psf/v85408556-fr/R23/S11.boost") > now
-assert subprocess.call(["cmp",
-        "psf/v85408556-fr/R23/S11.boost",
-        "tests/psf/v85408556-fr/R23/S11.boost"]) == 0
+psfDir = os.path.join("psf", "v85408556-fr", "R23")
+psfPath = os.path.join(psfDir, "S11.boost")
+assert os.path.exists(psfPath)
+assert os.path.getmtime(psfPath) > now
+assert subprocess.call(["cmp", psfPath, os.path.join(inputDir, psfPath)]) == 0
 
-os.remove("psf/v85408556-fr/R23/S11.boost")
-os.removedirs("psf/v85408556-fr/R23")
+os.remove(psfPath)
+os.removedirs(psfDir)

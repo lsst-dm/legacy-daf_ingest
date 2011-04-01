@@ -39,7 +39,7 @@ loadTables = ["Source",
               "Raw_Amp_Exposure_Metadata",
               "Raw_Amp_To_Science_CcdExposure",
               "sdqa_Rating_ForScienceCcdExposure",
-              "sdqa_Rating_ForSnapCcdExposure",
+              "sdqa_Rating_ForScienceAmpExposure",
               "Raw_Amp_To_Snap_Ccd_Exposure",
               "Snap_Ccd_To_Science_Ccd_Exposure",
              ]

@@ -112,9 +112,9 @@ workflow: {
     pipeline: {
        shortName:     PT1PipeA
        definition:    @main-ImSim.paf
-       runCount: 5     
+       runCount: 2     
        deploy: {
-          processesOnNode: lsst5:5
+          processesOnNode: lsst5:2
        }
        launch: true
     }
@@ -122,9 +122,9 @@ workflow: {
     pipeline: {
        shortName:     PT1PipeB
        definition:    @main-ImSim.paf
-       runCount: 5     
+       runCount: 2     
        deploy: {
-          processesOnNode: lsst7:5
+          processesOnNode: lsst7:2
        }
        launch: true
     }

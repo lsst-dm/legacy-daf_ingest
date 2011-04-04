@@ -44,6 +44,19 @@ loadTables = ["Source",
               "Snap_Ccd_To_Science_Ccd_Exposure",
              ]
 
+def checkDb(sql):
+    for table in loadTables:
+        try:
+            result = sql.runQuery("SELECT COUNT(*) FROM %s" % (table,))
+            if result[0][0] != 0:
+                print "WARNING: non-empty table %s" % (table,)
+        except Exception, e:
+            if hasattr(e, "__getitem__") and e[0] == 1049:
+                return False
+            else:
+                raise e
+    return True
+
 def main():
     usage = dedent("""\
     usage: %prog [options] <database>
@@ -63,16 +76,17 @@ def main():
     database = args[0]
     if opts.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
-    if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
-        parser.error("$CAT_DIR is undefined or empty - please setup the cat " +
-                     "package and try again.")
-    catDir = os.environ['CAT_DIR']
     sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
-    sql.createDb(database)
-    sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlPT1_2.sql'))
-    sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
-    sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
-    sql.execScript(os.path.join(catDir, 'sql', 'setup_sdqa.sql'))
+    if not checkDb(sql):
+        if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
+            parser.error("$CAT_DIR is undefined or empty - " +
+                    "please setup the cat package and try again.")
+        catDir = os.environ['CAT_DIR']
+        sql.createDb(database)
+        sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlPT1_2.sql'))
+        sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
+        sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
+        sql.execScript(os.path.join(catDir, 'sql', 'setup_sdqa.sql'))
     # Disable indexes on tables for faster loading
     for table in loadTables:
         sql.execStmt("ALTER TABLE %s DISABLE KEYS;" % table)

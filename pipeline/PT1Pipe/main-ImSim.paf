@@ -9,6 +9,7 @@ framework: {
 
 execute: {
     nSlices: 1
+    barrierDelay: 0.000001
     localLogMode: true
     eventBrokerHost: lsst8.ncsa.uiuc.edu
     shutdownTopic: shutdownMain
@@ -4878,6 +4879,10 @@ execute: {
                 isrCcdExposure0: isrExposure0
                 isrCcdExposure1: isrExposure1
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
             parameters: {
                 pipeline: CcdAssembly
@@ -4886,6 +4891,10 @@ execute: {
                 isrCcdExposure0: isrCcdExposure0
                 isrCcdExposure1: isrCcdExposure1
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
         }
     }
@@ -4958,6 +4967,10 @@ execute: {
             inputKeys: {
                 visitExposure: crSubCcdExposure0
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
             parameters: {
                 pipeline: CrSplit
@@ -4965,6 +4978,10 @@ execute: {
             outputKeys: {
                 visitExposure: visitExposure
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
         }
     }
@@ -5111,6 +5128,10 @@ execute: {
                 psf: measuredPsf
                 jobIdentity: jobIdentity
                 apCorr: apCorr
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
             parameters: {
                 pipeline: ImgChar
@@ -5120,6 +5141,10 @@ execute: {
                 psf: psf
                 jobIdentity: jobIdentity
                 apCorr: apCorr
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
         }
     }

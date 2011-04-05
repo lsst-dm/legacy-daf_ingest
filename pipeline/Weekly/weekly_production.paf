@@ -44,7 +44,7 @@ database: {
     configurationClass: lsst.ctrl.orca.db.DC3Configurator
     configuration: {  
         globalDbName: GlobalDB
-        dcVersion: DC3b
+        dcVersion: PT1_2
         dcDbName: DC3b_DB
         minPercDiskSpaceReq: 10   # measured in percentages
         userRunLife: 2            # measured in weeks

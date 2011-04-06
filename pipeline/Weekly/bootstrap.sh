@@ -25,14 +25,16 @@
 usage() {
 #80 cols  ................................................................................
     echo ""
-    echo "Usage: $0 [-debug] <branch>"
+    echo "Usage: $0 [-debug] -input <weekly> <branch>"
     echo "Bootstrap and then process a Weekly Production Run."
-    echo
+    echo ""
     echo "Parameters (must be in this order):"
-    echo "      -debug: use limited raft set for debug run."
-    echo "    <branch>: one of"
-    echo "              'tags'  - use stack comprised of current tags;"
-    echo "              'trunk' - use stack comprised of trunk versions."
+    echo "          -debug: use limited raft set for debug run."
+    echo "  input <weekly>: selects file specifying image data to process. "
+    echo "                  Located in "$DATAREL_DIR/pipeline/Weekly/<weekly>."
+    echo "        <branch>: one of"
+    echo "                 'tags'  - use stack comprised of current tags;"
+    echo "                 'trunk' - use stack comprised of trunk versions."
     echo ""
 }
 #--------------------------------------------------------------------------
@@ -47,14 +49,25 @@ fi
 
 if [ "$1" = "-debug" ] ; then
     DEBUG_DATA=0
-    echo "$PROG : Using the debug miminal-raft setup."
+    echo "$PROG : Using debug miminal-raft setup."
     shift 1
 else
     DEBUG_DATA=1
 fi
 
+if [ $# -lt 3 ] ; then
+    usage
+    exit 1
+fi
+
+if [ "$1" = "-input" ] ; then
+    INPUT_DATA=$2
+    echo "$PROG : Processing input data: $INPUT_DATA."
+    shift 2
+fi
+
 if [ "$1" = "tags" -o "$1" = "trunk" ] ; then
-    echo "$PROG: Running for stack: $1 "
+    echo "$PROG : Running for stack: $1 "
 else
     usage
     exit 1
@@ -113,7 +126,9 @@ echo "copy weekly production files"
 cp Weekly/* .
 
 if [ $DEBUG_DATA = 0 ]; then
-    cp  Weekly/debug_weekly.input weekly.input
+    tail -20  Weekly/$INPUT_DATA > weekly.input
+else
+    cp Weekly/$INPUT_DATA weekly.input
 fi
 
 echo "copy PT1Pipe policy"

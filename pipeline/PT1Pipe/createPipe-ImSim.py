@@ -7,7 +7,7 @@ import sys
 def pipelinePolicy(f):
     print >>f, """#<?cfg paf policy ?>
 
-# Unified DC3b PT1.1 main ISR-SFM pipeline policy
+# Unified DC3b PT1.2 main ISR-SFM pipeline policy
 framework: {
     type: standard
     environment: "$DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse.sh"
@@ -16,6 +16,7 @@ framework: {
 
 execute: {
     nSlices: 1
+    barrierDelay: 0.000001
     localLogMode: true
     eventBrokerHost: lsst8.ncsa.uiuc.edu
     shutdownTopic: shutdownMain
@@ -368,6 +369,10 @@ def ccdAssemblyProcess(f):
                 isrCcdExposure0: isrExposure0
                 isrCcdExposure1: isrExposure1
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
             parameters: {
                 pipeline: CcdAssembly
@@ -376,6 +381,10 @@ def ccdAssemblyProcess(f):
                 isrCcdExposure0: isrCcdExposure0
                 isrCcdExposure1: isrCcdExposure1
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
         }
     }"""
@@ -450,6 +459,10 @@ def crSplitProcess(f):
             inputKeys: {
                 visitExposure: crSubCcdExposure0
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
             parameters: {
                 pipeline: CrSplit
@@ -457,6 +470,10 @@ def crSplitProcess(f):
             outputKeys: {
                 visitExposure: visitExposure
                 jobIdentity: jobIdentity
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
         }
     }"""
@@ -508,7 +525,6 @@ def imgCharProcess(f):
             outputKeys: {
                 psf: measuredPsf
                 cellSet: cellSet
-                sourceSet: psfSourceSet
                 sdqa: sdqa
             }
         }
@@ -605,6 +621,10 @@ def imgCharProcess(f):
                 psf: measuredPsf
                 jobIdentity: jobIdentity
                 apCorr: apCorr
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
             parameters: {
                 pipeline: ImgChar
@@ -614,6 +634,10 @@ def imgCharProcess(f):
                 psf: psf
                 jobIdentity: jobIdentity
                 apCorr: apCorr
+                originatorId: originatorId
+                targetDatasets: targetDatasets
+                inputDataSets: inputDatasets
+                outputDatasets: outputDatasets
             }
         }
     }"""

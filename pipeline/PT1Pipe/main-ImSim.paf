@@ -1,6 +1,6 @@
 #<?cfg paf policy ?>
 
-# Unified DC3b PT1.1 main ISR-SFM pipeline policy
+# Unified DC3b PT1.2 main ISR-SFM pipeline policy
 framework: {
     type: standard
     environment: "$DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse.sh"
@@ -5031,7 +5031,6 @@ execute: {
             outputKeys: {
                 psf: measuredPsf
                 cellSet: cellSet
-                sourceSet: psfSourceSet
                 sdqa: sdqa
             }
         }

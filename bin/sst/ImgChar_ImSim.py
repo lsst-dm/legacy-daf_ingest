@@ -123,7 +123,6 @@ def imgCharPipe(visitim, stages=None):
             outputKeys: {
                 psf: measuredPsf
                 cellSet: cellSet
-                sourceSet: psfSourceSet
                 sdqa: sdqa
             }
             """, clip)

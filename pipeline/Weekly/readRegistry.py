@@ -38,7 +38,6 @@ import os
 
 def main(inputRegistry):
     sql = 'sqlite3 -column %s \'select visit,raft,sensor from raw where channel="0,0" and snap=0;\'' %(inputRegistry)
-    print "sql: %s" %(sql)
     p = subprocess.Popen(sql, shell=True, stdout=subprocess.PIPE)
     results = p.stdout.readlines()
     p.stdout.close()

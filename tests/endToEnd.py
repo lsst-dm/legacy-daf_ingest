@@ -47,6 +47,9 @@ import lsst.afw.math as afwMath
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
+def cmpFloat(v1, v2, rtol=1e-10, atol=1e-8):
+    return abs(v1 - v2) <= atol and (v1 == 0 or abs(v1 - v2) / v1 <= rtol)
+
 def calexpCompare(o1, o2):
     w1 = o1.getWcs().getFitsMetadata().toString()
     w2 = o2.getWcs().getFitsMetadata().toString()
@@ -120,7 +123,7 @@ def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):
         v2 = getattr(s2, getField)()
         if str(v1) == "nan" and str(v2) == "nan":
             continue
-        if abs(v1 - v2) <= atol and (v1 == 0 or abs(v1 - v2) / v1 <= rtol):
+        if cmpFloat(v1, v2, rtol, rtol):
             continue
         return "%s %s: %g %g" % (t, getField, v1, v2)
 
@@ -147,10 +150,10 @@ def sdqaCompare(t, o1, o2):
     for i in xrange(len(r1)):
         if r1[i].getName() != r2[i].getName():
             return "%s names: %s, %s" % (t, r1[i].getName(), r2[i].getName())
-        if r1[i].getValue() != r2[i].getValue():
+        if not cmpFloat(r1[i].getValue(), r2[i].getValue()):
             return "%s %s values: %g, %g" % (t, r1[i].getName(),
                     r1[i].getValue(), r2[i].getValue())
-        if r1[i].getErr() != r2[i].getErr():
+        if not cmpFloat(r1[i].getErr(), r2[i].getErr()):
             return "%s %s errors: %g, %g" % (t, r1[i].getName(),
                     r1[i].getErr(), r2[i].getErr())
         if r1[i].getRatingScope() != r2[i].getRatingScope():

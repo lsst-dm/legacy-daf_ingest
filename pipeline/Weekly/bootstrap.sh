@@ -31,7 +31,7 @@ usage() {
     echo "Parameters (must be in this order):"
     echo "          -debug: use limited raft set for debug run."
     echo "  input <weekly>: selects file specifying image data to process. "
-    echo "                  Located in "$DATAREL_DIR/pipeline/Weekly/<weekly>."
+    echo "                  Located in $DATAREL_DIR/pipeline/Weekly/<weekly>."
     echo "        <branch>: one of"
     echo "                 'tags'  - use stack comprised of current tags;"
     echo "                 'trunk' - use stack comprised of trunk versions."

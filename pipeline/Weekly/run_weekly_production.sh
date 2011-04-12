@@ -44,9 +44,14 @@ echo "stackType ${stackType}"
 # Runid for the weekly production 
 thisrun="wp_${stackType}_$i"
 echo "runID ${thisrun}"
+echo "FullpathToWeeklyRun: ${base}/datarel-runs/${thisrun}"
 
 echo "Running: source ./load_env_${stackType}.sh "
 source ./load_env_${stackType}.sh
+
+echo "Saving configuration in: ${base}/datarel-runs/${thisrun}/config/weekly.tags"
+mkdir -p ${base}/datarel-runs/${thisrun}/config
+eups list -s > ${base}/datarel-runs/${thisrun}/config/weekly.tags
 
 echo PWD 
 echo $PWD 
@@ -87,7 +92,6 @@ ${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.e
 # Run finishDb script 
 echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun}";
 ${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun} >& finishDb.log 
-
 
 
 

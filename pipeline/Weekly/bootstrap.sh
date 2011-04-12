@@ -137,3 +137,8 @@ cp PT1Pipe/main-ImSim.paf .
 echo "launch weekly production"
 nohup ./run_weekly_production.sh ${stackType}  >& weekly_production_$i.log
 
+# A little handshake twix scripts to get name of Weekly Run Result Directory
+echo "Move log into Weekly Run output archive"
+SendToFile=`grep "FullpathToWeeklyRun: "  weekly_production_$i.log | sed -e "s/FullpathToWeeklyRun: //"`
+cp weekly_production_$i.log $SendToFile/
+

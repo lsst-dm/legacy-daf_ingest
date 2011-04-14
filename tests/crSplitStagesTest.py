@@ -44,6 +44,7 @@ import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
 import lsst.afw.image as afwImage
 import lsst.afw.display.ds9 as ds9
+import lsst.afw.geom as afwGeom
 import lsst.afw.math as afwMath
 
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
@@ -119,8 +120,8 @@ class CrSplitStageTestCase(unittest.TestCase):
 
     def setUp(self):
         filename = os.path.join(eups.productDir("afwdata"), "CFHT", "D4", "cal-53535-i-797722_1")
-        bbox = afwImage.BBox(afwImage.PointI(32,32), 512, 512)
-        exposure = afwImage.ExposureF(filename, 0, bbox)
+        bbox = afwGeom.Box2I(afwGeom.Point2I(32,32), afwGeom.Extent2I(512, 512))
+        exposure = afwImage.ExposureF(filename, 0, bbox, afwImage.LOCAL)
         # Hack to fix up exposure's WCS.  See #1365.
         exposure.setWcs(afwImage.makeWcs(exposure.getWcs().getFitsMetadata()))
 

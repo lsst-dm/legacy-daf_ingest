@@ -42,6 +42,7 @@ import lsst.utils.tests as utilsTests
 import lsst.pex.harness.Clipboard as pexClipboard
 import lsst.pex.policy as pexPolicy
 import lsst.ip.pipeline as ipPipe
+import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 import lsst.afw.display.ds9 as ds9
 import lsst.afw.math as afwMath
@@ -121,8 +122,8 @@ class CrSplitStagesImSimTestCase(unittest.TestCase):
         filename = os.path.join(eups.productDir("afwdata"), "ImSim",
                 "postISR", "v85751839-fr", "s0", "R23", "S11", "C00.fits")
 
-        bbox = afwImage.BBox(afwImage.PointI(0,0), 512, 512)
-        exposure = afwImage.ExposureF(filename, 0, bbox)
+        bbox = afwGeom.Box2I(afwGeom.Point2I(0,0), afwGeom.Extent2I(512, 512))
+        exposure = afwImage.ExposureF(filename, 0, bbox, afwImage.LOCAL)
 
         self.exposures = self.fakeCRSplitExposures(exposure)
 

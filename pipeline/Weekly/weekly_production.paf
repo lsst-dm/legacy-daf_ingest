@@ -125,9 +125,9 @@ workflow: {
     pipeline: {
        shortName:     PT1PipeB
        definition:    @main-ImSim.paf
-       runCount: 2     
+       runCount: 3     
        deploy: {
-          processesOnNode: lsst7:2
+          processesOnNode: lsst11.ncsa.illinois.edu:3
        }
        launch: true
     }

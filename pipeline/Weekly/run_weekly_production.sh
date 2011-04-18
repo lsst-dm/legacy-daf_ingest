@@ -60,6 +60,12 @@ echo RUNNING
 echo "orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun}"
 
 orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun} >& unifiedPipeline.log
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in setting up DB access."
+     exit 1
+fi
+
 
 cd ${base}/datarel-runs/${thisrun}
 

@@ -127,8 +127,16 @@ def imgCharPipe(visitim, stages=None):
             }
             """, clip)
 
-#        print >>sys.stderr, "PSF:", clip['measuredPsf'].getKernel().toString()
-
+        clip = runStage(measPipe.SourceMeasurementPsfFluxStage,
+            """#<?cfg paf policy?>
+            inputKeys: {
+                exposure: visitExposure
+                sourceSet: sourceSet
+            }
+            outputKeys: {
+                sourceSet: sourceSet
+            }
+            """, clip)
 
     if stages & APCORR:
         clip = runStage(measPipe.ApertureCorrectionStage,
@@ -142,6 +150,14 @@ def imgCharPipe(visitim, stages=None):
                 sdqa: sdqaApCorr
             }
             """, clip)
+
+        clip = runStage(measPipe.ApertureCorrectionApplyStage,
+                        """#<?cfg paf policy?>
+                        inputKeys: {
+                           apCorr: apCorr
+                           sourceSet: sourceSet
+                        }
+                        """, clip)
 
     if stages & WCS:
         clip = runStage(measPipe.WcsDeterminationStage,

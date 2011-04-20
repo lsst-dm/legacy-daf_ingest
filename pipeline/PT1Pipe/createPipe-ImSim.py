@@ -530,6 +530,20 @@ def imgCharProcess(f):
         }
     }
     appStage: {
+        name: icRemeasure
+        parallelClass: lsst.meas.pipeline.SourceMeasurementPsfFluxStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                exposure: visitExposure
+                sourceSet: sourceSet
+            }
+            outputKeys: {
+                sourceSet: sourceSet
+            }
+        }
+    }
+    appStage: {
         name: icApCorrect
         parallelClass: lsst.meas.pipeline.ApertureCorrectionStageParallel
         eventTopic: None
@@ -541,6 +555,17 @@ def imgCharProcess(f):
             outputKeys: {
                 apCorr: apCorr
                 sdqa: sdqa
+            }
+        }
+    }
+    appStage: {
+        name: icApCorrectApply
+        parallelClass: lsst.meas.pipeline.ApertureCorrectionApplyStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                apCorr: apCorr
+                sourceSet: sourceSet
             }
         }
     }

@@ -99,5 +99,6 @@ ${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.e
 echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun}";
 ${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun} >& finishDb.log 
 
-
-
+# Point to the new weekly production run
+rm -f /lsst3/weekly/datarel-runs/latest
+ln -s /lsst3/weekly/datarel-runs/${thisrun} /lsst3/weekly/datarel-runs/latest

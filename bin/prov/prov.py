@@ -26,6 +26,9 @@
 
     -h for command line help.
 
+    An appropriate EUPS_PATH and EUPS_DIR equivalent to that used
+    during the run being reproduced must be set.
+
     recreateCalexp() takes a run directory (the directory from an Orca-based
     run containing the input, update, and work subdirectories), a visit
     number, raft id (in "x,y" form like "1,2"), and a sensor id (also in "x,y"
@@ -48,7 +51,13 @@ def parseOptions():
     """Parse the command line options."""
 
     parser = OptionParser(
-            usage="%prog [-c] [-o OUTPUT] RUNDIR VISIT RAFT SENSOR")
+            usage="""%prog [-c] [-o OUTPUT] RUNDIR VISIT RAFT SENSOR
+            
+Recreate a calexp dataset based on provenance.
+
+An appropriate EUPS_PATH and EUPS_DIR equivalent to that used
+during the run being reproduced must be set.""")
+
     parser.add_option("-c", "--calexp", action="store_true",
             help="compare result with previously computed calexp")
     parser.add_option("-o", "--output", default="calexp.fits",

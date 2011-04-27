@@ -47,33 +47,36 @@ import lsst.afw.math as afwMath
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
-def cmpFloat(v1, v2, rtol=1e-10, atol=1e-8):
-    return abs(v1 - v2) <= atol and (v1 == 0 or abs(v1 - v2) / v1 <= rtol)
+def cmpFloat(v1, v2, tol=1e-10):
+    if v2 == 0.0:
+        return abs(v1) <= tol
+    else:
+        return abs(v1 - v2) / v2 <= tol
 
 def calexpCompare(o1, o2):
     w1 = o1.getWcs().getFitsMetadata().toString()
     w2 = o2.getWcs().getFitsMetadata().toString()
     if w1 != w2:
-        return "calexp WCS:\n%s\n%s" % (w1, w2)
+        return "calexp WCS:\nTest=\n%s\nRef=\n%s" % (w1, w2)
     m1 = o1.getMetadata().toString()
     m2 = o2.getMetadata().toString()
     if m1 != m2:
-        return "calexp metadata:\n%s\n%s" % (m1, m2)
+        return "calexp metadata:\nTest=\n%s\nRef=\n%s" % (m1, m2)
     c1 = o1.getCalib()
     c2 = o2.getCalib()
     if c1.getMidTime().nsecs() != c2.getMidTime().nsecs():
-        return "calexp calib midTime: %s %s" % (
+        return "calexp calib midTime: test %s, ref %s" % (
                 c1.getMidTime().toString(), c2.getMidTime().toString())
     if c1.getExptime() != c2.getExptime():
-        return "calexp calib exptime: %s %s" % (
+        return "calexp calib exptime: test %s, ref %s" % (
                 c1.getExptime(), c2.getExptime())
     if c1.getFluxMag0() != c2.getFluxMag0():
-        return "calexp calib exptime: %s %s" % (
+        return "calexp calib exptime: test %s, ref %s" % (
                 str(c1.getFluxMag0()), str(c2.getFluxMag0()))
     if o1.getHeight() != o2.getHeight():
-        return "calexp height: %s %s" % (o1.getHeight(), o2.getHeight())
+        return "calexp height: test %s, ref %s" % (o1.getHeight(), o2.getHeight())
     if o1.getWidth() != o2.getWidth():
-        return "calexp width: %s %s" % (o1.getWidth(), o2.getWidth())
+        return "calexp width: test %s, ref %s" % (o1.getWidth(), o2.getWidth())
 
     im = o1.getMaskedImage().getImage()
     im -= o2.getMaskedImage().getImage()
@@ -99,7 +102,7 @@ def calexpCompare(o1, o2):
 
     return None
 
-def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):
+def cmpSrc(t, s1, s2):
     for getField in dir(s1):
         if not getField.startswith("get"):
             continue
@@ -114,7 +117,7 @@ def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):
         if hasattr(afwDet, nullField):
             num = getattr(afwDet, nullField)
             if s1.isNull(num) != s2.isNull(num):
-                return "%s %s null: %s %s" % (t, field,
+                return "%s %s null: test %s, ref %s" % (t, field,
                         str(s1.isNull(num)), str(s2.isNull(num)))
             if s1.isNull(num):
                 continue
@@ -123,9 +126,13 @@ def cmpSrc(t, s1, s2, rtol=1e-10, atol=1e-8):
         v2 = getattr(s2, getField)()
         if str(v1) == "nan" and str(v2) == "nan":
             continue
-        if cmpFloat(v1, v2, rtol, rtol):
-            continue
-        return "%s %s: %g %g" % (t, getField, v1, v2)
+        if getField.endswith("Err"):
+            if cmpFloat(v1, v2, 1e-6):
+                continue
+        else:
+            if cmpFloat(v1, v2):
+                continue
+        return "%s %s: test %g, ref %g" % (t, getField, v1, v2)
 
     return None
 
@@ -133,7 +140,7 @@ def srcCompare(o1, o2, t="src"):
     src1 = o1.getSources()
     src2 = o2.getSources()
     if len(src1) != len(src2):
-        return "%s length: %d %d" % (t, len(src1), len(src2))
+        return "%s length: test %d, ref %d" % (t, len(src1), len(src2))
     for s1, s2 in zip(src1, src2):
         msg = cmpSrc(t, s1, s2)
         if msg is not None:
@@ -146,18 +153,18 @@ def sdqaCompare(t, o1, o2):
     r1 = o1.getSdqaRatings()
     r2 = o2.getSdqaRatings()
     if len(r1) != len(r2):
-        return "%s lengths: %d, %d" % (t, len(r1), len(r2))
+        return "%s lengths: test %d, ref %d" % (t, len(r1), len(r2))
     for i in xrange(len(r1)):
         if r1[i].getName() != r2[i].getName():
-            return "%s names: %s, %s" % (t, r1[i].getName(), r2[i].getName())
+            return "%s names: test %s, ref %s" % (t, r1[i].getName(), r2[i].getName())
         if not cmpFloat(r1[i].getValue(), r2[i].getValue()):
-            return "%s %s values: %g, %g" % (t, r1[i].getName(),
+            return "%s %s values: test %g, ref %g" % (t, r1[i].getName(),
                     r1[i].getValue(), r2[i].getValue())
         if not cmpFloat(r1[i].getErr(), r2[i].getErr()):
-            return "%s %s errors: %g, %g" % (t, r1[i].getName(),
+            return "%s %s errors: test %g, ref %g" % (t, r1[i].getName(),
                     r1[i].getErr(), r2[i].getErr())
         if r1[i].getRatingScope() != r2[i].getRatingScope():
-            return "%s %s scope: %d, %d" % (t, r1[i].getName(),
+            return "%s %s scope: test %d, ref %d" % (t, r1[i].getName(),
                     r1[i].getRatingScope(), r2[i].getRatingScope())
     return None
 

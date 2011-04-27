@@ -126,7 +126,7 @@ def cmpSrc(t, s1, s2):
         v2 = getattr(s2, getField)()
         if str(v1) == "nan" and str(v2) == "nan":
             continue
-        if getField.endswith("Err"):
+        if getField.contains("Err"):
             if cmpFloat(v1, v2, 1e-6):
                 continue
         else:

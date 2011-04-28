@@ -31,7 +31,7 @@ echo $i
 # Output directory space for the run:
 # Production will make a directory 'thisrun' under base.
 # 
-base="/lsst3/weekly/datarel_runs"
+base="/lsst3/weekly/datarel-runs"
 dbuser="buildbot"
 
 # stackType="tags" stackType="trunk"

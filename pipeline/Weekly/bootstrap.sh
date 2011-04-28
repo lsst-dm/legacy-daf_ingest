@@ -108,7 +108,8 @@ echo "copy weekly production files"
 cp Weekly/* .
 
 if [ $DEBUG_DATA = 0 ]; then
-    tail -20  Weekly/$INPUT_DATA > weekly.input
+    head -1  Weekly/$INPUT_DATA > weekly.input
+    tail -20  Weekly/$INPUT_DATA >> weekly.input
 else
     cp Weekly/$INPUT_DATA weekly.input
 fi

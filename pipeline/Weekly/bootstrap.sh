@@ -80,41 +80,23 @@ i=`date "+%Y_%m%d"`
 # stackType="trunk" stackType="tags"
 stackType=$1
 
-if [ "$stackType" = "tags" ] ; then
-
-    export SHELL=/bin/bash
-    export LSST_HOME=/lsst/DC3/stacks/default
-    source /lsst/DC3/stacks/default/loadLSST.sh
-
-    # following: undo gratuitous set of svn+ssh  for all lsst users
-    export SVNROOT=svn://svn.lsstcorp.org
-    export LSST_SVN=svn://svn.lsstcorp.org
-    export LSST_DMS=svn://svn.lsstcorp.org/DMS
-
-    setup datarel
-
-else
-
-    export SHELL=/bin/bash
+# Setup Run Environment to reflect Stack (Trunk vs Tagged) being used
+export SHELL=/bin/bash
+export LSST_HOME=/lsst/DC3/stacks/default
+if [ "$stackType" = "trunk" ] ; then
     export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox
-    source /lsst/DC3/stacks/default/loadLSST.sh
-
-    # following: undo gratuitous set of svn+ssh  for all lsst users
-    export SVNROOT=svn://svn.lsstcorp.org
-    export LSST_SVN=svn://svn.lsstcorp.org
-    export LSST_DMS=svn://svn.lsstcorp.org/DMS
-
-    setup datarel
-
 fi
+source /lsst/DC3/stacks/default/loadLSST.sh
+      # following: undo gratuitous set of svn+ssh  for all lsst users
+export SVNROOT=svn://svn.lsstcorp.org
+export LSST_SVN=svn://svn.lsstcorp.org
+export LSST_DMS=svn://svn.lsstcorp.org/DMS
+setup datarel
 
 printenv | grep SVN
-
-eups list | grep Setup
-
+eups list -s
 echo DATAREL_DIR $DATAREL_DIR
 
-# ls $DATAREL_DIR/pipeline
 
 echo "copy pipeline directory from DATAREL"
 cp -r $DATAREL_DIR/pipeline .
@@ -139,6 +121,6 @@ nohup ./run_weekly_production.sh ${stackType}  >& weekly_production_$i.log
 
 # A little handshake twix scripts to get name of Weekly Run Result Directory
 echo "Move log into Weekly Run output archive"
-SendToFile=`grep "FullpathToWeeklyRun: "  weekly_production_$i.log | sed -e "s/FullpathToWeeklyRun: //"`
+SendToFile=`grep "FullPathToWeeklyRun: "  weekly_production_$i.log | sed -e "s/FullPathToWeeklyRun: //"`
 cp weekly_production_$i.log $SendToFile/
 

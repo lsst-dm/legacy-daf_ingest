@@ -9,19 +9,17 @@
 # from the current working directory 
 
 
-if [ $# -eq 0 ]
-then
-echo "$0 : You must supply 'trunk' or 'tags' as a command line argument"
-exit 1
+if [ $# -eq 0 ]; then
+    echo "$0 : You must supply 'trunk' or 'tags' as a command line argument"
+    exit 1
 fi
 
 
-if [ $1 = 'tags' -o $1 = 'trunk' ]
-then
-echo "Running for stack: $1 "
+if [ $1 = 'tags' -o $1 = 'trunk' ]; then
+    echo "Running for stack: $1 "
 else
-echo "$1 : You must supply 'trunk' or 'tags' as a command line argument"
-exit 1
+    echo "$1 : You must supply 'trunk' or 'tags' as a command line argument"
+    exit 1
 fi
 
 echo "Starting run_weekly_production"
@@ -33,7 +31,7 @@ echo $i
 # Output directory space for the run:
 # Production will make a directory 'thisrun' under base.
 # 
-base="/lsst3/weekly"
+base="/lsst3/weekly/datarel_runs"
 dbuser="buildbot"
 
 # stackType="tags" stackType="trunk"
@@ -44,17 +42,13 @@ echo "stackType ${stackType}"
 # Runid for the weekly production 
 thisrun="wp_${stackType}_$i"
 echo "runID ${thisrun}"
-echo "FullpathToWeeklyRun: ${base}/datarel-runs/${thisrun}"
+echo "FullPathToWeeklyRun: ${base}/${thisrun}"
 
-echo "Running: source ./load_env_${stackType}.sh "
-source ./load_env_${stackType}.sh
+echo "Saving configuration in: ${base}/${thisrun}/config/weekly.tags"
+mkdir -p ${base}/${thisrun}/config
+eups list -s > ${base}/${thisrun}/config/weekly.tags
 
-echo "Saving configuration in: ${base}/datarel-runs/${thisrun}/config/weekly.tags"
-mkdir -p ${base}/datarel-runs/${thisrun}/config
-eups list -s > ${base}/datarel-runs/${thisrun}/config/weekly.tags
-
-echo PWD 
-echo $PWD 
+echo "PWD $PWD"
 
 echo RUNNING 
 echo "orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun}"
@@ -67,7 +61,7 @@ if [ $? -ne 0 ]; then
 fi
 
 
-cd ${base}/datarel-runs/${thisrun}
+cd ${base}/${thisrun}
 
 pwd
 
@@ -100,5 +94,5 @@ echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu
 ${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun} >& finishDb.log 
 
 # Point to the new weekly production run
-rm -f /lsst3/weekly/datarel-runs/latest
-ln -s /lsst3/weekly/datarel-runs/${thisrun} /lsst3/weekly/datarel-runs/latest
+rm -f ${base}/latest
+ln -s ${base}/${thisrun} ${base}/latest

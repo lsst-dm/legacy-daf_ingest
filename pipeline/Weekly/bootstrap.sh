@@ -121,7 +121,15 @@ echo "launch weekly production"
 nohup ./run_weekly_production.sh ${stackType}  >& weekly_production_$i.log
 
 # A little handshake twix scripts to get name of Weekly Run Result Directory
-echo "Move log into Weekly Run output archive"
-SendToFile=`grep "FullPathToWeeklyRun: "  weekly_production_$i.log | sed -e "s/FullPathToWeeklyRun: //"`
-cp weekly_production_$i.log $SendToFile/
+WeeklyRunDir=`grep "FullPathToWeeklyRun: "  weekly_production_$i.log | sed -e "s/FullPathToWeeklyRun: //"`
+
+base=`dirname ${WeeklyRunDir}`
+echo "RootDir: ${base}"
+if [ $DEBUG_DATA = 0 ]; then
+    rm -f ${base}/latest
+    ln -s ${WeeklyRunDir} ${base}/latest
+    echo "Relinking ${base}/latest to: ${WeeklyRunDir}"
+fi
+echo "Move log into Weekly Run output archive: ${WeeklyRunDir}"
+cp weekly_production_$i.log ${WeeklyRunDir}/
 

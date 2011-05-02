@@ -5239,6 +5239,9 @@ execute: {
                             datasetType: src
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
+                        set: {
+                            doFootprints: true
+                        }
                     }
                 }
             }

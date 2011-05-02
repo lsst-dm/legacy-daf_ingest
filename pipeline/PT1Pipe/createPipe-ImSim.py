@@ -735,6 +735,9 @@ def sfmProcess(f):
                             datasetType: src
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
+                        set: {
+                            doFootprints: true
+                        }
                     }
                 }
             }

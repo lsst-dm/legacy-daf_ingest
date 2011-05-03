@@ -46,12 +46,9 @@ from lsst.obs.lsstSim import LsstSimMapper
 def process(inButler, tmpButler, outButler, visit, raft, sensor, force=False):
     print >>sys.stderr, "****** Processing visit %d raft %s sensor %s: %s" % \
             (visit, raft, sensor, dafBase.DateTime.now().toString())
-    if not force and outButler.datasetExists("src",
-            visit=visit, raft=raft, sensor=sensor):
-        return
+
     if tmpButler is not None:
-        if force or not outButler.datasetExists("calexp",
-                visit=visit, raft=raft, sensor=sensor):
+        if force or not outButler.datasetExists("calexp", visit=visit, raft=raft, sensor=sensor):
             for snap in inButler.queryMetadata("raw", "snap"):
                 for channel in inButler.queryMetadata("raw", "channel"):
                     isrProcess(inButler=inButler, outButler=tmpButler,
@@ -61,16 +58,17 @@ def process(inButler, tmpButler, outButler, visit, raft, sensor, force=False):
                         visit=visit, snap=snap, raft=raft, sensor=sensor)
             crSplitProcess(inButler=tmpButler, outButler=tmpButler,
                     visit=visit, raft=raft, sensor=sensor)
-            imgCharProcess(inButler=tmpButler, outButler=outButler,
-                    visit=visit, raft=raft, sensor=sensor)
+
+        if force or not outButler.datasetExists("icSrc", visit=visit, raft=raft, sensor=sensor):
+            imgCharProcess(inButler=tmpButler, outButler=outButler, visit=visit, raft=raft, sensor=sensor)
+
         sfmProcess(inButler=outButler, outButler=outButler,
                 visit=visit, raft=raft, sensor=sensor)
         return
 
     if force or not outButler.datasetExists("calexp",
             visit=visit, raft=raft, sensor=sensor):
-        if force or not outButler.datasetExists("visitim",
-                visit=visit, raft=raft, sensor=sensor):
+        if force or not outButler.datasetExists("visitim", visit=visit, raft=raft, sensor=sensor):
             for snap in inButler.queryMetadata("raw", "snap"):
                 if force or not outButler.datasetExists("postISRCCD",
                         visit=visit, snap=snap, raft=raft, sensor=sensor):
@@ -85,10 +83,12 @@ def process(inButler, tmpButler, outButler, visit, raft, sensor, force=False):
                             visit=visit, snap=snap, raft=raft, sensor=sensor)
             crSplitProcess(inButler=outButler, outButler=outButler,
                     visit=visit, raft=raft, sensor=sensor)
-        imgCharProcess(inButler=outButler, outButler=outButler,
-                visit=visit, raft=raft, sensor=sensor)
-    sfmProcess(inButler=outButler, outButler=outButler,
-            visit=visit, raft=raft, sensor=sensor)
+
+    if force or not outButler.datasetExists("icSrc", visit=visit, raft=raft, sensor=sensor):
+        imgCharProcess(inButler=outButler, outButler=outButler, visit=visit, raft=raft, sensor=sensor)
+
+    if force or not outButler.datasetExists("src", visit=visit, raft=raft, sensor=sensor):
+        sfmProcess(inButler=outButler, outButler=outButler, visit=visit, raft=raft, sensor=sensor)
 
 def main():
     parser = OptionParser()
@@ -96,6 +96,8 @@ def main():
             default="/lsst/DC3/data/obstest/ImSim", help="input root")
     parser.add_option("-o", "--output", dest="outRoot", default=".",
             help="output root")
+    parser.add_option("-d", "--debug", dest="loadDebug", action="store_true",
+                      help="Import debug.py, enabling debugging")
     parser.add_option("-f", "--force", action="store_true",
             default=False, help="execute even if output dataset exists")
     parser.add_option("-C", "--calibRoot", dest="calibRoot",
@@ -120,6 +122,12 @@ def main():
     if options.calibRoot is None:
         if os.path.exists("/lsst/DC3/data/obstest/ImSim"):
             options.calibRoot = "/lsst/DC3/data/obstest/ImSim"
+
+    if options.loadDebug:
+        try:
+            import debug
+        except ImportError, e:
+            print >> sys.stderr, "Unable to import debug: %s" % e
 
     bf = dafPersist.ButlerFactory(mapper=LsstSimMapper(
         root=options.root, calibRoot=options.calibRoot,

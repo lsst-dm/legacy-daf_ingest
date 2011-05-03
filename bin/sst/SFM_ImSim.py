@@ -74,13 +74,14 @@ def sfmPipe(calexp, psf, apCorr):
         }
         """, clip)
 
-    clip = runStage(measPipe.ApertureCorrectionApplyStage,
-        """#<?cfg paf policy?>
-        inputKeys: {
-            apCorr: apCorr
-            sourceSet: sourceSet
-        }
-        """, clip)
+    if clip["apCorr"]:
+        clip = runStage(measPipe.ApertureCorrectionApplyStage,
+            """#<?cfg paf policy?>
+            inputKeys: {
+                apCorr: apCorr
+                sourceSet: sourceSet
+            }
+            """, clip)
 
     clip = runStage(measPipe.ComputeSourceSkyCoordsStage,
         """#<?cfg paf policy?>

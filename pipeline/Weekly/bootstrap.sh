@@ -125,7 +125,8 @@ WeeklyRunDir=`grep "FullPathToWeeklyRun: "  weekly_production_$i.log | sed -e "s
 
 base=`dirname ${WeeklyRunDir}`
 echo "RootDir: ${base}"
-if [ $DEBUG_DATA = 0 ]; then
+if [ $DEBUG_DATA = 1 ]; then
+    # only switch sym link to latest production run if NOT Debug mode.
     rm -f ${base}/latest
     ln -s ${WeeklyRunDir} ${base}/latest
     echo "Relinking ${base}/latest to: ${WeeklyRunDir}"

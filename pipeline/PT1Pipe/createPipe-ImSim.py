@@ -728,15 +728,12 @@ def sfmProcess(f):
         eventTopic: None
         stagePolicy: {
             parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
+                butler: @PT1Pipe/butlerUpdateFootprints.paf
                 outputItems: {
                     sourceSet_persistable: {
                         datasetId: {
                             datasetType: src
                             fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                doFootprints: true
-                            }
                         }
                     }
                 }

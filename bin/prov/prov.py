@@ -29,12 +29,15 @@
     An appropriate EUPS_PATH and EUPS_DIR equivalent to that used
     during the run being reproduced must be set.
 
-    recreateCalexp() takes a run directory (the directory from an Orca-based
-    run containing the input, update, and work subdirectories), a visit
-    number, raft id (in "x,y" form like "1,2"), and a sensor id (also in "x,y"
-    form).  The output filename for the calexp dataset may also be specified.
-    If compareCalexp is True, the output dataset will be compared against the
-    one in the run directory to ensure that they are identical.
+    recreateOutputs() takes a run directory (the directory from an Orca-based
+    run containing the input, update, and work subdirectories), a list of
+    outputs to be produced, a visit number, raft id (in "x,y" form like
+    "1,2"), and a sensor id (also in "x,y" form).  The output directory may
+    also be specified.
+
+    Outputs are either specified by providing a dataset type (in which case
+    all outputs of that type are produced) or by providing a stage name and
+    clipboard item as a dotted pair (in which case that output is produced).
 """
 
 from __future__ import with_statement
@@ -51,23 +54,28 @@ def parseOptions():
     """Parse the command line options."""
 
     parser = OptionParser(
-            usage="""%prog [-c] [-o OUTPUT] RUNDIR VISIT RAFT SENSOR
+            usage="""%prog [-l] [-c] [-d OUTDIR] [-o OUTPUT [-o OUTPUT] ...] RUNDIR VISIT RAFT SENSOR
             
 Recreate a calexp dataset based on provenance.
 
 An appropriate EUPS_PATH and EUPS_DIR equivalent to that used
 during the run being reproduced must be set.""")
 
-    parser.add_option("-c", "--calexp", action="store_true",
-            help="compare result with previously computed calexp")
-    parser.add_option("-o", "--output", default="calexp.fits",
-            help='output filename (default="%default")')
+    parser.add_option("-l", "--list", action="store_true",
+            help="list available outputs")
+    parser.add_option("-o", "--output", action="append",
+            help="select an output or dataset type")
+    parser.add_option("-c", "--compare", action="store_true",
+            help="compare result with previously computed dataset(s)")
+    parser.add_option("-d", "--dir", default=".",
+            help='output directory (default="%default")')
     parser.add_option("-s", "--stack", action="store_true",
             help="(internal) use currently setup stack instead of provenance-based")
     
     options, args = parser.parse_args()
     
-    if len(args) != 4:
+    if (options.list and len(args) < 1) or \
+            (not options.list and len(args) != 4):
         parser.error("incorrect number of arguments")
     
     return options, args
@@ -102,28 +110,23 @@ def checkStack(runDir):
                 print >>sys.stderr, "*** WARNING:", pkg, "supposed to be", \
                         ver, "but got", version
     
-def prepLocation(inputRoot):
-    """Prepare persistence with the input directory.
+def prepLocation(inputRoot, outputRoot):
+    """Prepare persistence with the input and output directories.
     
-    @param inputRoot (string) input root directory"""
+    @param inputRoot (string) input root directory
+    @param outputRoot (string) output root directory"""
 
     import lsst.daf.base as dafBase
     import lsst.daf.persistence as dafPersist
 
     locMap = dafBase.PropertySet()
     locMap.set("input", inputRoot)
+    locMap.set("update", outputRoot)
+    outRegistry = os.path.join(outputRoot, "registry.sqlite3")
+    if os.path.exists(outRegistry):
+        os.unlink(outRegistry)
+    os.symlink(os.path.join(inputRoot, "registry.sqlite3"), outRegistry)
     dafPersist.LogicalLocation.setLocationMap(locMap)
-
-def includeStage(stagePolicy):
-    """Determine if a stage should be included in the pipeline.
-
-    @param stagePolicy (pexPolicy.Policy) appStage policy for the stage"""
-
-    stageName = stagePolicy.getString("name")
-    return stageName not in \
-            ["getAJob", "jobDone"] \
-            and not stageName.startswith("sfm") \
-            and stageName.find("Output") == -1
 
 def importAndAddStage(sst, stagePolicy):
     """Create a stage object and add it to the pipeline.
@@ -147,57 +150,125 @@ def importAndAddStage(sst, stagePolicy):
     stage = getattr(module, importClassString)
     sst.addStage(stage(stagePolicy.getPolicy("stagePolicy")), stageName)
 
-def recreateCalexp(runDir, visit, raft, sensor,
-        output="calexp.fits", compareCalexp=False):
-    """Recreate a calexp dataset based on provenance.
+def recreateOutputs(runDir, outputList, visit, raft, sensor,
+        outputDir=".", compare=False):
+    """Recreate dataset(s) based on provenance.
 
     @param runDir (string) run directory
+    @param outputList (list of strings) 
     @param visit (int) visit number
     @param raft (string) raft id "x,y"
     @param sensor (string) sensor id "x,y"
-    @param output (string) output filename
-    @param compareCalexp (bool) compare with the calexp in the run directory?"""
+    @param outputDir (string) output directory
+    @param compare (bool) compare with the dataset(s) in the run directory?"""
 
     from lsst.pex.harness.simpleStageTester import SimpleStageTester
-    import lsst.pex.policy as pexPolicy
 
     checkStack(runDir)
 
     inputRoot = os.path.join(runDir, "input")
-    workDir = os.path.join(runDir, "work")
-    masterPolicy = os.path.join(workDir, "main-ImSim.paf")
-    pol = pexPolicy.Policy.createPolicy(masterPolicy)
-    prepLocation(inputRoot)
+    prepLocation(inputRoot, outputDir)
+
+    if outputList is None:
+        outputList = ["calexp"]
+    pol = loadMasterPolicy(runDir)
+    outputs, datasetTypes = findOutputs(pol)
+    outputStages = set()
+    for o in outputList:
+        if datasetTypes.has_key(o):
+            outputStages.update(datasetTypes[o])
+        elif o in outputs:
+            outputStages.add(o.split('.')[0])
 
     sst = SimpleStageTester()
     for stagePolicy in pol.getPolicyArray("execute.appStage"):
-        if includeStage(stagePolicy):
+        stageName = stagePolicy.getString("name")
+        if stageName in ["getAJob", "jobDone"]:
+            continue
+        if isOutputStage(stagePolicy):
+            if stageName in outputStages:
+                stageOutputs = stagePolicy.getPolicy(
+                        "stagePolicy.parameters.outputItems")
+                outputNames = stageOutputs.policyNames(True)
+                for o in outputNames:
+                    datasetType = \
+                            stageOutputs.getString(o + ".datasetId.datasetType")
+                    if stageName + "." + o not in outputList and \
+                            datasetType not in outputList:
+                        stagePolicy.remove(
+                                "stagePolicy.parameters.outputItems." + o)
+                importAndAddStage(sst, stagePolicy)
+                outputStages.remove(stageName)
+                if len(outputStages) == 0:
+                    break
+        else:
             importAndAddStage(sst, stagePolicy)
+
     jobIdentity = dict(visit=visit, raft=raft, sensor=sensor)
     clip = sst.runWorker(dict(jobIdentity=jobIdentity))
-    clip.get("scienceExposure").writeFits(output)
 
-    if compareCalexp:
-        path = os.path.join("calexp", "v"+str(visit)+"-f*",
-                "R"+raft[0]+raft[2], "S"+sensor[0]+sensor[2]+".fits")
-        ret = subprocess.call("cmp " +
-                os.path.join(runDir, "update", path) + " " + output,
-                shell=True)
-        if ret == 0:
-            print >>sys.stderr, "Comparison succeeded"
+def loadMasterPolicy(runDir):
+    """Load the master policy file and its subsidiary files.
+
+    @param runDir (string) run directory"""
+
+    import lsst.pex.policy as pexPolicy
+
+    masterPolicy = os.path.join(runDir, "work", "main-ImSim.paf")
+    return pexPolicy.Policy.createPolicy(masterPolicy)
+
+def isOutputStage(pol):
+    return pol.getString("parallelClass") == \
+            "lsst.pex.harness.IOStage.OutputStageParallel"
+
+def findOutputs(pol):
+    outputs = {}
+    datasetTypes = {}
+    for stagePolicy in pol.getPolicyArray("execute.appStage"):
+        if not isOutputStage(stagePolicy):
+            continue
+
+        stageName = stagePolicy.getString("name")
+        stageOutputs = stagePolicy.getPolicy(
+                "stagePolicy.parameters.outputItems")
+        outputNames = stageOutputs.policyNames(True)
+        for name in outputNames:
+            datasetType = \
+                    stageOutputs.getString(name + ".datasetId.datasetType")
+            outputs[stageName + "." + name] = datasetType
+            if not datasetTypes.has_key(datasetType):
+                datasetTypes[datasetType] = set()
+            datasetTypes[datasetType].add(stageName)
+    return outputs, datasetTypes
 
 def main():
     """Main program"""
 
-    options, (runDir, visit, raft, sensor) = parseOptions()
+    options, args = parseOptions()
 
     if not options.stack:
-        setupStack(runDir)
+        setupStack(args[0])
         ret = subprocess.call(sys.argv + ["-s"])
         sys.exit(ret)
 
-    recreateCalexp(runDir, int(visit), raft, sensor,
-            options.output, options.calexp)
+    if options.list:
+        masterPolicy = loadMasterPolicy(args[0])
+        outputs, datasetTypes = findOutputs(masterPolicy)
+        print "Available dataset types:"
+        dsTypes = datasetTypes.keys()
+        dsTypes.sort()
+        for t in dsTypes:
+            print "\t" + t
+        print "Available outputs:"
+        outputList = outputs.keys()
+        outputList.sort()
+        for o in outputList:
+            print "\t%s (%s)" % (o, outputs[o])
+        sys.exit(0)
+
+    (runDir, visit, raft, sensor) = args
+    recreateOutputs(runDir, options.output, int(visit), raft, sensor,
+            options.dir, options.compare)
 
 if __name__ == "__main__":
     main()

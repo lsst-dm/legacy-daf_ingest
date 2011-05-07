@@ -248,7 +248,7 @@ def main():
 
     if not options.stack:
         setupStack(args[0])
-        ret = subprocess.call(sys.argv + ["-s"])
+        ret = subprocess.call(["python"] + sys.argv + ["-s"])
         sys.exit(ret)
 
     if options.list:

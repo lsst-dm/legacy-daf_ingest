@@ -46,9 +46,6 @@ def main():
     database = args[0]
     if opts.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
-    if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
-        parser.error("$CAT_DIR is undefined or empty - " +
-                "please setup the cat package and try again.")
 
     sql = MysqlExecutor(opts.host, "buildbot_weekly_latest",
             opts.user, opts.port)

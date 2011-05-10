@@ -229,9 +229,11 @@ def load(sql, scratch):
 
 def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None):
     objectTsv = os.path.abspath(os.path.join(scratch, 'objDump.tsv'))
-    objectPaf = os.path.abspath(os.path.join(scratch, 'objDump.paf'))
+    sourceTsv = os.path.abspath(os.path.join(scratch, 'srcDump.tsv'))
+    dumpPaf = os.path.abspath(os.path.join(scratch, 'dump.paf'))
     filtCsv = os.path.abspath(os.path.join(scratch, 'refFilt.csv'))
-    matchCsv = os.path.abspath(os.path.join(scratch, 'refObjMatch.csv'))
+    objectMatchCsv = os.path.abspath(os.path.join(scratch, 'refObjMatch.csv'))
+    sourceMatchCsv = os.path.abspath(os.path.join(scratch, 'refSrcMatch.csv'))
     # Filter reference catalog
     filtArgs = ['python', refCcdFilter, refCatalog, filtCsv, root,
                 '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
@@ -249,18 +251,31 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
                         FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
                         GROUP BY o.objectId
                         ORDER BY o.decl_PS""", f, ['-B', '-N'])
-    with open(objectPaf, "wb") as f:
+    # Dump source table
+    with open(sourceTsv, "wb") as f:
+        sql.execStmt("""SELECT sourceId, ra, decl, taiMidPoint
+                        FROM Source
+                        ORDER BY decl""", f, ['-B', '-N'])
+    # Write out match policy for source/object dumps
+    with open(dumpPaf, "wb") as f:
         f.write("""fieldNames: "objectId" "ra" "decl" "epoch"
                    csvDialect: {
                        delimiter: "\t"
                    }
                 """)
     # Match reference objects to objects
-    subprocess.call(['python', refPosMatch, filtCsv, objectTsv, matchCsv,
-                     '-s', '-r', str(radius), '-P', objectPaf, '-F',
+    subprocess.call(['python', refPosMatch, filtCsv, objectTsv, objectMatchCsv,
+                     '-s', '-r', str(radius), '-P', dumpPaf, '-F',
                      'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
                      'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,' +
                      'vRad,isVar,redshift,uCov,gCov,rCov,iCov,zCov,yCov'])
+    # Match reference objects to sources
+    subprocess.call(['python', refPosMatch, filtCsv, sourceTsv, sourceMatchCsv,
+                     '-r', str(radius), '-P', dumpPaf, '-F',
+                     'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
+                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,' +
+                     'vRad,isVar,redshift,uCov,gCov,rCov,iCov,zCov,yCov'])
+
     # Load filtered reference catalog and matches
     sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE SimRefObject
                     FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
@@ -279,7 +294,15 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
                         nRefMatches, nObjMatches,
                         closestToRef, closestToObj,
                         flags);
-                """ % matchCsv)
+                """ % objectMatchCsv)
+    sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE RefSrcMatch
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+                        refObjectId, sourceId,
+                        refRa, refDec, angSep,
+                        nRefMatches, nSrcMatches,
+                        closestToRef, closestToSrc,
+                        flags);
+                """ % sourceMatchCsv)
 
 def main():
     # Setup command line options

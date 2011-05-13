@@ -70,8 +70,8 @@ workflow: {
             # Weekly's Stars and Galaxies dataset
             # dataRepository: /lsst3/weekly/data/obs
             # Weekly's Stars only dataset
-            dataRepository: /lsst3/weekly/data/obs_imSim-2011-05-01
-            collection: ImSim
+            dataRepository: /lsst3/weekly/data/obs_imSim-2011-05-11
+            collection: PT1.2
             script: "$DATAREL_DIR/bin/runOrca/deployData.sh"
         }
         # launchScript: 

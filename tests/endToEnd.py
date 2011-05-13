@@ -107,7 +107,9 @@ def cmpSrc(t, s1, s2):
         if not getField.startswith("get"):
             continue
         if getField in ("getAstrometry", "getPhotometry",
-                "getShape", "getFootprint", "getRaDec"):
+                "getShape", "getFootprint"):
+            continue
+        if getField.startswith("getRaDec"):
             continue
 
         nullField = getField[3:]

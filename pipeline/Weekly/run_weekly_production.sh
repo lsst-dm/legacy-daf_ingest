@@ -90,6 +90,8 @@ echo "${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.
 ${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -d ${dbuser}_PT1_2_u_${thisrun} update  update/registry.sqlite3 >& ingestSdqa_ImSim.log 
 
 # Run finishDb script 
+#   N O T E      The -t (transpose) option takes an v. long time to process. 
+#   N O T E      Do NOT use for full production run.  
 echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -t ${dbuser}_PT1_2_u_${thisrun}";
 ${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -t ${dbuser}_PT1_2_u_${thisrun} >& finishDb.log 
 

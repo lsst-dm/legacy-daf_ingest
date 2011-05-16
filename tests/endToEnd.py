@@ -119,7 +119,7 @@ def cmpSrc(t, s1, s2):
         if hasattr(afwDet, nullField):
             num = getattr(afwDet, nullField)
             if s1.isNull(num) != s2.isNull(num):
-                return "%s %s null: test %s, ref %s" % (t, field,
+                return "%s %s null: test %s, ref %s" % (t, getField,
                         str(s1.isNull(num)), str(s2.isNull(num)))
             if s1.isNull(num):
                 continue

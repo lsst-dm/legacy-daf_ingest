@@ -5,7 +5,7 @@ setupRequired(ctrl_sched >= 4.3.0.0)
 setupRequired(sdqa >= 4.1.0.0)
 setupRequired(ctrl_orca >= 4.3.0.1)
 
-setupOptional(obs_cfht >= 4.1.0.0)
+# setupOptional(obs_cfht >= 4.1.0.0)
 setupOptional(obs_lsstSim >= 4.1.0.1)
 setupOptional(astrometry_net_data)
 setupOptional(matplotlib)	# used by some debugging routines

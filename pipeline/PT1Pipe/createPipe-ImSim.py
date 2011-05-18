@@ -697,6 +697,7 @@ def sfmProcess(f):
             outputKeys: {
                 sources: sourceSet
             }
+            measureSources: @PT1Pipe/SFM-sourceMeasure.paf
         }
     }
     appStage: {

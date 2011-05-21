@@ -1,4 +1,4 @@
 #<?cfg paf policy ?>
 
-defaultFwhm: 1.0
+defaultFwhm: 0.7
 keepCRs: false

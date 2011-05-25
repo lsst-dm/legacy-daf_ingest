@@ -81,13 +81,16 @@ i=`date "+%Y_%m%d"`
 stackType=$1
 
 # Setup Run Environment to reflect Stack (Trunk vs Tagged) being used
+# Can't use the nice scripts (pipeline/Weekly/{stack_trunk.sh stack_tags.sh})
+#     since don't have appropriate copy of datarel available yet.
+# If you change this block, you need to update the two scripts named above.
 export SHELL=/bin/bash
 export LSST_HOME=/lsst/DC3/stacks/default
 if [ "$stackType" = "trunk" ] ; then
     export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox
 fi
 source /lsst/DC3/stacks/default/loadLSST.sh
-      # following: undo gratuitous set of svn+ssh  for all lsst users
+# following: undo gratuitous set of svn+ssh  for all lsst users
 export SVNROOT=svn://svn.lsstcorp.org
 export LSST_SVN=svn://svn.lsstcorp.org
 export LSST_DMS=svn://svn.lsstcorp.org/DMS
@@ -97,6 +100,7 @@ setup datarel
 #    May ultimately need to add new param to script to designate desired
 #    astrometry_net_data for the run.
 setup astrometry_net_data
+# End: Setup Run Environment
 
 printenv | grep SVN
 eups list -s

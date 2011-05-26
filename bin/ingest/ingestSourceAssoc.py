@@ -235,9 +235,39 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
     objectMatchCsv = os.path.abspath(os.path.join(scratch, 'refObjMatch.csv'))
     sourceMatchCsv = os.path.abspath(os.path.join(scratch, 'refSrcMatch.csv'))
     # Filter reference catalog
-    filtArgs = ['python', refCcdFilter, refCatalog, filtCsv, root,
-                '-F', 'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
-                'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,vRad,isVar,redshift']
+    refCsvCols = ','.join(['refObjectId',
+                           'isStar',
+                           'varClass',
+                           'ra',
+                           'decl',
+                           'gLat',
+                           'gLon',
+                           'sedName,'
+                           'uMag',
+                           'gMag',
+                           'rMag',
+                           'iMag',
+                           'zMag',
+                           'yMag',
+                           'muRa',
+                           'muDecl',
+                           'parallax',
+                           'vRad',
+                           'redshift',
+                           'semiMajorBulge',
+                           'semiMinorBulge',
+                           'semiMajorDisk',
+                           'semiMinorDisk',
+                          ])
+    filtCsvCols = ','.join([refCsvCols,
+                            'uCov',
+                            'gCov',
+                            'rCov',
+                            'iCov',
+                            'zCov',
+                            'yCov',
+                           ])
+    filtArgs = ['python', refCcdFilter, refCatalog, filtCsv, root, '-F', refCsvCols]
     if exposureMetadata != None:
         if not hasattr(exposureMetadata, '__iter__'):
             exposureMetadata = [exposureMetadata]
@@ -247,13 +277,15 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
     subprocess.call(filtArgs)
     # Dump object table
     with open(objectTsv, "wb") as f:
-        sql.execStmt("""SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
+        sql.execStmt("""SET myisam_sort_buffer_size=1000000000;
+                        SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
                         FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
                         GROUP BY o.objectId
                         ORDER BY o.decl_PS""", f, ['-B', '-N'])
     # Dump source table
     with open(sourceTsv, "wb") as f:
-        sql.execStmt("""SELECT sourceId, ra, decl, taiMidPoint
+        sql.execStmt("""SET myisam_sort_buffer_size=1000000000;
+                        SELECT sourceId, ra, decl, taiMidPoint
                         FROM Source
                         ORDER BY decl""", f, ['-B', '-N'])
     # Write out match policy for source/object dumps
@@ -265,28 +297,15 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
                 """)
     # Match reference objects to objects
     subprocess.call(['python', refPosMatch, filtCsv, objectTsv, objectMatchCsv,
-                     '-s', '-r', str(radius), '-P', dumpPaf, '-F',
-                     'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
-                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,' +
-                     'vRad,isVar,redshift,uCov,gCov,rCov,iCov,zCov,yCov'])
+                     '-s', '-r', str(radius), '-P', dumpPaf, '-F', filtCsvCols])
     # Match reference objects to sources
     subprocess.call(['python', refPosMatch, filtCsv, sourceTsv, sourceMatchCsv,
-                     '-r', str(radius), '-P', dumpPaf, '-F',
-                     'refObjectId,isStar,ra,decl,gLat,gLon,sedName,' +
-                     'uMag,gMag,rMag,iMag,zMag,yMag,muRa,muDecl,parallax,' +
-                     'vRad,isVar,redshift,uCov,gCov,rCov,iCov,zCov,yCov'])
+                     '-r', str(radius), '-P', dumpPaf, '-F', filtCsvCols])
 
     # Load filtered reference catalog and matches
     sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE SimRefObject
-                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
-                        refObjectId, isStar,
-                        ra, decl, gLat, gLon,
-                        sedName,
-                        uMag, gMag, rMag, iMag, zMag, yMag,
-                        muRa, muDecl, parallax, vRad,
-                        isVar, redshift,
-                        uCov, gCov, rCov, iCov, zCov, yCov);
-                 """ % filtCsv)
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (%s);
+                 """ % (filtCsv, filtCsvCols))
     sql.execStmt("""LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE RefObjMatch
                     FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
                         refObjectId, objectId,

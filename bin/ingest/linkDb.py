@@ -53,7 +53,7 @@ def main():
             "AmpMap", "BadSource", "CcdMap", "Filter", "LeapSeconds", "Logs",
             "NonVarObject", "Object", "ObjectType", "RaftMap",
             "Raw_Amp_Exposure", "Raw_Amp_Exposure_Metadata",
-            "Raw_Amp_To_Science_CcdExposure", "Raw_Amp_To_Snap_Ccd_Exposure",
+            "Raw_Amp_To_Science_Ccd_Exposure", "Raw_Amp_To_Snap_Ccd_Exposure",
             "RefObjMatch", "Science_Ccd_Exposure",
             "Science_Ccd_Exposure_Metadata", "SimRefObject",
             "Snap_Ccd_To_Science_Ccd_Exposure", "Source", "Visit",

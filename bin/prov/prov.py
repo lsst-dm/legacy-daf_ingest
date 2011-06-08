@@ -22,7 +22,8 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-"""Recreate a calexp dataset based on provenance.
+"""Recreate a calexp (or other) dataset based on provenance.
+    Or create a dataset using the pipeline policies in the datarel package.
 
     -h for command line help.
 
@@ -56,7 +57,8 @@ def parseOptions():
     parser = OptionParser(
             usage="""%prog [-l] [-c] [-d OUTDIR] [-o OUTPUT [-o OUTPUT] ...] RUNDIR VISIT RAFT SENSOR
             
-Recreate a calexp dataset based on provenance.
+Recreate a calexp (or other) dataset based on provenance.
+Or create a dataset using the pipeline policies in the datarel package.
 
 An appropriate EUPS_PATH and EUPS_DIR equivalent to that used
 during the run being reproduced must be set.""")
@@ -69,6 +71,8 @@ during the run being reproduced must be set.""")
             help="compare result with previously computed dataset(s)")
     parser.add_option("-d", "--dir", default=".",
             help='output directory (default="%default")')
+    parser.add_option("-u", "--useDatarel", action="store_true",
+            help='use datarel policy instead of run policy')
     parser.add_option("-s", "--stack", action="store_true",
             help="(internal) use currently setup stack instead of provenance-based")
     
@@ -151,7 +155,7 @@ def importAndAddStage(sst, stagePolicy):
     sst.addStage(stage(stagePolicy.getPolicy("stagePolicy")), stageName)
 
 def recreateOutputs(runDir, outputList, visit, raft, sensor,
-        outputDir=".", compare=False):
+        outputDir=".", useDatarel=False, compare=False):
     """Recreate dataset(s) based on provenance.
 
     @param runDir (string) run directory
@@ -164,14 +168,17 @@ def recreateOutputs(runDir, outputList, visit, raft, sensor,
 
     from lsst.pex.harness.simpleStageTester import SimpleStageTester
 
-    checkStack(runDir)
+    if not useDatarel:
+        checkStack(runDir)
+        inputRoot = os.path.join(runDir, "input")
+    else:
+        inputRoot = runDir
 
-    inputRoot = os.path.join(runDir, "input")
     prepLocation(inputRoot, outputDir)
 
     if outputList is None:
         outputList = ["calexp"]
-    pol = loadMasterPolicy(runDir)
+    pol = loadMasterPolicy(runDir, useDatarel)
     outputs, datasetTypes = findOutputs(pol)
     outputStages = set()
     for o in outputList:
@@ -207,13 +214,17 @@ def recreateOutputs(runDir, outputList, visit, raft, sensor,
     jobIdentity = dict(visit=visit, raft=raft, sensor=sensor)
     clip = sst.runWorker(dict(jobIdentity=jobIdentity))
 
-def loadMasterPolicy(runDir):
+def loadMasterPolicy(runDir, useDatarel=False):
     """Load the master policy file and its subsidiary files.
 
     @param runDir (string) run directory"""
 
     import lsst.pex.policy as pexPolicy
 
+    if useDatarel:
+        pipeDir = os.path.join(os.environ['DATAREL_DIR'], "pipeline")
+        masterPolicy = os.path.join(pipeDir, "PT1Pipe", "main-ImSim.paf")
+        return pexPolicy.Policy.createPolicy(masterPolicy, pipeDir)
     masterPolicy = os.path.join(runDir, "work", "main-ImSim.paf")
     return pexPolicy.Policy.createPolicy(masterPolicy)
 
@@ -252,7 +263,7 @@ def main():
         sys.exit(ret)
 
     if options.list:
-        masterPolicy = loadMasterPolicy(args[0])
+        masterPolicy = loadMasterPolicy(args[0], options.useDatarel)
         outputs, datasetTypes = findOutputs(masterPolicy)
         print "Available dataset types:"
         dsTypes = datasetTypes.keys()
@@ -268,7 +279,7 @@ def main():
 
     (runDir, visit, raft, sensor) = args
     recreateOutputs(runDir, options.output, int(visit), raft, sensor,
-            options.dir, options.compare)
+            options.dir, options.useDatarel, options.compare)
 
 if __name__ == "__main__":
     main()

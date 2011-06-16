@@ -55,13 +55,18 @@ def parseOptions():
     """Parse the command line options."""
 
     parser = OptionParser(
-            usage="""%prog [-l] [-c] [-d OUTDIR] [-o OUTPUT [-o OUTPUT] ...] RUNDIR VISIT RAFT SENSOR
+            usage="""%prog [-l] [-c] [-u] [-s] [-d OUTDIR] [-o OUTPUT [-o OUTPUT] ...] RUNDIR VISIT RAFT SENSOR
             
 Recreate a calexp (or other) dataset based on provenance.
-Or create a dataset using the pipeline policies in the datarel package.
+Or create a dataset using the pipeline policies in the datarel package (with
+-u and usually -s).
 
 An appropriate EUPS_PATH and EUPS_DIR equivalent to that used
-during the run being reproduced must be set.""")
+during the run being reproduced must be set.
+
+The required parameters are a run directory (the directory from an Orca-based
+run containing the input, update, and work subdirectories) a visit number, a
+raft id (in "x,y" form like "1,2"), and a sensor id (also in "x,y" form).""")
 
     parser.add_option("-l", "--list", action="store_true",
             help="list available outputs")
@@ -72,9 +77,9 @@ during the run being reproduced must be set.""")
     parser.add_option("-d", "--dir", default=".",
             help='output directory (default="%default")')
     parser.add_option("-u", "--useDatarel", action="store_true",
-            help='use datarel policy instead of run policy')
+            help='use datarel policy instead of run policy; uses run directory only for inputs')
     parser.add_option("-s", "--stack", action="store_true",
-            help="(internal) use currently setup stack instead of provenance-based")
+            help="use currently setup stack instead of provenance-based")
     
     options, args = parser.parse_args()
     

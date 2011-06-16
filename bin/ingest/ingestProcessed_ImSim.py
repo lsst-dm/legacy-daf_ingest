@@ -27,6 +27,8 @@ import optparse
 import os
 import sys
 from textwrap import dedent
+import glob
+import re
 
 import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersist
@@ -52,6 +54,7 @@ class CsvGenerator(object):
     def __init__(self, root, registry=None, compress=True):
         if registry is None:
             registry = os.path.join(root, "registry.sqlite3")
+        self.root = root
         self.mapper = LsstSimMapper(root=root, registry=registry)
         bf = dafPersist.ButlerFactory(mapper=self.mapper)
         self.butler = bf.create()
@@ -61,12 +64,25 @@ class CsvGenerator(object):
         self.mdFile = CsvFileWriter("Science_Ccd_Exposure_Metadata.csv",
                                     compress=compress)
 
+    def getNext(self, datasetType):
+        # for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
+        #         ("visit", "raft", "sensor")):
+        #     if self.butler.datasetExists("calexp", visit=visit, raft=raft,
+        #             sensor=sensor):
+        #         yield (visit, raft, sensor)
+
+        for f in glob.glob(os.path.join(self.root, "calexp", "v*-f*", "R*",
+            "S*.fits")):
+            m = re.search(r'calexp/v(\d+)-f.*/R(\d\d)/S(\d\d).fits', f)
+            assert m
+            visit = int(m.group(1))
+            raft = ",".join(m.group(2))
+            sensor = ",".join(m.group(3))
+            yield (visit, raft, sensor)
+
     def csvAll(self):
-        for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
-                ("visit", "raft", "sensor")):
-            if self.butler.datasetExists("calexp", visit=visit, raft=raft,
-                    sensor=sensor):
-                self.toCsv(visit, raft, sensor)
+        for visit, raft, sensor in self.getNext("calexp"):
+            self.toCsv(visit, raft, sensor)
         self.expFile.flush()
         self.mdFile.flush()
 

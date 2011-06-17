@@ -740,6 +740,16 @@ def sfmProcess(f):
         }
     }
     appStage: {
+        name: sfmMultifitFlagIngest
+        parallelClass: lsst.meas.pipeline.MultifitFlagIngestStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                sourceSet: sourceSet
+            }
+        }
+    }
+    appStage: {
         name: sfmComputeSourceSkyCoords
         parallelClass: lsst.meas.pipeline.ComputeSourceSkyCoordsStageParallel
         eventTopic: None

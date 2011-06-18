@@ -107,10 +107,11 @@ class CsvGenerator(object):
                     width = md.get('NAXIS1')
                     height = md.get('NAXIS2')
                     wcs = afwImage.makeWcs(md.deepCopy())
-                    llc = wcs.pixelToSky(0, 0).toIcrs()
-                    ulc = wcs.pixelToSky(0, height - 1).toIcrs()
-                    urc = wcs.pixelToSky(width - 1, height - 1).toIcrs()
-                    lrc = wcs.pixelToSky(width - 1, 0).toIcrs()
+                    cen = wcs.pixelToSky(0.5*width - 0.5, 0.5*height - 0.5)
+                    llc = wcs.pixelToSky(-0.5, -0.5).toIcrs()
+                    ulc = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
+                    urc = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
+                    lrc = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
                     mjd = md.get('MJD-OBS')
                     if mjd == 0.0:
                         mjd = 49563.270671
@@ -124,7 +125,7 @@ class CsvGenerator(object):
                             visit, snap, raftNum, raft, ccdNum,
                             sensor, channelNum, channel,
                             filterMap.index(filterName), filterName,
-                            md.get('RA_DEG'), md.get('DEC_DEG'),
+                            cen.getRa(afwCoord.DEGREES), cen.getDec(afwCoord.DEGREES),
                             md.get('EQUINOX'), md.get('RADESYS'),
                             md.get('CTYPE1'), md.get('CTYPE2'),
                             md.get('CRPIX1'), md.get('CRPIX2'),

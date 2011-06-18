@@ -85,10 +85,12 @@ class CsvGenerator(object):
             width = md.get('NAXIS1')
             height = md.get('NAXIS2')
             wcs = afwImage.makeWcs(md.deepCopy())
-            llc = wcs.pixelToSky(0, 0).toIcrs()
-            ulc = wcs.pixelToSky(0, height - 1).toIcrs()
-            urc = wcs.pixelToSky(width - 1, height - 1).toIcrs()
-            lrc = wcs.pixelToSky(width - 1, 0).toIcrs()
+
+            cen = wcs.pixelToSky(0.5*width - 0.5, 0.5*height - 0.5)
+            llc = wcs.pixelToSky(-0.5, -0.5).toIcrs()
+            ulc = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
+            urc = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
+            lrc = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
             obsStart = dafBase.DateTime(md.get('MJD-OBS'),
                     dafBase.DateTime.MJD, dafBase.DateTime.UTC)
             expTime = md.get('EXPTIME')
@@ -97,7 +99,7 @@ class CsvGenerator(object):
             self.expFile.write(rawAmpExposureId,
                     visit, 0, 0, ccd, amp,
                     filterMap.index(md.get('FILTER').strip()),
-                    md.get('RA_DEG'), md.get('DEC_DEG'),
+                    cen.getRa(afwCoord.DEGREES), cen.getDec(afwCoord.DEGREES),
                     md.get('EQUINOX'),
                     md.get('RADECSYS'), # note wrong name
                     md.get('CTYPE1'), md.get('CTYPE2'),

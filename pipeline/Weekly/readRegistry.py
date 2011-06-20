@@ -37,14 +37,15 @@ import os
 #sql = 'sqlite3 -column /lsst2/imsim-TuesdayRuns/imSim-05Apr2011/registry.sqlite3 \'select visit,raft,sensor from raw where channel="0,0" and snap=0;\''
 
 def main(inputRegistry):
-    sql = 'sqlite3 -column %s \'select visit,raft,sensor from raw where channel="0,0" and snap=0;\'' %(inputRegistry)
+    #sql = 'sqlite3 -column %s \'select visit,raft,sensor from raw where channel="0,0" and snap=0;\'' %(inputRegistry)
+    sql = 'sqlite3 -column %s \'select r.visit, r.raft, r.sensor, s.skyTile   from raw as r, raw_skyTile as s where (r.id = s.id) and (r.channel="0,0") and (r.snap=0) group by r.id order by s.skyTile;\'' %(inputRegistry)
     p = subprocess.Popen(sql, shell=True, stdout=subprocess.PIPE)
     results = p.stdout.readlines()
     p.stdout.close()
 
     print ">intids visit"
     for result in results:
-        visit, raft, ccd = result.split()
+        visit, raft, ccd, skytile = result.split()
         print "raw visit=%s raft=%s sensor=%s" % (visit, raft, ccd)
     for i in range(0,10):
         print "raw visit=0         raft=0   sensor=0"

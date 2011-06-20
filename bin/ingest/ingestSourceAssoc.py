@@ -351,10 +351,17 @@ def main():
         Number of parallel job processes to split boost->csv conversion
         over."""))
     parser.add_option(
-        "-m", "--match", action="store_true", dest="match",
-        help=dedent("""\
-        Turn on reference catalog to source cluster matching. This
+        "-m", "--match", action="store_true", default=False,
+        dest="match", help=dedent("""\
+        Turn on reference catalog to source/object matching. This
         currently only works for LSST Sim runs."""))
+    parser.add_option(
+        "-M", "--match-only", action="store_true", default=False,
+        dest="match_only", help=dedent("""\
+        Turn on reference catalog to source/object matching, and turn
+        off boost->csv conversion and database loading. Requires all
+        source/object data to have been loaded by previous runs of
+        ingestSourceAssoc.py."""))
     parser.add_option(
         "-R", "--ref-catalog", dest="refCatalog",
         default="/lsst/DC3/data/obs/ImSim/ref/simRefObject_12142010.csv",
@@ -380,9 +387,10 @@ def main():
                      "is undefined or empty")
     database, root, scratch = args
     sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
-    convertAll(root, scratch, opts.numWorkers)
-    load(sql, scratch)
-    if opts.match:
+    if not opts.match_only:
+        convertAll(root, scratch, opts.numWorkers)
+        load(sql, scratch)
+    if opts.match or opts.match_only:
         referenceMatch(sql, root, scratch, opts.refCatalog, opts.radius,
                        opts.exposureMetadata)
 

@@ -2,6 +2,7 @@
 
 source: {
     modelFlux: SHAPELET_MODEL_8
+    instFlux: GAUSSIAN
 }
 photometry: {
     SHAPELET_MODEL_8: {

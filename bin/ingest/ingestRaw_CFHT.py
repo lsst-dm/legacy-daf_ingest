@@ -86,7 +86,7 @@ class CsvGenerator(object):
             height = md.get('NAXIS2')
             wcs = afwImage.makeWcs(md.deepCopy())
 
-            cen = wcs.pixelToSky(0.5*width - 0.5, 0.5*height - 0.5)
+            cen = wcs.pixelToSky(0.5*width - 0.5, 0.5*height - 0.5).toIcrs()
             llc = wcs.pixelToSky(-0.5, -0.5).toIcrs()
             ulc = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
             urc = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()

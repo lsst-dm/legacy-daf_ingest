@@ -38,17 +38,43 @@ import os
 
 def main(inputRegistry):
     #sql = 'sqlite3 -column %s \'select visit,raft,sensor from raw where channel="0,0" and snap=0;\'' %(inputRegistry)
-    sql = 'sqlite3 -column %s \'select r.visit, r.raft, r.sensor, s.skyTile, r.visit %% 10 as clflag  from raw as r, raw_skyTile as s where (r.id = s.id) and (r.channel="0,0") and (r.snap=0) group by r.id order by clflag desc, s.skyTile;\'' %(inputRegistry)
+    sql = 'sqlite3 -column %s \'select r.visit, r.raft, r.sensor, s.skyTile   from raw as r, raw_skyTile as s where (r.id = s.id) and (r.channel="0,0") and (r.snap=0) group by r.id order by s.skyTile;\'' %(inputRegistry)
     p = subprocess.Popen(sql, shell=True, stdout=subprocess.PIPE)
     results = p.stdout.readlines()
     p.stdout.close()
 
-    print ">intids visit"
+    visitDict = {}
+    skytileVisitDict = {}
     for result in results:
-        visit, raft, ccd, skytile, clflag = result.split()
-        print "raw visit=%s raft=%s sensor=%s" % (visit, raft, ccd)
+        visit, raft, ccd, skytile = result.split()
+
+        if not skytileVisitDict.has_key(skytile):
+            skytileVisitDict[skytile] = []
+        skytileVisitDict[skytile].append(visit)
+
+        if not visitDict.has_key(visit):
+            visitDict[visit] = []
+        visitDict[visit].append((visit, raft, ccd))
+
+
+    print ">intids visit"
+    seen = []
+    for skytileToDo in skytileVisitDict.keys():
+        for visit in skytileVisitDict[skytileToDo]:
+            if visit in seen:
+                continue
+            for vrc in visitDict[visit]:
+                print "raw visit=%s raft=%s sensor=%s" % (vrc[0], vrc[1], vrc[2])
+            seen.append(visit)
     for i in range(0,10):
         print "raw visit=0         raft=0   sensor=0"
+
+#    print ">intids visit"
+#    for result in results:
+#        visit, raft, ccd, skytile = result.split()
+#        print "raw visit=%s raft=%s sensor=%s" % (visit, raft, ccd)
+#    for i in range(0,10):
+#        print "raw visit=0         raft=0   sensor=0"
     
 
 if __name__ == "__main__":

@@ -25,6 +25,7 @@
 import math
 import optparse
 import os
+import subprocess
 import sys
 from textwrap import dedent
 
@@ -38,6 +39,12 @@ import lsst.meas.algorithms as measAlg
 from lsst.datarel.csvFileWriter import CsvFileWriter
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
+
+if not 'SCISQL_DIR' in os.environ:
+    print >>sys.stderr, "Please setup the scisql package and try again"
+    sys.exit(1)
+
+scisqlIndex = os.path.join(os.environ['SCISQL_DIR'], 'bin', 'scisql_index')
 
 filterMap = ["u", "g", "r", "i", "z", "i2"]
 
@@ -55,6 +62,7 @@ class CsvGenerator(object):
                                      compress=compress)
         self.mdFile = CsvFileWriter("Science_Ccd_Exposure_Metadata.csv",
                                     compress=compress)
+        self.polyFile = open("Science_Ccd_Exposure_Poly.tsv", "wb");
 
     def csvAll(self):
         for visit, ccd in self.butler.queryMetadata("raw", "ccd",
@@ -63,6 +71,8 @@ class CsvGenerator(object):
                 self.toCsv(visit, ccd)
         self.expFile.flush()
         self.mdFile.flush()
+        self.polyFile.flush()
+        self.polyFile.close()
 
     def getFullMetadata(self, datasetType, **keys):
         filename = self.mapper.map(datasetType, keys).getLocations()[0]
@@ -115,9 +125,19 @@ class CsvGenerator(object):
             else:
                 self.mdFile.write(sciCcdExposureId, 1, name,
                         None, None, str(md.get(name)))
+        self.polyFile.write("\t".join([
+                str(sciCcdExposureId),
+                repr(llc.getRa(afwCoord.DEGREES)), repr(llc.getDec(afwCoord.DEGREES)),
+                repr(ulc.getRa(afwCoord.DEGREES)), repr(ulc.getDec(afwCoord.DEGREES)),
+                repr(urc.getRa(afwCoord.DEGREES)), repr(urc.getDec(afwCoord.DEGREES)),
+                repr(lrc.getRa(afwCoord.DEGREES)), repr(lrc.getDec(afwCoord.DEGREES))]))
+        self.polyFile.write("\n")
         print "Processed visit %d ccd %d" % (visit, ccd)
 
 def dbLoad(sql):
+    subprocess.call([scisqlIndex, "-l", "10",
+                     "Science_Ccd_Exposure_To_Htm10.tsv",
+                     "Science_Ccd_Exposure_Poly.tsv"])
     sql.execStmt(dedent("""\
         LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
@@ -135,7 +155,11 @@ def dbLoad(sql):
             taiMjd, obsStart, expMidpt, expTime,
             nCombine, binX, binY,
             readNoise, saturationLimit, gainEff,
-            fluxMag0, fluxMag0Sigma, fwhm);
+            fluxMag0, fluxMag0Sigma, fwhm
+        ) SET poly = scisql_s2CPolyToBin(llcRa, llcDecl,
+                                         ulcRa, ulcDecl,
+                                         urcRa, urcDecl,
+                                         lrcRa, lrcDecl);
         SHOW WARNINGS;
         """ % os.path.abspath("Science_Ccd_Exposure.csv")))
     sql.execStmt(dedent("""\
@@ -149,6 +173,12 @@ def dbLoad(sql):
             stringValue);
         SHOW WARNINGS;
         """ % os.path.abspath("Science_Ccd_Exposure_Metadata.csv")))
+    sql.execStmt(dedent("""\
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure_To_Htm10 (
+            scienceCcdExposureId,
+            htmId10);
+        SHOW WARNINGS;
+        """ % os.path.abspath("Science_Ccd_Exposure_To_Htm10.tsv")))
 
 def main():
     usage = dedent("""\

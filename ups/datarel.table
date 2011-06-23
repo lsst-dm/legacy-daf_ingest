@@ -9,7 +9,8 @@ setupRequired(ctrl_orca >= 4.3.0.1)
 setupOptional(obs_lsstSim >= 4.1.0.1)
 setupOptional(astrometry_net_data)
 setupOptional(matplotlib)	# used by some debugging routines
-setupOptional(cat >= 4.4.0.1)   # for database ingest
+setupOptional(cat >= 4.4.1.0)   # for database ingest
+setupOptional(scisql >= 0.1)    # for database ingest
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envAppend(PATH, ${PRODUCT_DIR}/bin/sst)

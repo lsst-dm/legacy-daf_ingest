@@ -24,6 +24,7 @@
 
 import optparse
 import os
+import subprocess
 import sys
 from textwrap import dedent
 
@@ -35,6 +36,13 @@ import lsst.afw.image as afwImage
 
 from lsst.datarel.csvFileWriter import CsvFileWriter
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
+
+
+if not 'SCISQL_DIR' in os.environ:
+    print >>sys.stderr, "Please setup the scisql package and try again"
+    sys.exit(1)
+
+scisqlIndex = os.path.join(os.environ['SCISQL_DIR'], 'bin', 'scisql_index')
 
 rafts = [       "0,1", "0,2", "0,3",
          "1,0", "1,1", "1,2", "1,3", "1,4",
@@ -58,6 +66,7 @@ class CsvGenerator(object):
                                     compress=compress)
         self.rToSFile = CsvFileWriter("Raw_Amp_To_Science_Ccd_Exposure.csv",
                                       compress=compress)
+        self.polyFile = open("Raw_Amp_Exposure_Poly.tsv", "wb");
 
     def csvAll(self):
         for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
@@ -68,6 +77,8 @@ class CsvGenerator(object):
         self.expFile.flush()
         self.mdFile.flush()
         self.rToSFile.flush()
+        self.polyFile.flush()
+        self.polyFile.close()
 
     def getFullMetadata(self, datasetType, **keys):
         filename = self.mapper.map(datasetType, keys).getLocations()[0]
@@ -158,10 +169,20 @@ class CsvGenerator(object):
                         else:
                             self.mdFile.write(rawAmpExposureId, 1, name,
                                     None, None, str(md.get(name)))
+                    self.polyFile.write("\t".join([
+                            str(rawAmpExposureId),
+                            repr(llc.getRa(afwCoord.DEGREES)), repr(llc.getDec(afwCoord.DEGREES)),
+                            repr(ulc.getRa(afwCoord.DEGREES)), repr(ulc.getDec(afwCoord.DEGREES)),
+                            repr(urc.getRa(afwCoord.DEGREES)), repr(urc.getDec(afwCoord.DEGREES)),
+                            repr(lrc.getRa(afwCoord.DEGREES)), repr(lrc.getDec(afwCoord.DEGREES))]))
+                    self.polyFile.write("\n")
 
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
 
 def dbLoad(sql):
+    subprocess.call([scisqlIndex, "-l", "11",
+                     "Raw_Amp_Exposure_To_Htm11.tsv",
+                     "Raw_Amp_Exposure_Poly.tsv"])
     sql.execStmt(dedent("""\
         LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Raw_Amp_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
@@ -178,7 +199,11 @@ def dbLoad(sql):
             urcRa, urcDecl,
             lrcRa, lrcDecl,
             taiMjd, obsStart, expMidpt, expTime,
-            airmass, darkTime, zd);
+            airmass, darkTime, zd
+        ) SET poly = scisql_s2CPolyToBin(llcRa, llcDecl,
+                                         ulcRa, ulcDecl,
+                                         urcRa, urcDecl,
+                                         lrcRa, lrcDecl);
         SHOW WARNINGS;
         """ % os.path.abspath("Raw_Amp_Exposure.csv")))
     sql.execStmt(dedent("""\
@@ -201,6 +226,12 @@ def dbLoad(sql):
             amp);
         SHOW WARNINGS;
         """ % os.path.abspath("Raw_Amp_To_Science_Ccd_Exposure.csv")))
+    sql.execStmt(dedent("""\
+        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Raw_Amp_Exposure_To_Htm11 (
+            rawAmpExposureId,
+            htmId11);
+        SHOW WARNINGS;
+        """ % os.path.abspath("Raw_Amp_Exposure_To_Htm11.tsv")))
 
 def main():
     usage = dedent("""\

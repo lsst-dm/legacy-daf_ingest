@@ -96,9 +96,9 @@ def load(sql, scratch):
                     taiMidPoint, taiRange,
                     psfFlux, psfFluxSigma,
                     apFlux, apFluxSigma,
-                    modelFlux, modelFluxSigma,
+                    flux_ESG, flux_ESG_Sigma,
                     petroFlux, petroFluxSigma,
-                    instFlux, instFluxSigma,
+                    flux_Gaussian, flux_Gaussian_Sigma,
                     nonGrayCorrFlux, nonGrayCorrFluxSigma,
                     atmCorrFlux, atmCorrFluxSigma,
                     apDia,
@@ -111,7 +111,8 @@ def load(sql, scratch):
                     shapeFlag_SG,
                     snr, chi2,
                     sky, skySigma,
-                    flagForAssociation, flagForDetection, flagForWcs);
+                    flagForAssociation, flagForDetection, flagForWcs
+                ) SET htmId20 = scisql_s2HtmId(ra, decl, 20);
                 """ % (os.path.abspath(csv), table)))
     for csv in glob.glob(os.path.join(scratch, '*', 'object.csv')):
         sql.execStmt(dedent("""\
@@ -127,7 +128,7 @@ def load(sql, scratch):
                 parallax_PS, parallax_PS_Sigma,
                 canonicalFilterId,
                 extendedness, varProb,
-                earliestObsTime, latestObsTime,
+                earliestObsTime, latestObsTime, meanObsTime,
                 flags,
                 uNumObs, uExtendedness, uVarProb,
                 uRaOffset_PS, uRaOffset_PS_Sigma,
@@ -138,8 +139,8 @@ def load(sql, scratch):
                 uRaDeclOffset_SG_Cov,
                 uLnL_PS, uLnL_SG,
                 uFlux_PS, uFlux_PS_Sigma,
-                uFlux_SG, uFlux_SG_Sigma,
-                uFlux_CSG, uFlux_CSG_Sigma,
+                uFlux_ESG, uFlux_ESG_Sigma,
+                uFlux_Gaussian, uFlux_Gaussian_Sigma,
                 uTimescale, uEarliestObsTime, uLatestObsTime,
                 uSersicN_SG, uSersicN_SG_Sigma,
                 uE1_SG, uE1_SG_Sigma, uE2_SG, uE2_SG_Sigma,
@@ -154,8 +155,8 @@ def load(sql, scratch):
                 gRaDeclOffset_SG_Cov,
                 gLnL_PS, gLnL_SG,
                 gFlux_PS, gFlux_PS_Sigma,
-                gFlux_SG, gFlux_SG_Sigma,
-                gFlux_CSG, gFlux_CSG_Sigma,
+                gFlux_ESG, gFlux_ESG_Sigma,
+                gFlux_Gaussian, gFlux_Gaussian_Sigma,
                 gTimescale, gEarliestObsTime, gLatestObsTime,
                 gSersicN_SG, gSersicN_SG_Sigma,
                 gE1_SG, gE1_SG_Sigma, gE2_SG, gE2_SG_Sigma,
@@ -170,8 +171,8 @@ def load(sql, scratch):
                 rRaDeclOffset_SG_Cov,
                 rLnL_PS, rLnL_SG,
                 rFlux_PS, rFlux_PS_Sigma,
-                rFlux_SG, rFlux_SG_Sigma,
-                rFlux_CSG, rFlux_CSG_Sigma,
+                rFlux_ESG, rFlux_ESG_Sigma,
+                rFlux_Gaussian, rFlux_Gaussian_Sigma,
                 rTimescale, rEarliestObsTime, rLatestObsTime,
                 rSersicN_SG, rSersicN_SG_Sigma,
                 rE1_SG, rE1_SG_Sigma, rE2_SG, rE2_SG_Sigma,
@@ -186,8 +187,8 @@ def load(sql, scratch):
                 iRaDeclOffset_SG_Cov,
                 iLnL_PS, iLnL_SG,
                 iFlux_PS, iFlux_PS_Sigma,
-                iFlux_SG, iFlux_SG_Sigma,
-                iFlux_CSG, iFlux_CSG_Sigma,
+                iFlux_ESG, iFlux_ESG_Sigma,
+                iFlux_Gaussian, iFlux_Gaussian_Sigma,
                 iTimescale, iEarliestObsTime, iLatestObsTime,
                 iSersicN_SG, iSersicN_SG_Sigma,
                 iE1_SG, iE1_SG_Sigma, iE2_SG, iE2_SG_Sigma,
@@ -202,8 +203,8 @@ def load(sql, scratch):
                 zRaDeclOffset_SG_Cov,
                 zLnL_PS, zLnL_SG,
                 zFlux_PS, zFlux_PS_Sigma,
-                zFlux_SG, zFlux_SG_Sigma,
-                zFlux_CSG, zFlux_CSG_Sigma,
+                zFlux_ESG, zFlux_ESG_Sigma,
+                zFlux_Gaussian, zFlux_Gaussian_Sigma,
                 zTimescale, zEarliestObsTime, zLatestObsTime,
                 zSersicN_SG, zSersicN_SG_Sigma,
                 zE1_SG, zE1_SG_Sigma, zE2_SG, zE2_SG_Sigma,
@@ -218,13 +219,14 @@ def load(sql, scratch):
                 yRaDeclOffset_SG_Cov,
                 yLnL_PS, yLnL_SG,
                 yFlux_PS, yFlux_PS_Sigma,
-                yFlux_SG, yFlux_SG_Sigma,
-                yFlux_CSG, yFlux_CSG_Sigma,
+                yFlux_ESG, yFlux_ESG_Sigma,
+                yFlux_Gaussian, yFlux_Gaussian_Sigma,
                 yTimescale, yEarliestObsTime, yLatestObsTime,
                 ySersicN_SG, ySersicN_SG_Sigma,
                 yE1_SG, yE1_SG_Sigma, yE2_SG, yE2_SG_Sigma,
                 yRadius_SG, yRadius_SG_Sigma,
-                yFlags);
+                yFlags
+            ) SET htmId20 = scisql_s2HtmId(ra_PS, decl_PS, 20);
             """ % os.path.abspath(csv)))
 
 def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None):
@@ -240,6 +242,7 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
                            'varClass',
                            'ra',
                            'decl',
+                           'htmId20',
                            'gLat',
                            'gLon',
                            'sedName,'
@@ -278,10 +281,9 @@ def referenceMatch(sql, root, scratch, refCatalog, radius, exposureMetadata=None
     # Dump object table
     with open(objectTsv, "wb") as f:
         sql.execStmt("""SET myisam_sort_buffer_size=1000000000;
-                        SELECT o.objectId, o.ra_PS, o.decl_PS, AVG(s.taiMidPoint)
-                        FROM Object AS o INNER JOIN Source AS s ON (s.objectId = o.objectId)
-                        GROUP BY o.objectId
-                        ORDER BY o.decl_PS""", f, ['-B', '-N'])
+                        SELECT objectId, ra_PS, decl_PS, meanObsTime
+                        FROM Object
+                        ORDER BY decl_PS""", f, ['-B', '-N'])
     # Dump source table
     with open(sourceTsv, "wb") as f:
         sql.execStmt("""SET myisam_sort_buffer_size=1000000000;
@@ -367,7 +369,7 @@ def main():
         default="/lsst/DC3/data/obs/ImSim/ref/simRefObject_12142010.csv",
         help="Reference catalog CSV file (%default).")
     parser.add_option(
-        "-r", "--radius", type="float", dest="radius", default=2.0,
+        "-r", "--radius", type="float", dest="radius", default=1.0,
         help=dedent("""\
         Reference object to source cluster match radius, arcsec. The default
         is %default arcsec."""))
@@ -377,7 +379,7 @@ def main():
         The name of an exposure metadata key-value CSV table. This option
         may be specified more than once. If present, exposure metadata is
         obtained from the given CSV file(s) rather than the butler, and
-        <root> need not contain calexp pipieline outputs."""))
+        <root> need not contain calexp pipeline outputs."""))
 
     opts, args = parser.parse_args()
     if len(args) != 3 or not os.path.isdir(args[1]) or not os.path.isdir(args[2]):

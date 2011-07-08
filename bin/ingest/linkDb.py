@@ -50,7 +50,7 @@ def main():
     sql = MysqlExecutor(opts.host, "buildbot_weekly_latest",
             opts.user, opts.port)
     for table in (
-            "AmpMap", "BadSource", "CcdMap", "Filter", "LeapSeconds", "Logs",
+            "AmpMap", "CcdMap", "Filter", "LeapSeconds", "Logs",
             "NonVarObject", "Object", "ObjectType", "RaftMap",
             "Raw_Amp_Exposure", "Raw_Amp_Exposure_Metadata",
             "Raw_Amp_Exposure_To_Htm11", "Raw_Amp_To_Science_Ccd_Exposure",

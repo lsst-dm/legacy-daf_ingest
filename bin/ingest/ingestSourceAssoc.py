@@ -76,7 +76,7 @@ def convertAll(root, scratch, numWorkers):
             print >>sys.stderr, "Failed to convert %s to %s" % (tasks[i][1], tasks[i][2])
 
 def load(sql, scratch):
-    for table, fileName in (('BadSource', 'badSource.csv'),
+    for table, fileName in (('Source', 'badSource.csv'),
                             ('Source', 'source.csv')):
         for csv in glob.glob(os.path.join(scratch, '*', fileName)):
             sql.execStmt(dedent("""\

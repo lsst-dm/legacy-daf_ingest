@@ -29,7 +29,6 @@ from textwrap import dedent
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 loadTables = ["Source",
-              "BadSource",
               "Object",
               "SimRefObject",
               "RefObjMatch",

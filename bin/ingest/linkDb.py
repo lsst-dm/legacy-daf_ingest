@@ -31,24 +31,31 @@ from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 def main():
     usage = dedent("""\
-    usage: %prog [options] <database>
+    usage: %prog [options] [-t <type>] <database> 
 
     Program which "links" an LSST per-run database into the well-known
     database name buildbot_weekly_latest by creating views for each table.
 
+    <type>:       Type of stack; either 'tags' or 'trunk'; Default is 'tags'.
     <database>:   Name of database to "link" from
     """)
     parser = optparse.OptionParser(usage)
+    parser.add_option("-t","--type",default="tags",
+        help="type of stack which generated DB; either 'tags' or 'trunk'; default 'tags'")
     addDbOptions(parser)
     opts, args = parser.parse_args()
+    print opts, args
     if len(args) != 1:
         parser.error("A single argument (database name) must be supplied.")
     database = args[0]
     if opts.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
+    if opts.type != "tags" and opts.type != "trunk":
+        parser.error("Only 'trunk' or 'tags' may be specified for type.")
+    viewName = "buildbot_weekly_latest_" + opts.type
+    print viewName
 
-    sql = MysqlExecutor(opts.host, "buildbot_weekly_latest",
-            opts.user, opts.port)
+    sql = MysqlExecutor(opts.host, viewName, opts.user, opts.port)
     for table in (
             "AmpMap", "CcdMap", "Filter", "LeapSeconds", "Logs",
             "NonVarObject", "Object", "ObjectType", "RaftMap",

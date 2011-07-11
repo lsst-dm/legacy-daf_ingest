@@ -9,6 +9,10 @@
 # from the current working directory 
 
 
+# Initial directory on this script's startup
+startDir=$PWD
+
+
 if [ $# -eq 0 ]; then
     echo "$0 : You must supply 'trunk' or 'tags' as a command line argument"
     exit 1
@@ -22,7 +26,7 @@ else
     exit 1
 fi
 
-echo "Starting run_weekly_production"
+echo "Starting run_weekly_production: $0"
 
 # grab the date for labelling the run
 i=`date "+%Y_%m%d_%H%M%S"`
@@ -41,17 +45,29 @@ echo "stackType ${stackType}"
 
 # Runid for the weekly production 
 thisrun="wp_${stackType}_$i"
+
+echo "startDir $startDir"
+echo "------------------------------------------------------------------"
+echo "Env init file:"
+cat ${startDir}/stack_${stackType}.sh
+echo "------------------------------------------------------------------"
+echo " weekly_production.paf"
+cat weekly_production.paf
+echo "------------------------------------------------------------------"
+echo "weekly.input"
+cat weekly.input
+echo "------------------------------------------------------------------"
 echo "runID ${thisrun}"
 echo "FullPathToWeeklyRun: ${base}/${thisrun}"
-echo "PWD $PWD"
+echo "startDir $startDir"
 
 echo RUNNING 
-echo "orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun}"
+echo "orca.py -r $startDir -e ${startDir}/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun}"
 
-orca.py -r $PWD -e $PWD/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun} >& unifiedPipeline.log
+orca.py -r $startDir -e ${startDir}/stack_${stackType}.sh -V 30 -L 2 weekly_production.paf ${thisrun} >& unifiedPipeline.log
 if [ $? -ne 0 ]; then
      echo "------------------------------------"
-     echo "FATAL: Failed in pipeline execution."
+     echo "FATAL: Failed in orca pipeline execution."
      exit 1
 fi
 
@@ -74,32 +90,79 @@ pwd
 mkdir SourceAssoc
 echo "${DATAREL_DIR}/bin/sst/SourceAssoc_ImSim.py -i update -o SourceAssoc -R update/registry.sqlite3";
 ${DATAREL_DIR}/bin/sst/SourceAssoc_ImSim.py -i update -o SourceAssoc -R update/registry.sqlite3 >& SourceAssoc_ImSim.log 
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in SourceAssoc_ImSim execution."
+     exit 1
+fi
 
 # Prepare DB
 echo "${DATAREL_DIR}/bin/ingest/prepareDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun}";
 ${DATAREL_DIR}/bin/ingest/prepareDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun} >& prepareDb.log 
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in prepareDb execution."
+     exit 1
+fi
+
 
 # Ingest processed metadata
 echo "${DATAREL_DIR}/bin/ingest/ingestProcessed_ImSim.py -u ${dbuser} -d ${dbuser}_PT1_2_u_${thisrun} update update/registry.sqlite3";
 ${DATAREL_DIR}/bin/ingest/ingestProcessed_ImSim.py -u ${dbuser} -d ${dbuser}_PT1_2_u_${thisrun} update update/registry.sqlite3 >& ingestProcessed_ImSim.log
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in ingestProcessed_Imsim execution."
+     exit 1
+fi
 
 # Ingest source association data
 mkdir csv-SourceAssoc
 echo "${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -R /lsst/DC3/data/obs/ImSim/ref/simRefObject-2011-06-20-0.csv -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_PT1_2_u_${thisrun}  SourceAssoc  csv-SourceAssoc";
 ${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -R /lsst/DC3/data/obs/ImSim/ref/simRefObject-2011-06-20-0.csv -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_PT1_2_u_${thisrun}  SourceAssoc  csv-SourceAssoc >& ingestSourceAssoc.log 
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in ingestSourceAssoc execution."
+     exit 1
+fi
 
 # Run SQDA ingestion script 
 echo "${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -d ${dbuser}_PT1_2_u_${thisrun}  update update/registry.sqlite3 ";
 ${DATAREL_DIR}/bin/ingest/ingestSdqa_ImSim.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -d ${dbuser}_PT1_2_u_${thisrun} update  update/registry.sqlite3 >& ingestSdqa_ImSim.log 
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in ingestSdqa_ImSim execution."
+     exit 1
+fi
 
 # Run finishDb script 
 #   N O T E      The -t (transpose) option takes an v. long time to process. 
 #   N O T E      Do NOT use for full production run.  
 echo "${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -t ${dbuser}_PT1_2_u_${thisrun}";
 ${DATAREL_DIR}/bin/ingest/finishDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -t ${dbuser}_PT1_2_u_${thisrun} >& finishDb.log 
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in finishDB execution."
+     exit 1
+fi
 
+#-------------------------------------------------------------------------
 # Update DB: 'buildbot_weekly_latest' with the details about this weekly run
-echo "${DATAREL_DIR}/bin/ingest/linkDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun}";
-${DATAREL_DIR}/bin/ingest/linkDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu ${dbuser}_PT1_2_u_${thisrun} >& linkDb.log 
+echo "${DATAREL_DIR}/bin/ingest/linkDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -t ${stackType} ${dbuser}_PT1_2_u_${thisrun}";
+${DATAREL_DIR}/bin/ingest/linkDb.py -u ${dbuser} -H lsst10.ncsa.uiuc.edu -t ${stackType} ${dbuser}_PT1_2_u_${thisrun} >& linkDb.log 
+if [ $? -ne 0 ]; then
+     echo "------------------------------------"
+     echo "FATAL: Failed in linkDb execution."
+     exit 1
+fi
 
+# Update sym link: latest_<type>
+if [ `cat ${startDir}/weekly.input | wc -l` -gt 21 ] ; then
+    # Only switch sym link to latest production run if NOT Debug mode.
+    # Having to approximate by checking if input list is very short
+    rm -f ${base}/latest_${stackType}
+    echo "ln -s ${base}/${thisrun} ${base}/latest_${stackType}"
+    ln -s ${base}/${thisrun} ${base}/latest_${stackType}
+else
+    echo "Not altering latest_${stackType} since DEBUG mode."
+fi
 

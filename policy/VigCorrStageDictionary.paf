@@ -1,0 +1,68 @@
+#<?cfg paf dictionary ?>
+#
+# Dictionary for VigCorrStage policies
+#
+target: lsst.datarel.VigCorrStage
+
+definitions: {
+    inputKeys: {
+        description: "Names of input items on the clipboard."
+        type: "policy"
+        dictionary: {
+            definitions: {
+                exposure: {
+                    description: "Background-subtracted exposure to correct (afwImage.Exposure<x>)."
+                    type: "string"
+                    minOccurs: 1
+                    maxOccurs: 1
+                }        
+                vigCorrImage: {
+                    description: "Vignetting correction image (afwImage.Image<y>)."
+                    type: "string"
+                    minOccurs: 1
+                    maxOccurs: 1
+                }        
+            }
+        }
+        minOccurs: 1
+        maxOccurs: 1
+    }
+    outputKeys: {
+        description: "Names of output items on the clipboard."
+        type: "policy"
+        dictionary: {
+            definitions: {
+                corrExposure: {
+                    description: "Corrected exposure (afwImage.Exposure<x>)."
+                    type: "string"
+                    minOccurs: 1
+                    maxOccurs: 1
+                    default: "corrExposure"
+                }
+            }
+        }
+    }
+
+    parameters: {
+        type: "policy"
+        maxOccurs: 1
+        dictionary: {
+            definitions: {
+                doCorrect: {
+                    type: "bool"
+                    description: "Apply the correction? If false corrExposure = exposure."
+                    minOccurs: 1
+                    maxOccurs: 1
+                    default: true
+                }
+                doMultiply: {
+                    type: "bool"
+                    description: "true=multiply/false=divide the science image by the correction image."
+                    minOccurs: 1
+                    maxOccurs: 1
+                    default: true
+                }
+            }
+        }
+    }
+}

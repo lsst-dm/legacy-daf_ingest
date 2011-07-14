@@ -447,13 +447,63 @@ def crSplitProcess(f):
             parameters: @PT1Pipe/CrSplit-backgroundEstimation.paf
         }
     }
+
+    appStage: {
+        name: vigCorrInput
+        parallelClass: lsst.pex.harness.IOStage.InputStageParallel
+        eventTopic: None
+        stagePolicy: {
+            parameters: {
+                additionalData: "raft=jobIdentity.raft" "sensor=jobIdentity.sensor"
+                inputItems: {
+                   vigCorrImage: {
+                       type: ExposureF
+                       pythonType: lsst.afw.image.ExposureF
+                       storagePolicy: {
+                           storage: FitsStorage
+                           location: "%(input)/vigcorrdata/R:%(raft)_S:%(sensor).fits"
+                       }
+                   }
+                }
+            }
+        }
+    }    
+    appStage: {
+        name: vigCorr0
+        parallelClass: lsst.datarel.VigCorrStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                exposure: bkgSubCcdExposure0
+                vigCorrImage: vigCorrImage
+            }
+            outputKeys: {
+                corrExposure: vigCorrBkgSubCcdExposure0
+            }
+        }
+    }    
+    appStage: {
+        name: vigCorr1
+        parallelClass: lsst.datarel.VigCorrStageParallel
+        eventTopic: None
+        stagePolicy: {
+            inputKeys: {
+                exposure: bkgSubCcdExposure1
+                vigCorrImage: vigCorrImage
+            }
+            outputKeys: {
+                corrExposure: vigCorrBkgSubCcdExposure1
+            }
+        }
+    }
+
     appStage: {
         name: crSplitCrReject0
         parallelClass: lsst.ip.pipeline.CrRejectStageParallel
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: bkgSubCcdExposure0
+                exposure: vigCorrBkgSubCcdExposure0
             }
             outputKeys: {
                 exposure: crSubCcdExposure0
@@ -468,7 +518,7 @@ def crSplitProcess(f):
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: bkgSubCcdExposure1
+                exposure: vigCorrBkgSubCcdExposure1
             }
             outputKeys: {
                 exposure: crSubCcdExposure1
@@ -477,8 +527,7 @@ def crSplitProcess(f):
             crRejectPolicy: @PT1Pipe/CrSplit-crReject-algorithm.paf
         }
     }
-    """
-    print >>f, """
+
     appStage: {
         name: crSplitFixup
         parallelClass: lsst.datarel.FixupStageParallel

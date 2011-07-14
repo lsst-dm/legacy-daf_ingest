@@ -653,12 +653,6 @@ def imgCharProcess(f):
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }
-                    visitExposure: {
-                        datasetId: {
-                            datasetType: calexp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                        }
-                    }
                 }
             }
         }
@@ -762,6 +756,12 @@ def sfmProcess(f):
                     sourceSet_persistable: {
                         datasetId: {
                             datasetType: src
+                            fromJobIdentity: "visit" "raft" "sensor"
+                        }
+                    }
+                    scienceExposure: {
+                        datasetId: {
+                            datasetType: calexp
                             fromJobIdentity: "visit" "raft" "sensor"
                         }
                     }

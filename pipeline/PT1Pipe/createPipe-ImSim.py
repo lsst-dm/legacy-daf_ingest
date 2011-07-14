@@ -555,6 +555,7 @@ def imgCharProcess(f):
                 cellSet: cellSet
                 sdqa: sdqa
             }
+            psfDeterminerPolicy: @PT1Pipe/ImgChar-psfDetermination-psfDeterminer.paf
         }
     }
     appStage: {

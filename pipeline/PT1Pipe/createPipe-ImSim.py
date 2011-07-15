@@ -457,8 +457,8 @@ def crSplitProcess(f):
                 additionalData: "raft=jobIdentity.raft" "sensor=jobIdentity.sensor"
                 inputItems: {
                    vigCorrImage: {
-                       type: ExposureF
-                       pythonType: lsst.afw.image.ExposureF
+                       type: ImageF
+                       pythonType: lsst.afw.image.ImageF
                        storagePolicy: {
                            storage: FitsStorage
                            location: "%(input)/vigcorrdata/DM_R:%(raft)_S:%(sensor).fits"

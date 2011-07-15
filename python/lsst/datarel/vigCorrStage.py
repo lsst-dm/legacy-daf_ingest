@@ -4,6 +4,7 @@ import lsst.pex.harness.stage as harnessStage
 from lsst.pex.logging import Log
 
 import lsst.pex.policy as pexPolicy
+import lsst.afw.image as afwImage
 
 class VigCorrStageParallel(harnessStage.ParallelProcessing):
     """
@@ -40,23 +41,24 @@ class VigCorrStageParallel(harnessStage.ParallelProcessing):
         exposure = clipboard.get(inputKeys.get("exposure"))
         vigCorrImage = clipboard.get(inputKeys.get("vigCorrImage"))
         
-        corrExposure = afwImage.ExposureF(exposure, true)
+        corrExposure = afwImage.ExposureF(exposure, True)
         corrExposure.setCalib(exposure.getCalib())
         corrExposure.setDetector(exposure.getDetector())
         corrExposure.setFilter(exposure.getFilter())
+        corrMaskedImage = corrExposure.getMaskedImage()
         
         if self._doCorrect:
             if self._doMultiply:
                 self.log.log(Log.INFO, "corrExposure = exposure * vigCorrImage")
-                vigCorrImage *= vigCorrImage
+                corrMaskedImage *= vigCorrImage
             else:
                 self.log.log(Log.INFO, "corrExposure = exposure / vigCorrImage")
-                vigCorrImage /= vigCorrImage
+                corrMaskedImage /= vigCorrImage
         else:
             self.log.log(Log.INFO, "corrExposure = exposure (no correction)")
         
         outputKeys = self.policy.get("outputKeys")
-        clipboard.put(corrExposureName, outputKeys.get("corrExposure"))
+        clipboard.put(outputKeys.get("corrExposure"), corrExposure)
 
 class VigCorrStage(harnessStage.Stage):
     parallelClass = VigCorrStageParallel

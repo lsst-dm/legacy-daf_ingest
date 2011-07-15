@@ -461,7 +461,7 @@ def crSplitProcess(f):
                        pythonType: lsst.afw.image.ExposureF
                        storagePolicy: {
                            storage: FitsStorage
-                           location: "%(input)/vigcorrdata/R:%(raft)_S:%(sensor).fits"
+                           location: "%(input)/vigcorrdata/DM_R:%(raft)_S:%(sensor).fits"
                        }
                    }
                 }

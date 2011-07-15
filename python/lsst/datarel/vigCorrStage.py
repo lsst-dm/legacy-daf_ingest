@@ -27,8 +27,8 @@ class VigCorrStageParallel(harnessStage.ParallelProcessing):
         if self.policy is None:
             self.policy = pexPolicy.Policy()
         self.policy.mergeDefaults(defPolicy.getDictionary())
-        self._doCorrect = self.policy.get("doCorrect")
-        self._doMultiply = self.policy.get("doMultiply")
+        self._doCorrect = self.policy.get("parameters.doCorrect")
+        self._doMultiply = self.policy.get("parameters.doMultiply")
 
     def process(self, clipboard):
         """

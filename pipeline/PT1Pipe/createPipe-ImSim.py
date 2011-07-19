@@ -338,51 +338,43 @@ def ccdAssemblyProcess(f):
                 butler: @PT1Pipe/butlerUpdate.paf
                 outputItems: {"""
     for snap in (0, 1):
-        for channelX in (0, 1):
-            for channelY in (0, 1, 2, 3, 4, 5, 6, 7):
-                channelName = '"%d,%d"' % (channelX, channelY)
-                channelSnap = "%d%d_%d" % (channelX, channelY, snap)
-                print >>f, """
-                    isrExposure""" + channelSnap + """: {
-                        datasetId: {
-                            datasetType: postISR
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: """ + str(snap) + """
-                                channel: """ + channelName + """
-                            }
-                        }
-                    }"""
+#        for channelX in (0, 1):
+#            for channelY in (0, 1, 2, 3, 4, 5, 6, 7):
+#                channelName = '"%d,%d"' % (channelX, channelY)
+#                channelSnap = "%d%d_%d" % (channelX, channelY, snap)
+#                print >>f, """
+#                    isrExposure""" + channelSnap + """: {
+#                        datasetId: {
+#                            datasetType: postISR
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: """ + str(snap) + """
+#                                channel: """ + channelName + """
+#                            }
+#                        }
+#                    }"""
+#        print >>f, """
+#                    isrExposure""" + str(snap) + """: {
+#                        datasetId: {
+#                            datasetType: postISRCCD
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: """ + str(snap) + """
+#                            }
+#                        }
+#                    }"""
+#        
         print >>f, """
-                    isrCcdExposure""" + str(snap) + """: {
+                    sdqaRatingVector""" + str(snap) + """: {
                         datasetId: {
-                            datasetType: postISRCCD
+                            datasetType: sdqaCcd
                             fromJobIdentity: "visit" "raft" "sensor"
                             set: {
                                 snap: """ + str(snap) + """
                             }
                         }
                     }"""
-        
-    print >>f, """
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaCcd
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaCcd
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                            }
-                        }
-                    }
+    print """
                 }
             }
         }

@@ -16,13 +16,7 @@ clip = {
     }
 }
 
-if not os.environ.has_key('AFWDATA_DIR'):
-    (ok, ver, err) = eups.Eups().setup("afwdata")
-    if not ok:
-        print "Could not setup afwdata:", str(err)
-        sys.exit(1)
-
-inputDir = os.path.join(os.environ['AFWDATA_DIR'], "ImSim")
+inputDir = os.path.join("tests", "data")
 clip = runStage(InputStage,
     """#<?cfg paf policy ?>
     parameters: {

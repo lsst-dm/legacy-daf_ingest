@@ -145,7 +145,7 @@ def load(sql, scratch):
                 uSersicN_SG, uSersicN_SG_Sigma,
                 uE1_SG, uE1_SG_Sigma, uE2_SG, uE2_SG_Sigma,
                 uRadius_SG, uRadius_SG_Sigma,
-                uFlags,
+                uFlux_PS_Num, uFlux_ESG_Num, uFlux_Gaussian_Num, uEllipticity_Num, uFlags,
                 gNumObs, gExtendedness, gVarProb,
                 gRaOffset_PS, gRaOffset_PS_Sigma,
                 gDeclOffset_PS, gDeclOffset_PS_Sigma,
@@ -161,7 +161,7 @@ def load(sql, scratch):
                 gSersicN_SG, gSersicN_SG_Sigma,
                 gE1_SG, gE1_SG_Sigma, gE2_SG, gE2_SG_Sigma,
                 gRadius_SG, gRadius_SG_Sigma,
-                gFlags,
+                gFlux_PS_Num, gFlux_ESG_Num, gFlux_Gaussian_Num, gEllipticity_Num, gFlags,
                 rNumObs, rExtendedness, rVarProb,
                 rRaOffset_PS, rRaOffset_PS_Sigma,
                 rDeclOffset_PS, rDeclOffset_PS_Sigma,
@@ -177,7 +177,7 @@ def load(sql, scratch):
                 rSersicN_SG, rSersicN_SG_Sigma,
                 rE1_SG, rE1_SG_Sigma, rE2_SG, rE2_SG_Sigma,
                 rRadius_SG, rRadius_SG_Sigma,
-                rFlags,
+                rFlux_PS_Num, rFlux_ESG_Num, rFlux_Gaussian_Num, rEllipticity_Num, rFlags,
                 iNumObs, iExtendedness, iVarProb,
                 iRaOffset_PS, iRaOffset_PS_Sigma,
                 iDeclOffset_PS, iDeclOffset_PS_Sigma,
@@ -193,7 +193,7 @@ def load(sql, scratch):
                 iSersicN_SG, iSersicN_SG_Sigma,
                 iE1_SG, iE1_SG_Sigma, iE2_SG, iE2_SG_Sigma,
                 iRadius_SG, iRadius_SG_Sigma,
-                iFlags,
+                iFlux_PS_Num, iFlux_ESG_Num, iFlux_Gaussian_Num, iEllipticity_Num, iFlags,
                 zNumObs, zExtendedness, zVarProb,
                 zRaOffset_PS, zRaOffset_PS_Sigma,
                 zDeclOffset_PS, zDeclOffset_PS_Sigma,
@@ -209,7 +209,7 @@ def load(sql, scratch):
                 zSersicN_SG, zSersicN_SG_Sigma,
                 zE1_SG, zE1_SG_Sigma, zE2_SG, zE2_SG_Sigma,
                 zRadius_SG, zRadius_SG_Sigma,
-                zFlags,
+                zFlux_PS_Num, zFlux_ESG_Num, zFlux_Gaussian_Num, zEllipticity_Num, zFlags,
                 yNumObs, yExtendedness, yVarProb,
                 yRaOffset_PS, yRaOffset_PS_Sigma,
                 yDeclOffset_PS, yDeclOffset_PS_Sigma,
@@ -225,7 +225,7 @@ def load(sql, scratch):
                 ySersicN_SG, ySersicN_SG_Sigma,
                 yE1_SG, yE1_SG_Sigma, yE2_SG, yE2_SG_Sigma,
                 yRadius_SG, yRadius_SG_Sigma,
-                yFlags
+                yFlux_PS_Num, yFlux_ESG_Num, yFlux_Gaussian_Num, yEllipticity_Num, yFlags
             ) SET htmId20 = scisql_s2HtmId(ra_PS, decl_PS, 20);
             """ % os.path.abspath(csv)))
 

@@ -117,8 +117,8 @@ fi
 
 # Ingest source association data
 mkdir csv-SourceAssoc
-echo "${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -R /lsst/DC3/data/obs/ImSim/ref/simRefObject-2011-06-20-0.csv -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_PT1_2_u_${thisrun}  SourceAssoc  csv-SourceAssoc";
-${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -R /lsst/DC3/data/obs/ImSim/ref/simRefObject-2011-06-20-0.csv -e /lsst3/weekly/datarel-runs/${thisrun}/Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_PT1_2_u_${thisrun}  SourceAssoc  csv-SourceAssoc >& ingestSourceAssoc.log 
+echo "${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -R input/refObject.csv  -e Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_PT1_2_u_${thisrun}  SourceAssoc  csv-SourceAssoc";
+${DATAREL_DIR}/bin/ingest/ingestSourceAssoc.py -m -u ${dbuser} -R input/refObject.csv -e Science_Ccd_Exposure_Metadata.csv -H lsst10.ncsa.uiuc.edu -j 1 ${dbuser}_PT1_2_u_${thisrun}  SourceAssoc  csv-SourceAssoc >& ingestSourceAssoc.log 
 if [ $? -ne 0 ]; then
      echo "------------------------------------"
      echo "FATAL: Failed in ingestSourceAssoc execution."
@@ -155,14 +155,23 @@ if [ $? -ne 0 ]; then
      exit 1
 fi
 
-# Update sym link: latest_<type>
-if [ `cat ${startDir}/weekly.input | wc -l` -gt 21 ] ; then
-    # Only switch sym link to latest production run if NOT Debug mode.
-    # Having to approximate by checking if input list is very short
-    rm -f ${base}/latest_${stackType}
-    echo "ln -s ${base}/${thisrun} ${base}/latest_${stackType}"
-    ln -s ${base}/${thisrun} ${base}/latest_${stackType}
-else
+# Only continue processing  if NOT Debug mode.
+# Having to approximate by checking if input list is very short
+if [ `cat ${startDir}/weekly.input | wc -l` -le 21 ] ; then
     echo "Not altering latest_${stackType} since DEBUG mode."
+    exit 0
 fi
 
+# Update sym link: latest_<type>
+rm -f ${base}/latest_${stackType}
+echo "ln -s ${base}/${thisrun} ${base}/latest_${stackType}"
+ln -s ${base}/${thisrun} ${base}/latest_${stackType}
+
+# Initiate pipeQA
+setup testing_pipeQA
+setup testing_displayQA
+export WWW_ROOT=/lsst/public_html/pipeQA/html/dev
+export WWW_RERUN="${dbuser}_PT1_2_u_${thisrun}"
+newQa.py ${WWW_RERUN}
+${TESTING_PIPEQA_DIR}/bin/pipeQa.py -v ".*" ${WWW_RERUN}
+ln -sf ${WWW_ROOT}/${WWW_RERUN} ${WWW_ROOT}/latest_tags

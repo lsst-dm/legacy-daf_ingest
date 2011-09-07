@@ -134,7 +134,7 @@ class CsvGenerator(object):
             return
 
         attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
-        fwhm = attr.computeGaussianWidth() * wcs.pixelScale() * sigmaToFwhm
+        fwhm = attr.computeGaussianWidth() * wcs.pixelScale().asArcseconds() * sigmaToFwhm
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,
                 dafBase.DateTime.UTC)
         filterName = md.get('FILTER').strip()

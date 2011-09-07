@@ -92,7 +92,7 @@ class CsvGenerator(object):
         lrc = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
         psf = self.butler.get("psf", visit=visit, ccd=ccd)
         attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
-        fwhm = attr.computeGaussianWidth() * wcs.pixelScale() * sigmaToFwhm
+        fwhm = attr.computeGaussianWidth() * wcs.pixelScale().asArcseconds() * sigmaToFwhm
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,
                 dafBase.DateTime.UTC)
         self.expFile.write(sciCcdExposureId, visit, 0, ccd,

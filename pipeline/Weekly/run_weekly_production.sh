@@ -162,10 +162,17 @@ if [ `cat ${startDir}/weekly.input | wc -l` -le 21 ] ; then
     exit 0
 fi
 
+
 # Update sym link: latest_<type>
-rm -f ${base}/latest_${stackType}
-echo "ln -s ${base}/${thisrun} ${base}/latest_${stackType}"
-ln -s ${base}/${thisrun} ${base}/latest_${stackType}
+#     Don't change the rundir latest_* link if this is One-Off
+#     Don't want to bundle both sym link sets 'cuz pipeQA might fail
+NOT_ONEOFF=`cat ${startDir}/weekly_production.paf | grep OneOff | grep -v '.*#.*dataRepository:' | grep 'dataRepository:' | wc -l `
+echo "Not ONEOFF=${NOT_ONEOFF}"
+if [ ${NOT_ONEOFF} -eq 0  ] ; then
+    rm -f ${base}/latest_${stackType}
+    echo "ln -s ${base}/${thisrun} ${base}/latest_${stackType}"
+    ln -s ${base}/${thisrun} ${base}/latest_${stackType}
+fi
 
 # Initiate pipeQA
 setup testing_pipeQA
@@ -173,5 +180,9 @@ setup testing_displayQA
 export WWW_ROOT=/lsst/public_html/pipeQA/html/dev
 export WWW_RERUN="${dbuser}_PT1_2_u_${thisrun}"
 newQa.py ${WWW_RERUN}
-${TESTING_PIPEQA_DIR}/bin/pipeQa.py -v ".*" ${WWW_RERUN}
-ln -sf ${WWW_ROOT}/${WWW_RERUN} ${WWW_ROOT}/latest_tags
+${TESTING_PIPEQA_DIR}/bin/pipeQa.py -d -f -k -b ccd -v ".*" ${WWW_RERUN}
+
+# Don't change the pipeQA latest_* link if this is a One-Off
+if [ $NOT_ONEOFF -eq 0  ] ; then
+    ln -sf ${WWW_ROOT}/${WWW_RERUN} ${WWW_ROOT}/latest_${stackType}
+fi

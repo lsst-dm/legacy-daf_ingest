@@ -168,7 +168,6 @@ else
     cp $INPUT_LIST pipeline/weekly.input
 fi
 
-
 echo "change to pipeline directory"
 cd pipeline 
 
@@ -190,14 +189,13 @@ cp PT1Pipe/main-ImSim.paf .
 #
 #       For most trunk stacks, just update datarel svn then rebuild trunk.
 #__________________________________________________________________________
-if [ "$STACK_TYPE" = "tags" ] ; then
-    cp PT1Pipe/SFM-sourceMeasure.paf PT1Pipe/SFM-sourceMeasure.paf_bak
-    cat PT1Pipe/SFM-sourceMeasure.paf_bak | sed -e "s^enabled: true^enabled: false^"> PT1Pipe/SFM-sourceMeasure.paf
-    echo "Temporarily modified for TAGS use: PT1Pipe/SFM-sourceMeasure.paf"
-    cat PT1Pipe/SFM-sourceMeasure.paf
-    echo "---------------------"
-fi
-#__________________________________________________________________________
+#7/19/11# if [ "$STACK_TYPE" = "tags" ] ; then
+#7/19/11#     cp PT1Pipe/SFM-sourceMeasure.paf PT1Pipe/SFM-sourceMeasure.paf_bak
+#7/19/11#     cat PT1Pipe/SFM-sourceMeasure.paf_bak | sed -e "s^enabled: true^enabled: false^"> PT1Pipe/SFM-sourceMeasure.paf
+#7/19/11#     echo "Temporarily modified for TAGS use: PT1Pipe/SFM-sourceMeasure.paf"
+#7/19/11#     cat PT1Pipe/SFM-sourceMeasure.paf
+#7/19/11#     echo "---------------------"
+#7/19/11# fi
 #__________________________________________________________________________
 
 echo "launch weekly production"

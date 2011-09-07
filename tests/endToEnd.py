@@ -129,17 +129,9 @@ def cmpSrc(t, s1, s2):
         v2 = getattr(s2, getField)()
         if str(v1) == "nan" and str(v2) == "nan":
             continue
-        #print 'comparing src field', getField
-        #print '  v1', v1
-        #print '  v2', v2
-        #print '  v1 type', type(v1)
-        #print '  v2 type', type(v2)
         if type(v1) is afwGeom.Angle:
             v1 = v1.asDegrees()
             v2 = v2.asDegrees()
-            #print 'Converting angles to degrees:'
-            #print '  v1', v1
-            #print '  v2', v2
         if getField.find("Err") != -1:
             if cmpFloat(v1, v2, 1e-6):
                 continue
@@ -147,7 +139,6 @@ def cmpSrc(t, s1, s2):
             if cmpFloat(v1, v2):
                 continue
         return "%s %s: test %g, ref %g" % (t, getField, v1, v2)
-
     return None
 
 def srcCompare(o1, o2, t="src"):

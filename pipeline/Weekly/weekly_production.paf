@@ -117,7 +117,7 @@ workflow: {
        definition:    @main-ImSim.paf
        runCount: 4     
        deploy: {
-          processesOnNode: lsst5:2
+          processesOnNode: lsst5:4
        }
        launch: true
     }

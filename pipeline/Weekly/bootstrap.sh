@@ -1,4 +1,12 @@
 #!/bin/bash
+##########################################################################
+#
+# 16 Sep 2011
+#              This version uses systems 5 and 11 (the old OS systems)
+#
+#
+#########################################################################
+
 #
 # LSST Data Management System
 # Copyright 2008, 2009, 2010, 2011 LSST Corporation.
@@ -31,9 +39,12 @@ usage() {
     echo "Parameters (must be in this order):"
     echo " -debug:          use limited raft set for debug run."
     echo " -dataRepository: fullpath to input data repository. Default uses definition in weekly_production.paf"
-    echo " -input <list>: selects file specifying image data to process."
+    echo "                  Example:  /lsst3/weekly/data/obs_imSim-2011-09-07"
+    echo " -input <list>: selects job office input file specifying image data to process."
     echo "                Either: full pathname of file containing input list;"
     echo "                or: pre-defined file within $DATAREL_DIR/pipeline/Weekly/"
+    echo " -plhome <pathname>:   LSST_HOME pathname to use for all pipeline nodes. "
+    echo "All pipeline nodes will use this stack. Default is /lsst/DC3/stacks/default."
     echo " -overlay <pathname>:  pathname of eups-setup script to overlay selected <branch> packages with different versions ."
     echo " <branch>:        one of"
     echo "                  'tags'  - load  stack comprised of current tags;"
@@ -86,9 +97,21 @@ else
 fi
 
 echo $1
+if [ "$1" = "-plhome" ] ; then
+    if  [ ! -e "$2" ] ; then
+        echo "$PROG : pipeline node LSST_HOME directory, $2, does not exist"
+        usage 
+        exit 1
+    fi
+    PL_HOME=$2
+    echo "$PROG : Customizing the pipeline node LSST_HOME to: $PL_HOME"
+    shift 2
+fi
+
+echo $1
 unset OVERLAY
 if [ "$1" = "-overlay" ] ; then
-    if  [ ! -e "$2" ]; then
+    if  [ ! -e "$2" ] ; then
         echo "$PROG : Overlay file, $2, does not exist"
         usage 
         exit 1
@@ -151,11 +174,28 @@ eups list -s
 cp -r $DATAREL_DIR/pipeline pipeline
 cp pipeline/Weekly/* pipeline
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                   T E M P O R A R Y     T E M P O R A R Y
+# The following block is to accommodate srcAssocIngest.py's new csv file
+# without having to tag a new version of datarel
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#if [ "$STACK_TYPE" = "tags" ] ; then
+#    cp ~buildbot/slave/trunkVsTrunk_lsst/work/weeklyPR/test_run_weekly_production.sh pipeline/run_weekly_production.sh
+#fi
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 # Now its time to customize the various defaults being overriden:
-# Update pipelines' env initscript:stack_*.sh, with $OVERLAY 
+# Update pipelines' env initscript:stack_*.sh, with $PL_HOME and $OVERLAY 
+if [ "$PL_HOME" != "" ] ; then
+    cp pipeline/stack_${STACK_TYPE}.sh pipeline/stack_${STACK_TYPE}.sh.bak
+    cat pipeline/stack_${STACK_TYPE}.sh.bak | sed -e "s^LSST_HOME=.*^LSST_HOME=$PL_HOME^" > pipeline/stack_${STACK_TYPE}.sh
+    echo "Modified LSST_HOME in pipeline/stack_${STACK_TYPE}.sh"
+    cat pipeline/stack_${STACK_TYPE}.sh
+    echo "---------------------"
+fi
 if [ "$OVERLAY" != "" ]; then
     cat $OVERLAY >> pipeline/stack_${STACK_TYPE}.sh
-    echo "Modified pipeline/stack_${STACK_TYPE}.sh"
+    echo "Overlay of package defn in pipeline/stack_${STACK_TYPE}.sh"
     cat pipeline/stack_${STACK_TYPE}.sh
     echo "---------------------"
 fi

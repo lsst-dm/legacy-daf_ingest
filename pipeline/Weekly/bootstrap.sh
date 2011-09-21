@@ -143,7 +143,7 @@ i=`date "+%Y_%m%d"`
 export SHELL=/bin/bash
 export LSST_HOME=/lsst/DC3/stacks/default
 if [ "$STACK_TYPE" = "trunk" ] ; then
-    export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox
+    export LSST_DEVEL=/lsst/home/$USER/buildbotSandbox
 fi
 source /lsst/DC3/stacks/default/loadLSST.sh
 # following: undo gratuitous set of svn+ssh  for all lsst users

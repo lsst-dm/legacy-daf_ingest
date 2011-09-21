@@ -36,7 +36,7 @@ echo $i
 # Production will make a directory 'thisrun' under base.
 # 
 base="/lsst3/weekly/datarel-runs"
-dbuser="buildbot"
+dbuser=$USER
 
 # stackType="tags" stackType="trunk"
 stackType=$1

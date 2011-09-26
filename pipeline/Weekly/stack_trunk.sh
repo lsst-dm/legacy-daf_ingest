@@ -7,8 +7,8 @@ CURRENT=$PWD
 
 export SHELL=/bin/bash
 export LSST_HOME=/lsst/DC3/stacks/default
-export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox
-source /lsst/DC3/stacks/default/loadLSST.sh
+export LSST_DEVEL=/lsst/home/$USER/buildbotSandbox
+source $LSST_HOME/loadLSST.sh
 
 # following: undo gratuitous set of svn+ssh  for all lsst users
 export SVNROOT=svn://svn.lsstcorp.org

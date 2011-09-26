@@ -7,7 +7,7 @@ CURRENT=$PWD
 
 export SHELL=/bin/bash
 export LSST_HOME=/lsst/DC3/stacks/default
-source /lsst/DC3/stacks/default/loadLSST.sh
+source $LSST_HOME/loadLSST.sh
 
 # following: undo gratuitous set of svn+ssh  for all lsst users
 export SVNROOT=svn://svn.lsstcorp.org

@@ -1,4 +1,12 @@
 #!/bin/bash
+##########################################################################
+#
+# 16 Sep 2011
+#              This version uses systems 5 and 11 (the old OS systems)
+#
+#
+#########################################################################
+
 #
 # LSST Data Management System
 # Copyright 2008, 2009, 2010, 2011 LSST Corporation.
@@ -25,16 +33,23 @@
 usage() {
 #80 cols  ................................................................................
     echo ""
-    echo "Usage: $0 [-debug] [-dataRepository <pathname>] -input <list>  [-overlay <pathname>] <branch>"
+    echo "Usage: $0 [-debug] [-dataRepository <pathname>] -input <list>   [-outputRepository <pathname>] [-overlay <pathname>] <branch>"
     echo "Bootstrap and then process a Weekly Production Run."
     echo ""
     echo "Parameters (must be in this order):"
-    echo " -debug:          use limited raft set for debug run."
-    echo " -dataRepository: fullpath to input data repository. Default uses definition in weekly_production.paf"
-    echo " -input <list>: selects file specifying image data to process."
-    echo "                Either: full pathname of file containing input list;"
-    echo "                or: pre-defined file within $DATAREL_DIR/pipeline/Weekly/"
-    echo " -overlay <pathname>:  pathname of eups-setup script to overlay selected <branch> packages with different versions ."
+    echo " -debug:          Use limited raft set for debug run."
+    echo " -dataRepository: Fullpath to input data repository." 
+    echo "                  Default uses definition in weekly_production.paf"
+    echo "                  Example:  /lsst3/weekly/data/obs_imSim-2011-09-07"
+    echo " -input <list>:   Selects job office input file specifying image data to process."
+    echo "                  Use full pathname of file containing input list"
+    echo " -outputRepository: Fullpath to pre-existing output data repository."
+    echo "                  Default is: /lsst3/weekly/datarel-runs."
+    echo " -plhome <path>:  LSST_HOME path to use for all pipeline nodes. "
+    echo "                  All pipeline nodes will use this stack. "
+    echo "                  Default is /lsst/DC3/stacks/default."
+    echo " -overlay <path>: Path of eups-setup script to overlay "
+    echo "                  selected <branch> packages with different versions."
     echo " <branch>:        one of"
     echo "                  'tags'  - load  stack comprised of current tags;"
     echo "                  'trunk' - load  stack comprised of trunk versions."
@@ -86,9 +101,33 @@ else
 fi
 
 echo $1
+if [ "$1" = "-outputRepository" ] ; then
+    if [ -e $2 ] ; then
+        OUTPUT_REPOSITORY=$2
+        echo "$PROG : Using outputRepository: $OUTPUT_REPOSITORY."
+        shift 2
+    else
+        echo "$PROG : Output repository: $2, does not exist."
+        exit 1
+    fi
+fi
+
+echo $1
+if [ "$1" = "-plhome" ] ; then
+    if  [ ! -e "$2" ] ; then
+        echo "$PROG : pipeline node LSST_HOME directory, $2, does not exist"
+        usage 
+        exit 1
+    fi
+    PL_HOME=$2
+    echo "$PROG : Customizing the pipeline node LSST_HOME to: $PL_HOME"
+    shift 2
+fi
+
+echo $1
 unset OVERLAY
 if [ "$1" = "-overlay" ] ; then
-    if  [ ! -e "$2" ]; then
+    if  [ ! -e "$2" ] ; then
         echo "$PROG : Overlay file, $2, does not exist"
         usage 
         exit 1
@@ -120,7 +159,7 @@ i=`date "+%Y_%m%d"`
 export SHELL=/bin/bash
 export LSST_HOME=/lsst/DC3/stacks/default
 if [ "$STACK_TYPE" = "trunk" ] ; then
-    export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox
+    export LSST_DEVEL=/lsst/home/$USER/buildbotSandbox
 fi
 source /lsst/DC3/stacks/default/loadLSST.sh
 # following: undo gratuitous set of svn+ssh  for all lsst users
@@ -152,10 +191,17 @@ cp -r $DATAREL_DIR/pipeline pipeline
 cp pipeline/Weekly/* pipeline
 
 # Now its time to customize the various defaults being overriden:
-# Update pipelines' env initscript:stack_*.sh, with $OVERLAY 
+# Update pipelines' env initscript:stack_*.sh, with $PL_HOME and $OVERLAY 
+if [ "$PL_HOME" != "" ] ; then
+    cp pipeline/stack_${STACK_TYPE}.sh pipeline/stack_${STACK_TYPE}.sh.bak
+    cat pipeline/stack_${STACK_TYPE}.sh.bak | sed -e "s^LSST_HOME=.*^LSST_HOME=$PL_HOME^" > pipeline/stack_${STACK_TYPE}.sh
+    echo "Modified LSST_HOME in pipeline/stack_${STACK_TYPE}.sh"
+    cat pipeline/stack_${STACK_TYPE}.sh
+    echo "---------------------"
+fi
 if [ "$OVERLAY" != "" ]; then
     cat $OVERLAY >> pipeline/stack_${STACK_TYPE}.sh
-    echo "Modified pipeline/stack_${STACK_TYPE}.sh"
+    echo "Overlay of package defn in pipeline/stack_${STACK_TYPE}.sh"
     cat pipeline/stack_${STACK_TYPE}.sh
     echo "---------------------"
 fi
@@ -167,7 +213,6 @@ if [ "$DEBUG_DATA" = "0" ]; then
 else
     cp $INPUT_LIST pipeline/weekly.input
 fi
-
 
 echo "change to pipeline directory"
 cd pipeline 
@@ -181,6 +226,30 @@ echo "weekly_production.paf"
 cat  weekly_production.paf
 echo "---------------------"
 
+# Update many files should the output repository change
+if [ "$OUTPUT_REPOSITORY" != "" ] ; then
+    # uddate defaultRoot in imsim-lsstcluster-weekly.paf
+    cat platform/imsim-lsstcluster-weekly.paf  | sed -e "s^defaultRoot:.*^defaultRoot: $OUTPUT_REPOSITORY^" > imsim-lsstcluster-weekly.paf
+    echo "imsim-lsstcluster-weekly.paf"
+    cat  imsim-lsstcluster-weekly.paf
+    echo "---------------------"
+
+    #  update location of imsim-lsstcluster-weekly.paf in weekly_production.paf 
+    cp weekly_production.paf weekly_production.paf.bak
+    cat weekly_production.paf.bak | sed -e "s^platform:.*^platform: @imsim-lsstcluster-weekly.paf^" > weekly_production.paf
+    echo "weekly_production.paf"
+    cat  weekly_production.paf
+    echo "---------------------"
+
+    # update output repository location in run_weekly_production.sh
+    cp run_weekly_production.sh run_weekly_production.sh.bak
+    cat run_weekly_production.sh.bak | sed -e "s^base=.*^base=$OUTPUT_REPOSITORY^" > run_weekly_production.sh
+    echo "run_weekly_production.sh"
+    cat run_weekly_production.sh
+    echo "---------------------"
+fi
+
+
 echo "position PT1Pipe policy into pipeline/"
 cp PT1Pipe/main-ImSim.paf . 
 
@@ -190,15 +259,16 @@ cp PT1Pipe/main-ImSim.paf .
 #
 #       For most trunk stacks, just update datarel svn then rebuild trunk.
 #__________________________________________________________________________
-if [ "$STACK_TYPE" = "tags" ] ; then
-    cp PT1Pipe/SFM-sourceMeasure.paf PT1Pipe/SFM-sourceMeasure.paf_bak
-    cat PT1Pipe/SFM-sourceMeasure.paf_bak | sed -e "s^enabled: true^enabled: false^"> PT1Pipe/SFM-sourceMeasure.paf
-    echo "Temporarily modified for TAGS use: PT1Pipe/SFM-sourceMeasure.paf"
-    cat PT1Pipe/SFM-sourceMeasure.paf
-    echo "---------------------"
-fi
+#7/19/11# if [ "$STACK_TYPE" = "tags" ] ; then
+#7/19/11#     cp PT1Pipe/SFM-sourceMeasure.paf PT1Pipe/SFM-sourceMeasure.paf_bak
+#7/19/11#     cat PT1Pipe/SFM-sourceMeasure.paf_bak | sed -e "s^enabled: true^enabled: false^"> PT1Pipe/SFM-sourceMeasure.paf
+#7/19/11#     echo "Temporarily modified for TAGS use: PT1Pipe/SFM-sourceMeasure.paf"
+#7/19/11#     cat PT1Pipe/SFM-sourceMeasure.paf
+#7/19/11#     echo "---------------------"
+#7/19/11# fi
 #__________________________________________________________________________
-#__________________________________________________________________________
+
+exit 1
 
 echo "launch weekly production"
 echo "./run_weekly_production.sh ${STACK_TYPE}  >& weekly_production_$i.log"

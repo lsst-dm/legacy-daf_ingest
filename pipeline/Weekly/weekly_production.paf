@@ -115,66 +115,51 @@ workflow: {
     pipeline: {
        shortName:     PT1PipeA
        definition:    @main-ImSim.paf
-       runCount: 2     
+       runCount: 4     
        deploy: {
-          processesOnNode: lsst5:2
+          processesOnNode: lsst5:4
        }
        launch: true
     }
 
-    pipeline: {
-       shortName:     PT1PipeB
-       definition:    @main-ImSim.paf
-       runCount: 3     
-       deploy: {
-          processesOnNode: lsst11.ncsa.illinois.edu:3
-       }
-       launch: true
-    }
-
-    # pipeline: {
-    #    shortName:     PT1PipeC
-    #    definition:    @main-ImSim.paf
-    #    runCount: 5     
-    #   deploy: {
-    #      processesOnNode: lsst11.ncsa.illinois.edu:5
-    ##     # processesOnNode: lsst6:4 # processesOnNode: lsst7:5 # processesOnNode: lsst8:4 # processesOnNode: lsst9:5
-    #   }
-    #   launch: true
+    #pipeline: {
+    #   shortName:     PT1PipeB
+    #   definition:    @main-ImSim.paf
+    #   runCount: 4     
+    #  deploy: {
+    #     processesOnNode: lsst9.ncsa.illinois.edu:4
+    #  }
+    #  launch: true
     #}
 
+    pipeline: {
+       shortName:     PT1PipeC
+       definition:    @main-ImSim.paf
+       runCount: 4     
+       deploy: {
+          processesOnNode: lsst11.ncsa.illinois.edu:4
+       }
+       launch: true
+    }
 
+    #pipeline: {
+    #   shortName:     PT1PipeD
+    #   definition:    @main-ImSim.paf
+    #   runCount: 2     
+    #  deploy: {
+    #     processesOnNode: lsst14.ncsa.illinois.edu:2
+    #  }
+    #  launch: true
+    #}
+    
+    #pipeline: {
+    #   shortName:     PT1PipeE
+    #   definition:    @main-ImSim.paf
+    #   runCount: 2     
+    #  deploy: {
+    #     processesOnNode: lsst15.ncsa.illinois.edu:2
+    #  }
+    #  launch: true
+    #}
 
-    # pipeline: {
-    #   shortName:     ccdassembly
-    #   definition:    @imsim-ca-master.paf
-    #   runCount: 3
-    #   deploy: {
-    #   }
-    #   launch: true
-    # }
-    # pipeline: {
-    #    shortName:     crsplit
-    #   definition:    @imsim-crSplit-master.paf
-    #   runCount: 2
-    #   deploy: {
-    #   }
-    #   launch: true
-    # }
-    # pipeline: {
-    #   shortName:     imgchar
-    #   definition:    @imsim-imgChar-master.paf
-    #   runCount: 4
-    #   deploy: {
-    #   }
-    #   launch: true
-    # }
-    # pipeline: {
-    #   shortName:     sfm
-    #   definition:    @imsim-sfm-master.paf
-    #    runCount: 4
-    #    deploy: {
-    #   }
-    #    launch: true
-    # }
 }

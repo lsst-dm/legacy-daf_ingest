@@ -132,9 +132,10 @@ def prepLocation(inputRoot, outputRoot):
     locMap.set("input", inputRoot)
     locMap.set("update", outputRoot)
     outRegistry = os.path.join(outputRoot, "registry.sqlite3")
-    if os.path.exists(outRegistry):
-        os.unlink(outRegistry)
-    os.symlink(os.path.join(inputRoot, "registry.sqlite3"), outRegistry)
+    if outputRoot != inputRoot:
+        if os.path.exists(outRegistry):
+            os.unlink(outRegistry)
+        os.symlink(os.path.join(inputRoot, "registry.sqlite3"), outRegistry)
     dafPersist.LogicalLocation.setLocationMap(locMap)
 
 def importAndAddStage(sst, stagePolicy):

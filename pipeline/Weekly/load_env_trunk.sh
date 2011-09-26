@@ -2,10 +2,10 @@
 
 export SHELL=/bin/bash
 
-export LSST_DEVEL=/lsst/home/buildbot/buildbotSandbox 
-# export LSST_DEVEL=/home/buildbot/buildbotSandbox 
+export LSST_HOME=/lsst/DC3/stacks/default/loadLSST.sh 
+export LSST_DEVEL=/lsst/home/$USER/buildbotSandbox 
 
-source /lsst/DC3/stacks/default/loadLSST.sh 
+source $LSST_HOME/loadLSST.sh 
 
 setup datarel  
 

@@ -44,6 +44,7 @@ from SFM_ImSim import sfmProcess
 import eups
 import lsst.afw.detection as afwDet
 import lsst.afw.math as afwMath
+import lsst.afw.geom as afwGeom
 import lsst.daf.persistence as dafPersist
 from lsst.obs.lsstSim import LsstSimMapper
 
@@ -128,6 +129,9 @@ def cmpSrc(t, s1, s2):
         v2 = getattr(s2, getField)()
         if str(v1) == "nan" and str(v2) == "nan":
             continue
+        if type(v1) is afwGeom.Angle:
+            v1 = v1.asDegrees()
+            v2 = v2.asDegrees()
         if getField.find("Err") != -1:
             if cmpFloat(v1, v2, 1e-6):
                 continue
@@ -135,7 +139,6 @@ def cmpSrc(t, s1, s2):
             if cmpFloat(v1, v2):
                 continue
         return "%s %s: test %g, ref %g" % (t, getField, v1, v2)
-
     return None
 
 def srcCompare(o1, o2, t="src"):
@@ -237,22 +240,42 @@ class EndToEndTestCase(unittest.TestCase):
         fname = "psf/v85408556-fr/R23/S11.boost"
         stat = subprocess.call(["cmp",
             os.path.join(outputRoot, fname), os.path.join(inputRoot, fname)])
-        self.assertEqual(stat, 0, "psf differs")
 
+        psfDiffers = (stat != 0)
+        if psfDiffers:
+            print 'PSF differs (but carrying on and failing later...)'
+
+        results = []
+        
         for datasetType in ("icSrc", "src", "calexp"):
             msg = compare(outButler, inButler, datasetType,
                     visit=85408556, raft="2,3", sensor="1,1")
-            self.assert_(msg is None, msg)
+            results.append((datasetType, msg))
+            if msg is not None:
+                print 'Dataset type', datasetType, 'differs (but carrying on and failing later...)'
+                print 'message:', msg
 
         for snap in (0, 1):
             msg = compare(outButler, inButler, "sdqaCcd",
                 visit=85408556, snap=snap, raft="2,3", sensor="1,1")
-            self.assert_(msg is None, msg)
+            results.append(('sdqaCcd snap %i' % snap, msg))
+            if msg is not None:
+                print 'Snap', snap, 'sdqaCCD differs (but carrying on and failing later...)'
+                print 'message:', msg
             for channel in inButler.queryMetadata("raw", "channel"):
                 msg = compare(outButler, inButler, "sdqaAmp",
                     visit=85408556, snap=snap, raft="2,3", sensor="1,1",
                     channel=channel)
-                self.assert_(msg is None, msg)
+                print 'channel:', channel
+                results.append(('sdqaAmp snap %i channel ' % (snap) + str(channel), msg))
+                if msg is not None:
+                    print 'Snap', snap, 'channel', channels, 'sdqaAmp differs (but carrying on and failing later...)'
+                    print 'message:', msg
+
+        # Deferred failure!
+        self.assertFalse(psfDiffers)
+        for datasetType,msg in results:
+            self.assert_(msg is None, msg)
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

@@ -7,7 +7,6 @@ import glob
 #
 import lsst.tests
 
-#ignoreList=["endToEnd.py"]
 ignoreList=[]
 tests = lsst.tests.Control(env, ignoreList=ignoreList, verbose=True)
 

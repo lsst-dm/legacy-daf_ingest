@@ -1,0 +1,27 @@
+
+# /
+/.sconf_temp
+/.sconsign.dblite
+/config.log
+
+# /bin/sst/
+/bin/sst/*.pyc
+
+# /doc/
+/doc/htmlDir
+
+# /python/lsst/datarel/
+/python/lsst/datarel/*.pyc
+
+# /tests/
+/tests/.tests
+/tests/*.pyc
+/tests/visitim
+/tests/sdqaAmp
+/tests/sdqaCcd
+/tests/postISR
+/tests/icSrc
+/tests/postISRCCD
+/tests/psf
+/tests/calexp
+/tests/src

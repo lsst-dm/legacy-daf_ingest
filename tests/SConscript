@@ -1,14 +1,11 @@
 # -*- python -*-
-Import("env")
-import glob
-	
-#
-# Tests
-#
-import lsst.tests
+from lsst.sconsUtils import scripts, log
 
-#ignoreList=["endToEnd.py"]
-ignoreList=[]
-tests = lsst.tests.Control(env, ignoreList=ignoreList, verbose=True)
+import eups
 
-tests.run("*.py")
+ignoreList = []
+if not eups.productDir("obs_lsstSim"):
+    log.warn("Ignoring some tests because obs_lsstSim is not setup.")
+    ignoreList.append("ioStages.py")
+
+scripts.BasicSConscript.tests(ignoreList=ignoreList)

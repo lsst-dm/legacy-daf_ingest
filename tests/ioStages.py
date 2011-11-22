@@ -22,6 +22,7 @@ clip = {
 }
 
 now = time.time()
+time.sleep(1.0)
 clip = runStage(OutputStage,
     """#<?cfg paf policy ?>
     parameters: {
@@ -82,6 +83,7 @@ assert psf2.getKernel().getNKernelParameters() == psf.getKernel().getNKernelPara
 assert psf2.getKernel().getNSpatialParameters() == psf.getKernel().getNSpatialParameters()
 
 now = time.time()
+time.sleep(1.0)
 clip = runStage(OutputStage,
     """#<?cfg paf policy ?>
     parameters: {

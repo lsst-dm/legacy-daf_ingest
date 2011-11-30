@@ -440,54 +440,54 @@ def crSplitProcess(f):
         }
     }
 
-    appStage: {
-        name: vigCorrInput
-        parallelClass: lsst.pex.harness.IOStage.InputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                additionalData: "raft=jobIdentity.raft" "sensor=jobIdentity.sensor"
-                inputItems: {
-                   vigCorrImage: {
-                       type: ImageF
-                       pythonType: lsst.afw.image.ImageF
-                       storagePolicy: {
-                           storage: FitsStorage
-                           location: "%(input)/vigcorrdata/DM_R:%(raft)_S:%(sensor).fits"
-                       }
-                   }
-                }
-            }
-        }
-    }    
-    appStage: {
-        name: vigCorr0
-        parallelClass: lsst.datarel.VigCorrStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposure: bkgSubCcdExposure0
-                vigCorrImage: vigCorrImage
-            }
-            outputKeys: {
-                corrExposure: vigCorrBkgSubCcdExposure0
-            }
-        }
-    }    
-    appStage: {
-        name: vigCorr1
-        parallelClass: lsst.datarel.VigCorrStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposure: bkgSubCcdExposure1
-                vigCorrImage: vigCorrImage
-            }
-            outputKeys: {
-                corrExposure: vigCorrBkgSubCcdExposure1
-            }
-        }
-    }
+#    appStage: {
+#        name: vigCorrInput
+#        parallelClass: lsst.pex.harness.IOStage.InputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                additionalData: "raft=jobIdentity.raft" "sensor=jobIdentity.sensor"
+#                inputItems: {
+#                   vigCorrImage: {
+#                       type: ImageF
+#                       pythonType: lsst.afw.image.ImageF
+#                       storagePolicy: {
+#                           storage: FitsStorage
+#                           location: "%(input)/vigcorrdata/DM_R:%(raft)_S:%(sensor).fits"
+#                       }
+#                   }
+#                }
+#            }
+#        }
+#    }    
+#    appStage: {
+#        name: vigCorr0
+#        parallelClass: lsst.datarel.VigCorrStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposure: bkgSubCcdExposure0
+#                vigCorrImage: vigCorrImage
+#            }
+#            outputKeys: {
+#                corrExposure: vigCorrBkgSubCcdExposure0
+#            }
+#        }
+#    }    
+#    appStage: {
+#        name: vigCorr1
+#        parallelClass: lsst.datarel.VigCorrStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposure: bkgSubCcdExposure1
+#                vigCorrImage: vigCorrImage
+#            }
+#            outputKeys: {
+#                corrExposure: vigCorrBkgSubCcdExposure1
+#            }
+#        }
+#    }
 
     appStage: {
         name: crSplitCrReject0
@@ -495,7 +495,7 @@ def crSplitProcess(f):
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: vigCorrBkgSubCcdExposure0
+                exposure: bkgSubCcdExposure0
             }
             outputKeys: {
                 exposure: crSubCcdExposure0
@@ -510,7 +510,7 @@ def crSplitProcess(f):
         eventTopic: None
         stagePolicy: {
             inputKeys: {
-                exposure: vigCorrBkgSubCcdExposure1
+                exposure: bkgSubCcdExposure1
             }
             outputKeys: {
                 exposure: crSubCcdExposure1

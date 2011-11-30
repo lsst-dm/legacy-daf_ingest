@@ -204,55 +204,55 @@ def isrProcess(f, doJobOffice=False):
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp""" + channelSnap + """
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure""" + channelSnap + """
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
-            }
-        }
-    }"""
+#    appStage: {
+#        name: isrSdqaAmp""" + channelSnap + """
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure""" + channelSnap + """
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
+#            }
+#        }
+#    }"""
                 pass # end of snap loop
 
             print >>f, """
-    appStage: {
-        name: isrOutput""" + channelId + """
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: """ + channelName + """
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: """ + channelName + """
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }"""
+#    appStage: {
+#        name: isrOutput""" + channelId + """
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: """ + channelName + """
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: """ + channelName + """
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }"""
 
 def ccdAssemblyProcess(f):
     for snap in (0, 1):
@@ -301,43 +301,43 @@ def ccdAssemblyProcess(f):
             }
         }
     }
-    appStage: {
-        name: ccdAssemblyIsrCcdSdqa""" + str(snap) + """
-        parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                ccdExposure: isrExposure""" + str(snap) + """
-            }
-            outputKeys: {
-                sdqaCcdExposure: isrExposure""" + str(snap) + """
-            }
-        }
-    }
-    appStage: {
-        name: ccdAssemblySdqaCcd""" + str(snap) + """
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure""" + str(snap) + """
-            }
-            parameters: @PT1Pipe/ISR-sdqaCcd.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
-            }
-        }
-    }"""
+#    appStage: {
+#        name: ccdAssemblyIsrCcdSdqa""" + str(snap) + """
+#        parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                ccdExposure: isrExposure""" + str(snap) + """
+#            }
+#            outputKeys: {
+#                sdqaCcdExposure: isrExposure""" + str(snap) + """
+#            }
+#        }
+#    }
+#    appStage: {
+#        name: ccdAssemblySdqaCcd""" + str(snap) + """
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure""" + str(snap) + """
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaCcd.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector""" + str(snap) + """
+#            }
+#        }
+#    }"""
     print >>f, """
-    appStage: {
-        name: ccdAssemblyOutput
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {"""
-    for snap in (0, 1):
+#    appStage: {
+#        name: ccdAssemblyOutput
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {"""
+#    for snap in (0, 1):
 #        for channelX in (0, 1):
 #            for channelY in (0, 1, 2, 3, 4, 5, 6, 7):
 #                channelName = '"%d,%d"' % (channelX, channelY)
@@ -364,21 +364,21 @@ def ccdAssemblyProcess(f):
 #                        }
 #                    }"""
 #        
-        print >>f, """
-                    sdqaRatingVector""" + str(snap) + """: {
-                        datasetId: {
-                            datasetType: sdqaCcd
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: """ + str(snap) + """
-                            }
-                        }
-                    }"""
-    print """
-                }
-            }
-        }
-    }"""
+#        print >>f, """
+#                    sdqaRatingVector""" + str(snap) + """: {
+#                        datasetId: {
+#                            datasetType: sdqaCcd
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: """ + str(snap) + """
+#                            }
+#                        }
+#                    }"""
+#    print """
+#                }
+#            }
+#        }
+#    }"""
     print >>f, """
     appStage: {
         name: ccdAssemblyFixup
@@ -594,7 +594,7 @@ def imgCharProcess(f):
             outputKeys: {
                 psf: measuredPsf
                 cellSet: cellSet
-                sdqa: sdqa
+#                sdqa: sdqa
             }
         }
     }
@@ -623,7 +623,7 @@ def imgCharProcess(f):
             }
             outputKeys: {
                 apCorr: apCorr
-                sdqa: sdqa
+#                sdqa: sdqa
             }
         }
     }

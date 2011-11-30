@@ -523,20 +523,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp00_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure00_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp00_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure00_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation00_1
@@ -620,53 +620,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp00_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure00_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp00_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure00_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput00
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,0"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,0"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput00
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,0"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,0"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput01
@@ -790,20 +790,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp01_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure01_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp01_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure01_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation01_1
@@ -887,53 +887,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp01_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure01_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp01_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure01_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput01
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,1"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,1"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput01
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,1"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,1"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput02
@@ -1057,20 +1057,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp02_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure02_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp02_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure02_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation02_1
@@ -1154,53 +1154,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp02_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure02_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp02_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure02_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput02
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,2"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,2"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput02
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,2"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,2"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput03
@@ -1324,20 +1324,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp03_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure03_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp03_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure03_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation03_1
@@ -1421,53 +1421,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp03_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure03_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp03_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure03_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput03
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,3"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,3"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput03
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,3"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,3"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput04
@@ -1591,20 +1591,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp04_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure04_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp04_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure04_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation04_1
@@ -1688,53 +1688,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp04_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure04_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp04_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure04_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput04
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,4"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,4"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput04
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,4"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,4"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput05
@@ -1858,20 +1858,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp05_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure05_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp05_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure05_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation05_1
@@ -1955,53 +1955,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp05_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure05_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp05_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure05_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput05
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,5"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,5"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput05
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,5"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,5"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput06
@@ -2125,20 +2125,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp06_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure06_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp06_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure06_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation06_1
@@ -2222,53 +2222,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp06_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure06_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp06_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure06_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput06
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,6"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,6"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput06
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,6"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,6"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput07
@@ -2392,20 +2392,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp07_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure07_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp07_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure07_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation07_1
@@ -2489,53 +2489,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp07_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure07_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp07_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure07_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput07
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "0,7"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "0,7"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput07
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "0,7"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "0,7"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput10
@@ -2659,20 +2659,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp10_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure10_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp10_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure10_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation10_1
@@ -2756,53 +2756,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp10_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure10_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp10_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure10_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput10
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,0"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,0"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput10
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,0"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,0"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput11
@@ -2926,20 +2926,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp11_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure11_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp11_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure11_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation11_1
@@ -3023,53 +3023,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp11_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure11_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp11_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure11_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput11
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,1"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,1"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput11
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,1"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,1"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput12
@@ -3193,20 +3193,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp12_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure12_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp12_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure12_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation12_1
@@ -3290,53 +3290,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp12_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure12_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp12_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure12_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput12
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,2"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,2"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput12
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,2"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,2"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput13
@@ -3460,20 +3460,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp13_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure13_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp13_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure13_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation13_1
@@ -3557,53 +3557,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp13_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure13_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp13_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure13_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput13
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,3"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,3"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput13
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,3"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,3"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput14
@@ -3727,20 +3727,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp14_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure14_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp14_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure14_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation14_1
@@ -3824,53 +3824,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp14_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure14_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp14_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure14_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput14
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,4"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,4"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput14
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,4"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,4"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput15
@@ -3994,20 +3994,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp15_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure15_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp15_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure15_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation15_1
@@ -4091,53 +4091,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp15_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure15_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp15_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure15_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput15
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,5"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,5"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput15
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,5"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,5"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput16
@@ -4261,20 +4261,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp16_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure16_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp16_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure16_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation16_1
@@ -4358,53 +4358,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp16_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure16_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp16_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure16_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput16
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,6"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,6"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput16
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,6"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,6"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrInput17
@@ -4528,20 +4528,20 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp17_0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure17_0
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp17_0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure17_0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: isrSaturation17_1
@@ -4625,53 +4625,53 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: isrSdqaAmp17_1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure17_1
-            }
-            parameters: @PT1Pipe/ISR-sdqaAmp.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: isrSdqaAmp17_1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure17_1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaAmp.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: isrOutput17
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                                channel: "1,7"
-                            }
-                        }
-                    }
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaAmp
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                                channel: "1,7"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: isrOutput17
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
+#                    sdqaRatingVector0: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 0
+#                                channel: "1,7"
+#                            }
+#                        }
+#                    }
+#                    sdqaRatingVector1: {
+#                        datasetId: {
+#                            datasetType: sdqaAmp
+#                            fromJobIdentity: "visit" "raft" "sensor"
+#                            set: {
+#                                snap: 1
+#                                channel: "1,7"
+#                            }
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
 
     appStage: {
         name: ccdAssemblyCcdList0
@@ -4728,33 +4728,33 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: ccdAssemblyIsrCcdSdqa0
-        parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                ccdExposure: isrExposure0
-            }
-            outputKeys: {
-                sdqaCcdExposure: isrExposure0
-            }
-        }
-    }
-    appStage: {
-        name: ccdAssemblySdqaCcd0
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure0
-            }
-            parameters: @PT1Pipe/ISR-sdqaCcd.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
-            }
-        }
-    }
+#    appStage: {
+#        name: ccdAssemblyIsrCcdSdqa0
+#        parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                ccdExposure: isrExposure0
+#            }
+#            outputKeys: {
+#                sdqaCcdExposure: isrExposure0
+#            }
+#        }
+#    }
+#    appStage: {
+#        name: ccdAssemblySdqaCcd0
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure0
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaCcd.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector0
+#            }
+#        }
+#    }
 
     appStage: {
         name: ccdAssemblyCcdList1
@@ -4811,67 +4811,42 @@ execute: {
             }
         }
     }
-    appStage: {
-        name: ccdAssemblyIsrCcdSdqa1
-        parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                ccdExposure: isrExposure1
-            }
-            outputKeys: {
-                sdqaCcdExposure: isrExposure1
-            }
-        }
-    }
-    appStage: {
-        name: ccdAssemblySdqaCcd1
-        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
-        eventTopic: None
-        stagePolicy: {
-            inputKeys: {
-                exposureKey: isrExposure1
-            }
-            parameters: @PT1Pipe/ISR-sdqaCcd.paf
-            outputKeys: {
-                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
-            }
-        }
-    }
+#    appStage: {
+#        name: ccdAssemblyIsrCcdSdqa1
+#        parallelClass: lsst.ip.pipeline.IsrCcdSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                ccdExposure: isrExposure1
+#            }
+#            outputKeys: {
+#                sdqaCcdExposure: isrExposure1
+#            }
+#        }
+#    }
+#    appStage: {
+#        name: ccdAssemblySdqaCcd1
+#        parallelClass: lsst.sdqa.pipeline.IsrSdqaStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            inputKeys: {
+#                exposureKey: isrExposure1
+#            }
+#            parameters: @PT1Pipe/ISR-sdqaCcd.paf
+#            outputKeys: {
+#                isrPersistableSdqaRatingVectorKey: sdqaRatingVector1
+#            }
+#        }
+#    }
 
-    appStage: {
-        name: ccdAssemblyOutput
-        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
-        eventTopic: None
-        stagePolicy: {
-            parameters: {
-                butler: @PT1Pipe/butlerUpdate.paf
-                outputItems: {
-
-                    sdqaRatingVector0: {
-                        datasetId: {
-                            datasetType: sdqaCcd
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 0
-                            }
-                        }
-                    }
-
-                    sdqaRatingVector1: {
-                        datasetId: {
-                            datasetType: sdqaCcd
-                            fromJobIdentity: "visit" "raft" "sensor"
-                            set: {
-                                snap: 1
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-    }
+#    appStage: {
+#        name: ccdAssemblyOutput
+#        parallelClass: lsst.pex.harness.IOStage.OutputStageParallel
+#        eventTopic: None
+#        stagePolicy: {
+#            parameters: {
+#                butler: @PT1Pipe/butlerUpdate.paf
+#                outputItems: {
 
     appStage: {
         name: ccdAssemblyFixup
@@ -5083,7 +5058,7 @@ execute: {
             outputKeys: {
                 psf: measuredPsf
                 cellSet: cellSet
-                sdqa: sdqa
+#                sdqa: sdqa
             }
         }
     }
@@ -5112,7 +5087,7 @@ execute: {
             }
             outputKeys: {
                 apCorr: apCorr
-                sdqa: sdqa
+#                sdqa: sdqa
             }
         }
     }

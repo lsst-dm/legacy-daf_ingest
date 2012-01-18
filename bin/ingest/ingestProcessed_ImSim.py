@@ -141,17 +141,17 @@ class CsvGenerator(object):
         self.expFile.write(sciCcdExposureId, visit, raftNum, raft,
                 ccdNum, sensor,
                 filterMap.index(filterName), filterName,
-                cen.getRa(afwCoord.DEGREES), cen.getDec(afwCoord.DEGREES),
+                cen.getRa().asDegrees(), cen.getDec().asDegrees(),
                 md.get('EQUINOX'), md.get('RADESYS'),
                 md.get('CTYPE1'), md.get('CTYPE2'),
                 md.get('CRPIX1'), md.get('CRPIX2'),
                 md.get('CRVAL1'), md.get('CRVAL2'),
                 md.get('CD1_1'), md.get('CD1_2'),
                 md.get('CD2_1'), md.get('CD2_2'),
-                llc.getRa(afwCoord.DEGREES), llc.getDec(afwCoord.DEGREES),
-                ulc.getRa(afwCoord.DEGREES), ulc.getDec(afwCoord.DEGREES),
-                urc.getRa(afwCoord.DEGREES), urc.getDec(afwCoord.DEGREES),
-                lrc.getRa(afwCoord.DEGREES), lrc.getDec(afwCoord.DEGREES),
+                llc.getRa().asDegrees(), llc.getDec().asDegrees(),
+                ulc.getRa().asDegrees(), ulc.getDec().asDegrees(),
+                urc.getRa().asDegrees(), urc.getDec().asDegrees(),
+                lrc.getRa().asDegrees(), lrc.getDec().asDegrees(),
                 obsStart.get(dafBase.DateTime.MJD, dafBase.DateTime.TAI),
                 obsStart,
                 md.get('TIME-MID'), md.get('EXPTIME'),
@@ -171,10 +171,10 @@ class CsvGenerator(object):
                         None, None, str(md.get(name)))
         self.polyFile.write("\t".join([
                 str(sciCcdExposureId),
-                repr(llc.getRa(afwCoord.DEGREES)), repr(llc.getDec(afwCoord.DEGREES)),
-                repr(ulc.getRa(afwCoord.DEGREES)), repr(ulc.getDec(afwCoord.DEGREES)),
-                repr(urc.getRa(afwCoord.DEGREES)), repr(urc.getDec(afwCoord.DEGREES)),
-                repr(lrc.getRa(afwCoord.DEGREES)), repr(lrc.getDec(afwCoord.DEGREES))]))
+                repr(llc.getRa().asDegrees()), repr(llc.getDec().asDegrees()),
+                repr(ulc.getRa().asDegrees()), repr(ulc.getDec().asDegrees()),
+                repr(urc.getRa().asDegrees()), repr(urc.getDec().asDegrees()),
+                repr(lrc.getRa().asDegrees()), repr(lrc.getDec().asDegrees())]))
         self.polyFile.write("\n")
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
 

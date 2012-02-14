@@ -1,9 +1,8 @@
-setupRequired(meas_pipeline >= 4.6.0.0)
-setupRequired(ip_pipeline >= 4.6.0.0)
 setupRequired(ap >= 4.6.0.0)
 setupRequired(ctrl_sched >= 4.6.0.0)
 setupRequired(sdqa >= 4.6.0.0)
 setupRequired(ctrl_orca >= 4.6.0.0)
+setupRequired(pipe_tasks >= 4.8.0.0)
 
 # setupOptional(obs_cfht >= 4.6.0.0)
 setupOptional(obs_lsstSim >= 4.6.0.0)

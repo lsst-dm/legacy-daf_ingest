@@ -1,6 +1,5 @@
 setupRequired(ap >= 4.6.0.0)
 setupRequired(ctrl_sched >= 4.6.0.0)
-setupRequired(sdqa >= 4.6.0.0)
 setupRequired(ctrl_orca >= 4.6.0.0)
 setupRequired(pipe_tasks >= 4.8.0.0)
 

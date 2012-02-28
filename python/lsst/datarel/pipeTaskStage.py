@@ -10,6 +10,9 @@ from lsst.pex.logging import Log
 import lsst.pex.policy as pexPolicy
 import subprocess
 
+from lsst.pipe.base import ArgumentParser
+import lsst.pipe.tasks.processCcdLsstSim import ProcessCcdLsstSimTask as TaskClass
+
 class PipeTaskStageParallel(harnessStage.ParallelProcessing):
     """
     Description:
@@ -20,14 +23,20 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
     def setup(self):
         self.log = Log(self.log, "PipeTaskStage - parallel")
 
-
+        policyFile = pexPolicy.DefaultPolicyFile("datarel",
+                "PipeTaskStageDictionary.paf", "policy")
+        defPolicy = pexPolicy.Policy.createPolicy(policyFile,
+                policyFile.getRepositoryPath(), True)
         if self.policy is None:
             self.policy = pexPolicy.Policy()
+        self.policy.mergeDefaults(defPolicy.getDictionary())
+
+        self.parser = ArgumentParser()
+        self.cmdTemplate = self.policy.get("parameters.cmdTemplate")
 
     def process(self, clipboard):
         """
-        Clear the clipboard of everything except inputKeys, which are remapped
-        to outputKeys.
+        Execute a pipe_task.
         """
         self.log.log(Log.INFO, "PipeTaskStage - process call")
 
@@ -50,11 +59,23 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
         visit = self.sanitizeInput(str(ds.ids["visit"]))
 
 
-        # build and execute the shell command
-        cmdTemplate = "processCcdLsstSim.py lsstSim %s --output %s --id visit=%s raft=%s sensor=%s"
-        cmd = cmdTemplate % (input, output, visit, raft, sensor)
-
-        subprocess.call(cmd.split())
+        # execute the task, configuring it through the argument parser
+        # to ensure reproducibility from the command line
+        
+        tokens = dict(input=input, output=output, visit=visit, raft=raft,
+                sensor=sensor)
+        cmd = self.cmdTemplate % tokens
+        self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (cmd,))
+        namespace = self.parser.parse_args(config=TaskClass.ConfigClass(),
+                args=cmd.split(), log=self.log)
+        task = TaskClass(namespace.config)
+        for sensorRef in namespace.dataRefList:
+            try:
+                task.run(sensorRef)
+            except Exception, e:
+                self.log.log(task.log.FATAL, "Failed on dataId=%s: %s" %
+                        (sensorRef.dataId, e))
+                raise
 
         self.log.log(Log.INFO, "PipeTaskStage - done.")
 

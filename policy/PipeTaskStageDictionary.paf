@@ -1,0 +1,22 @@
+#<?cfg paf dictionary ?>
+#
+# Dictionary for PipeTaskStage policies
+#
+target: lsst.datarel.PipeTaskStage
+
+definitions: {
+    parameters: {
+        type: "policy"
+        maxOccurs: 1
+        dictionary: {
+            definitions: {
+                cmdTemplate: {
+                    type: "string"
+                    description: "Template for pipe_task command line"
+                    maxOccurs: 1
+                    default: "lsstSim %(input)s --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
+                }
+            }
+        }
+    }
+}

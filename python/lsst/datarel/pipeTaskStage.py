@@ -11,6 +11,7 @@ import lsst.pex.policy as pexPolicy
 import subprocess
 
 from lsst.pipe.base import ArgumentParser
+import importlib
 import lsst.pipe.tasks.processCcdLsstSim import ProcessCcdLsstSimTask as TaskClass
 
 class PipeTaskStageParallel(harnessStage.ParallelProcessing):
@@ -33,6 +34,21 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
 
         self.parser = ArgumentParser()
         self.cmdTemplate = self.policy.get("parameters.cmdTemplate")
+        taskModule = self.policy.get("parameters.taskModule")
+        taskClass = self.policy.get("parameters.taskClass")
+        self.taskClass = getattr(
+                importlib.import_module(taskModule), taskClass)
+
+        # Tokens for substitution into the above command template
+        self.tokens = {}
+
+        # get the input and output directories
+        inputLocation = persistence.LogicalLocation("%(input)")
+        self.tokens['input'] = inputLocation.locString()
+
+        outputLocation = persistence.LogicalLocation("%(output)")
+        self.tokens['output'] = outputLocation.locString()
+
 
     def process(self, clipboard):
         """
@@ -44,31 +60,21 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
 
         ds = ds[0]
 
-        # get the input and output directories, and get the clipboard
-        # entries for raft, sensor and visit.  
-        # sanitize them all since we're going to execute a shell
-        inputLocation = persistence.LogicalLocation("%(input)")
-        input = self.sanitizeInput(inputLocation.locString())
-
-        outputLocation = persistence.LogicalLocation("%(output)")
-        output = self.sanitizeInput(outputLocation.locString())
-
-
-        raft = self.sanitizeInput(str(ds.ids["raft"]))
-        sensor =  self.sanitizeInput(str(ds.ids["sensor"]))
-        visit = self.sanitizeInput(str(ds.ids["visit"]))
+        # get the clipboard entries for raft, sensor and visit.  
+        self.tokens['raft'] = str(ds.ids["raft"])
+        self.tokens['sensor'] =  str(ds.ids["sensor"])
+        self.tokens['visit'] = str(ds.ids["visit"])
 
 
         # execute the task, configuring it through the argument parser
         # to ensure reproducibility from the command line
         
-        tokens = dict(input=input, output=output, visit=visit, raft=raft,
-                sensor=sensor)
-        cmd = self.cmdTemplate % tokens
+        cmd = self.cmdTemplate % self.tokens
         self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (cmd,))
-        namespace = self.parser.parse_args(config=TaskClass.ConfigClass(),
+        namespace = self.parser.parse_args(
+                config=self.taskClass.ConfigClass(),
                 args=cmd.split(), log=self.log)
-        task = TaskClass(namespace.config)
+        task = self.taskClass(namespace.config)
         for sensorRef in namespace.dataRefList:
             try:
                 task.run(sensorRef)
@@ -80,10 +86,5 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
         self.log.log(Log.INFO, "PipeTaskStage - done.")
 
     
-    def sanitizeInput(self, input_str):
-        valid_chars = "-/_.()+, %s%s" % (string.ascii_letters, string.digits)
-
-        return ''.join(c for c in input_str if c in valid_chars)
-
 class PipeTaskStage(harnessStage.Stage):
     parallelClass = PipeTaskStageParallel

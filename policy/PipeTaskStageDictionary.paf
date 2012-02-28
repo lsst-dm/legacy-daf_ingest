@@ -16,6 +16,18 @@ definitions: {
                     maxOccurs: 1
                     default: "lsstSim %(input)s --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
                 }
+                taskModule: {
+                    type: "string"
+                    description: "Module containing pipe_task"
+                    maxOccurs: 1
+                    default: "lsst.pipe.tasks.processCcdLsstSim"
+                }
+                taskClass: {
+                    type: "string"
+                    description: "Class of pipe_task"
+                    maxOccurs: 1
+                    default: "ProcessCcdLsstSimTask"
+                }
             }
         }
     }

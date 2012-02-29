@@ -40,6 +40,11 @@ execute: {
         parallelClass: lsst.datarel.pipeTaskStage.PipeTaskStageParallel
         eventTopic: None
         stagePolicy: {
+            parameters: {
+                taskClass: ProcessCcdLsstSimTask
+                taskModule: lsst.pipe.tasks.processCcdLsstSim
+                cmdTemplate: "lsstSim %(input)s --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
+            }
         }
     }
 

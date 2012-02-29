@@ -10,6 +10,9 @@ from lsst.pex.logging import Log
 import lsst.pex.policy as pexPolicy
 import subprocess
 
+from lsst.pipe.base import ArgumentParser
+import importlib
+
 class PipeTaskStageParallel(harnessStage.ParallelProcessing):
     """
     Description:
@@ -20,14 +23,35 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
     def setup(self):
         self.log = Log(self.log, "PipeTaskStage - parallel")
 
-
+        policyFile = pexPolicy.DefaultPolicyFile("datarel",
+                "PipeTaskStageDictionary.paf", "policy")
+        defPolicy = pexPolicy.Policy.createPolicy(policyFile,
+                policyFile.getRepositoryPath(), True)
         if self.policy is None:
             self.policy = pexPolicy.Policy()
+        self.policy.mergeDefaults(defPolicy.getDictionary())
+
+        self.parser = ArgumentParser()
+        self.cmdTemplate = self.policy.get("parameters.cmdTemplate")
+        taskModule = self.policy.get("parameters.taskModule")
+        taskClass = self.policy.get("parameters.taskClass")
+        self.taskClass = getattr(
+                importlib.import_module(taskModule), taskClass)
+
+        # Tokens for substitution into the above command template
+        self.tokens = {}
+
+        # get the input and output directories
+        inputLocation = persistence.LogicalLocation("%(input)")
+        self.tokens['input'] = inputLocation.locString()
+
+        outputLocation = persistence.LogicalLocation("%(output)")
+        self.tokens['output'] = outputLocation.locString()
+
 
     def process(self, clipboard):
         """
-        Clear the clipboard of everything except inputKeys, which are remapped
-        to outputKeys.
+        Execute a pipe_task.
         """
         self.log.log(Log.INFO, "PipeTaskStage - process call")
 
@@ -35,34 +59,36 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
 
         ds = ds[0]
 
-        # get the input and output directories, and get the clipboard
-        # entries for raft, sensor and visit.  
-        # sanitize them all since we're going to execute a shell
-        inputLocation = persistence.LogicalLocation("%(input)")
-        input = self.sanitizeInput(inputLocation.locString())
-
-        outputLocation = persistence.LogicalLocation("%(output)")
-        output = self.sanitizeInput(outputLocation.locString())
+        # get the clipboard entries for raft, sensor and visit.  
+        self.tokens['raft'] = str(ds.ids["raft"])
+        self.tokens['sensor'] =  str(ds.ids["sensor"])
+        self.tokens['visit'] = str(ds.ids["visit"])
 
 
-        raft = self.sanitizeInput(str(ds.ids["raft"]))
-        sensor =  self.sanitizeInput(str(ds.ids["sensor"]))
-        visit = self.sanitizeInput(str(ds.ids["visit"]))
-
-
-        # build and execute the shell command
-        cmdTemplate = "processCcdLsstSim.py lsstSim %s --output %s --id visit=%s raft=%s sensor=%s"
-        cmd = cmdTemplate % (input, output, visit, raft, sensor)
-
-        subprocess.call(cmd.split())
+        # execute the task, configuring it through the argument parser
+        # to ensure reproducibility from the command line
+        
+        cmd = self.cmdTemplate % self.tokens
+        self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (cmd,))
+        namespace = self.parser.parse_args(
+                config=self.taskClass.ConfigClass(),
+                args=cmd.split(), log=self.log)
+        # Have to do this here since can't set bools on the command line until
+        # pex_config is fixed
+        namespace.config.doWriteIsr = False
+        task = self.taskClass(namespace.config)
+        for sensorRef in namespace.dataRefList:
+            sensorRef.put(namespace.config, "processCcd_config")
+            try:
+                task.run(sensorRef)
+            except Exception, e:
+                self.log.log(task.log.FATAL, "Failed on dataId=%s: %s" %
+                        (sensorRef.dataId, e))
+                raise
+            sensorRef.put(task.getFullMetadata(), "processCcd_metadata")
 
         self.log.log(Log.INFO, "PipeTaskStage - done.")
 
     
-    def sanitizeInput(self, input_str):
-        valid_chars = "-/_.()+, %s%s" % (string.ascii_letters, string.digits)
-
-        return ''.join(c for c in input_str if c in valid_chars)
-
 class PipeTaskStage(harnessStage.Stage):
     parallelClass = PipeTaskStageParallel

@@ -1,0 +1,34 @@
+#<?cfg paf dictionary ?>
+#
+# Dictionary for PipeTaskStage policies
+#
+target: lsst.datarel.PipeTaskStage
+
+definitions: {
+    parameters: {
+        type: "policy"
+        maxOccurs: 1
+        dictionary: {
+            definitions: {
+                cmdTemplate: {
+                    type: "string"
+                    description: "Template for pipe_task command line"
+                    minOccurs: 1
+                    maxOccurs: 1
+                }
+                taskModule: {
+                    type: "string"
+                    description: "Module containing pipe_task"
+                    minOccurs: 1
+                    maxOccurs: 1
+                }
+                taskClass: {
+                    type: "string"
+                    description: "Class of pipe_task"
+                    minOccurs: 1
+                    maxOccurs: 1
+                }
+            }
+        }
+    }
+}

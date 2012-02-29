@@ -12,7 +12,6 @@ import subprocess
 
 from lsst.pipe.base import ArgumentParser
 import importlib
-import lsst.pipe.tasks.processCcdLsstSim import ProcessCcdLsstSimTask as TaskClass
 
 class PipeTaskStageParallel(harnessStage.ParallelProcessing):
     """
@@ -76,12 +75,14 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
                 args=cmd.split(), log=self.log)
         task = self.taskClass(namespace.config)
         for sensorRef in namespace.dataRefList:
+            sensorRef.put(namespace.config, "pipe_config")
             try:
                 task.run(sensorRef)
             except Exception, e:
                 self.log.log(task.log.FATAL, "Failed on dataId=%s: %s" %
                         (sensorRef.dataId, e))
                 raise
+            sensorRef.put(task.getFullMetadata(), "pipe_metadata")
 
         self.log.log(Log.INFO, "PipeTaskStage - done.")
 

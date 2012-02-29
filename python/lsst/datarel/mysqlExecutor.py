@@ -24,7 +24,7 @@ from __future__ import with_statement
 from contextlib import closing
 import getpass
 import MySQLdb as sql
-import optparse
+import argparse
 import os
 import subprocess
 import sys
@@ -116,15 +116,16 @@ class MysqlExecutor(object):
 
 
 def addDbOptions(parser):
-    if not isinstance(parser, optparse.OptionParser):
-        raise TypeError('Expecting an optparse.OptionParser')
+    if not isinstance(parser, argparse.ArgumentParser):
+        raise TypeError('Expecting an argparse.ArgumentParser')
     defUser = (os.environ.has_key('USER') and os.environ['USER']) or None
-    parser.add_option(
-        "-u", "--user", dest="user", default=defUser,
-        help="MySQL database user name (%default).")
-    parser.add_option(
-        "-H", "--host", dest="host", default="lsst10.ncsa.uiuc.edu",
-        help="MySQL database server hostname (%default).")
-    parser.add_option(
-        "-P", "--port", dest="port", type="int", default=3306,
-        help="MySQL database server port (%default).")
+    parser.add_argument(
+        "--user", default=defUser, dest="user",
+        help="MySQL database user name (%(default)s).")
+    parser.add_argument(
+        "--host", default="lsst10.ncsa.uiuc.edu", dest="host",
+        help="MySQL database server hostname (%(default)s).")
+    parser.add_argument(
+        "--port", default=3306, type=int, dest="port",
+        help="MySQL database server port (%(default)d).")
+

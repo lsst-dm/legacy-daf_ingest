@@ -22,40 +22,26 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-import optparse
-import os
-import string
-from textwrap import dedent
+import argparse
 
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 def main():
-    usage = dedent("""\
-    usage: %prog [options] [-t <type>] <database> 
-
-    Program which "links" an LSST per-run database into the well-known
-    database name buildbot_weekly_latest by creating views for each table.
-
-    <type>:       Type of stack; either 'tags' or 'trunk'; Default is 'tags'.
-    <database>:   Name of database to "link" from
-    """)
-    parser = optparse.OptionParser(usage)
-    parser.add_option("-t","--type",default="tags",
-        help="type of stack which generated DB; either 'tags' or 'trunk'; default 'tags'")
+    parser = argparse.ArgumentParser(description=
+        "Program which \"links\" an LSST per-run database into the well-known "
+        "database name buildbot_weekly_latest by creating views for each table.")
     addDbOptions(parser)
-    opts, args = parser.parse_args()
-    print opts, args
-    if len(args) != 1:
-        parser.error("A single argument (database name) must be supplied.")
-    database = args[0]
-    if opts.user == None:
+    parser.add_argument(
+        "-t", "--tag", default="tags", choices=["trunk","tags"],
+        help="Type of stack which generated DB")
+    parser.add_argument("database", help="Name of database to \"link\" from.")
+    ns = parser.parse_args()
+    print ns
+    if ns.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
-    if opts.type != "tags" and opts.type != "trunk":
-        parser.error("Only 'trunk' or 'tags' may be specified for type.")
     viewName = "buildbot_weekly_latest_" + opts.type
     print viewName
-
-    sql = MysqlExecutor(opts.host, viewName, opts.user, opts.port)
+    sql = MysqlExecutor(ns.host, viewName, ns.user, ns.port)
     for table in (
             "AmpMap", "CcdMap", "Filter", "LeapSeconds", "Logs",
             "NonVarObject", "Object", "ObjectType", "RaftMap",

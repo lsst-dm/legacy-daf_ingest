@@ -22,10 +22,9 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-import optparse
+import argparse
 import os
 import string
-from textwrap import dedent
 
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 from prepareDb import loadTables
@@ -134,31 +133,23 @@ def findInconsistentMetadataTypes(sql):
     return needsFix
 
 def main():
-    usage = dedent("""\
-    usage: %prog [options] <database>
-
-    Program which runs post-processing steps on an LSST run database,
-    including enabling the table indexes that prepareDb.py disables to
-    speed up loading. Metadata tables are checked for type consistency
-    and fixed up if necessary, and key-value metadata tables are optionally
-    transposed into column-per-value tables.
-
-    <database>:   Name of database to create and instantiate the LSST schema in.
-    """)
-    parser = optparse.OptionParser(usage)
+    parser = argparse.ArgumentParser(description=
+        "Program which runs post-processing steps on an LSST run database, "
+        "including enabling the table indexes that prepareDb.py disables to "
+        "speed up loading. Metadata tables are checked for type consistency "
+        "and fixed up if necessary, and key-value metadata tables are optionally "
+        "transposed into column-per-value tables.")
     addDbOptions(parser)
-    parser.add_option(
+    parser.add_argument(
         "-t", "--transpose", action="store_true", dest="transpose",
-        help=dedent("""\
-        Flag that causes key-value metadata tables to be transposed to
-        column-per-value metadata tables for easier metadata queries."""))
-    opts, args = parser.parse_args()
-    if len(args) != 1:
-        parser.error("A single argument (database name) must be supplied.")
-    database = args[0]
-    if opts.user == None:
+        help="Flag that causes key-value metadata tables to be transposed to "
+             "column-per-value metadata tables for easier metadata queries.")
+    parser.add_argument("database", help="Name of database to post-process.")
+
+    ns = parser.parse_args()
+    if ns.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
-    sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
+    sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     # Set [ugrizy]NumObs NULLs to 0 (for query convenience)
     for filter in "ugrizy":
         sql.execStmt("UPDATE Object SET %sNumObs = 0 WHERE %sNumObs IS NULL;" %
@@ -178,9 +169,9 @@ def main():
         fixTables = findInconsistentMetadataTypes(sql)
     if len(fixTables) > 0:
         print "\n... inconsistencies remain!"
-        if opts.transpose:
+        if ns.transpose:
             print "\nCannot transpose metadata tables with inconsistent types!"
-    elif opts.transpose:
+    elif ns.transpose:
         # Generate transposed metadata tables
         rawAmpSkipCols = set(['NAXIS1', 'NAXIS2',
                               'MJD-OBS', 'EXPTIME',
@@ -193,8 +184,8 @@ def main():
                               'CD1_1', 'CD1_2',
                               'CD2_1', 'CD2_2',
                               'AIRMASS', 'DARKTIME', 'ZENITH'])
-        transposeMetadata.run(opts.host, opts.port, opts.user,
-                              sql.password, database,
+        transposeMetadata.run(ns.host, ns.port, ns.user,
+                              sql.password, ns.database,
                               "Raw_Amp_Exposure_Metadata",
                               "rawAmpExposureId",
                               "Raw_Amp_Exposure_Extra",
@@ -213,8 +204,8 @@ def main():
                               'RDNOISE', 'SATURATE', 'GAINEFF',
                               'FLUXMAG0', 'FLUXMAG0ERR',
                              ])
-        transposeMetadata.run(opts.host, opts.port, opts.user,
-                              sql.password, database,
+        transposeMetadata.run(ns.host, ns.port, ns.user,
+                              sql.password, ns.database,
                               "Science_Ccd_Exposure_Metadata",
                               "scienceCcdExposureId",
                               "Science_Ccd_Exposure_Extra",

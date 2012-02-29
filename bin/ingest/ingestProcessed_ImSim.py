@@ -23,7 +23,7 @@
 #
 
 import math
-import optparse
+import argparse
 import os
 import subprocess
 import sys
@@ -39,8 +39,8 @@ import lsst.afw.image as afwImage
 import lsst.meas.algorithms as measAlg
 
 from lsst.datarel.csvFileWriter import CsvFileWriter
-from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
-
+from lsst.datarel.mysqlExecutor import MysqlExecutor
+from lsst.datarel.ingest import makeArgumentParser, visitLsstSimCalexps
 
 if not 'SCISQL_DIR' in os.environ:
     print >>sys.stderr, "Please setup the scisql package and try again"
@@ -48,73 +48,41 @@ if not 'SCISQL_DIR' in os.environ:
 
 scisqlIndex = os.path.join(os.environ['SCISQL_DIR'], 'bin', 'scisql_index')
 
-rafts = [       "0,1", "0,2", "0,3",
-         "1,0", "1,1", "1,2", "1,3", "1,4",
-         "2,0", "2,1", "2,2", "2,3", "2,4",
-         "3,0", "3,1", "3,2", "3,3", "3,4",
-                "4,1", "4,2", "4,3"]
-
 filterMap = ["u", "g", "r", "i", "z", "y"]
 
 sigmaToFwhm = 2.0*math.sqrt(2.0*math.log(2.0))
 
+
 class CsvGenerator(object):
-    def __init__(self, root, registry=None, compress=True):
-        if registry is None:
-            registry = os.path.join(root, "registry.sqlite3")
-        self.root = root
-        self.mapper = LsstSimMapper(root=root, registry=registry)
-        bf = dafPersist.ButlerFactory(mapper=self.mapper)
-        self.butler = bf.create()
+    def __init__(self, namespace, compress=True):
+        self.namespace = namespace
+        self.expFile = CsvFileWriter(
+            os.path.join(namespace.outroot, "Science_Ccd_Exposure.csv"),
+            compress=compress)
+        self.mdFile = CsvFileWriter(
+            os.path.join(namespace.outroot, "Science_Ccd_Exposure_Metadata.csv"),
+            compress=compress)
+        self.polyFile = open(
+            os.path.join(namespace.outroot, "Science_Ccd_Exposure_Poly.tsv"), "wb")
 
-        self.expFile = CsvFileWriter("Science_Ccd_Exposure.csv",
-                                     compress=compress)
-        self.mdFile = CsvFileWriter("Science_Ccd_Exposure_Metadata.csv",
-                                    compress=compress)
-        self.polyFile = open("Science_Ccd_Exposure_Poly.tsv", "wb");
-
-    def getNext(self, datasetType):
-        # for visit, raft, sensor in self.butler.queryMetadata("raw", "sensor",
-        #         ("visit", "raft", "sensor")):
-        #     if self.butler.datasetExists("calexp", visit=visit, raft=raft,
-        #             sensor=sensor):
-        #         yield (visit, raft, sensor)
-
-        for f in glob.glob(os.path.join(self.root, "calexp", "v*-f*", "R*",
-            "S*.fits")):
-            m = re.search(r'calexp/v(\d+)-f.*/R(\d\d)/S(\d\d).fits', f)
-            assert m
-            visit = int(m.group(1))
-            raft = ",".join(m.group(2))
-            sensor = ",".join(m.group(3))
-            yield (visit, raft, sensor)
-
-    def csvAll(self):
-        for visit, raft, sensor in self.getNext("calexp"):
-            self.toCsv(visit, raft, sensor)
+    def csvAll(self, namespace, sql=None):
+        def _toCsv(butler, path, sciCcdExpId, visit, raft, raftNum, sensor, sensorNum):
+            self.toCsv(butler, path, sciCcdExpId, visit, raft, raftNum, sensor, sensorNum)
+        visitLsstSimCalexps(namespace, _toCsv, sql)
         self.expFile.flush()
         self.mdFile.flush()
         self.polyFile.flush()
         self.polyFile.close()
 
-    def getFullMetadata(self, datasetType, **keys):
-        filename = self.mapper.map(datasetType, keys).getLocations()[0]
-        return afwImage.readMetadata(filename)
-
-    def toCsv(self, visit, raft, sensor):
-        r1, comma, r2 = raft
-        s1, comma, s2 = sensor
-        raftNum = rafts.index(raft)
-        raftId = int(r1) * 5 + int(r2)
-        ccdNum = int(s1) * 3 + int(s2)
-        sciCcdExposureId = (long(visit) << 9) + raftId * 10 + ccdNum
-
-        filename = self.mapper.map("calexp",
-                dict(visit=visit, raft=raft, sensor=sensor)).getLocations()[0]
+    def toCsv(self, butler, filename, sciCcdExpId, visit, raft, raftNum, sensor, sensorNum):
         if os.stat(filename).st_size < (4+2+4)*4000*4000:
-            print >>sys.stderr, "*** Too small (possibly corrupt), skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
-            return
-
+            msg = str.format("visit {} raft {} sensor {} : too small, possibly corrupt",
+                             visit, raft, sensor) 
+            if not self.namespace.strict:
+                print >>sys.stderr, "*** Skipping " + msg
+                return
+            else:
+                raise RuntimeError(msg)
         md = afwImage.readMetadata(filename)
         width = md.get('NAXIS1')
         height = md.get('NAXIS2')
@@ -124,66 +92,69 @@ class CsvGenerator(object):
         ulc = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
         urc = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
         lrc = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
-        psf = self.butler.get("psf", visit=visit, raft=raft, sensor=sensor)
+        psf = butler.get("psf", visit=visit, raft=raft, sensor=sensor)
+        msg = str.format("visit {} raft {} sensor {} : PSF missing or corrupt",
+                         visit, raft, sensor)
+        noPsf = True
         try:
-            if psf is None:
-                print >>sys.stderr, "*** PSF missing or corrupt, skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
-                return
+            noPsf = psf is None
         except:
-            print >>sys.stderr, "*** PSF corrupt or missing, skipped: visit %d raft %s sensor %s" % (visit, raft, sensor)
-            return
+            pass
+        if noPsf:
+            if not self.namespace.strict:
+                print >>sys.stderr, "*** Skipping " + msg
+                return
+            else:
+                raise RuntimeError(msg)
 
         attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
         fwhm = attr.computeGaussianWidth() * wcs.pixelScale().asArcseconds() * sigmaToFwhm
         obsStart = dafBase.DateTime(md.get('MJD-OBS'), dafBase.DateTime.MJD,
-                dafBase.DateTime.UTC)
+                                    dafBase.DateTime.UTC)
         filterName = md.get('FILTER').strip()
-        self.expFile.write(sciCcdExposureId, visit, raftNum, raft,
-                ccdNum, sensor,
-                filterMap.index(filterName), filterName,
-                cen.getRa().asDegrees(), cen.getDec().asDegrees(),
-                md.get('EQUINOX'), md.get('RADESYS'),
-                md.get('CTYPE1'), md.get('CTYPE2'),
-                md.get('CRPIX1'), md.get('CRPIX2'),
-                md.get('CRVAL1'), md.get('CRVAL2'),
-                md.get('CD1_1'), md.get('CD1_2'),
-                md.get('CD2_1'), md.get('CD2_2'),
-                llc.getRa().asDegrees(), llc.getDec().asDegrees(),
-                ulc.getRa().asDegrees(), ulc.getDec().asDegrees(),
-                urc.getRa().asDegrees(), urc.getDec().asDegrees(),
-                lrc.getRa().asDegrees(), lrc.getDec().asDegrees(),
-                obsStart.get(dafBase.DateTime.MJD, dafBase.DateTime.TAI),
-                obsStart,
-                md.get('TIME-MID'), md.get('EXPTIME'),
-                1, 1, 1,
-                md.get('RDNOISE'), md.get('SATURATE'), md.get('GAINEFF'),
-                md.get('FLUXMAG0'), md.get('FLUXMAG0ERR'),
-                fwhm)
+        self.expFile.write(
+            sciCcdExpId, visit, raftNum, raft, sensorNum, sensor,
+            filterMap.index(filterName), filterName,
+            cen.getRa().asDegrees(), cen.getDec().asDegrees(),
+            md.get('EQUINOX'), md.get('RADESYS'),
+            md.get('CTYPE1'), md.get('CTYPE2'),
+            md.get('CRPIX1'), md.get('CRPIX2'),
+            md.get('CRVAL1'), md.get('CRVAL2'),
+            md.get('CD1_1'), md.get('CD1_2'),
+            md.get('CD2_1'), md.get('CD2_2'),
+            llc.getRa().asDegrees(), llc.getDec().asDegrees(),
+            ulc.getRa().asDegrees(), ulc.getDec().asDegrees(),
+            urc.getRa().asDegrees(), urc.getDec().asDegrees(),
+            lrc.getRa().asDegrees(), lrc.getDec().asDegrees(),
+            obsStart.get(dafBase.DateTime.MJD, dafBase.DateTime.TAI),
+            obsStart,
+            md.get('TIME-MID'), md.get('EXPTIME'),
+            1, 1, 1,
+            md.get('RDNOISE'), md.get('SATURATE'), md.get('GAINEFF'),
+            md.get('FLUXMAG0'), md.get('FLUXMAG0ERR'),
+            fwhm)
         for name in md.paramNames():
             if md.typeOf(name) == md.TYPE_Int:
-                self.mdFile.write(sciCcdExposureId, name, 1,
-                        md.getInt(name), None, None)
+                self.mdFile.write(sciCcdExpId, name, 1, md.getInt(name), None, None)
             elif md.typeOf(name) == md.TYPE_Double:
-                self.mdFile.write(sciCcdExposureId, name, 1,
-                        None, md.getDouble(name), None)
+                self.mdFile.write(sciCcdExpId, name, 1, None, md.getDouble(name), None)
             else:
-                self.mdFile.write(sciCcdExposureId, name, 1,
-                        None, None, str(md.get(name)))
+                self.mdFile.write(sciCcdExpId, name, 1, None, None, str(md.get(name)))
         self.polyFile.write("\t".join([
-                str(sciCcdExposureId),
+                str(sciCcdExpId),
                 repr(llc.getRa().asDegrees()), repr(llc.getDec().asDegrees()),
                 repr(ulc.getRa().asDegrees()), repr(ulc.getDec().asDegrees()),
                 repr(urc.getRa().asDegrees()), repr(urc.getDec().asDegrees()),
                 repr(lrc.getRa().asDegrees()), repr(lrc.getDec().asDegrees())]))
         self.polyFile.write("\n")
-        print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
+        print str.format("Processed visit {} raft {} sensor {}", visit, raft, sensor)
 
-def dbLoad(sql):
+def dbLoad(ns, sql):
     subprocess.call([scisqlIndex, "-l", "10",
-                     "Science_Ccd_Exposure_To_Htm10.tsv",
-                     "Science_Ccd_Exposure_Poly.tsv"])
+                     os.path.join(ns.outroot, "Science_Ccd_Exposure_To_Htm10.tsv"),
+                     os.path.join(ns.outroot, "Science_Ccd_Exposure_Poly.tsv")])
     sql.execStmt(dedent("""\
-        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure
+        LOAD DATA LOCAL INFILE '%s' INTO TABLE Science_Ccd_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' (
             scienceCcdExposureId, visit, raft, raftName, ccd, ccdName,
             filterId, filterName,
@@ -206,9 +177,9 @@ def dbLoad(sql):
                                          urcRa, urcDecl,
                                          lrcRa, lrcDecl);
         SHOW WARNINGS;
-        """ % os.path.abspath("Science_Ccd_Exposure.csv")))
+        """ % os.path.abspath(os.path.join(ns.outroot, "Science_Ccd_Exposure.csv"))))
     sql.execStmt(dedent("""\
-        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure_Metadata
+        LOAD DATA LOCAL INFILE '%s' INTO TABLE Science_Ccd_Exposure_Metadata
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
             scienceCcdExposureId,
             metadataKey,
@@ -217,45 +188,33 @@ def dbLoad(sql):
             doubleValue,
             stringValue);
         SHOW WARNINGS;
-        """ % os.path.abspath("Science_Ccd_Exposure_Metadata.csv")))
+        """ % os.path.abspath(os.path.join(ns.outroot, "Science_Ccd_Exposure_Metadata.csv"))))
     sql.execStmt(dedent("""\
-        LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Science_Ccd_Exposure_To_Htm10 (
+        LOAD DATA LOCAL INFILE '%s' INTO TABLE Science_Ccd_Exposure_To_Htm10 (
             scienceCcdExposureId,
             htmId10);
         SHOW WARNINGS;
-        """ % os.path.abspath("Science_Ccd_Exposure_To_Htm10.tsv")))
+        """ % os.path.abspath(os.path.join(ns.outroot, "Science_Ccd_Exposure_To_Htm10.tsv"))))
 
 def main():
-    usage = dedent("""\
-    usage: %prog [options] <root> [<registry>]
-
-    Program which converts processed LSST Sim exposure metadata to CSV files
-    suitable for loading into MySQL. If a database name is specified in the
-    options, the CSVs are also loaded into that database.
-
-    Make sure to run prepareDb.py before database loads - this instantiates
-    the LSST schema in the target database.
-    """)
-    parser = optparse.OptionParser(usage)
-    addDbOptions(parser)
-    parser.add_option(
-        "-d", "--database", dest="database",
-        help="MySQL database to load CSV files into.")
-    opts, args = parser.parse_args()
-    if len(args) == 2:
-        root, registry = args
-    elif len(args) == 1:
-        root, registry = args[0], None
-    load = opts.database != None
-    if load :
-        if opts.user == None:
+    parser = makeArgumentParser(description=
+        "Converts processed LSST Sim exposure metadata to CSV files "
+        "suitable for loading into MySQL. If a database name is given, "
+        "the CSVs are also loaded into that database. Make sure to run "
+        "prepareDb.py before database loads - this instantiates the LSST "
+        "schema in the target database.")
+    ns = parser.parse_args()
+    sql = None
+    doLoad = ns.database != None
+    if doLoad :
+        if ns.user == None:
             parser.error("No database user name specified and $USER " +
                          "is undefined or empty")
-        sql = MysqlExecutor(opts.host, opts.database, opts.user, opts.port)
-    c = CsvGenerator(root, registry, not load)
-    c.csvAll()
-    if load:
-        dbLoad(sql)
+        sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
+    c = CsvGenerator(ns, not doLoad)
+    c.csvAll(ns, sql)
+    if doLoad:
+        dbLoad(ns, sql)
 
 if __name__ == '__main__':
     main()

@@ -22,7 +22,7 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-import optparse
+import argparse
 import os
 import subprocess
 import sys
@@ -136,21 +136,21 @@ class CsvGenerator(object):
                             visit, snap, raftNum, raft, ccdNum,
                             sensor, channelNum, channel,
                             filterMap.index(filterName), filterName,
-                            cen.getRa(afwCoord.DEGREES), cen.getDec(afwCoord.DEGREES),
+                            cen.getRa().asDegrees(), cen.getDec().asDegrees(),
                             md.get('EQUINOX'), md.get('RADESYS'),
                             md.get('CTYPE1'), md.get('CTYPE2'),
                             md.get('CRPIX1'), md.get('CRPIX2'),
                             md.get('CRVAL1'), md.get('CRVAL2'),
                             md.get('CD1_1'), md.get('CD1_2'),
                             md.get('CD2_1'), md.get('CD2_2'),
-                            llc.getRa(afwCoord.DEGREES),
-                            llc.getDec(afwCoord.DEGREES),
-                            ulc.getRa(afwCoord.DEGREES),
-                            ulc.getDec(afwCoord.DEGREES),
-                            urc.getRa(afwCoord.DEGREES),
-                            urc.getDec(afwCoord.DEGREES),
-                            lrc.getRa(afwCoord.DEGREES),
-                            lrc.getDec(afwCoord.DEGREES),
+                            llc.getRa().asDegrees(),
+                            llc.getDec().asDegrees(),
+                            ulc.getRa().asDegrees(),
+                            ulc.getDec().asDegrees(),
+                            urc.getRa().asDegrees(),
+                            urc.getDec().asDegrees(),
+                            lrc.getRa().asDegrees(),
+                            lrc.getDec().asDegrees(),
                             obsStart.get(dafBase.DateTime.MJD,
                                 dafBase.DateTime.TAI),
                             obsStart,
@@ -161,20 +161,20 @@ class CsvGenerator(object):
                             md.get('ZENITH'))
                     for name in md.paramNames():
                         if md.typeOf(name) == md.TYPE_Int:
-                            self.mdFile.write(rawAmpExposureId, 1, name,
+                            self.mdFile.write(rawAmpExposureId, name, 1,
                                     md.getInt(name), None, None)
                         elif md.typeOf(name) == md.TYPE_Double:
-                            self.mdFile.write(rawAmpExposureId, 1, name,
+                            self.mdFile.write(rawAmpExposureId, name, 1,
                                     None, md.getDouble(name), None)
                         else:
-                            self.mdFile.write(rawAmpExposureId, 1, name,
+                            self.mdFile.write(rawAmpExposureId, name, 1,
                                     None, None, str(md.get(name)))
                     self.polyFile.write("\t".join([
                             str(rawAmpExposureId),
-                            repr(llc.getRa(afwCoord.DEGREES)), repr(llc.getDec(afwCoord.DEGREES)),
-                            repr(ulc.getRa(afwCoord.DEGREES)), repr(ulc.getDec(afwCoord.DEGREES)),
-                            repr(urc.getRa(afwCoord.DEGREES)), repr(urc.getDec(afwCoord.DEGREES)),
-                            repr(lrc.getRa(afwCoord.DEGREES)), repr(lrc.getDec(afwCoord.DEGREES))]))
+                            repr(llc.getRa().asDegrees()), repr(llc.getDec().asDegrees()),
+                            repr(ulc.getRa().asDegrees()), repr(ulc.getDec().asDegrees()),
+                            repr(urc.getRa().asDegrees()), repr(urc.getDec().asDegrees()),
+                            repr(lrc.getRa().asDegrees()), repr(lrc.getDec().asDegrees())]))
                     self.polyFile.write("\n")
 
         print "Processed visit %d raft %s sensor %s" % (visit, raft, sensor)
@@ -210,8 +210,8 @@ def dbLoad(sql):
         LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE Raw_Amp_Exposure_Metadata
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
             rawAmpExposureId,
-            exposureType,
             metadataKey,
+            exposureType,
             intValue,
             doubleValue,
             stringValue);
@@ -234,35 +234,31 @@ def dbLoad(sql):
         """ % os.path.abspath("Raw_Amp_Exposure_To_Htm11.tsv")))
 
 def main():
-    usage = dedent("""\
-    usage: %prog [options] <root> [<registry>]
-
-    Program which converts raw LSST Sim exposure metadata to CSV files suitable
-    for loading into MySQL. If a database name is specified in the options,
-    the CSVs are also loaded into that database.
-
-    Make sure to run prepareDb.py before database loads - this instantiates
-    the LSST schema in the target database.
-    """)
-    parser = optparse.OptionParser(usage)
+    parser = argparse.ArgumentParser(description="Program which converts raw LSST "
+        "Sim exposure metadata to CSV files suitable for loading into MySQL. If "
+        "a database name is specified in the options, the CSVs are also loaded "
+        "into that database.",
+        epilog="Make sure to run prepareDb.py before database loads - this "
+        "instantiates the LSST schema in the target database.")
     addDbOptions(parser)
-    parser.add_option(
+    parser.add_argument(
         "-d", "--database", dest="database",
         help="MySQL database to load CSV files into.")
-    opts, args = parser.parse_args()
-    if len(args) == 2:
-        root, registry = args
-    elif len(args) == 1:
-        root, registry = args[0], None
-    load = opts.database != None
-    if load :
-        if opts.user == None:
+    parser.add_argument(
+        "-R", "--registry", dest="registry", help="Input registry path; "
+        "used for all input roots. If omitted, a file named registry.sqlite3 "
+        "must exist in each input root.")
+    parser.add_argument("root", help="input root directory")
+    ns = parser.parse_args()
+    doLoad = ns.database != None
+    if doLoad :
+        if ns.user == None:
             parser.error("No database user name specified and $USER " +
                          "is undefined or empty")
-        sql = MysqlExecutor(opts.host, opts.database, opts.user, opts.port)
-    c = CsvGenerator(root, registry, not load)
+        sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
+    c = CsvGenerator(ns.root, ns.registry, not doLoad)
     c.csvAll()
-    if load:
+    if doLoad:
         dbLoad(sql)
 
 if __name__ == '__main__':

@@ -22,8 +22,6 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-from __future__ import with_statement
-
 import argparse
 import collections
 from contextlib import closing
@@ -44,19 +42,18 @@ if not 'AP_DIR' in os.environ:
     sys.exit(1)
 
 AP_DIR = os.environ['AP_DIR']
-cnvSource = os.path.join(AP_DIR, 'bin', 'boostPt1Source2CSV.py')
-cnvObject = os.path.join(AP_DIR, 'bin', 'boostPt1Object2CSV.py')
 refPosMatch = os.path.join(AP_DIR, 'bin', 'qa', 'refPosMatch.py')
 refCcdFilter = os.path.join(AP_DIR, 'bin', 'qa', 'refCcdFilter.py')
 
 Task = collections.namedtuple('Task', ['kind', 'boostPath', 'csvPath'])
 
 def convert(task):
-    global cnvSource, cnvObject
     if task.kind == 'object':
-        return subprocess.call(['python', cnvObject, task.boostPath, task.csvPath])
+        pyfile = os.path.join(os.environ['AP_DIR'], 'bin', 'boostPt1Object2CSV.py')
+        return subprocess.call(['python', pyfile, task.boostPath, task.csvPath])
     else:
-        return subprocess.call(['python', cnvSource, task.boostPath, task.csvPath])
+        pyfile = os.path.join(os.environ['AP_DIR'], 'bin', 'boostPt1Source2CSV.py')
+        return subprocess.call(['python', pyfile, task.boostPath, task.csvPath])
 
 def convertAll(namespace, sql=None):
     kinds = ('badSource', 'source', 'object')

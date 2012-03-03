@@ -33,6 +33,7 @@ from .mysqlExecutor import addDbOptions
 __all__ = ["makeArgumentParser",
            "visitLsstSimCalexps",
            "visitCfhtCalexps",
+           "visitSkyTiles",
           ]
 
 def _line_to_args(self, line):
@@ -88,42 +89,44 @@ def _searchRules(namespace, dataset, keySpecs):
     return rules
 
 
-def makeArgumentParser(description):
+def makeArgumentParser(description, inRootsRequired=True, addRegistryOption=True):
     parser = argparse.ArgumentParser(
-        description=description, fromfile_prefix_chars="@", epilog=
-        "Data IDs are expected to be of the form:\n"
-        "  --id k1=v11[^v12[...]] [k2=v21[^v22[...]]\n"
-        "\n"
-        "Examples:\n"
-        "  1. --id visit=12345 raft=1,1\n"
-        "  2. --id skyTile=12345\n"
-        "  3. --id visit=12 raft=1,2^2,2 sensor=1,1^1,3\n"
-        "\n"
-        "The first example identifies all sensors in raft 1,1 of visit "
-        "12345. The second identifies all sources/objects in sky-tile "
-        "12345. The cross product is computed for keys with multiple "
-        "values, so the third example is equivalent to:\n"
-        "  --id visit=12 raft=1,2 sensor=1,1\n"
-        "  --id visit=12 raft=1,2 sensor=1,3\n"
-        "  --id visit=12 raft=2,2 sensor=1,1\n"
-        "  --id visit=12 raft=2,2 sensor=1,3\n"
-        "\n"
-        "Redundant specification of a data ID will *not* result in "
-        "loads of duplicate data - data IDs are de-duped before ingest "
-        "starts. Note also that the keys allowed in data IDs are "
-        "specific to the type of data the ingestion script deals with. "
-        "For example, one cannot load sensor metadata by sky tile ID, nor "
-        "sources by sensor (CCD) ID.\n"
-        "\n"
-        "Any omitted keys are assumed to take all legal values. So, "
-        "`--id raft=1,2` identifies all sensors of raft 1,2 for all "
-        "available visits.\n"
-        "\n"
-        "Finally, calling an ingestion script multiple times is safe. "
-        "Attempting to load the same data item twice will result "
-        "in an error or (if --strict is specified) or cause previously "
-        "loaded data item to be skipped. Database activity is strictly "
-        "append only.")
+        description=description,
+        fromfile_prefix_chars="@",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Data IDs are expected to be of the form:\n"
+               "  --id k1=v11[^v12[...]] [k2=v21[^v22[...]]\n"
+               "\n"
+               "Examples:\n"
+               "  1. --id visit=12345 raft=1,1\n"
+               "  2. --id skyTile=12345\n"
+               "  3. --id visit=12 raft=1,2^2,2 sensor=1,1^1,3\n"
+               "\n"
+               "The first example identifies all sensors in raft 1,1 of visit "
+               "12345. The second identifies all sources/objects in sky-tile "
+               "12345. The cross product is computed for keys with multiple "
+               "values, so the third example is equivalent to:\n"
+               "  --id visit=12 raft=1,2 sensor=1,1\n"
+               "  --id visit=12 raft=1,2 sensor=1,3\n"
+               "  --id visit=12 raft=2,2 sensor=1,1\n"
+               "  --id visit=12 raft=2,2 sensor=1,3\n"
+               "\n"
+               "Redundant specification of a data ID will *not* result in "
+               "loads of duplicate data - data IDs are de-duped before ingest "
+               "starts. Note also that the keys allowed in data IDs are "
+               "specific to the type of data the ingestion script deals with. "
+               "For example, one cannot load sensor metadata by sky tile ID, nor "
+               "sources by sensor (CCD) ID.\n"
+               "\n"
+               "Any omitted keys are assumed to take all legal values. So, "
+               "`--id raft=1,2` identifies all sensors of raft 1,2 for all "
+               "available visits.\n"
+               "\n"
+               "Finally, calling an ingestion script multiple times is safe. "
+               "Attempting to load the same data item twice will result "
+               "in an error or (if --strict is specified) or cause previously "
+               "loaded data item to be skipped. Database activity is strictly "
+               "append only.")
     parser.convert_arg_line_to_args = _line_to_args
     addDbOptions(parser)
     parser.add_argument(
@@ -138,18 +141,24 @@ def makeArgumentParser(description):
     parser.add_argument(
         "-i", "--id", dest="id", nargs="*", action=_IdAction,
         help="Data ID specifying what to ingest. May appear multiple times.")
+    if addRegistryOption:
+        parser.add_argument(
+            "-R", "--registry", dest="registry", help="Input registry path; "
+            "used for all input roots. If omitted, a file named registry.sqlite3 "
+            "must exist in each input root.")
     parser.add_argument(
-        "-R", "--registry", dest="registry", help="Input registry path; "
-        "used for all input roots. If omitted, a file named registry.sqlite3 "
-        "must exist in each input root.")
+        "outroot", help="Output directory for CSV files")
     parser.add_argument(
-        "outroot", help="Output directory for generated CSV files")
-    parser.add_argument(
-        "inroot", nargs="+", help="One or more input root directories")
+        "inroot", nargs="+" if inRootsRequired else "*",
+        help="One or more input root directories")
     return parser
 
 
 class _Butler(object):
+    """Instances of _Butler create (and cache) a single data butler. Used to
+    avoid creating a data buter (expensive) if a root directory does not
+    contain any data matching a data ID spec.
+    """
     def __init__(self, root, namespace, mapperClass):
         self._root = root
         self._ns = namespace
@@ -172,6 +181,15 @@ def _getVisits(dir):
         if m is not None and os.path.isdir(os.path.join(dir, 'calexp', p)):
             visits[int(m.group(1))] = p
     return visits, set(visits.keys());
+
+def _getSkyTiles(dir):
+    paths = os.listdir(os.path.join(dir, 'results'))
+    skyTiles = dict()
+    for p in paths:
+        m = re.match(r"^st(\d+)$", p)
+        if m is not None and os.path.isdir(os.path.join(dir, 'results', p)):
+            skyTiles[int(m.group(1))] = p
+    return skyTiles, set(skyTiles.keys());
 
 def _checkDisjoint(dirs, idSets, descr):
     assert len(dirs) == len(idSets)
@@ -372,4 +390,66 @@ def visitCfhtCalexps(namespace, processFunc, sql=None):
                             sciCcdExpId,
                             visit,
                             ccd)
+
+
+def visitSkyTiles(namespace, sql=None):
+    """A generator over the sky-tiles in one more input directories
+    that match an optional set of data ID specifications and which have
+    not already been loaded into the target database.
+
+    Tuples with the following elements are yielded:
+
+    root:           Name of sky-tile parent directory
+    skyTileDir:     Sky-tile directory name (relative to parent)
+    skyTileId:      Sky-tile ID
+    """
+    rules = _searchRules(namespace, "SourceAssoc output",
+                         [("skyTile", int, r"^\d+$")])
+    dirs = set(os.path.realpath(d) for d in namespace.inroot)
+    for d in dirs:
+        if not os.path.isdir(os.path.join(d, "results")):
+            msg = str.format("invalid input dir {} : no 'results/' subdir", d)
+            if not namespace.strict:
+                print >>sys.stderr, "*** Skipping " + msg
+                dirs.remove(d)
+            else:
+                raise RuntimeError(msg)
+
+    stDicts, stSets = zip(*[_getSkyTiles(d) for d in dirs])
+    # make sure visits in each input root are disjoint
+    _checkDisjoint(dirs, stSets, "Sky-tiles")
+
+    # Figure out what's been loaded already.
+    if sql:
+        loaded = set(r[0] for r in sql.runQuery("SELECT skyTileId from SkyTile"))
+    else:
+        loaded = set()
+
+    for rootDir, stDict, stSet in izip(dirs, stDicts, stSets):
+        rootDir = os.path.join(rootDir, "results")
+        for skyTile in stSet:
+            if not any(r[0] is None or skyTile in r[0] for r in rules):
+                continue
+            if skyTile in loaded:
+                msg = str.format("sky-tile {} : already ingested", skyTile)
+                if not namespace.strict:
+                    print >>sys.stderr, "*** Skipping " + msg
+                    continue
+                else:
+                    raise RuntimeError(msg)
+            yield (rootDir, stDict[skyTile], skyTile)
+
+
+def pruneSkyTileDirs(namespace, stDirs):
+    """Prunes a list of sky-tile directories according to sky-tile data ID specs.
+    """
+    stDirIdPairs = []
+    rules = _searchRules(namespace, "SourceAssoc output",
+                         [("skyTile", int, r"^\d+$")])
+    for d in stDirs:
+        skyTile = int(re.match(r".*/st(\d+)/?$", d).group(1))
+        if not any(r[0] is None or skyTile in r[0] for r in rules):
+            continue
+        stDirIdPairs.append((d, skyTile))
+    return stDirIdPairs
 

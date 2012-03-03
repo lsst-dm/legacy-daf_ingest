@@ -114,6 +114,20 @@ class MysqlExecutor(object):
                 cursor.execute(query)
                 return cursor.fetchall()
 
+    def getConn(self):
+        kw = dict()
+        if self.host is not None:
+            kw['host'] = self.host
+        if self.port is not None:
+            kw['port'] = self.port
+        if self.user is not None:
+            kw['user'] = self.user
+        if self.database is not None:
+            kw['db'] = self.database
+        if self.password is not None:
+            kw['passwd'] = self.password
+        return sql.connect(**kw)
+
 
 def addDbOptions(parser):
     if not isinstance(parser, argparse.ArgumentParser):

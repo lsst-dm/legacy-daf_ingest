@@ -10,6 +10,12 @@ definitions: {
         maxOccurs: 1
         dictionary: {
             definitions: {
+		taskName: {
+                    type: "string"
+                    description: "Name of top-level pipe_task"
+                    minOccurs: 1
+                    maxOccurs: 1
+		}
                 cmdTemplate: {
                     type: "string"
                     description: "Template for pipe_task command line"

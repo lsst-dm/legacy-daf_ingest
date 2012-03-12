@@ -31,7 +31,8 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
             self.policy = pexPolicy.Policy()
         self.policy.mergeDefaults(defPolicy.getDictionary())
 
-        self.parser = ArgumentParser()
+        self.name = self.policy.get("parameters.taskName")
+        self.parser = ArgumentParser(self.name)
         self.cmdTemplate = self.policy.get("parameters.cmdTemplate")
         taskModule = self.policy.get("parameters.taskModule")
         taskClass = self.policy.get("parameters.taskClass")
@@ -68,24 +69,23 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
         # execute the task, configuring it through the argument parser
         # to ensure reproducibility from the command line
         
-        cmd = self.cmdTemplate % self.tokens
-        self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (cmd,))
-        namespace = self.parser.parse_args(
-                config=self.taskClass.ConfigClass(),
-                args=cmd.split(), log=self.log)
+        commandLine = self.cmdTemplate % self.tokens
+        self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (commandLine,))
+        cmd = self.parser.parse_args(self.taskClass.ConfigClass(),
+                commandLine.split(), self.log)
         # Have to do this here since can't set bools on the command line until
         # pex_config is fixed
-        namespace.config.doWriteIsr = False
-        task = self.taskClass(namespace.config)
-        for sensorRef in namespace.dataRefList:
-            sensorRef.put(namespace.config, "processCcd_config")
+        cmd.config.doWriteIsr = False
+        task = self.taskClass(cmd.config, log=self.log)
+        for sensorRef in cmd.dataRefList:
+            sensorRef.put(cmd.config, self.name + "_config")
             try:
                 task.run(sensorRef)
             except Exception, e:
                 self.log.log(task.log.FATAL, "Failed on dataId=%s: %s" %
                         (sensorRef.dataId, e))
                 raise
-            sensorRef.put(task.getFullMetadata(), "processCcd_metadata")
+            sensorRef.put(task.getFullMetadata(), self.name + "_metadata")
 
         self.log.log(Log.INFO, "PipeTaskStage - done.")
 

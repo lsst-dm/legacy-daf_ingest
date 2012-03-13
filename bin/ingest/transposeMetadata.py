@@ -24,9 +24,8 @@
 from __future__ import with_statement
 from contextlib import closing
 import getpass
-import optparse
+import argparse
 import MySQLdb as sql
-from textwrap import dedent
 from lsst.daf.persistence import DbAuth
 
 from lsst.datarel.mysqlExecutor import addDbOptions
@@ -111,8 +110,11 @@ class OutputTable(object):
         self.columns = columns
 
     def create(self, cursor, metadataTable):
-        createStmt = "CREATE TABLE %s (\n    %s BIGINT NOT NULL PRIMARY KEY,\n" % (self.name, self.idCol)
-        createStmt += ",\n".join([c.getColumnSpec() for c in self.columns if c.constVal == None])
+        createStmt = "CREATE TABLE %s (\n    %s BIGINT NOT NULL PRIMARY KEY" % (self.name, self.idCol)
+        cols = ",\n".join([c.getColumnSpec() for c in self.columns if c.constVal == None])
+        if len(cols) > 0:
+            createStmt += ",\n"
+            createStmt += cols
         createStmt += "\n);"
         print createStmt
         cursor.execute(createStmt)
@@ -211,42 +213,38 @@ def run(host, port, user, passwd, database,
 
 def main():
     # Setup command line options
-    usage = dedent("""\
-    usage: %prog [options] <database> <metadataTable> <idCol> <outputTable>
-
-    Program which transposes a key-value table into a table where each key is 
-    mapped to a column.
-
-    <database>:       Name of database to operate in.
-    <metadataTable>:  Name of key value table to transpose
-    <idCol>:          ID (primary key) column of <metadataTable>.
-    <outputTable>:    Name of output table to create.
-    """)
-    parser = optparse.OptionParser(usage)
+    parser = argparse.ArgumentParser(description=
+        "Program which transposes a key-value table into a table where each key is"
+        "mapped to a column.")
     addDbOptions(parser)
-    parser.add_option(
+    parser.add_argument(
         "-s", "--skip-keys", dest="skipKeys",
         help="Comma separated list of metadata keys to omit in the output table")
-    parser.add_option(
+    parser.add_argument(
         "-c", "--compress", dest="compress", action="store_true",
         help="Lift keys with constant values into a view")
-    opts, args = parser.parse_args()
-    if len(args) != 4:
-        parser.error("Invalid number of arguments")
+    parser.add_argument(
+        "database", help="Name of database containing metadata table to transpose")
+    parser.add_argument(
+        "metadataTable", help="Name of metadata table to transpose")
+    parser.add_argument(
+        "idCol", help="Primary key column name for metadata table")
+    parser.add_argument(
+        "outputTable", help="Name of output table to create") 
+    ns = parser.parse_args()
     db, metadataTable, idCol, outputTable = args
-    if opts.host is not None and opts.port is not None and \
-            DbAuth.available(opts.host, str(opts.port)):
-        user = DbAuth.username(opts.host, str(opts.port))
-        passwd = DbAuth.password(opts.host, str(opts.port))
-    elif os.path.exists(os.path.join(os.environ['HOME'], ".mysql.cnf")):
+    if DbAuth.available(ns.host, str(ns.port)):
+        ns.user = DbAuth.username(ns.host, str(ns.port))
+        passwd = DbAuth.password(ns.host, str(ns.port))
+    elif os.path.exists(os.path.join(os.environ["HOME"], ".mysql.cnf")):
         passwd = None
     else:
-        passwd = getpass.getpass()
+        passwd = getpass.getpass("%s's MySQL password: " % ns.user)
     skipCols = set()
     if opts.skipKeys != None:
         skipCols = set(map(lambda x: x.strip(), opts.skipKeys.split(",")))
-    run(opts.host, opts.port, opts.user, passwd, db, metadataTable,
-        idCol, outputTable, skipCols, opts.compress)
+    run(ns.host, ns.port, ns.user, passwd, db, metadataTable,
+        idCol, outputTable, skipCols, ns.compress)
  
 if __name__ == "__main__":
     main()

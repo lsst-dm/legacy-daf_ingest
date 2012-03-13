@@ -22,9 +22,8 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 from __future__ import with_statement
-import optparse
+import argparse
 import os
-from textwrap import dedent
 
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
@@ -60,31 +59,22 @@ def checkDb(sql):
     return True
 
 def main():
-    usage = dedent("""\
-    usage: %prog [options] <database>
-
-    Program which creates an LSST run database and instantiates the LSST
-    schema therein. Indexes on tables which will be loaded by the various
-    datarel ingest scripts are disabled. Once loading has finished, the
-    finishDb.py script should be run to re-enable them.
-
-    <database>:   Name of database to create and instantiate the LSST schema in.
-    """)
-    parser = optparse.OptionParser(usage)
+    parser = argparse.ArgumentParser(description=
+        "Program which creates an LSST run database and instantiates the LSST "
+        "schema therein. Indexes on tables which will be loaded by the various "
+        "datarel ingest scripts are disabled. Once loading has finished, the "
+        "finishDb.py script should be run to re-enable them.")
     addDbOptions(parser)
-    opts, args = parser.parse_args()
-    if len(args) != 1:
-        parser.error("A single argument (database name) must be supplied.")
-    database = args[0]
-    if opts.user == None:
-        parser.error("No database user name specified and $USER is undefined or empty")
-    sql = MysqlExecutor(opts.host, database, opts.user, opts.port)
+    parser.add_argument("database", help="Name of database to create and "
+                        "instantiate the LSST schema in.")
+    ns = parser.parse_args()
+    sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     if not checkDb(sql):
         if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
             parser.error("$CAT_DIR is undefined or empty - " +
                     "please setup the cat package and try again.")
         catDir = os.environ['CAT_DIR']
-        sql.createDb(database)
+        sql.createDb(ns.database)
         sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlPT1_2.sql'))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))

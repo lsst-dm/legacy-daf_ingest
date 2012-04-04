@@ -65,28 +65,11 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
         self.tokens['sensor'] =  str(ds.ids["sensor"])
         self.tokens['visit'] = str(ds.ids["visit"])
 
+        # execute the task
 
-        # execute the task, configuring it through the argument parser
-        # to ensure reproducibility from the command line
-        
         commandLine = self.cmdTemplate % self.tokens
         self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (commandLine,))
-        cmd = self.parser.parse_args(self.taskClass.ConfigClass(),
-                commandLine.split(), self.log)
-        # Have to do this here since can't set bools on the command line until
-        # pex_config is fixed
-        cmd.config.doWriteIsr = False
-        task = self.taskClass(cmd.config, log=self.log)
-        for sensorRef in cmd.dataRefList:
-            sensorRef.put(cmd.config, self.name + "_config")
-            try:
-                task.run(sensorRef)
-            except Exception, e:
-                self.log.log(task.log.FATAL, "Failed on dataId=%s: %s" %
-                        (sensorRef.dataId, e))
-                raise
-            sensorRef.put(task.getFullMetadata(), self.name + "_metadata")
-
+        self.taskClass.parseAndRun(commandLine.split(), log=self.log)
         self.log.log(Log.INFO, "PipeTaskStage - done.")
 
     

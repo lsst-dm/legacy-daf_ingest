@@ -39,8 +39,6 @@ loadTables = ["Source",
               "Raw_Amp_To_Science_Ccd_Exposure",
               "Raw_Amp_Exposure_To_Htm11",
               "Raw_Amp_To_Science_Ccd_Exposure",
-              "sdqa_Rating_ForScienceCcdExposure",
-              "sdqa_Rating_ForScienceAmpExposure",
               "Raw_Amp_To_Snap_Ccd_Exposure",
               "Snap_Ccd_To_Science_Ccd_Exposure",
              ]
@@ -75,10 +73,9 @@ def main():
                     "please setup the cat package and try again.")
         catDir = os.environ['CAT_DIR']
         sql.createDb(ns.database)
-        sql.execScript(os.path.join(catDir, 'sql', 'lsstSchema4mysqlPT1_2.sql'))
+        sql.execScript(os.path.join(catDir, 'sql', 'schema_mysql_S12_lsstSim.sql'))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
-        sql.execScript(os.path.join(catDir, 'sql', 'setup_sdqa.sql'))
     # Disable indexes on tables for faster loading
     for table in loadTables:
         sql.execStmt("ALTER TABLE %s DISABLE KEYS;" % table)

@@ -88,10 +88,10 @@ class CsvGenerator(object):
         height = md.get('NAXIS2')
         wcs = afwImage.makeWcs(md.deepCopy())
         cen = wcs.pixelToSky(0.5*width - 0.5, 0.5*height - 0.5).toIcrs()
-        llc = wcs.pixelToSky(-0.5, -0.5).toIcrs()
-        ulc = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
-        urc = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
-        lrc = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
+        corner1 = wcs.pixelToSky(-0.5, -0.5).toIcrs()
+        corner2 = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
+        corner3 = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
+        corner4 = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
         psf = butler.get("psf", visit=visit, raft=raft, sensor=sensor)
         msg = str.format("visit {} raft {} sensor {} : PSF missing or corrupt",
                          visit, raft, sensor)
@@ -122,10 +122,10 @@ class CsvGenerator(object):
             md.get('CRVAL1'), md.get('CRVAL2'),
             md.get('CD1_1'), md.get('CD1_2'),
             md.get('CD2_1'), md.get('CD2_2'),
-            llc.getRa().asDegrees(), llc.getDec().asDegrees(),
-            ulc.getRa().asDegrees(), ulc.getDec().asDegrees(),
-            urc.getRa().asDegrees(), urc.getDec().asDegrees(),
-            lrc.getRa().asDegrees(), lrc.getDec().asDegrees(),
+            corner1.getRa().asDegrees(), corner1.getDec().asDegrees(),
+            corner2.getRa().asDegrees(), corner2.getDec().asDegrees(),
+            corner3.getRa().asDegrees(), corner3.getDec().asDegrees(),
+            corner4.getRa().asDegrees(), corner4.getDec().asDegrees(),
             obsStart.get(dafBase.DateTime.MJD, dafBase.DateTime.TAI),
             obsStart,
             md.get('TIME-MID'), md.get('EXPTIME'),
@@ -142,10 +142,10 @@ class CsvGenerator(object):
                 self.mdFile.write(sciCcdExpId, name, 1, None, None, str(md.get(name)))
         self.polyFile.write("\t".join([
                 str(sciCcdExpId),
-                repr(llc.getRa().asDegrees()), repr(llc.getDec().asDegrees()),
-                repr(ulc.getRa().asDegrees()), repr(ulc.getDec().asDegrees()),
-                repr(urc.getRa().asDegrees()), repr(urc.getDec().asDegrees()),
-                repr(lrc.getRa().asDegrees()), repr(lrc.getDec().asDegrees())]))
+                repr(corner1.getRa().asDegrees()), repr(corner1.getDec().asDegrees()),
+                repr(corner2.getRa().asDegrees()), repr(corner2.getDec().asDegrees()),
+                repr(corner3.getRa().asDegrees()), repr(corner3.getDec().asDegrees()),
+                repr(corner4.getRa().asDegrees()), repr(corner4.getDec().asDegrees())]))
         self.polyFile.write("\n")
         print str.format("Processed visit {} raft {} sensor {}", visit, raft, sensor)
 
@@ -158,24 +158,30 @@ def dbLoad(ns, sql):
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' (
             scienceCcdExposureId, visit, raft, raftName, ccd, ccdName,
             filterId, filterName,
-            ra, decl,
+            @ra, @decl,
             equinox, raDeSys,
             ctype1, ctype2,
             crpix1, crpix2,
             crval1, crval2,
             cd1_1, cd1_2, cd2_1, cd2_2,
-            llcRa, llcDecl,
-            ulcRa, ulcDecl,
-            urcRa, urcDecl,
-            lrcRa, lrcDecl,
+            @corner1Ra, @corner1Decl,
+            @corner2Ra, @corner2Decl,
+            @corner3Ra, @corner3Decl,
+            @corner4Ra, @corner4Decl,
             taiMjd, obsStart, expMidpt, expTime,
             nCombine, binX, binY,
             readNoise, saturationLimit, gainEff,
             fluxMag0, fluxMag0Sigma, fwhm
-        ) SET poly = scisql_s2CPolyToBin(llcRa, llcDecl,
-                                         ulcRa, ulcDecl,
-                                         urcRa, urcDecl,
-                                         lrcRa, lrcDecl);
+        ) SET ra = @ra, decl = @decl,
+              htmId20 = scisql_s2HtmId(@ra, @decl, 20),
+              corner1Ra = @corner1Ra, corner1Decl = @corner1Decl,
+              corner2Ra = @corner2Ra, corner2Decl = @corner2Decl,
+              corner3Ra = @corner3Ra, corner3Decl = @corner3Decl,
+              corner4Ra = @corner4Ra, corner4Decl = @corner4Decl,
+              poly = scisql_s2CPolyToBin(@corner1Ra, @corner1Decl,
+                                         @corner2Ra, @corner2Decl,
+                                         @corner3Ra, @corner3Decl,
+                                         @corner4Ra, @corner4Decl);
         SHOW WARNINGS;
         """ % os.path.abspath(os.path.join(ns.outroot, "Science_Ccd_Exposure.csv"))))
     sql.execStmt(dedent("""\

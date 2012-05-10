@@ -65,6 +65,8 @@ def main():
         "datarel ingest scripts are disabled. Once loading has finished, the "
         "finishDb.py script should be run to re-enable them.")
     addDbOptions(parser)
+    parser.add_argument("--camera", dest="camera", default="lsstSim",
+        help="Name of desired camera (defaults to %(default)s)")
     parser.add_argument("database", help="Name of database to create and "
                         "instantiate the LSST schema in.")
     ns = parser.parse_args()
@@ -75,7 +77,8 @@ def main():
                     "please setup the cat package and try again.")
         catDir = os.environ['CAT_DIR']
         sql.createDb(ns.database)
-        sql.execScript(os.path.join(catDir, 'sql', 'schema_mysql_S12_lsstSim.sql'))
+        sql.execScript(os.path.join(
+            catDir, 'sql', 'lsstSchema4mysqlS12_{}.sql'.format(ns.camera.lower())))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
     # Disable indexes on tables for faster loading

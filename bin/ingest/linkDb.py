@@ -44,13 +44,14 @@ def main():
     sql = MysqlExecutor(ns.host, viewName, ns.user, ns.port)
     for table in (
             "AmpMap", "CcdMap", "Filter", "LeapSeconds", "Logs",
-            "NonVarObject", "Object", "ObjectType", "RunObject", "RaftMap",
+            "Object", "ObjectType", "RaftMap",
             "Raw_Amp_Exposure", "Raw_Amp_Exposure_Metadata",
             "Raw_Amp_Exposure_To_Htm11", "Raw_Amp_To_Science_Ccd_Exposure",
-            "Raw_Amp_To_Snap_Ccd_Exposure", "RefObjMatch", "RefSrcMatch",
+            "Raw_Amp_To_Snap_Ccd_Exposure",
+            "RefObjMatch", "RefSrcMatch", "RunObject", "RunSource",
             "Science_Ccd_Exposure", "Science_Ccd_Exposure_Metadata",
             "Science_Ccd_Exposure_To_Htm10", "SimRefObject",
-            "Snap_Ccd_To_Science_Ccd_Exposure", "Source", "RunSource", "Visit",
+            "Snap_Ccd_To_Science_Ccd_Exposure", "Source", "Visit",
             "ZZZ_Db_Description",)
         sql.execStmt("""CREATE OR REPLACE
             SQL SECURITY INVOKER

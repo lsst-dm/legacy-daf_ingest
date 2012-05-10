@@ -195,6 +195,7 @@ def main():
     parser.add_argument(
         "--materialize", action="store_true", dest="materialize",
         help="Materialize canoncial Source/Object table views.")
+    # TODO!! add finalize option, don't generate view/insert statements unless specified
     ns = parser.parse_args()
     sql = None
     if ns.database != None:

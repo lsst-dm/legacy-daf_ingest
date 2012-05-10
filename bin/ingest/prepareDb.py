@@ -31,6 +31,7 @@ loadTables = ["Source",
               "Object",
               "SimRefObject",
               "RefObjMatch",
+              "RefSrcMatch",
               "Science_Ccd_Exposure",
               "Science_Ccd_Exposure_Metadata",
               "Science_Ccd_Exposure_To_Htm10",
@@ -41,6 +42,7 @@ loadTables = ["Source",
               "Raw_Amp_To_Science_Ccd_Exposure",
               "Raw_Amp_To_Snap_Ccd_Exposure",
               "Snap_Ccd_To_Science_Ccd_Exposure",
+              "Logs",
              ]
 
 def checkDb(sql):

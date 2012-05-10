@@ -132,6 +132,13 @@ def findInconsistentMetadataTypes(sql):
             needsFix.append(table)
     return needsFix
 
+def _tableExists(cursor, database, table):
+    cursor.execute("SELECT COUNT(*) FROM information_schema.tables "
+                   "WHERE table_schema = %s AND table_name = %s",
+                   (database, table))
+    row = cursor.fetchall()
+    return row[0][0] == 1
+
 def main():
     parser = argparse.ArgumentParser(description=
         "Program which runs post-processing steps on an LSST run database, "
@@ -150,11 +157,8 @@ def main():
     if ns.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
-    # Set [ugrizy]NumObs NULLs to 0 (for query convenience)
-    for filter in "ugrizy":
-        sql.execStmt("UPDATE Object SET %sNumObs = 0 WHERE %sNumObs IS NULL;" %
-                     (filter, filter))
     # Enable indexes on tables for faster queries
+    # TODO - Object/Source might be a view
     for table in loadTables:
         sql.execStmt("SET myisam_sort_buffer_size=1000000000; ALTER TABLE %s ENABLE KEYS;" % table)
     # fixup metadata tables if necessary

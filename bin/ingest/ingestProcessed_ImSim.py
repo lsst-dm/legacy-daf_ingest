@@ -68,6 +68,8 @@ class CsvGenerator(object):
     def csvAll(self, namespace, sql=None):
         def _toCsv(butler, path, sciCcdExpId, visit, raft, raftNum, sensor, sensorNum):
             self.toCsv(butler, path, sciCcdExpId, visit, raft, raftNum, sensor, sensorNum)
+        self.mdFile.write("scienceCcdExposureId", "metadataKey", "exposureType",
+                          "intValue", "doubleValue", "stringValue")
         visitLsstSimCalexps(namespace, _toCsv, sql)
         self.expFile.flush()
         self.mdFile.flush()
@@ -186,7 +188,8 @@ def dbLoad(ns, sql):
         """ % os.path.abspath(os.path.join(ns.outroot, "Science_Ccd_Exposure.csv"))))
     sql.execStmt(dedent("""\
         LOAD DATA LOCAL INFILE '%s' INTO TABLE Science_Ccd_Exposure_Metadata
-        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+        IGNORE 1 LINES (
             scienceCcdExposureId,
             metadataKey,
             exposureType,

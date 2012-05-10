@@ -409,7 +409,7 @@ def sourceTableSql(schema, dbMappingConfig, sourceAssocConfig):
         # ingest to fail if this code and the canonical schema are not in sync.
         sourceStmt = 'INSERT INTO Source (\n\t'
         sourceStmt += ',\n\t'.join(outcols)
-        sourceStmt += ') SELECT\n\t'
+        sourceStmt += ')\nSELECT\n\t'
         sourceStmt += ',\n\t'.join(selcols)
         sourceStmt += '\nFROM RunSource;\n'
     return (createStmt.format(tableName='RunSource'),
@@ -548,7 +548,7 @@ def objectTableSql(schema, dbMappingConfig, sourceAssocConfig, filters):
         # ingest to fail if this code and the canonical schema are not in sync.
         objectStmt = 'INSERT INTO Object (\n\t'
         objectStmt += ',\n\t'.join(outcols)
-        objectStmt += ') SELECT\n\t'
+        objectStmt += ')\nSELECT\n\t'
         objectStmt += ',\n\t'.join(selcols)
         objectStmt += '\nFROM RunObject;'
     return (createStmt.format(tableName='RunObject'),

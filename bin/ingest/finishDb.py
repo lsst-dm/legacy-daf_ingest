@@ -132,12 +132,12 @@ def findInconsistentMetadataTypes(sql):
             needsFix.append(table)
     return needsFix
 
-def _tableExists(cursor, database, table):
-    cursor.execute("SELECT COUNT(*) FROM information_schema.tables "
-                   "WHERE table_schema = %s AND table_name = %s",
-                   (database, table))
-    row = cursor.fetchall()
-    return row[0][0] == 1
+def isView(sql, table):
+    rows = sql.runQuery(str.format(
+        "SELECT COUNT(*) FROM information_schema.tables WHERE "
+        "table_schema = '{}' AND table_name = '{}' AND table_type = 'VIEW';",
+        sql.database, table))
+    return rows[0][0] == 1
 
 def main():
     parser = argparse.ArgumentParser(description=
@@ -158,8 +158,11 @@ def main():
         parser.error("No database user name specified and $USER is undefined or empty")
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     # Enable indexes on tables for faster queries
-    # TODO - Object/Source might be a view
     for table in loadTables:
+        if table in ("Source", "Object"):
+            # These might now be VIEWs rather than TABLES
+            if isView(sql, table):
+                continue
         sql.execStmt("SET myisam_sort_buffer_size=1000000000; ALTER TABLE %s ENABLE KEYS;" % table)
     # fixup metadata tables if necessary
     fixTables = findInconsistentMetadataTypes(sql)
@@ -177,6 +180,7 @@ def main():
             print "\nCannot transpose metadata tables with inconsistent types!"
     elif ns.transpose:
         # Generate transposed metadata tables
+        # TODO: this is camera specific!
         rawAmpSkipCols = set(['NAXIS1', 'NAXIS2',
                               'MJD-OBS', 'EXPTIME',
                               'FILTER',

@@ -42,7 +42,8 @@ from lsst.datarel.schema import *
 from lsst.datarel.mysqlExecutor import MysqlExecutor
 
 
-Task = collections.namedtuple('Task', ['kind', 'fitsPath', 'csvPath', 'config'])
+Task = collections.namedtuple(
+    'Task', ['kind', 'protoPath', 'fitsPath', 'csvPath', 'config'])
 
 _catalogClass = {
     'source': afwTable.SourceCatalog,
@@ -51,8 +52,12 @@ _catalogClass = {
 }
 
 def convert(task):
-    try: 
+    try:
+        prototype = _catalogClass[task.kind].readFits(task.protoPath)
         catalog = _catalogClass[task.kind].readFits(task.fitsPath)
+        if (catalog.getSchema() != prototype.getSchema()):
+            return str.format('Schema for {} does not match prototype ({})!',
+                              task.fitsPath, task.protoPath)
         apUtils.writeCsv(catalog.cast(afwTable.BaseCatalog),
                          task.config.makeControl(),
                          makeMysqlCsvConfig().makeControl(),
@@ -62,14 +67,45 @@ def convert(task):
         return traceback.format_exc()
     return None
 
+def sourcePrototypePath(namespace):
+    return os.path.join(namespace.outroot, 'sourcePrototype.fits')
+def objectPrototypePath(namespace):
+    return os.path.join(namespace.outroot, 'objectPrototype.fits')
+def sourceAssocConfigPath(namespace):
+    return os.path.join(namespace.outroot, 'sourceAssocConfig.py')
+
+def getPrototypicalSchemas(namespace):
+    srcSchema, objSchema = None, None
+    p = sourcePrototypePath(namespace)
+    if os.path.isfile(p):
+        srcSchema = afwTable.SourceCatalog.readFits(p).getSchema()
+    p = objectPrototypePath(namespace)
+    if os.path.isfile(p):
+        objSchema = apCluster.SourceClusterCatalog.readFits(p).getSchema()
+    return srcSchema, objSchema
+
+def getSourceAssocConfig(namespace):
+    saConfig, saConfigFile = None, None
+    p = sourceAssocConfigPath(namespace)
+    if os.path.isfile(p):
+        saConfig = SourceAssocConfig()
+        saConfig.load(p)
+        saConfigFile = p
+    return saConfig, saConfigFile
+
+def mungeDbMappingConfig(dbMappingConfig, saConfig):
+    dbMappingConfig.sourceConversion.nullableIntegers = [
+        "parent", saConfig.sourceProcessing.clusterPrefix + ".id",]
+
+
 def convertAll(namespace, dbMappingConfig, sql=None):
     kinds = ('badSource', 'source', 'object')
     tasks = []
     stDirIdPairs = []
-    saConfig = None
-    saConfigFile = None
-    srcSchema = None
-    objSchema = None
+    saConfig, saConfigFile = getSourceAssocConfig(namespace)
+    srcSchema, objSchema = getPrototypicalSchemas(namespace)
+    srcProto = sourcePrototypePath(namespace)
+    objProto = objectPrototypePath(namespace)
 
     # Generate FITS to CSV conversion tasks, and write out sky-tile manifest
     for root, skyTileDir, skyTileId in visitSkyTiles(namespace, sql):
@@ -81,8 +117,8 @@ def convertAll(namespace, dbMappingConfig, sql=None):
         if saConfig == None:
             saConfig = config
             saConfigFile = configFile
-            dbMappingConfig.sourceConversion.nullableIntegers = [
-                "parent", saConfig.sourceProcessing.clusterPrefix + ".id",]
+            saConfig.save(sourceAssocConfigPath(namespace))
+            mungeDbMappingConfig(dbMappingConfig, saConfig)
         else:
             if saConfig != config:
                 raise RuntimeError(str.format(
@@ -96,14 +132,22 @@ def convertAll(namespace, dbMappingConfig, sql=None):
                 continue
             if kind == 'object':
                 if objSchema is None:
-                    # read in FITS file and obtain schema
-                    objSchema = _catalogClass[kind].readFits(fitsFile).getSchema()
-                tasks.append(Task(kind, fitsFile, csvFile, dbMappingConfig.objectConversion))
+                    # read in FITS file and write out empty prototype
+                    cat = apCluster.SourceClusterCatalog.readFits(fitsFile)
+                    cat = apCluster.SourceClusterCatalog(cat.getTable())
+                    cat.writeFits(objProto)
+                    objSchema = cat.getSchema()
+                tasks.append(Task(kind, objProto, fitsFile, csvFile,
+                                  dbMappingConfig.objectConversion))
             else:
                 if srcSchema is None:
-                    # read in FITS file and obtain schema
-                    srcSchema = _catalogClass[kind].readFits(fitsFile).getSchema()
-                tasks.append(Task(kind, fitsFile, csvFile, dbMappingConfig.sourceConversion))
+                    # read in FITS file and write out empty prototype
+                    cat = afwTable.SourceCatalog.readFits(fitsFile)
+                    cat = afwTable.SourceCatalog(cat.getTable())
+                    cat.writeFits(srcProto)
+                    srcSchema = cat.getSchema()
+                tasks.append(Task(kind, srcProto, fitsFile, csvFile,
+                                  dbMappingConfig.sourceConversion))
             if not outputSkyTile:
                 print str.format("Scheduling sky-tile {} for FITS->CSV conversion",
                                  skyTileId)
@@ -128,7 +172,7 @@ def convertAll(namespace, dbMappingConfig, sql=None):
     if not ok:
          print >>sys.stderr, "\nFITS to CSV conversion failed!\n"
          sys.exit(1)
-    return saConfig, srcSchema, objSchema, stDirIdPairs
+    return stDirIdPairs
 
 
 def _exec(cursor, stmt):
@@ -137,21 +181,24 @@ def _exec(cursor, stmt):
     print >>sys.stderr, "\n"
 
 
-def load(namespace, sql, srcStmts, objStmts, stDirIdPairs, asView):
-    srcCreate, srcLoad, srcCanonical = srcStmts
-    objCreate, objLoad, objCanonical = objStmts
+def load(namespace, sql, srcStmts, objStmts, stDirIdPairs):
+    if stDirIdPairs == None:
+        stDirIdPairs = pruneSkyTileDirs(
+            namespace, glob.glob(os.path.join(namespace.outroot, "st[0-9]*")))
+    srcCreate, srcLoad, _ = srcStmts
+    objCreate, objLoad, _ = objStmts
     with closing(sql.getConn()) as conn:
         with closing(conn.cursor()) as cursor:
             if srcCreate != None:
                 _exec(cursor, srcCreate)
-                _exec(cursor, "ALTER TABLE RunSource DISABLE KEYS")
+                _exec(cursor, "ALTER TABLE RunSource DISABLE KEYS;")
             if objCreate != None:
                 _exec(cursor, objCreate)
-                _exec(cursor, "ALTER TABLE RunObject DISABLE KEYS")
+                _exec(cursor, "ALTER TABLE RunObject DISABLE KEYS;")
             for stOutDir, skyTileId in stDirIdPairs:
                 print "-- Processing {}\n".format(stOutDir)
                 try:
-                    cursor.execute("INSERT INTO SkyTile (skyTileId) VALUES (%s)",
+                    cursor.execute("INSERT INTO SkyTile (skyTileId) VALUES (%s);",
                                    (skyTileId,))
                 except Exception, e:
                     if hasattr(e, "__getitem__") and e[0] == 1062:
@@ -173,29 +220,29 @@ def load(namespace, sql, srcStmts, objStmts, stDirIdPairs, asView):
                 if not os.path.isfile(csv):
                     continue
                 _exec(cursor, objLoad.format(fileName=csv))
-            if srcCanonical != None:
-                if asView:
-                    _exec(cursor, "DROP TABLE IF EXISTS Source")
-                _exec(cursor, srcCanonical)
-            if objCanonical != None:
-                if asView:
-                    _exec(cursor, "DROP TABLE IF EXISTS Object")
-                _exec(cursor, objCanonical)
 
 
 def main():
     # Setup command line options
     parser = makeArgumentParser(description="Program which converts "
         "source/object .fits files into CSV files and loads them "
-        "into the database.", inRootsRequired=True, addRegistryOption=False)
+        "into the database.", inRootsRequired=False, addRegistryOption=False)
     parser.add_argument(
         "-j", "--jobs", type=int, dest="jobs", default=4,
         help="Number of parallel job processes to launch when "
              "converting from FITS to CSV format")
     parser.add_argument(
-        "--materialize", action="store_true", dest="materialize",
-        help="Materialize canoncial Source/Object table views.")
-    # TODO!! add finalize option, don't generate view/insert statements unless specified
+        "--no-convert", action="store_true", dest="noConvert",
+        help="Don't convert from FITS to CSV format")
+    parser.add_argument(
+        "--no-load", action="store_true", dest="noLoad",
+        help="Don't load sources and objects")
+    parser.add_argument(
+        "--create-views", action="store_true", dest="createViews",
+        help="Create views corresponding to the canonical Source/Object after loading.")
+    parser.add_argument(
+        "--insert", action="store_true", dest="insert",
+        help="Insert into canonical Source/Object tables after loading.")
     ns = parser.parse_args()
     sql = None
     if ns.database != None:
@@ -203,22 +250,48 @@ def main():
             parser.error("*** No database user name specified and $USER " +
                          "is undefined or empty")
         sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
-    else:
+    elif not ns.noLoad or ns.createViews or ns.insert:
         parser.error("*** No database specified")
-    # Perform FITS to CSV conversion
-    dbmConfig = DbMappingConfig()
-    dbmConfig.asView = not ns.materialize
-    saConfig, srcSchema, objSchema, stOutDirs = convertAll(ns, dbmConfig, sql)
-    if len(stOutDirs) == 0:
+    if ns.noLoad and ns.noConvert and not ns.createViews and not ns.insert:
         print >>sys.stderr, "Nothing to do"
         return
+
+    dbmConfig = DbMappingConfig()
+    dbmConfig.asView = ns.createViews
+    stOutDirs = None
+    if not ns.noConvert:
+        if not ns.inroot:
+            parser.error("At least one input root must be specified "
+                         "when FITS->CSV conversion is turned on")
+        # Perform FITS to CSV conversion
+        stOutDirs = convertAll(ns, dbmConfig, sql)
+    saConfig, _ = getSourceAssocConfig(ns)
+    srcSchema, objSchema = getPrototypicalSchemas(ns)
+    if saConfig is None:
+        parser.error(str.format(
+            "Missing sourceAssoc config file {}", sourceAssocConfigPath(ns)))
+    if srcSchema is None and objSchema is None:
+        parser.error(str.format(
+            "Missing both source and object prototypes ({} and {})",
+            sourcePrototypePath(ns), objectPrototypePath(ns)))
     srcStmts = None, None, None
     if srcSchema is not None:
         srcStmts = sourceTableSql(srcSchema, dbmConfig, saConfig)
     objStmts = None, None, None
     if objSchema is not None:
+        # TODO: this is camera specific!
         objStmts = objectTableSql(objSchema, dbmConfig, saConfig, "ugrizy")
-    load(ns, sql, srcStmts, objStmts, stOutDirs, dbmConfig.asView)
+    if not ns.noLoad:
+        load(ns, sql, srcStmts, objStmts, stOutDirs)
+    if ns.createViews or ns.insert:
+        if srcStmts[2] != None:
+            if ns.createViews:
+                sql.execStmt("DROP TABLE IF EXISTS Source;")
+            sql.execStmt(srcStmts[2])
+        if objStmts[2] != None:
+            if ns.createViews:
+                sql.execStmt("DROP TABLE IF EXISTS Object;")
+            sql.execStmt(objStmts[2])
 
 if __name__ == "__main__":
     main()

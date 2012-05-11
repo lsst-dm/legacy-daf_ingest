@@ -32,14 +32,14 @@ def main():
         "database name buildbot_weekly_latest by creating views for each table.")
     addDbOptions(parser)
     parser.add_argument(
-        "-t", "--tag", default="tags", choices=["trunk","tags"],
+        "-t", "--tag", dest="type", default="tags", choices=["trunk","tags"],
         help="Type of stack which generated DB")
     parser.add_argument("database", help="Name of database to \"link\" from.")
     ns = parser.parse_args()
     print ns
     if ns.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
-    viewName = "buildbot_weekly_latest_" + opts.type
+    viewName = "buildbot_weekly_latest_" + ns.type
     print viewName
     sql = MysqlExecutor(ns.host, viewName, ns.user, ns.port)
     for table in (
@@ -52,13 +52,12 @@ def main():
             "Science_Ccd_Exposure", "Science_Ccd_Exposure_Metadata",
             "Science_Ccd_Exposure_To_Htm10", "SimRefObject",
             "Snap_Ccd_To_Science_Ccd_Exposure", "Source", "Visit",
-            "ZZZ_Db_Description",)
-        sql.execStmt("""CREATE OR REPLACE
-            SQL SECURITY INVOKER
-            VIEW %s AS
-            SELECT * FROM %s.%s;""" % (table, database, table))
-    sql.execStmt(
-            "UPDATE ZZZ_View_Description SET src='%s';" % (database,))
+            "ZZZ_Db_Description",):
+        sql.execStmt(str.format(
+            "CREATE OR REPLACE SQL SECURITY INVOKER VIEW {0} AS "
+            "SELECT * FROM {1}.{0};", table, ns.database))
+    sql.execStmt(str.format(
+        "UPDATE ZZZ_View_Description SET src='{}';", ns.database))
 
 if __name__ == "__main__":
     main()

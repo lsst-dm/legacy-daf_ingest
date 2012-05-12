@@ -108,7 +108,7 @@ fixupTemplate = string.Template("""
 def findInconsistentMetadataTypes(sql):
     needsFix = []
     for table in ("Raw_Amp_Exposure_Metadata", "Science_Ccd_Exposure_Metadata"):
-        keys = sql.runQuery("""
+        keys = sql.runQuery(str.format("""
             SET myisam_sort_buffer_size=1000000000;
 
             SELECT t.metadataKey, count(*) AS n,
@@ -116,28 +116,22 @@ def findInconsistentMetadataTypes(sql):
             FROM (
                 SELECT DISTINCT metadataKey, IF(stringValue IS NOT NULL, "string",
                     IF(intValue IS NOT NULL, "int", "double")) AS type
-                FROM %s 
+                FROM {} 
                 WHERE stringValue IS NOT NULL OR
                       intValue IS NOT NULL OR
                       doubleValue IS NOT NULL
             ) AS t
             GROUP BY t.metadataKey
             HAVING n > 1;
-            """ % table)
+            """, table))
         if len(keys) > 0:
             print table + " has inconsistent types for metadata keys:"
             for k in keys:
-                print "%s:\t%s" % (k[0], k[2])
+                print "{}:\t{}".format(k[0], k[2])
             sys.stdout.flush()
             needsFix.append(table)
     return needsFix
 
-def isView(sql, table):
-    rows = sql.runQuery(str.format(
-        "SELECT COUNT(*) FROM information_schema.tables WHERE "
-        "table_schema = '{}' AND table_name = '{}' AND table_type = 'VIEW';",
-        sql.database, table))
-    return rows[0][0] == 1
 
 def main():
     parser = argparse.ArgumentParser(description=
@@ -158,12 +152,12 @@ def main():
         parser.error("No database user name specified and $USER is undefined or empty")
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     # Enable indexes on tables for faster queries
-    for table in loadTables:
-        if table in ("Source", "Object"):
-            # These might now be VIEWs rather than TABLES
-            if isView(sql, table):
-                continue
-        sql.execStmt("SET myisam_sort_buffer_size=1000000000; ALTER TABLE %s ENABLE KEYS;" % table)
+    tables = loadTables + ["Logs", "RunSource", "RunObject"]
+    for table in tables:
+        if sql.isView(table) or not sql.exists(table):
+            continue
+        sql.execStmt(str.format("SET myisam_sort_buffer_size=1000000000; "
+                                "ALTER TABLE {} ENABLE KEYS;", table))
     # fixup metadata tables if necessary
     fixTables = findInconsistentMetadataTypes(sql)
     if len(fixTables) > 0:

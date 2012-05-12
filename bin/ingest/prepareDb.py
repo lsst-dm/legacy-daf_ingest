@@ -42,15 +42,14 @@ loadTables = ["Source",
               "Raw_Amp_To_Science_Ccd_Exposure",
               "Raw_Amp_To_Snap_Ccd_Exposure",
               "Snap_Ccd_To_Science_Ccd_Exposure",
-              "Logs",
              ]
 
 def checkDb(sql):
     for table in loadTables:
         try:
-            result = sql.runQuery("SELECT COUNT(*) FROM %s" % (table,))
+            result = sql.runQuery("SELECT COUNT(*) FROM " + table)
             if result[0][0] != 0:
-                print "WARNING: non-empty table %s" % (table,)
+                print "WARNING: non-empty table " + table
         except Exception, e:
             if hasattr(e, "__getitem__") and e[0] == 1049:
                 return False
@@ -73,8 +72,8 @@ def main():
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     if not checkDb(sql):
         if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
-            parser.error("$CAT_DIR is undefined or empty - " +
-                    "please setup the cat package and try again.")
+            parser.error("$CAT_DIR is undefined or empty - "
+                         "please setup the cat package and try again.")
         catDir = os.environ['CAT_DIR']
         sql.createDb(ns.database)
         sql.execScript(os.path.join(
@@ -83,7 +82,7 @@ def main():
         sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
     # Disable indexes on tables for faster loading
     for table in loadTables:
-        sql.execStmt("ALTER TABLE %s DISABLE KEYS;" % table)
+        sql.execStmt("ALTER TABLE {} DISABLE KEYS;".format(table))
 
 if __name__ == "__main__":
     main()

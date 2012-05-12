@@ -96,23 +96,28 @@ class MysqlExecutor(object):
     def runQuery(self, query):
         if not isinstance(query, basestring):
             raise TypeError('Query is not a string')
-        kw = dict()
-        if self.host is not None:
-            kw['host'] = self.host
-        if self.port is not None:
-            kw['port'] = self.port
-        if self.user is not None:
-            kw['user'] = self.user
-        if self.database is not None:
-            kw['db'] = self.database
-        if self.password is not None:
-            kw['passwd'] = self.password
-        with closing(sql.connect(**kw)) as conn:
+        with closing(self.getConn()) as conn:
             with closing(conn.cursor()) as cursor:
                 print query
                 sys.stdout.flush()
                 cursor.execute(query)
                 return cursor.fetchall()
+
+    def isView(self, table):
+        with closing(self.getConn()) as conn:
+            with closing(conn.cursor()) as cursor:
+                cursor.execute('SELECT COUNT(*) FROM information_schema.tables '
+                               'WHERE table_schema=%s AND table_name=%s AND '
+                               'table_type=\'VIEW\'', (self.database, table))
+                return cursor.fetchone()[0] == 1
+
+    def exists(self, table):
+        with closing(self.getConn()) as conn:
+            with closing(conn.cursor()) as cursor:
+                cursor.execute('SELECT COUNT(*) FROM information_schema.tables '
+                               'WHERE table_schema=%s AND table_name=%s',
+                               (self.database, table))
+                return cursor.fetchone()[0] == 1
 
     def getConn(self):
         kw = dict()

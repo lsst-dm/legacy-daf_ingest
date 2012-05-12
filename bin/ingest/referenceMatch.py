@@ -136,6 +136,11 @@ def referenceMatch(namespace, sql):
     # Match reference objects to sources
     config.validate()
     config.save(refSrcMatchConfigFile)
+    # Note - if Source contains no rows, MySQL will output an empty file,
+    # even if you've asked it to write out column names in a header line!
+    if os.path.getsize(sourceTsv) == 0:
+        with open(sourceTsv, 'wb') as f:
+            f.write('"id"\t"ra"\t"decl"\n')
     subprocess.check_call(['python', refPosMatch,
                            '--config-file=' + refSrcMatchConfigFile,
                            sourceMatchCsv,
@@ -147,6 +152,9 @@ def referenceMatch(namespace, sql):
     config.parallaxThresh = float('inf') # turn off parallax corrections
     config.validate()
     config.save(refObjMatchConfigFile)
+    if os.path.getsize(objectTsv) == 0:
+        with open(objectTsv, 'wb') as f:
+            f.write('"id"\t"ra"\t"decl"\n')
     subprocess.check_call(['python', refPosMatch,
                            '--config-file=' + refSrcMatchConfigFile,
                            objectMatchCsv,

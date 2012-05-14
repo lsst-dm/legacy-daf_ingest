@@ -164,7 +164,7 @@ def referenceMatch(namespace, sql):
     if namespace.noLoad:
         return
     # Load filtered reference catalog and matches
-    sql.execStmt("""LOAD DATA LOCAL INFILE '%s' INTO TABLE SimRefObject
+    sql.execStmt("""LOAD DATA LOCAL INFILE '%s' INTO TABLE RefObject
                     FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (%s);
                  """ % (filtCsv, ','.join(config.ref.fieldNames)))
     sql.execStmt("""LOAD DATA LOCAL INFILE '%s' INTO TABLE RefObjMatch

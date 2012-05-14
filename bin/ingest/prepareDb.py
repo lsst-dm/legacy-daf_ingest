@@ -29,7 +29,7 @@ from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
 loadTables = ["Source",
               "Object",
-              "SimRefObject",
+              "RefObject",
               "RefObjMatch",
               "RefSrcMatch",
               "Science_Ccd_Exposure",

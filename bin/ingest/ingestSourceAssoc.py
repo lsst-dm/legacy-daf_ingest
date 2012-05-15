@@ -35,7 +35,7 @@ import traceback
 import lsst.afw.table as afwTable
 import lsst.ap.cluster as apCluster
 import lsst.ap.utils as apUtils
-from lsst.pipe.tasks.sourceAssoc import SourceAssocConfig
+from lsst.ap.tasks.sourceAssoc import SourceAssocConfig
 
 from lsst.datarel.ingest import makeArgumentParser, visitSkyTiles, pruneSkyTileDirs
 from lsst.datarel.schema import *

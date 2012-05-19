@@ -130,7 +130,7 @@ def referenceMatch(namespace, sql):
 
     # Add filter coverage columns to reference field names
     apUtils.makeMapper(namespace.camera) # defines filters
-    config.ref.fieldNames.extend([f + "Cov" for f in apUtils.getFilterNames()])
+    config.ref.fieldNames.extend([f + "ExposureCount" for f in apUtils.getFilterNames()])
     config.ref.outputFields = []
 
     # Match reference objects to sources

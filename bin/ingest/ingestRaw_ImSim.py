@@ -188,28 +188,23 @@ def dbLoad(sql):
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' (
             rawAmpExposureId, visit, snap, raft, raftName,
             ccd, ccdName, amp, ampName, filterId, filterName,
-            @ra, @decl,
+            ra, decl,
             equinox, raDeSys,
             ctype1, ctype2,
             crpix1, crpix2,
             crval1, crval2,
             cd1_1, cd1_2, cd2_1, cd2_2,
-            @corner1Ra, @corner1Decl,
-            @corner2Ra, @corner2Decl,
-            @corner3Ra, @corner3Decl,
-            @corner4Ra, @corner4Decl,
+            corner1Ra, corner1Decl,
+            corner2Ra, corner2Decl,
+            corner3Ra, corner3Decl,
+            corner4Ra, corner4Decl,
             taiMjd, obsStart, expMidpt, expTime,
             airmass, darkTime, zd
-        ) SET ra = @ra, decl = @decl,
-              htmId20 = scisql_s2HtmId(@ra, @decl, 20),
-              corner1Ra = @corner1Ra, corner1Decl = @corner1Decl,
-              corner2Ra = @corner2Ra, corner2Decl = @corner2Decl,
-              corner3Ra = @corner3Ra, corner3Decl = @corner3Decl,
-              corner4Ra = @corner4Ra, corner4Decl = @corner4Decl,
-              poly = scisql_s2CPolyToBin(@corner1Ra, @corner1Decl,
-                                         @corner2Ra, @corner2Decl,
-                                         @corner3Ra, @corner3Decl,
-                                         @corner4Ra, @corner4Decl);
+        ) SET htmId20 = scisql_s2HtmId(ra, decl, 20),
+              poly = scisql_s2CPolyToBin(corner1Ra, corner1Decl,
+                                         corner2Ra, corner2Decl,
+                                         corner3Ra, corner3Decl,
+                                         corner4Ra, corner4Decl);
         SHOW WARNINGS;
         """ % os.path.abspath("Raw_Amp_Exposure.csv")))
     sql.execStmt(dedent("""\

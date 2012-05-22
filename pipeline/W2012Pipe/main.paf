@@ -42,9 +42,9 @@ execute: {
         stagePolicy: {
             parameters: {
 		taskName: processCcd
-                taskClass: ProcessCcdLsstSimTask
-                taskModule: lsst.pipe.tasks.processCcdLsstSim
-                cmdTemplate: "lsstSim %(input)s --doraise --output %(output)s --config doWriteIsr=False --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
+                taskClass: ProcessCcdTask
+                taskModule: lsst.pipe.tasks.processCcd
+                cmdTemplate: "lsstSim %(input)s --doraise --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
             }
         }
     }

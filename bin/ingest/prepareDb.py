@@ -27,25 +27,37 @@ import os
 
 from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
 
-loadTables = ["Source",
-              "Object",
-              "RefObject",
-              "RefObjMatch",
-              "RefSrcMatch",
-              "Science_Ccd_Exposure",
-              "Science_Ccd_Exposure_Metadata",
-              "Science_Ccd_Exposure_To_Htm10",
-              "Raw_Amp_Exposure",
-              "Raw_Amp_Exposure_Metadata",
-              "Raw_Amp_To_Science_Ccd_Exposure",
-              "Raw_Amp_Exposure_To_Htm11",
-              "Raw_Amp_To_Science_Ccd_Exposure",
-              "Raw_Amp_To_Snap_Ccd_Exposure",
-              "Snap_Ccd_To_Science_Ccd_Exposure",
-             ]
+loadTables = {
+    "lsstsim": ["Source",
+                "Object",
+                "RefObject",
+                "RefObjMatch",
+                "RefSrcMatch",
+                "Science_Ccd_Exposure",
+                "Science_Ccd_Exposure_Metadata",
+                "Science_Ccd_Exposure_To_Htm10",
+                "Raw_Amp_Exposure",
+                "Raw_Amp_Exposure_Metadata",
+                "Raw_Amp_To_Science_Ccd_Exposure",
+                "Raw_Amp_Exposure_To_Htm11",
+                "Raw_Amp_To_Science_Ccd_Exposure",
+                "Raw_Amp_To_Snap_Ccd_Exposure",
+                "Snap_Ccd_To_Science_Ccd_Exposure",
+               ],
+    "sdss":    ["Source",
+                "Object",
+                "RefObject",
+                "RefObjMatch",
+                "RefSrcMatch",
+                "Science_Ccd_Exposure",
+                "Science_Ccd_Exposure_Metadata",
+                "Science_Ccd_Exposure_To_Htm10"
+               ],
+}
 
-def checkDb(sql):
-    for table in loadTables:
+
+def checkDb(sql, camera):
+    for table in loadTables[camera]:
         try:
             result = sql.runQuery("SELECT COUNT(*) FROM " + table)
             if result[0][0] != 0:
@@ -70,18 +82,19 @@ def main():
                         "instantiate the LSST schema in.")
     ns = parser.parse_args()
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
-    if not checkDb(sql):
+    camera = ns.camera.lower()
+    if not checkDb(sql, camera):
         if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
             parser.error("$CAT_DIR is undefined or empty - "
                          "please setup the cat package and try again.")
         catDir = os.environ['CAT_DIR']
         sql.createDb(ns.database)
         sql.execScript(os.path.join(
-            catDir, 'sql', 'lsstSchema4mysqlS12_{}.sql'.format(ns.camera.lower())))
-        sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables.sql'))
+            catDir, 'sql', 'lsstSchema4mysqlS12_{}.sql'.format(camera)))
+        sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables_{}.sql'.format(camera)))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
     # Disable indexes on tables for faster loading
-    for table in loadTables:
+    for table in loadTables[camera]:
         sql.execStmt("ALTER TABLE {} DISABLE KEYS;".format(table))
 
 if __name__ == "__main__":

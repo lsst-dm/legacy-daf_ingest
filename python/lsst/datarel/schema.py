@@ -35,13 +35,9 @@ __all__ = ['makeMysqlCsvConfig',
 
 _dbType = {
     'I': 'INTEGER',
-    'I4': 'INTEGER',
     'L': 'BIGINT',
-    'I8': 'BIGINT',
     'F': 'FLOAT',
-    'F4': 'FLOAT',
     'D': 'DOUBLE',
-    'F8': 'DOUBLE',
     'Angle': 'DOUBLE',
     'Flag': 'BIT(1)',
 }
@@ -139,7 +135,7 @@ def genericTableSql(schema, csvConversionConfig, indexedFields):
                 if not csvConversionConfig.flagsAsBits:
                     continue # we will deal with flags later
                 constraint = 'NOT NULL'
-            elif ty == 'I4' or ty == 'I8':
+            elif ty == 'I' or ty == 'L':
                 if name in csvConversionConfig.nullableIntegers:
                     constraint = 'NULL'
                 else:
@@ -167,26 +163,26 @@ def genericTableSql(schema, csvConversionConfig, indexedFields):
                 dbkeys.append(_k('coord_decl'))
             else:
                  _append(dbcol, 'DOUBLE', ['_ra', '_decl'])
-        elif ty == 'Array<F4>' or ty == 'Array<F8>':
-            dbty = _dbType[ty[6:8]]
+        elif ty == 'ArrayF' or ty == 'ArrayD':
+            dbty = _dbType[ty[-1]]
             for i in xrange(1, item.key.getSize() + 1):
                 coldefs.append(str.format('{}_{} {} NULL', dbcol, i, dbty))
                 columns.append(str.format('{}_{}', dbcol, i))
-        elif ty == 'Point<I4>' or ty == 'Point<F4>' or ty == 'Point<F8>':
-            dbty = _dbType[ty[6:8]]
+        elif ty == 'PointI' or ty == 'PointF' or ty == 'PointD':
+            dbty = _dbType[ty[-1]]
             _append(dbcol, dbty, ['_x', '_y'])
-        elif ty == 'Moments<F4>' or ty == 'Moments<F8>':
-            dbty = _dbType[ty[8:10]]
+        elif ty == 'MomentsF' or ty == 'MomentsD':
+            dbty = _dbType[ty[-1]]
             _append(dbcol, dbty, ['_Ixx', '_Iyy', '_Ixy'])
-        elif ty == 'Cov<F4>' or ty == 'Cov<F8>':
-            dbty = _dbType[ty[4:6]]
+        elif ty == 'CovF' or ty == 'CovD':
+            dbty = _dbType[ty[-1]]
             sz = item.key.getSize()
             for i in xrange(1, sz + 1):
                 for j in xrange(i, sz + 1):
                     coldefs.append(str.format('{}_{}_{} {} NULL', dbcol, i, j, dbty))
                     columns.append(str.format('{}_{}_{}', dbcol, i, j))
-        elif ty == 'Cov<Point<F4>>' or ty == 'Cov<Point<F8>>':
-            dbty = _dbType[ty[10:12]]
+        elif ty == 'CovPointF' or ty == 'CovPointD':
+            dbty = _dbType[ty[-1]]
             if name.endswith('.err'):
                 dbcol = dbcol[:-4]
                 if item.field.getUnits() == 'rad^2':
@@ -196,8 +192,8 @@ def genericTableSql(schema, csvConversionConfig, indexedFields):
                     continue
             _append(dbcol, dbty, ['_xVar', '_xyCov',
                                             '_yVar'])
-        elif ty == 'Cov<Moments<F4>>' or ty == 'Cov<Moments<F8>>':
-            dbty = _dbType[ty[12:14]]
+        elif ty == 'CovMomentsF' or ty == 'CovMomentsD':
+            dbty = _dbType[ty[-1]]
             if name.endswith('.err'):
                 dbcol = dbcol[:-4]
             _append(dbcol, dbty, ['_IxxVar', '_IxxIyyCov', '_IxxIxyCov',

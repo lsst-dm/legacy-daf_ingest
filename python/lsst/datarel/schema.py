@@ -34,9 +34,13 @@ __all__ = ['makeMysqlCsvConfig',
           ]
 
 _dbType = {
+    'I': 'INTEGER',
     'I4': 'INTEGER',
+    'L': 'BIGINT',
     'I8': 'BIGINT',
+    'F': 'FLOAT',
     'F4': 'FLOAT',
+    'D': 'DOUBLE',
     'F8': 'DOUBLE',
     'Angle': 'DOUBLE',
     'Flag': 'BIT(1)',

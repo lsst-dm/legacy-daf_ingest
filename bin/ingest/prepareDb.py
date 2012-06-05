@@ -91,7 +91,7 @@ def main():
         sql.createDb(ns.database)
         sql.execScript(os.path.join(
             catDir, 'sql', 'lsstSchema4mysqlS12_{}.sql'.format(camera)))
-        sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTables_{}.sql'.format(camera)))
+        sql.execScript(os.path.join(catDir, 'sql', 'setup_perRunTablesS12_{}.sql'.format(camera)))
         sql.execScript(os.path.join(catDir, 'sql', 'setup_storedFunctions.sql'))
     # Disable indexes on tables for faster loading
     for table in loadTables[camera]:

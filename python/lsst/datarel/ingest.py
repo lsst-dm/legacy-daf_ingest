@@ -453,3 +453,128 @@ def pruneSkyTileDirs(namespace, stDirs):
         stDirIdPairs.append((d, skyTile))
     return stDirIdPairs
 
+
+def _getRuns(dir):
+    paths = os.listdir(os.path.join(dir, 'calexp'))
+    runs = dict()
+    for p in paths:
+        m = re.match(r"^\d+$", p)
+        if m is not None and os.path.isdir(os.path.join(dir, 'calexp', p)):
+            runs[int(p)] = p
+    return runs, set(runs.keys());
+
+_sdssFilters = dict(u=0, g=1, r=2, i=3, z=4)
+
+def visitSdssCalexps(namespace, processFunc, sql=None):
+    """[obs_sdss] Invokes processFunc on the calibrated exposures in one more input
+    directories that match an optional set of data ID specifications and
+    which have not already been loaded into the target database.
+
+    Arguments of processFunc are expected to be (in order):
+
+    butler:         A butler for the input root the calibrated
+                    exposure belongs to
+    path:           Path to the calibrated exposure
+    sciCcdExpId:    ID of calibrated exposure
+    run:            integer run ID of calibrated exposure
+    camcol:         integer camcol of calibrated exposure
+    band:           band of calibrated exposure
+    frame:          frame number of calibrated exposure
+    """
+    import lsst.obs.sdss
+    rules = _searchRules(namespace, "calexp",
+                         [("run", int, r"^\d+$"),
+                          ("camcol", int, r"^\d+$"),
+                          ("band", str, r"^[ugriz]$"),
+                          ("frame", int, r"^\d+$")])
+    dirs = set(os.path.realpath(d) for d in namespace.inroot)
+    for d in dirs:
+        if not os.path.isdir(os.path.join(d, "calexp")):
+            msg = str.format("invalid input dir {} : no 'calexp/' subdir", d)
+            if not namespace.strict:
+                print >>sys.stderr, "*** Skipping " + msg
+                dirs.remove(d)
+            else:
+                raise RuntimeError(msg)
+    runDicts, runSets = zip(*[_getRuns(d) for d in dirs])
+    # make sure runs in each input root are disjoint
+    _checkDisjoint(dirs, runSets, "Runs")
+
+    # Figure out what's been loaded already.
+    # For current sizes, this should hopefully be OK...
+    if sql:
+        loaded = set(r[0] for r in sql.runQuery(
+            "SELECT scienceCcdExposureId from Science_Ccd_Exposure"))
+    else:
+        loaded = set()
+
+    for rootDir, runDict, runSet in izip(dirs, runDicts, runSets):
+        butler = _Butler(rootDir, namespace, lsst.obs.sdss.SdssMapper)
+        for run in runSet:
+            camcolRules = []
+            for r in rules:
+                if r[0] is None or run in r[0]:
+                    camcolRules.append(r)
+            if len(camcolRules) == 0:
+                # no rules match visit
+                continue
+            runDir = os.path.join(rootDir, 'calexp', runDict[run])
+            # obtain listing of camcol directories
+            camcolDirs = os.listdir(runDir)
+            for camcolDir in camcolDirs:
+                m = re.match(r"^\d+$", camcolDir)
+                if m is None:
+                    continue
+                camcol = int(camcolDir)
+                camcolDir = os.path.join(runDir, camcolDir)
+                if not os.path.isdir(camcolDir):
+                    continue
+                bandRules = []
+                for r in camcolRules:
+                    if r[1] is None or camcol in r[1]:
+                        bandRules.append(r)
+                if len(bandRules) == 0:
+                    # no rules match camcol
+                    continue
+                # obtain listing of band directories
+                bandDirs = os.listdir(camcolDir)
+                for band in bandDirs:
+                    if band not in "ugriz":
+                        continue
+                    bandDir = os.path.join(camcolDir, band)
+                    if not os.path.isdir(bandDir):
+                        continue
+                    frameRules = []
+                    for r in bandRules:
+                        if r[2] is None or band in r[2]:
+                            frameRules.append(r)
+                    if len(frameRules) == 0:
+                        # no rules match band
+                        continue
+                    # obtain listing of sensor files
+                    sensorFiles = os.listdir(bandDir)
+                    pattern = "^calexp-%06d-%s%d-(\\d\\d\\d\\d).fits$" % (run, band, camcol)
+                    for sensorFile in sensorFiles:
+                        m = re.match(pattern, sensorFile)
+                        if m is None:
+                            continue
+                        frame = int(m.group(1))
+                        if not any(r[3] is None or frame in r[3] for r in frameRules):
+                            continue
+                        sciCcdExpId = ((run*10 + _sdssFilters[band])*10 + camcol)*10000 + frame
+                        if sciCcdExpId in loaded:
+                            msg = str.format(" run {} camcol {} band {} frame {} : already ingested",
+                                             run, camcol, band, frame)
+                            if not namespace.strict:
+                                print >>sys.stderr, "*** Skipping " + msg
+                                continue
+                            else:
+                                raise RuntimeError(msg)
+                        processFunc(butler(),
+                                    os.path.join(bandDir, sensorFile),
+                                    sciCcdExpId,
+                                    run,
+                                    camcol,
+                                    band,
+                                    frame)
+

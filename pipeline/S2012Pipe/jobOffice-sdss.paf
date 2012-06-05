@@ -24,58 +24,58 @@ schedule: {
               name: run
             }
             id: {
-              name: band
+              name: filter
             }
             id: {
               name: camcol
             }
             id: {
-              name: frame
+              name: field
             }
         }
         output: {
-            datasetType: calexp
+            datasetType: fpC_calexp
             id: {
               name: run
             }
             id: {
-              name: band
+              name: filter
             }
             id: {
               name: camcol
             }
             id: {
-              name: frame
+              name: field
             }
         }
         output: {
-            datasetType: psf
+            datasetType: fpC_psf
             id: {
               name: run
             }
             id: {
-              name: band
+              name: filter
             }
             id: {
               name: camcol
             }
             id: {
-              name: frame
+              name: field
             }
         }
         output: {
-            datasetType: src
+            datasetType: fpC_src
             id: {
               name: run
             }
             id: {
-              name: band
+              name: filter
             }
             id: {
               name: camcol
             }
             id: {
-              name: frame
+              name: field
             }
         }
     }

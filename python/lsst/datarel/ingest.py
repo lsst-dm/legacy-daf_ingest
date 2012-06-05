@@ -478,15 +478,15 @@ def visitSdssCalexps(namespace, processFunc, sql=None):
     sciCcdExpId:    ID of calibrated exposure
     run:            integer run ID of calibrated exposure
     camcol:         integer camcol of calibrated exposure
-    band:           band of calibrated exposure
-    frame:          frame number of calibrated exposure
+    filter:         filter of calibrated exposure
+    field:          field number of calibrated exposure
     """
     import lsst.obs.sdss
     rules = _searchRules(namespace, "calexp",
                          [("run", int, r"^\d+$"),
                           ("camcol", int, r"^\d+$"),
-                          ("band", str, r"^[ugriz]$"),
-                          ("frame", int, r"^\d+$")])
+                          ("filter", str, r"^[ugriz]$"),
+                          ("field", int, r"^\d+$")])
     dirs = set(os.path.realpath(d) for d in namespace.inroot)
     for d in dirs:
         if not os.path.isdir(os.path.join(d, "calexp")):
@@ -529,52 +529,52 @@ def visitSdssCalexps(namespace, processFunc, sql=None):
                 camcolDir = os.path.join(runDir, camcolDir)
                 if not os.path.isdir(camcolDir):
                     continue
-                bandRules = []
+                filterRules = []
                 for r in camcolRules:
                     if r[1] is None or camcol in r[1]:
-                        bandRules.append(r)
-                if len(bandRules) == 0:
+                        filterRules.append(r)
+                if len(filterRules) == 0:
                     # no rules match camcol
                     continue
-                # obtain listing of band directories
-                bandDirs = os.listdir(camcolDir)
-                for band in bandDirs:
-                    if band not in "ugriz":
+                # obtain listing of filter directories
+                filterDirs = os.listdir(camcolDir)
+                for filter in filterDirs:
+                    if filter not in "ugriz":
                         continue
-                    bandDir = os.path.join(camcolDir, band)
-                    if not os.path.isdir(bandDir):
+                    filterDir = os.path.join(camcolDir, filter)
+                    if not os.path.isdir(filterDir):
                         continue
-                    frameRules = []
-                    for r in bandRules:
-                        if r[2] is None or band in r[2]:
-                            frameRules.append(r)
-                    if len(frameRules) == 0:
-                        # no rules match band
+                    fieldRules = []
+                    for r in filterRules:
+                        if r[2] is None or filter in r[2]:
+                            fieldRules.append(r)
+                    if len(fieldRules) == 0:
+                        # no rules match filter
                         continue
                     # obtain listing of sensor files
-                    sensorFiles = os.listdir(bandDir)
-                    pattern = "^calexp-%06d-%s%d-(\\d\\d\\d\\d).fits$" % (run, band, camcol)
+                    sensorFiles = os.listdir(filterDir)
+                    pattern = "^calexp-%06d-%s%d-(\\d\\d\\d\\d).fits$" % (run, filter, camcol)
                     for sensorFile in sensorFiles:
                         m = re.match(pattern, sensorFile)
                         if m is None:
                             continue
-                        frame = int(m.group(1))
-                        if not any(r[3] is None or frame in r[3] for r in frameRules):
+                        field = int(m.group(1))
+                        if not any(r[3] is None or field in r[3] for r in fieldRules):
                             continue
-                        sciCcdExpId = ((run*10 + _sdssFilters[band])*10 + camcol)*10000 + frame
+                        sciCcdExpId = ((run*10 + _sdssFilters[filter])*10 + camcol)*10000 + field
                         if sciCcdExpId in loaded:
-                            msg = str.format(" run {} camcol {} band {} frame {} : already ingested",
-                                             run, camcol, band, frame)
+                            msg = str.format(" run {} camcol {} filter {} field {} : already ingested",
+                                             run, camcol, filter, field)
                             if not namespace.strict:
                                 print >>sys.stderr, "*** Skipping " + msg
                                 continue
                             else:
                                 raise RuntimeError(msg)
                         processFunc(butler(),
-                                    os.path.join(bandDir, sensorFile),
+                                    os.path.join(filterDir, sensorFile),
                                     sciCcdExpId,
                                     run,
                                     camcol,
-                                    band,
-                                    frame)
+                                    filter,
+                                    field)
 

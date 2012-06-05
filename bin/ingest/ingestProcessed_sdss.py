@@ -66,8 +66,8 @@ class CsvGenerator(object):
             os.path.join(namespace.outroot, "Science_Ccd_Exposure_Poly.tsv"), "wb")
 
     def csvAll(self, namespace, sql=None):
-        def _toCsv(butler, path, sciCcdExpId, run, camcol, band, frame):
-            self.toCsv(butler, path, sciCcdExpId, run, camcol, band, frame)
+        def _toCsv(butler, path, sciCcdExpId, run, camcol, filter, field):
+            self.toCsv(butler, path, sciCcdExpId, run, camcol, filter, field)
         self.mdFile.write("scienceCcdExposureId", "metadataKey", "exposureType",
                           "intValue", "doubleValue", "stringValue")
         visitSdssCalexps(namespace, _toCsv, sql)
@@ -76,10 +76,10 @@ class CsvGenerator(object):
         self.polyFile.flush()
         self.polyFile.close()
 
-    def toCsv(self, butler, filename, sciCcdExpId, run, camcol, band, frame):
+    def toCsv(self, butler, filename, sciCcdExpId, run, camcol, filter, field):
         if os.stat(filename).st_size < (4+2+4)*2048*1489:
-            msg = str.format("run {} camcol {} band {} frame {}: too small, possibly corrupt",
-                             run, camcol, band, frame) 
+            msg = str.format("run {} camcol {} filter {} field {}: too small, possibly corrupt",
+                             run, camcol, filter, field) 
             if not self.namespace.strict:
                 print >>sys.stderr, "*** Skipping " + msg
                 return
@@ -94,9 +94,9 @@ class CsvGenerator(object):
         corner2 = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
         corner3 = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
         corner4 = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
-        psf = butler.get("fpC_psf", run=run, camcol=camcol, band=band, frame=frame)
-        msg = str.format("run {} camcol {} band {} frame {}: PSF missing or corrupt",
-                         run, camcol, band, frame)
+        psf = butler.get("fpC_psf", run=run, camcol=camcol, filter=filter, field=field)
+        msg = str.format("run {} camcol {} filter {} field {}: PSF missing or corrupt",
+                         run, camcol, filter, field)
         noPsf = True
         try:
             noPsf = psf is None
@@ -118,7 +118,7 @@ class CsvGenerator(object):
             dafBase.DateTime.TAI)
         self.expFile.write(
             sciCcdExpId, run, camcol,
-            filterMap.index(band), frame, band,
+            filterMap.index(filter), field, filter,
             cen.getRa().asDegrees(), cen.getDec().asDegrees(),
             md.get('EQUINOX'), md.get('RADESYS'),
             md.get('CTYPE1'), md.get('CTYPE2'),
@@ -150,8 +150,8 @@ class CsvGenerator(object):
                 repr(corner3.getRa().asDegrees()), repr(corner3.getDec().asDegrees()),
                 repr(corner4.getRa().asDegrees()), repr(corner4.getDec().asDegrees())]))
         self.polyFile.write("\n")
-        print str.format("Processed run {} camcol {} band {} frame {}",
-                         run, camcol, band, frame)
+        print str.format("Processed run {} camcol {} filter {} field {}",
+                         run, camcol, filter, field)
 
 def dbLoad(ns, sql):
     subprocess.call([scisqlIndex, "-l", "10",
@@ -160,7 +160,7 @@ def dbLoad(ns, sql):
     sql.execStmt(dedent("""\
         LOAD DATA LOCAL INFILE '%s' INTO TABLE Science_Ccd_Exposure
         FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' (
-            scienceCcdExposureId, run, camcol, filterId, frame, band,
+            scienceCcdExposureId, run, camcol, filterId, field, filterName,
             ra, decl,
             equinox, raDeSys,
             ctype1, ctype2,

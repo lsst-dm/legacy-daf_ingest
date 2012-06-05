@@ -42,7 +42,60 @@ refPosMatch = os.path.join(AP_DIR, 'bin', 'qa', 'refPosMatch.py')
 refCcdFilter = os.path.join(AP_DIR, 'bin', 'qa', 'refCcdFilter.py')
 
 
+_refColumns = {
+    'lsstsim': ['refObjectId',
+                'isStar',
+                'varClass',
+                'ra',
+                'decl',
+                'htmId20',
+                'gLat',
+                'gLon',
+                'sedName',
+                'uMag',
+                'gMag',
+                'rMag',
+                'iMag',
+                'zMag',
+                'yMag',
+                'muRa',
+                'muDecl',
+                'parallax',
+                'vRad',
+                'redshift',
+                'semiMajorBulge',
+                'semiMinorBulge',
+                'semiMajorDisk',
+                'semiMinorDisk',
+               ],
+    'sdss':    ['refObjectId',
+                'flags',
+                'run',
+                'rerun',
+                'camcol',
+                'field',
+                'obj',
+                'mode',
+                'type',
+                'isStar',
+                'ra',
+                'decl',
+                'htmId20',
+                'uMag',
+                'gMag',
+                'rMag',
+                'iMag',
+                'zMag',
+                'uMagSigma',
+                'gMagSigma',
+                'rMagSigma',
+                'iMagSigma',
+                'zMagSigma',
+               ],
+}
+
 def referenceMatch(namespace, sql):
+    camera = namespace.camera.lower()
     objectTsv = os.path.abspath(os.path.join(namespace.outroot, 'objDump.tsv'))
     sourceTsv = os.path.abspath(os.path.join(namespace.outroot, 'srcDump.tsv'))
     refCcdFilterConfigFile = os.path.abspath(os.path.join(namespace.outroot, 'refCcdFilterConfig.py'))
@@ -55,34 +108,9 @@ def referenceMatch(namespace, sql):
     config = apMatch.ReferenceMatchConfig()
 
     # Setup parameters for reference matching
-    # TODO: this is camera specific!
     config.expIdKey = 'scienceCcdExposureId'
     config.ref.idColumn = 'refObjectId'
-    config.ref.fieldNames = ['refObjectId',
-                             'isStar',
-                             'varClass',
-                             'ra',
-                             'decl',
-                             'htmId20',
-                             'gLat',
-                             'gLon',
-                             'sedName',
-                             'uMag',
-                             'gMag',
-                             'rMag',
-                             'iMag',
-                             'zMag',
-                             'yMag',
-                             'muRa',
-                             'muDecl',
-                             'parallax',
-                             'vRad',
-                             'redshift',
-                             'semiMajorBulge',
-                             'semiMinorBulge',
-                             'semiMajorDisk',
-                             'semiMinorDisk',
-                            ]
+    config.ref.fieldNames = list(_refColumns[camera])
     config.pos.outputFields = []
     config.posDialect.delimiter = '\t'
     config.radius = namespace.radius

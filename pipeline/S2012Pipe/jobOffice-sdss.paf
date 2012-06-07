@@ -34,7 +34,7 @@ schedule: {
             }
         }
         output: {
-            datasetType: fpC_calexp
+            datasetType: calexp
             id: {
               name: run
             }
@@ -49,7 +49,7 @@ schedule: {
             }
         }
         output: {
-            datasetType: fpC_psf
+            datasetType: psf
             id: {
               name: run
             }
@@ -64,7 +64,7 @@ schedule: {
             }
         }
         output: {
-            datasetType: fpC_src
+            datasetType: src
             id: {
               name: run
             }

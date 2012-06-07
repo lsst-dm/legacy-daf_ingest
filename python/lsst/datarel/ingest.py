@@ -489,8 +489,8 @@ def visitSdssCalexps(namespace, processFunc, sql=None):
                           ("field", int, r"^\d+$")])
     dirs = set(os.path.realpath(d) for d in namespace.inroot)
     for d in dirs:
-        if not os.path.isdir(os.path.join(d, "calexp")):
-            msg = str.format("invalid input dir {} : no 'calexp/' subdir", d)
+        if not os.path.isdir(os.path.join(d, "sci-results")):
+            msg = str.format("invalid input dir {} : no 'sci-results/' subdir", d)
             if not namespace.strict:
                 print >>sys.stderr, "*** Skipping " + msg
                 dirs.remove(d)
@@ -518,7 +518,7 @@ def visitSdssCalexps(namespace, processFunc, sql=None):
             if len(camcolRules) == 0:
                 # no rules match visit
                 continue
-            runDir = os.path.join(rootDir, 'calexp', runDict[run])
+            runDir = os.path.join(rootDir, 'sci-results', runDict[run])
             # obtain listing of camcol directories
             camcolDirs = os.listdir(runDir)
             for camcolDir in camcolDirs:
@@ -541,7 +541,7 @@ def visitSdssCalexps(namespace, processFunc, sql=None):
                 for filter in filterDirs:
                     if filter not in "ugriz":
                         continue
-                    filterDir = os.path.join(camcolDir, filter)
+                    filterDir = os.path.join(camcolDir, filter, "calexp")
                     if not os.path.isdir(filterDir):
                         continue
                     fieldRules = []

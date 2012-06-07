@@ -94,7 +94,7 @@ class CsvGenerator(object):
         corner2 = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
         corner3 = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
         corner4 = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
-        psf = butler.get("fpC_psf", run=run, camcol=camcol, filter=filter, field=field)
+        psf = butler.get("psf", run=run, camcol=camcol, filter=filter, field=field)
         msg = str.format("run {} camcol {} filter {} field {}: PSF missing or corrupt",
                          run, camcol, filter, field)
         noPsf = True

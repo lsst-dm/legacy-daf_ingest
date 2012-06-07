@@ -250,6 +250,10 @@ def main():
     if ns.user == None:
         parser.error("*** No database user name specified and $USER " +
                      "is undefined or empty")
+    if camera not in _refColumns:
+        parser.error("Unknown camera: {}. Choices (not case sensitive): {}".format(
+            camera, _refColumns.keys()))
+
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     referenceMatch(ns, sql)
 

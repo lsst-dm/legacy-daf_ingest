@@ -84,8 +84,8 @@ def main():
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     camera = ns.camera.lower()
     if camera not in loadTables:
-        parser.error("Unknown camera: %s. Choices: %s" %
-                (camera, str(loadTables.keys())))
+        parser.error("Unknown camera: {}. Choices (not case sensitive): {}".format(
+            camera, loadTables.keys()))
     if not checkDb(sql, camera):
         if 'CAT_DIR' not in os.environ or len(os.environ['CAT_DIR']) == 0:
             parser.error("$CAT_DIR is undefined or empty - "

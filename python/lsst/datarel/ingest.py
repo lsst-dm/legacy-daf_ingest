@@ -455,11 +455,11 @@ def pruneSkyTileDirs(namespace, stDirs):
 
 
 def _getRuns(dir):
-    paths = os.listdir(os.path.join(dir, 'calexp'))
+    paths = os.listdir(os.path.join(dir, 'sci-results'))
     runs = dict()
     for p in paths:
         m = re.match(r"^\d+$", p)
-        if m is not None and os.path.isdir(os.path.join(dir, 'calexp', p)):
+        if m is not None and os.path.isdir(os.path.join(dir, 'sci-results', p)):
             runs[int(p)] = p
     return runs, set(runs.keys());
 

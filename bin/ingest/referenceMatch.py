@@ -250,6 +250,7 @@ def main():
     if ns.user == None:
         parser.error("*** No database user name specified and $USER " +
                      "is undefined or empty")
+    camera = ns.camera.lower()
     if camera not in _refColumns:
         parser.error("Unknown camera: {}. Choices (not case sensitive): {}".format(
             camera, _refColumns.keys()))

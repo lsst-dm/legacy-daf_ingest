@@ -36,6 +36,7 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
         self.cmdTemplate = self.policy.get("parameters.cmdTemplate")
         taskModule = self.policy.get("parameters.taskModule")
         taskClass = self.policy.get("parameters.taskClass")
+        self.dataIdNames = self.policy.getArray("parameters.dataIdNames")
         self.taskClass = getattr(
                 importlib.import_module(taskModule), taskClass)
 
@@ -60,10 +61,9 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
 
         ds = ds[0]
 
-        # get the clipboard entries for raft, sensor and visit.  
-        self.tokens['raft'] = str(ds.ids["raft"])
-        self.tokens['sensor'] =  str(ds.ids["sensor"])
-        self.tokens['visit'] = str(ds.ids["visit"])
+        # get the clipboard entries for the dataId
+        for name in self.dataIdNames:
+            self.tokens[name] = str(ds.ids[name])
 
         # execute the task
 

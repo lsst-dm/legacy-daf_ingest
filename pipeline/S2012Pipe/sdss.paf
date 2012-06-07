@@ -44,7 +44,8 @@ execute: {
 		taskName: processCcd
                 taskClass: ProcessCcdSdssTask
                 taskModule: lsst.pipe.tasks.processCcdSdss
-                cmdTemplate: "sdss %(input)s --doraise --output %(output)s --id run=%(run)d band=%(band)s camcol=%(camcol)d frame=%(frame)d"
+		dataIdNames: "run" "filter" "camcol" "field"
+                cmdTemplate: "sdss %(input)s --doraise --output %(output)s --id run=%(run)s filter=%(filter)s camcol=%(camcol)s field=%(field)s"
             }
         }
     }

@@ -105,9 +105,16 @@ fixupTemplate = string.Template("""
     DROP TABLE _Keys2;
     """)
 
-def findInconsistentMetadataTypes(sql):
+
+metadataTables = {
+    "lsstsim" : ["Raw_Amp_Exposure_Metadata", "Science_Ccd_Exposure_Metadata"],
+    "sdss"    : ["Science_Ccd_Exposure_Metadata"],
+}
+
+
+def findInconsistentMetadataTypes(sql, camera):
     needsFix = []
-    for table in ("Raw_Amp_Exposure_Metadata", "Science_Ccd_Exposure_Metadata"):
+    for table in metadataTables[camera]:
         keys = sql.runQuery(str.format("""
             SET myisam_sort_buffer_size=1000000000;
 
@@ -141,6 +148,8 @@ def main():
         "and fixed up if necessary, and key-value metadata tables are optionally "
         "transposed into column-per-value tables.")
     addDbOptions(parser)
+    parser.add_argument("--camera", dest="camera", default="lsstSim",
+        help="Name of desired camera (defaults to %(default)s)")
     parser.add_argument(
         "-t", "--transpose", action="store_true", dest="transpose",
         help="Flag that causes key-value metadata tables to be transposed to "
@@ -151,15 +160,19 @@ def main():
     if ns.user == None:
         parser.error("No database user name specified and $USER is undefined or empty")
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
+    camera = ns.camera.lower()
+    if camera not in loadTables:
+        parser.error("Unknown camera: {}. Choices (not case sensitive): {}".format(
+            camera, loadTables.keys()))
     # Enable indexes on tables for faster queries
-    tables = loadTables + ["Logs", "RunSource", "RunObject"]
+    tables = loadTables[camera] + ["Logs", "RunSource", "RunObject"]
     for table in tables:
         if sql.isView(table) or not sql.exists(table):
             continue
         sql.execStmt(str.format("SET myisam_sort_buffer_size=1000000000; "
                                 "ALTER TABLE {} ENABLE KEYS;", table))
     # fixup metadata tables if necessary
-    fixTables = findInconsistentMetadataTypes(sql)
+    fixTables = findInconsistentMetadataTypes(sql, camera)
     if len(fixTables) > 0:
         print "\nattempting to fix type inconsistencies"
     for table in fixTables:
@@ -167,51 +180,52 @@ def main():
         sql.execStmt(stmt)
     if len(fixTables) > 0:
         print "\nVerifying that all inconsistencies were fixed..."
-        fixTables = findInconsistentMetadataTypes(sql)
+        fixTables = findInconsistentMetadataTypes(sql, camera)
     if len(fixTables) > 0:
         print "\n... inconsistencies remain!"
         if ns.transpose:
             print "\nCannot transpose metadata tables with inconsistent types!"
     elif ns.transpose:
         # Generate transposed metadata tables
-        # TODO: this is camera specific!
-        rawAmpSkipCols = set(['NAXIS1', 'NAXIS2',
-                              'MJD-OBS', 'EXPTIME',
-                              'FILTER',
-                              'RA_DEG', 'DEC_DEG',
-                              'EQUINOX', 'RADESYS',
-                              'CTYPE1', 'CTYPE2',
-                              'CRPIX1', 'CRPIX2',
-                              'CRVAL1', 'CRVAL2',
-                              'CD1_1', 'CD1_2',
-                              'CD2_1', 'CD2_2',
-                              'AIRMASS', 'DARKTIME', 'ZENITH'])
-        transposeMetadata.run(ns.host, ns.port, ns.user,
-                              sql.password, ns.database,
-                              "Raw_Amp_Exposure_Metadata",
-                              "rawAmpExposureId",
-                              "Raw_Amp_Exposure_Extra",
-                              rawAmpSkipCols, True)
-        sciCcdSkipCols = set(['NAXIS1', 'NAXIS2',
-                              'MJD-OBS',
-                              'FILTER',
-                              'RA_DEG', 'DEC_DEG',
-                              'EQUINOX', 'RADESYS',
-                              'CTYPE1', 'CTYPE2',
-                              'CRPIX1', 'CRPIX2',
-                              'CRVAL1', 'CRVAL2',
-                              'CD1_1', 'CD1_2',
-                              'CD2_1', 'CD2_2',
-                              'TIME-MID', 'EXPTIME',
-                              'RDNOISE', 'SATURATE', 'GAINEFF',
-                              'FLUXMAG0', 'FLUXMAG0ERR',
-                             ])
-        transposeMetadata.run(ns.host, ns.port, ns.user,
-                              sql.password, ns.database,
-                              "Science_Ccd_Exposure_Metadata",
-                              "scienceCcdExposureId",
-                              "Science_Ccd_Exposure_Extra",
-                              sciCcdSkipCols, True)
+        if "Raw_Amp_Exposure_Metadata" in metadataTables[camera]:
+            rawAmpSkipCols = set(['NAXIS1', 'NAXIS2',
+                                  'MJD-OBS', 'EXPTIME',
+                                  'FILTER',
+                                  'RA_DEG', 'DEC_DEG',
+                                  'EQUINOX', 'RADESYS',
+                                  'CTYPE1', 'CTYPE2',
+                                  'CRPIX1', 'CRPIX2',
+                                  'CRVAL1', 'CRVAL2',
+                                  'CD1_1', 'CD1_2',
+                                  'CD2_1', 'CD2_2',
+                                  'AIRMASS', 'DARKTIME', 'ZENITH'])
+            transposeMetadata.run(ns.host, ns.port, ns.user,
+                                  sql.password, ns.database,
+                                  "Raw_Amp_Exposure_Metadata",
+                                  "rawAmpExposureId",
+                                  "Raw_Amp_Exposure_Extra",
+                                  rawAmpSkipCols, True)
+        if "Science_Ccd_Exposure_Metadata" in metadataTables[camera]:
+            sciCcdSkipCols = set(['NAXIS1', 'NAXIS2',
+                                  'MJD-OBS',
+                                  'FILTER',
+                                  'RA_DEG', 'DEC_DEG',
+                                  'EQUINOX', 'RADESYS',
+                                  'CTYPE1', 'CTYPE2',
+                                  'CRPIX1', 'CRPIX2',
+                                  'CRVAL1', 'CRVAL2',
+                                  'CD1_1', 'CD1_2',
+                                  'CD2_1', 'CD2_2',
+                                  'TIME-MID', 'EXPTIME',
+                                  'RDNOISE', 'SATURATE', 'GAINEFF',
+                                  'FLUXMAG0', 'FLUXMAG0ERR',
+                                 ])
+            transposeMetadata.run(ns.host, ns.port, ns.user,
+                                  sql.password, ns.database,
+                                  "Science_Ccd_Exposure_Metadata",
+                                  "scienceCcdExposureId",
+                                  "Science_Ccd_Exposure_Extra",
+                                  sciCcdSkipCols, True)
 
 if __name__ == "__main__":
     main()

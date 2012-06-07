@@ -44,6 +44,7 @@ execute: {
 		taskName: processCcd
                 taskClass: ProcessCcdTask
                 taskModule: lsst.pipe.tasks.processCcd
+		dataIdNames: "visit" "raft" "sensor"
                 cmdTemplate: "lsstSim %(input)s --doraise --config isr.doWrite=False --config isr.doWriteSnaps=False --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
             }
         }

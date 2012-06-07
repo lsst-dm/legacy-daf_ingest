@@ -161,6 +161,9 @@ def main():
         parser.error("No database user name specified and $USER is undefined or empty")
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     camera = ns.camera.lower()
+    if camera not in loadTables:
+        parser.error("Unknown camera: %s. Choices: %s" %
+                (camera, str(loadTables.keys())))
     # Enable indexes on tables for faster queries
     tables = loadTables[camera] + ["Logs", "RunSource", "RunObject"]
     for table in tables:

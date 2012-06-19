@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import re
 import time
 import lsst.pex.harness.stage as harnessStage
@@ -42,6 +43,8 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
 
         # Tokens for substitution into the above command template
         self.tokens = {}
+        for name in os.environ:
+            self.tokens[name] = os.environ[name]
 
         # get the input and output directories
         inputLocation = persistence.LogicalLocation("%(input)")

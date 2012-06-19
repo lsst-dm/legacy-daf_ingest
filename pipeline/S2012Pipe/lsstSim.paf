@@ -45,7 +45,7 @@ execute: {
                 taskClass: ProcessCcdTask
                 taskModule: lsst.pipe.tasks.processCcd
 		dataIdNames: "visit" "raft" "sensor"
-                cmdTemplate: "lsstSim %(input)s --doraise --config isr.doWrite=False --config isr.doWriteSnaps=False --configfile=$MEAS_EXTENSIONS_MULTISHAPELET_DIR/config/multiShapelet.py --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
+                cmdTemplate: "lsstSim %(input)s --doraise --config isr.doWrite=False --config isr.doWriteSnaps=False --configfile=%(MEAS_EXTENSIONS_MULTISHAPELET_DIR)s/config/multiShapelet.py --output %(output)s --id visit=%(visit)s raft=%(raft)s sensor=%(sensor)s"
             }
         }
     }

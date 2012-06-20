@@ -39,6 +39,11 @@ definitions: {
                     description: "Names to copy from dataset identifier into pipe_task template substitution tokens"
                     minOccurs: 0
                 }
+		perFilterCommand: {
+		    type: "policy"
+		    description: "Addition to the command template for a given filter"
+		    minOccurs: 0
+		}
             }
         }
     }

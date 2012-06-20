@@ -77,7 +77,7 @@ class CsvGenerator(object):
         self.polyFile.close()
 
     def toCsv(self, butler, filename, sciCcdExpId, run, camcol, filter, field):
-        if os.stat(filename).st_size < (4+2+4)*2048*1489:
+        if False: # os.stat(filename).st_size < (4+2+4)*2048*1489:
             msg = str.format("run {} camcol {} filter {} field {}: too small, possibly corrupt",
                              run, camcol, filter, field) 
             if not self.namespace.strict:

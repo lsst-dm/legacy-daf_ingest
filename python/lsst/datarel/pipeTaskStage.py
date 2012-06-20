@@ -40,6 +40,10 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
         self.dataIdNames = self.policy.getArray("parameters.dataIdNames")
         self.taskClass = getattr(
                 importlib.import_module(taskModule), taskClass)
+        self.perFilterPolicy = None
+        if self.policy.exists('parameters.perFilterCommand'):
+            self.perFilterPolicy = self.policy.getPolicy(
+                    'parameters.perFilterCommand')
 
         # Tokens for substitution into the above command template
         self.tokens = {}
@@ -70,7 +74,11 @@ class PipeTaskStageParallel(harnessStage.ParallelProcessing):
 
         # execute the task
 
-        commandLine = self.cmdTemplate % self.tokens
+        commandLine = self.cmdTemplate
+        if self.perFilterPolicy is not None and \
+                self.perFilterPolicy.exists(ds.ids['filter']):
+            commandLine += self.perFilterPolicy.get(ds.ids['filter'])
+        commandLine = commandLine % self.tokens
         self.log.log(Log.INFO, "PipeTaskStage - cmd = %s" % (commandLine,))
         self.taskClass.parseAndRun(commandLine.split(), log=self.log)
         self.log.log(Log.INFO, "PipeTaskStage - done.")

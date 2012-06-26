@@ -110,7 +110,7 @@ class CsvGenerator(object):
         store it in CSV files.
         """
         filename = os.path.join(root, path)
-        if os.stat(filename).st_size < _minExposureSize[self.camera]:
+        if os.stat(filename).st_size < minExposureSize[self.camera]:
             msg = '{} : too small, possibly corrupt'.format(dataId) 
             if not self.namespace.strict:
                 print >>sys.stderr, '*** Skipping ' + msg

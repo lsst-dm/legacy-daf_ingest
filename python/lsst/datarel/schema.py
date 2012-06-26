@@ -31,6 +31,7 @@ __all__ = ['makeMysqlCsvConfig',
            'genericTableSql',
            'sourceTableSql',
            'objectTableSql',
+           'coaddSourceTableSql',
           ]
 
 _dbType = {

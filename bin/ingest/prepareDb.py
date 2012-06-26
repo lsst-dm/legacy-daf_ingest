@@ -41,8 +41,6 @@ loadTables = {
                 "Raw_Amp_To_Science_Ccd_Exposure",
                 "Raw_Amp_Exposure_To_Htm11",
                 "Raw_Amp_To_Science_Ccd_Exposure",
-                "Raw_Amp_To_Snap_Ccd_Exposure",
-                "Snap_Ccd_To_Science_Ccd_Exposure",
                ],
     "sdss":    ["Source",
                 "Object",

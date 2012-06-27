@@ -45,7 +45,7 @@ execute: {
                 taskClass: ProcessCcdSdssTask
                 taskModule: lsst.pipe.tasks.processCcdSdss
 		dataIdNames: "run" "filter" "camcol" "field"
-                cmdTemplate: "sdss %(input)s --doraise --configfile=%(MEAS_EXTENSIONS_MULTISHAPELET_DIR)s/config/multiShapelet.py --output %(output)s --id run=%(run)s filter=%(filter)s camcol=%(camcol)s field=%(field)s"
+                cmdTemplate: "sdss %(input)s --doraise --output %(output)s --id run=%(run)s filter=%(filter)s camcol=%(camcol)s field=%(field)s"
 		# perFilterCommand: {
 		#     u: " --configfile %(DATAREL_DIR)s/pipeline/S2012Pipe/sdssPsf.py"
 		#     z: " --configfile %(DATAREL_DIR)s/pipeline/S2012Pipe/sdssPsf.py"

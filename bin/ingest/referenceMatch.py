@@ -39,10 +39,10 @@ if not 'AP_DIR' in os.environ:
 
 AP_DIR = os.environ['AP_DIR']
 refPosMatch = os.path.join(AP_DIR, 'bin', 'qa', 'refPosMatch.py')
-refCcdFilter = os.path.join(AP_DIR, 'bin', 'qa', 'refCcdFilter.py')
+refFilter = os.path.join(AP_DIR, 'bin', 'qa', 'refFilter.py')
 
 
-_refColumns = {
+refColumns = {
     'lsstsim': ['refObjectId',
                 'isStar',
                 'varClass',
@@ -100,7 +100,7 @@ def referenceMatch(namespace, sql):
     camera = namespace.camera.lower()
     objectTsv = os.path.abspath(os.path.join(namespace.outroot, 'objDump.tsv'))
     sourceTsv = os.path.abspath(os.path.join(namespace.outroot, 'srcDump.tsv'))
-    refCcdFilterConfigFile = os.path.abspath(os.path.join(namespace.outroot, 'refCcdFilterConfig.py'))
+    refFilterConfigFile = os.path.abspath(os.path.join(namespace.outroot, 'refFilterConfig.py'))
     refSrcMatchConfigFile = os.path.abspath(os.path.join(namespace.outroot, 'refSrcMatchConfig.py'))
     refObjMatchConfigFile = os.path.abspath(os.path.join(namespace.outroot, 'refObjMatchConfig.py'))
     filtCsv = os.path.abspath(os.path.join(namespace.outroot, 'refFilt.csv'))
@@ -112,7 +112,7 @@ def referenceMatch(namespace, sql):
     # Setup parameters for reference matching
     config.expIdKey = 'scienceCcdExposureId'
     config.ref.idColumn = 'refObjectId'
-    config.ref.fieldNames = list(_refColumns[camera])
+    config.ref.fieldNames = list(refColumns[camera])
     config.pos.outputFields = []
     config.posDialect.delimiter = '\t'
     config.radius = namespace.radius
@@ -136,9 +136,9 @@ def referenceMatch(namespace, sql):
                             ORDER BY scienceCcdExposureId""", f, ['-B'])
         config.expDialect.delimiter = '\t'
     config.validate()
-    config.save(refCcdFilterConfigFile)
-    filtArgs = ['python', refCcdFilter,
-                '--config-file=' + refCcdFilterConfigFile,
+    config.save(refFilterConfigFile)
+    filtArgs = ['python', refFilter,
+                '--config-file=' + refFilterConfigFile,
                 '--camera=' + namespace.camera,
                 filtCsv,
                 namespace.refCatalog,
@@ -253,9 +253,9 @@ def main():
         parser.error("*** No database user name specified and $USER " +
                      "is undefined or empty")
     camera = ns.camera.lower()
-    if camera not in _refColumns:
+    if camera not in refColumns:
         parser.error("Unknown camera: {}. Choices (not case sensitive): {}".format(
-            camera, _refColumns.keys()))
+            camera, refColumns.keys()))
 
     sql = MysqlExecutor(ns.host, ns.database, ns.user, ns.port)
     referenceMatch(ns, sql)

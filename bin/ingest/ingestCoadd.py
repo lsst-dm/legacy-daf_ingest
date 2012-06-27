@@ -59,7 +59,7 @@ scisqlIndex = os.path.join(os.environ['SCISQL_DIR'], 'bin', 'scisql_index')
 sigmaToFwhm = 2.0*math.sqrt(2.0*math.log(2.0))
 
 # List of coadd dataset names for each camera
-_coaddNames = {
+coaddNames = {
     'lsstsim': ['goodSeeing', 'deep', 'chiSquared',],
     'sdss': ['goodSeeing', 'deep', 'chiSquared', 'keith',],
     'cfht': ['goodSeeing', 'deep', 'chiSquared',],
@@ -73,11 +73,11 @@ _exposureType = {
     'keith': 6,
 }
 
-def _exposureTable(coaddName):
+def coaddExposureTable(coaddName):
     """Return exposure table name, given a coadd name.""" 
     return coaddName[0].upper() + coaddName[1:] + 'Coadd'
 
-def _sourceTable(coaddName):
+def coaddSourceTable(coaddName):
     """Return source table name, given a coadd name."""
     return coaddName[0].upper() + coaddName[1:] + 'Source'
 
@@ -122,16 +122,19 @@ class CsvGenerator(object):
                 self.sourceProcessingConfig[coaddName] = chiSquaredSpc
             else:
                 self.sourceProcessingConfig[coaddName] = spc
-            expTable = _exposureTable(coaddName)
+            expTable = coaddExposureTable(coaddName)
             self.expFile[coaddName] = CsvFileWriter(
                 path=os.path.join(namespace.outroot, expTable + '.csv'),
                 compress=compress)
             self.mdFile[coaddName] = CsvFileWriter(
                 path=os.path.join(namespace.outroot, expTable + '_Metadata.csv'),
                 compress=compress)
-            # Writer column name header line for calexp metadata CSV
+            # Writer column name header line for calexp metadata CSV - note this
+            # is purely to pass field names on to the reference filtering code later.
+            # That means we can get away with using a generic name for the coadd exposure
+            # ID column (coaddId), rather than the database column name (e.g. goodSeeingCoddId)
             self.mdFile[coaddName].write(
-                'scienceCcdExposureId', 'metadataKey', 'exposureType',
+                'coaddId', 'metadataKey', 'exposureType',
                 'intValue', 'doubleValue', 'stringValue')
             self.polyFile[coaddName] = open(os.path.join(namespace.outroot, expTable + '_Poly.tsv'), 'wb')
             self.sourceInfo[coaddName] = None
@@ -178,7 +181,7 @@ class CsvGenerator(object):
         the associated sources to CSV files for database ingest.
         """
         filename = os.path.join(root, path)
-        expTable = _exposureTable(coaddName)
+        expTable = coaddExposureTable(coaddName)
         coaddId = butler.get(coaddName + 'CoaddId', dataId=dataId, immediate=True)
         # Check whether exposure has already been loaded
         if cursor:
@@ -305,7 +308,7 @@ class CsvGenerator(object):
             outputSources.cast(afwTable.BaseCatalog),
             self.csvConversionConfig.makeControl(),
             self.csvConfig.makeControl(),
-            os.path.join(self.namespace.outroot, _sourceTable(coaddName) + '.csv'),
+            os.path.join(self.namespace.outroot, coaddSourceTable(coaddName) + '.csv'),
             False,
             appendSources)
         # Write out CSV record for exposure
@@ -335,8 +338,8 @@ def dbLoad(ns, sql, csvGenerator):
     """
     camera = ns.camera
     for coaddName in ns.coaddNames:
-        expTable = _exposureTable(coaddName)
-        sourceTable = _sourceTable(coaddName)
+        expTable = coaddExposureTable(coaddName)
+        sourceTable = coaddSourceTable(coaddName)
         fileName = os.path.join(ns.outroot, sourceTable + '.csv')
         # Generate SQL for the coadd-source table
         outputSourceTable, _, measSlots, measPrefix = csvGenerator.sourceInfo[coaddName]
@@ -460,12 +463,12 @@ def main():
             ns.camera, _validKeys.keys()))
     if ns.coaddNames:
         for n in ns.coaddNames:
-            if n not in _coaddNames[ns.camera]:
+            if n not in coaddNames[ns.camera]:
                 parser.error(str.format(
                     'Coadd type {} is not defined for camera {}. Valid coadd types are {}',
-                    n, ns.camera, _coaddNames[ns.camera]))
+                    n, ns.camera, coaddNames[ns.camera]))
     else:
-        ns.coaddNames= list(_coaddNames[ns.camera])
+        ns.coaddNames = list(coaddNames[ns.camera])
     ns.rules = makeRules(ns.id, ns.camera, _validKeys[ns.camera])
     sql = None
     doLoad = ns.database != None

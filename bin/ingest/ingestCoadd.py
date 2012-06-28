@@ -199,22 +199,25 @@ class CsvGenerator(object):
         psf = _getDataset(butler, coaddName + 'Coadd_psf', dataId, strict=False, warn=False)
         # read image metadata and extract WCS/geometry metadata
         md = afwImage.readMetadata(filename)
+
+        x0 = -md.get('LTV1') if md.exists('LTV1') else 0
+        y0 = -md.get('LTV2') if md.exists('LTV2') else 0
         width = md.get('NAXIS1')
         height = md.get('NAXIS2')
         wcs = afwImage.makeWcs(md.deepCopy())
-        cen = wcs.pixelToSky(0.5*width - 0.5, 0.5*height - 0.5).toIcrs()
-        corner1 = wcs.pixelToSky(-0.5, -0.5).toIcrs()
-        corner2 = wcs.pixelToSky(-0.5, height - 0.5).toIcrs()
-        corner3 = wcs.pixelToSky(width - 0.5, height - 0.5).toIcrs()
-        corner4 = wcs.pixelToSky(width - 0.5, -0.5).toIcrs()
+        cen = wcs.pixelToSky(x0 + 0.5*width - 0.5, y0 + 0.5*height - 0.5).toIcrs()
+        corner1 = wcs.pixelToSky(x0 - 0.5, y0 - 0.5).toIcrs()
+        corner2 = wcs.pixelToSky(x0 - 0.5, y0 + height - 0.5).toIcrs()
+        corner3 = wcs.pixelToSky(x0 + width - 0.5, y0 + height - 0.5).toIcrs()
+        corner4 = wcs.pixelToSky(x0 + width - 0.5, y0 - 0.5).toIcrs()
         # compute FWHM
         if initPsf != None:
-            attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
+            attr = measAlg.PsfAttributes(psf, x0 + width // 2, y0 + height // 2)
             matchedFwhm = attr.computeGaussianWidth() * wcs.pixelScale().asArcseconds() * sigmaToFwhm
         else:
             matchedFwhm = None
         if psf != None:
-            attr = measAlg.PsfAttributes(psf, width // 2, height // 2)
+            attr = measAlg.PsfAttributes(psf, x0 + width // 2, y0 + height // 2)
             measuredFwhm = attr.computeGaussianWidth() * wcs.pixelScale().asArcseconds() * sigmaToFwhm
         else:
             measuredFwhm = None

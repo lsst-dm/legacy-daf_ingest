@@ -95,7 +95,7 @@ def referenceMatch(namespace, sql):
         with open(sourceTsv, 'wb') as f:
             sql.execStmt(str.format(
                 """SET myisam_sort_buffer_size=1000000000;
-                   SELECT {}CoaddId AS id, ra, decl FROM {}Source ORDER BY decl""",
+                   SELECT {}SourceId AS id, ra, decl FROM {}Source ORDER BY decl""",
                 coaddName, CoaddName), f, ['-B'])
 
         # Note - if Source contains no rows, MySQL will output an empty file,

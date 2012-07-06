@@ -259,6 +259,17 @@ class CsvGenerator(object):
                                 dataId, strict=self.namespace.strict, warn=True)
         if sfmConfig == None:
             return
+
+        if self.namespace.fixIds:
+            bits = butler.get(coaddName + 'CoaddId_bits', dataId=dataId,
+                    immediate=True)
+            if bits > 48:
+                raise RuntimeError("Insufficient bits for forcedSourceId "
+                        "(need 16, have {})".format(64 - bits))
+            idKey = sources.schema.find("id").key
+            for s in sources:
+                s.set(idKey, coaddId * 65536L + s.get(idKey))
+
         # Build ExposureInfo from FITS header
         try:
             expInfo = apMatch.ExposureInfo(md, coaddId)
@@ -283,7 +294,7 @@ class CsvGenerator(object):
         outputSourceTable, schemaMapper, measSlots, measPrefix = self.sourceInfo[coaddName]
         # Verify consistency of slot mappings and measurement field name prefix
         if measSlots != sfmConfig.measurement.slots or measPrefix != sfmConfig.measurement.prefix:
-            msg = str.format('{} : Inconsitent measurement slot mapping of prefix for {} coadd',
+            msg = str.format('{} : Inconsistent measurement slot mapping of prefix for {} coadd',
                              dataId, coaddName)
             if self.namespace.strict:
                 print >>sys.stderr, '*** Skipping ' + msg
@@ -458,6 +469,10 @@ def main():
     parser.add_argument(
         "--create-views", action="store_true", dest="createViews",
         help="Create views corresponding to the canonical Source/Object after loading.")
+    parser.add_argument(
+        "--fix-ids", action="store_true", dest="fixIds",
+        help="Fix id field by including coadd id")
+
 
     ns = parser.parse_args()
     ns.camera = ns.camera.lower()

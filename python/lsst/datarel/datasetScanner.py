@@ -279,51 +279,56 @@ class HfsScanner(object):
         (path, dataId), where path is a dataset file name relative to root,
         and dataId is a key value dictionary identifying the file.
         """
-        stack = [(0, root, rules, {})]
-        while stack:
-            depth, path, rules, dataId = stack.pop()
-            if os.path.isfile(path):
-                continue
-            pc = self._pathComponents[depth]
-            if pc.simple:
-                # No need to list directory contents
-                entries = [pc.regex]
-                if not os.path.exists(os.path.join(path, pc.regex)):
+        oneFound = False
+        while os.path.exists(root) and not oneFound:
+            stack = [(0, root, rules, {})]
+            while stack:
+                depth, path, rules, dataId = stack.pop()
+                if os.path.isfile(path):
                     continue
-            else:
-                entries = os.listdir(path)
-            depth += 1
-            for e in entries:
-                subRules = rules
-                subDataId = dataId
-                if not pc.simple:
-                    # make sure e matches path component regular expression
-                    m = pc.regex.match(e)
-                    if not m:
+                pc = self._pathComponents[depth]
+                if pc.simple:
+                    # No need to list directory contents
+                    entries = [pc.regex]
+                    if not os.path.exists(os.path.join(path, pc.regex)):
                         continue
-                    # got a match - update dataId with new key values (if any)
-                    for i, k in enumerate(pc.keys):
-                        subDataId = self._formatKeys[k].munge(k, m.group(i + 1), subDataId)
-                    if subRules and pc.keys:
-                        # have dataId rules and saw new keys; filter rule list
-                        for k in subDataId:
-                            newRules = []
-                            for r in subRules:
-                                if k not in r or subDataId[k] in r[k]:
-                                    newRules.append(r)
-                            subRules = newRules
-                        if not subRules:
-                            continue # no rules matched
-                # Have path matching template and at least one rule
-                p = os.path.join(path, e)
-                if depth < len(self._pathComponents):
-                    # recurse
-                    stack.append((depth, p, subRules, subDataId))
-                elif depth == len(self._pathComponents):
-                    if os.path.isfile(p):
-                        # found a matching file, yield it
-                        yield os.path.relpath(p, root), subDataId
-
+                else:
+                    entries = os.listdir(path)
+                depth += 1
+                for e in entries:
+                    subRules = rules
+                    subDataId = dataId
+                    if not pc.simple:
+                        # make sure e matches path component regular expression
+                        m = pc.regex.match(e)
+                        if not m:
+                            continue
+                        # got a match - update dataId with new key values (if any)
+                        for i, k in enumerate(pc.keys):
+                            subDataId = self._formatKeys[k].munge(k, m.group(i + 1), subDataId)
+                        if subRules and pc.keys:
+                            # have dataId rules and saw new keys; filter rule list
+                            for k in subDataId:
+                                newRules = []
+                                for r in subRules:
+                                    if k not in r or subDataId[k] in r[k]:
+                                        newRules.append(r)
+                                subRules = newRules
+                            if not subRules:
+                                continue # no rules matched
+                    # Have path matching template and at least one rule
+                    p = os.path.join(path, e)
+                    if depth < len(self._pathComponents):
+                        # recurse
+                        stack.append((depth, p, subRules, subDataId))
+                    elif depth == len(self._pathComponents):
+                        if os.path.isfile(p):
+                            # found a matching file, yield it
+                            yield os.path.relpath(p, root), subDataId
+                            oneFound = True
+            # end while stack
+            root = os.path.join(root, "_parent")
+    
 
 # -- Camera specific dataId mungers ----
 

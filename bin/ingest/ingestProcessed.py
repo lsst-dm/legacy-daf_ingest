@@ -39,6 +39,12 @@ from lsst.datarel.mysqlExecutor import MysqlExecutor
 from lsst.datarel.ingest import makeArgumentParser, makeRules
 from lsst.datarel.datasetScanner import getMapperClass, DatasetScanner
 
+# Hack to be able to read multiShapelet configs
+try:
+    import lsst.meas.extensions.multiShapelet
+except:
+    pass
+
 if not 'SCISQL_DIR' in os.environ:
     print >>sys.stderr, 'Please setup the scisql package and try again'
     sys.exit(1)

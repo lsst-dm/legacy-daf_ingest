@@ -31,6 +31,7 @@ __all__ = ['makeMysqlCsvConfig',
            'genericTableSql',
            'sourceTableSql',
            'objectTableSql',
+           'coaddSourceTableSql',
           ]
 
 _dbType = {
@@ -238,12 +239,16 @@ def _sourceIndexes(sourceProcessingConfig):
                                       describes source processing performed by
                                       SourceAssoc.
     """
-    return set(["parent",
-                sourceProcessingConfig.exposurePrefix + ".id",
-                sourceProcessingConfig.exposurePrefix + ".filter.id",
-                sourceProcessingConfig.clusterPrefix + ".id",
-               ])
-
+    indexes = set()
+    indexes.add("parent")
+    if sourceProcessingConfig.exposurePrefix:
+       indexes.add(sourceProcessingConfig.exposurePrefix + ".id")
+       if not sourceProcessingConfig.multiBand:
+           indexes.add(sourceProcessingConfig.exposurePrefix + ".filter.id")
+    if sourceProcessingConfig.clusterPrefix:
+        indexes.add(sourceProcessingConfig.clusterPrefix + ".id")
+    return indexes
+ 
 
 # mappings from run-specific table column names to canonical Source columns
 _sourceMappings = [
@@ -323,24 +328,23 @@ def _colToField(col):
     #       Source/Object table columns.
     return col.replace('_', '.')
      
-def _getMappingKw(config):
+def _getMappingKw(slots, sourceProcessingConfig, measPrefix=None):
     """Return substitution parameters for mapping table entries.
     """
     kw = dict()
-    kw['measPrefix'] = (config.measPrefix or '').replace('.', '_')
-    kw['exposurePrefix'] = config.sourceProcessing.exposurePrefix.replace('.', '_')
-    kw['clusterPrefix'] = config.sourceProcessing.clusterPrefix.replace('.', '_')
-    slots = config.measSlots
+    kw['measPrefix'] = (measPrefix or '').replace('.', '_')
+    kw['exposurePrefix'] = sourceProcessingConfig.exposurePrefix.replace('.', '_')
+    kw['clusterPrefix'] = sourceProcessingConfig.clusterPrefix.replace('.', '_')
     kw['centroid'] = slots.centroid.replace('.', '_') if slots.centroid else '__X__'
     kw['shape'] = slots.shape.replace('.', '_') if slots.shape else '__X__'
     kw['psfFlux'] = slots.psfFlux.replace('.', '_') if slots.psfFlux else '__X__'
     kw['apFlux'] = slots.apFlux.replace('.', '_') if slots.apFlux else '__X__'
     kw['modelFlux'] = slots.modelFlux.replace('.', '_') if slots.modelFlux else '__X__'
     kw['instFlux'] = slots.instFlux.replace('.', '_') if slots.instFlux else '__X__'
-    return kw    
+    return kw
 
 def sourceTableSql(schema, dbMappingConfig, sourceAssocConfig):
-    """Return a tuple of SQL statements (createStmt, loadStmt, [sourceStmts])
+    """Return a tuple of SQL statements (createStmt, loadStmt, sourceStmt)
     for the Source table.
 
     createStmt :    CREATE TABLE statement for the RunSource table, which
@@ -360,15 +364,18 @@ def sourceTableSql(schema, dbMappingConfig, sourceAssocConfig):
 
     @param schema               lsst.afw.table.Schema for sources
     @param dbMappingConfig      lsst.datarel.DbMappingConfig
-    @param sourceAssocConfig    lsst.pipe.tasks.sourceAssoc.SourceAssocConfig
+    @param sourceAssocConfig    lsst.ap.tasks.sourceAssoc.SourceAssocConfig
     """
     # Generate SQL for run specific table
     createStmt, loadStmt = genericTableSql(
         schema,
         dbMappingConfig.sourceConversion,
         _sourceIndexes(sourceAssocConfig.sourceProcessing))
-    # build substitution paramers for mapping table
-    kw = _getMappingKw(sourceAssocConfig)
+    # build substitution parameters for mapping table
+    kw = _getMappingKw(
+        sourceAssocConfig.measSlots,
+        sourceAssocConfig.sourceProcessing,
+        sourceAssocConfig.measPrefix)
     # build selection/output column lists
     selcols = []
     outcols = []
@@ -483,15 +490,18 @@ def objectTableSql(schema, dbMappingConfig, sourceAssocConfig, filters):
 
     @param schema               lsst.afw.table.Schema for objects (source clusters)
     @param dbMappingConfig      lsst.datarel.DbMappingConfig
-    @param sourceAssocConfig    lsst.pipe.tasks.sourceAssoc.SourceAssocConfig
+    @param sourceAssocConfig    lsst.ap.tasks.sourceAssoc.SourceAssocConfig
     @param filters              Iterable over the filter names included in the
                                 canonical Object table.
     """
     # Generate SQL for run specific table
     createStmt, loadStmt = genericTableSql(
         schema, dbMappingConfig.objectConversion, set())
-    # build substitution paramers for mapping table
-    kw = _getMappingKw(sourceAssocConfig)
+    # build substitution parameters for mapping table
+    kw = _getMappingKw(
+        sourceAssocConfig.measSlots,
+        sourceAssocConfig.sourceProcessing,
+        sourceAssocConfig.measPrefix)
     # build selection/output column lists
     selcols = []
     outcols = []
@@ -553,3 +563,332 @@ def objectTableSql(schema, dbMappingConfig, sourceAssocConfig, filters):
             loadStmt.format(tableName='RunObject', fileName='{fileName}'),
             objectStmt)
 
+
+_coaddSourceMappings = [
+    ("id", "{coaddName}SourceId"), # from minimal schema, no prefix
+    ("parent", "parent{CoaddName}SourceId"), # from minimal schema, no prefix
+    ("{exposurePrefix}_id", "{coaddName}CoaddId"),
+    ("{exposurePrefix}_filter_id", "filterId"),
+    ("coord_ra", "ra"), # from minimal schema, no prefix
+    ("coord_decl", "decl"), # from minimal schema, no prefix
+    ("coord_raVar", "raVar"), # from source association, no prefix
+    ("coord_declVar", "declVar"), # from source association, no prefix
+    ("coord_radeclCov", "radeclCov"), # from source association, no prefix
+    ("coord_htmId20", "htmId20"), # from ingest, no prefix
+    ("{measPrefix}{centroid}_x", "x"),
+    ("{measPrefix}{centroid}_y", "y"),
+    ("{measPrefix}{centroid}_xVar", "xVar"),
+    ("{measPrefix}{centroid}_yVar", "yVar"),
+    ("{measPrefix}{centroid}_xyCov", "xyCov"),
+    ("{measPrefix}{psfFlux}", "psfFlux"),
+    ("{measPrefix}{psfFlux}_err", "psfFluxSigma"),
+    ("{measPrefix}{apFlux}", "apFlux"),
+    ("{measPrefix}{apFlux}_err", "apFluxSigma"),
+    ("{measPrefix}{modelFlux}", "modelFlux"),
+    ("{measPrefix}{modelFlux}_err", "modelFluxSigma"),
+    ("{measPrefix}{instFlux}", "instFlux"),
+    ("{measPrefix}{instFlux}_err", "instFluxSigma"),
+    ("aperturecorrection", "apCorrection"), # from measurement, no prefix (!?)
+    ("aperturecorrection_err", "apCorrectionSigma"), # from measurement, no prefix (!?)
+    ("{measPrefix}{shape}_centroid_x", "shapeIx"),
+    ("{measPrefix}{shape}_centroid_y", "shapeIy"),
+    ("{measPrefix}{shape}_centroid_xVar", "shapeIxVar"),
+    ("{measPrefix}{shape}_centroid_yVar", "shapeIyVar"),
+    ("{measPrefix}{shape}_centroid_xyCov", "shapeIxIyCov"),
+    ("{measPrefix}{shape}_Ixx", "shapeIxx"),
+    ("{measPrefix}{shape}_Iyy", "shapeIyy"),
+    ("{measPrefix}{shape}_Ixy", "shapeIxy"),
+    ("{measPrefix}{shape}_IxxVar", "shapeIxxVar"),
+    ("{measPrefix}{shape}_IyyVar", "shapeIyyVar"),
+    ("{measPrefix}{shape}_IxyVar", "shapeIxyVar"),
+    ("{measPrefix}{shape}_IxxIyyCov", "shapeIxxIyyCov"),
+    ("{measPrefix}{shape}_IxxIxyCov", "shapeIxxIxyCov"),
+    ("{measPrefix}{shape}_IxxIxyCov", "shapeIyyIxyCov"),
+    ("{measPrefix}classification_extendedness", "extendedness"),
+    ("flags_negative", "flagNegative"), # from detection, no prefix
+    ("{measPrefix}flags_badcentroid", "flagBadMeasCentroid"),
+    ("{measPrefix}flags_pixel_edge", "flagPixEdge"),
+    ("{measPrefix}flags_pixel_interpolated_any", "flagPixInterpAny"),
+    ("{measPrefix}flags_pixel_interpolated_center", "flagPixInterpCen"),
+    ("{measPrefix}flags_pixel_saturated_any", "flagPixSaturAny"),
+    ("{measPrefix}flags_pixel_saturated_center", "flagPixSaturCen"),
+    ("{measPrefix}{psfFlux}_flags", "flagBadPsfFlux"),
+    ("{measPrefix}{apFlux}_flags", "flagBadApFlux"),
+    ("{measPrefix}{modelFlux}_flags", "flagBadModelFlux"),
+    ("{measPrefix}{instFlux}_flags", "flagBadInstFlux"),
+    ("{measPrefix}{centroid}_flags", "flagBadCentroid"),
+    ("{measPrefix}{shape}_flags", "flagBadShape"),
+]
+
+def coaddSourceTableSql(coaddName,
+                        schema,
+                        sourceConversionConfig,
+                        asView,
+                        sourceProcessingConfig,
+                        slotConfig,
+                        measPrefix):
+    """Return a tuple of SQL statements (createStmt, loadStmt, sourceStmt)
+    for a coadd source table. The canonical table name is obtained by
+    captilizing the first letter of coaddName and appending 'Source'. The
+    run specific table name is derived from the former by prepending 'Run'.
+
+    createStmt :    CREATE TABLE statement for the Run<CoaddName>Source table,
+                    which includes all fields from the run-specific
+                    lsst.afw.table.Schema for source tables output by the
+                    pipelines.
+
+    loadStmt :      LOAD DATA statement for the Run<CoaddName>Source table.
+                    This is a format string; to generate valid SQL a fileName
+                    must be supplied, e.g.:
+
+                    loadStmt.format(fileName='source.csv')
+
+    sourceStmt :    Map the Run<CoaddName>Source table to the canonical
+                    <CoaddName>Source schema. This will either create a VIEW,
+                    or INSERT into the materialized equivalent.
+
+    @param coaddName
+        Coadd name (camel-case), e.g. 'deep' or 'goodSeeing'.
+    @param schema
+        lsst.afw.table.Schema for coadd-sources.   
+    @param sourceConversionConfig
+        lsst.ap.utils.CsvConversionConfig - parameters used for
+        C++ to CSV conversion.
+    @param asView
+        True if the canonical table should be constructed as a VIEW on
+        top of the run-specific table.
+    @param sourceProcessingConfig
+        lsst.ap.cluster.SourceProcessingConfig - parameters used to
+        denormalize the C++ schema produced by the pipeline.
+    @param slotConfig
+        lsst.meas.algorithms.SlotConfig - pipeline slot mappings.
+    @param measPrefix
+        Prefix for measurement field names.
+    """
+    # Generate SQL for run specific table
+    createStmt, loadStmt = genericTableSql(
+        schema,
+        sourceConversionConfig,
+        _sourceIndexes(sourceProcessingConfig))
+    # build substitution parameters for mapping table
+    kw = _getMappingKw(
+        slotConfig,
+        sourceProcessingConfig,
+        measPrefix)
+    # build selection/output column lists
+    selcols = []
+    outcols = []
+    CoaddName = coaddName[0].upper() + coaddName[1:]
+    for runFmt, srcCol in _coaddSourceMappings:
+        runCol = runFmt.format(**kw)
+        srcCol = srcCol.format(coaddName=coaddName, CoaddName=CoaddName)
+        if sourceProcessingConfig.multiBand and srcCol == 'filterId':
+            continue # multi-band source has no filterId
+        field = _colToField(runCol)
+        isFlag = srcCol.startswith('flag')
+        if isFlag and not sourceConversionConfig.flagsAsBits:
+            continue
+        if field in schema or runCol == 'coord_htmId20':
+            selcols.append(runCol)
+        elif isFlag:
+            selcols.append("b'0'")
+        else:
+            selcols.append('NULL')
+        outcols.append(srcCol)
+    if not sourceConversionConfig.flagsAsBits:
+        # Deal with canonical flags packed into BIGINTs
+        n = (len(sourceConversionConfig.canonicalFlags) + 62) / 63
+        if n == 1:
+            selcols.append('flags')
+            outcols.append('flags')
+        else:
+            for i in xrange(1, n + 1):
+                c = 'flags{}'.format(i)
+                selcols.append(c)
+                outcols.append(c)
+    tableName = CoaddName + 'Source'
+    runTableName = 'Run' + tableName
+    if asView:
+        # Replace the official version of <CoaddName>Source with an equivalent VIEW
+        sourceStmt = 'CREATE OR REPLACE VIEW {} AS SELECT\n\t'.format(tableName)
+        sourceStmt += ',\n\t'.join(a + ' AS ' + b for a,b in zip(selcols, outcols))
+        sourceStmt += '\nFROM {};'.format(runTableName)
+    else:
+        # Use the definition of Source from cat (i.e. the one used by the
+        # schema browser for documentation purposes). This should cause
+        # ingest to fail if this code and the canonical schema are not in sync.
+        sourceStmt = 'INSERT INTO {} (\n\t'.format(tableName)
+        sourceStmt += ',\n\t'.join(outcols)
+        sourceStmt += ')\nSELECT\n\t'
+        sourceStmt += ',\n\t'.join(selcols)
+        sourceStmt += '\nFROM {};\n'.format(runTableName)
+    return (createStmt.format(tableName=runTableName),
+            loadStmt.format(tableName=runTableName, fileName='{fileName}'),
+            sourceStmt)
+
+# mappings from run-specific table column names to canonical ForcedSource columns
+_forcedSourceMappings = [
+    ("id", "{coaddName}ForcedSourceId"), # from minimal schema, no prefix
+    ("{exposurePrefix}_id", "scienceCcdExposureId"),
+    ("{exposurePrefix}_filter_id", "filterId"),
+    ("{exposurePrefix}_time_mid", "timeMid"),
+    ("{exposurePrefix}_time", "expTime"),
+    ("objectId", "{coaddName}SourceId"),
+    ("coord_ra", "ra"), # from minimal schema, no prefix
+    ("coord_decl", "decl"), # from minimal schema, no prefix
+    ("coord_raVar", "raVar"), # from source association, no prefix
+    ("coord_declVar", "declVar"), # from source association, no prefix
+    ("coord_radeclCov", "radeclCov"), # from source association, no prefix
+    ("coord_htmId20", "htmId20"), # from ingest, no prefix
+    ("{measPrefix}{centroid}_x", "x"),
+    ("{measPrefix}{centroid}_y", "y"),
+    ("{measPrefix}{centroid}_xVar", "xVar"),
+    ("{measPrefix}{centroid}_yVar", "yVar"),
+    ("{measPrefix}{centroid}_xyCov", "xyCov"),
+    ("{measPrefix}{psfFlux}", "psfFlux"),
+    ("{measPrefix}{psfFlux}_err", "psfFluxSigma"),
+    ("{measPrefix}{apFlux}", "apFlux"),
+    ("{measPrefix}{apFlux}_err", "apFluxSigma"),
+    ("{measPrefix}{modelFlux}", "modelFlux"),
+    ("{measPrefix}{modelFlux}_err", "modelFluxSigma"),
+    ("{measPrefix}{instFlux}", "instFlux"),
+    ("{measPrefix}{instFlux}_err", "instFluxSigma"),
+    ("aperturecorrection", "apCorrection"), # from measurement, no prefix (!?)
+    ("aperturecorrection_err", "apCorrectionSigma"), # from measurement, no prefix (!?)
+    ("{measPrefix}{shape}_centroid_x", "shapeIx"),
+    ("{measPrefix}{shape}_centroid_y", "shapeIy"),
+    ("{measPrefix}{shape}_centroid_xVar", "shapeIxVar"),
+    ("{measPrefix}{shape}_centroid_yVar", "shapeIyVar"),
+    ("{measPrefix}{shape}_centroid_xyCov", "shapeIxIyCov"),
+    ("{measPrefix}{shape}_Ixx", "shapeIxx"),
+    ("{measPrefix}{shape}_Iyy", "shapeIyy"),
+    ("{measPrefix}{shape}_Ixy", "shapeIxy"),
+    ("{measPrefix}{shape}_IxxVar", "shapeIxxVar"),
+    ("{measPrefix}{shape}_IyyVar", "shapeIyyVar"),
+    ("{measPrefix}{shape}_IxyVar", "shapeIxyVar"),
+    ("{measPrefix}{shape}_IxxIyyCov", "shapeIxxIyyCov"),
+    ("{measPrefix}{shape}_IxxIxyCov", "shapeIxxIxyCov"),
+    ("{measPrefix}{shape}_IxxIxyCov", "shapeIyyIxyCov"),
+    ("{measPrefix}classification_extendedness", "extendedness"),
+    ("flags_negative", "flagNegative"), # from detection, no prefix
+    ("{measPrefix}flags_badcentroid", "flagBadMeasCentroid"),
+    ("{measPrefix}flags_pixel_edge", "flagPixEdge"),
+    ("{measPrefix}flags_pixel_interpolated_any", "flagPixInterpAny"),
+    ("{measPrefix}flags_pixel_interpolated_center", "flagPixInterpCen"),
+    ("{measPrefix}flags_pixel_saturated_any", "flagPixSaturAny"),
+    ("{measPrefix}flags_pixel_saturated_center", "flagPixSaturCen"),
+    ("{measPrefix}{psfFlux}_flags", "flagBadPsfFlux"),
+    ("{measPrefix}{apFlux}_flags", "flagBadApFlux"),
+    ("{measPrefix}{modelFlux}_flags", "flagBadModelFlux"),
+    ("{measPrefix}{instFlux}_flags", "flagBadInstFlux"),
+    ("{measPrefix}{centroid}_flags", "flagBadCentroid"),
+    ("{measPrefix}{shape}_flags", "flagBadShape"),
+]
+
+def forcedSourceTableSql(coaddName,
+                        schema,
+                        sourceConversionConfig,
+                        asView,
+                        sourceProcessingConfig,
+                        slotConfig,
+                        measPrefix):
+    """Return a tuple of SQL statements (createStmt, loadStmt, sourceStmt)
+    for a forced source table. The canonical table name is obtained by
+    capitalizing the first letter of coaddName and appending 'ForcedSource'.
+    The run specific table name is derived from the former by prepending 'Run'.
+
+    createStmt :    CREATE TABLE statement for the Run<CoaddName>ForcedSource
+                    table, which includes all fields from the run-specific
+                    lsst.afw.table.Schema for source tables output by the
+                    pipelines.
+
+    loadStmt :      LOAD DATA statement for the Run<CoaddName>ForcedSource
+                    table.  This is a format string; to generate valid SQL a
+                    fileName must be supplied, e.g.:
+
+                    loadStmt.format(fileName='source.csv')
+
+    sourceStmt :    Map the Run<CoaddName>ForcedSource table to the canonical
+                    <CoaddName>ForcedSource schema. This will either create a
+                    VIEW, or INSERT into the materialized equivalent.
+
+    @param coaddName
+        Coadd name (camel-case), e.g. 'deep' or 'goodSeeing'.
+    @param schema
+        lsst.afw.table.Schema for forced sources.   
+    @param sourceConversionConfig
+        lsst.ap.utils.CsvConversionConfig - parameters used for
+        C++ to CSV conversion.
+    @param asView
+        True if the canonical table should be constructed as a VIEW on
+        top of the run-specific table.
+    @param sourceProcessingConfig
+        lsst.ap.cluster.SourceProcessingConfig - parameters used to
+        denormalize the C++ schema produced by the pipeline.
+    @param slotConfig
+        lsst.meas.algorithms.SlotConfig - pipeline slot mappings.
+    @param measPrefix
+        Prefix for measurement field names.
+    """
+    # Generate SQL for run specific table
+    createStmt, loadStmt = genericTableSql(
+        schema,
+        sourceConversionConfig,
+        _sourceIndexes(sourceProcessingConfig))
+    # build substitution parameters for mapping table
+    if sourceProcessingConfig.clusterPrefix is None:
+        sourceProcessingConfig.clusterPrefix = ""
+    kw = _getMappingKw(
+        slotConfig,
+        sourceProcessingConfig,
+        measPrefix)
+    # build selection/output column lists
+    selcols = []
+    outcols = []
+    CoaddName = coaddName[0].upper() + coaddName[1:]
+    for runFmt, srcCol in _forcedSourceMappings:
+        runCol = runFmt.format(**kw)
+        srcCol = srcCol.format(coaddName=coaddName, CoaddName=CoaddName)
+        if sourceProcessingConfig.multiBand and srcCol == 'filterId':
+            continue # multi-band source has no filterId
+        field = _colToField(runCol)
+        isFlag = srcCol.startswith('flag')
+        if isFlag and not sourceConversionConfig.flagsAsBits:
+            continue
+        if field in schema or runCol == 'coord_htmId20':
+            selcols.append(runCol)
+        elif isFlag:
+            selcols.append("b'0'")
+        else:
+            selcols.append('NULL')
+        outcols.append(srcCol)
+    if not sourceConversionConfig.flagsAsBits:
+        # Deal with canonical flags packed into BIGINTs
+        n = (len(sourceConversionConfig.canonicalFlags) + 62) / 63
+        if n == 1:
+            selcols.append('flags')
+            outcols.append('flags')
+        else:
+            for i in xrange(1, n + 1):
+                c = 'flags{}'.format(i)
+                selcols.append(c)
+                outcols.append(c)
+    tableName = CoaddName + 'ForcedSource'
+    runTableName = 'Run' + tableName
+    if asView:
+        # Replace the official version of <CoaddName>ForcedSource with an equivalent VIEW
+        sourceStmt = 'CREATE OR REPLACE VIEW {} AS SELECT\n\t'.format(tableName)
+        sourceStmt += ',\n\t'.join(a + ' AS ' + b for a,b in zip(selcols, outcols))
+        sourceStmt += '\nFROM {};'.format(runTableName)
+    else:
+        # Use the definition of Source from cat (i.e. the one used by the
+        # schema browser for documentation purposes). This should cause
+        # ingest to fail if this code and the canonical schema are not in sync.
+        sourceStmt = 'INSERT INTO {} (\n\t'.format(tableName)
+        sourceStmt += ',\n\t'.join(outcols)
+        sourceStmt += ')\nSELECT\n\t'
+        sourceStmt += ',\n\t'.join(selcols)
+        sourceStmt += '\nFROM {};\n'.format(runTableName)
+    return (createStmt.format(tableName=runTableName),
+            loadStmt.format(tableName=runTableName, fileName='{fileName}'),
+            sourceStmt)

@@ -47,11 +47,10 @@ def main():
             "Object", "ObjectType", "RaftMap",
             "Raw_Amp_Exposure", "Raw_Amp_Exposure_Metadata",
             "Raw_Amp_Exposure_To_Htm11", "Raw_Amp_To_Science_Ccd_Exposure",
-            "Raw_Amp_To_Snap_Ccd_Exposure",
             "RefObjMatch", "RefSrcMatch", "RunObject", "RunSource",
             "Science_Ccd_Exposure", "Science_Ccd_Exposure_Metadata",
             "Science_Ccd_Exposure_To_Htm10", "RefObject",
-            "Snap_Ccd_To_Science_Ccd_Exposure", "Source", "Visit",
+            "Source", "Visit",
             "ZZZ_Db_Description",):
         sql.execStmt(str.format(
             "CREATE OR REPLACE SQL SECURITY INVOKER VIEW {0} AS "

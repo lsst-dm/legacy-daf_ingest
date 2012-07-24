@@ -165,7 +165,8 @@ def main():
         parser.error("Unknown camera: {}. Choices (not case sensitive): {}".format(
             camera, loadTables.keys()))
     # Enable indexes on tables for faster queries
-    tables = loadTables[camera] + ["Logs", "RunSource", "RunObject"]
+    tables = loadTables[camera] + ["Logs", "RunSource", "RunObject",
+            "RunGoodSeeingSource", "RunGoodSeeingForcedSource"]
     for table in tables:
         if sql.isView(table) or not sql.exists(table):
             continue

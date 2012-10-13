@@ -304,8 +304,13 @@ class HfsScanner(object):
                         if not m:
                             continue
                         # got a match - update dataId with new key values (if any)
-                        for i, k in enumerate(pc.keys):
-                            subDataId = self._formatKeys[k].munge(k, m.group(i + 1), subDataId)
+                        try:
+                            for i, k in enumerate(pc.keys):
+                                subDataId = self._formatKeys[k].munge(k, m.group(i + 1), subDataId)
+                        except:
+                            # Munger raises if value is invalid for key, so
+                            # not really a match
+                            continue
                         if subRules and pc.keys:
                             # have dataId rules and saw new keys; filter rule list
                             for k in subDataId:

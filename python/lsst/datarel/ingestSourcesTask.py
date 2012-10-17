@@ -175,6 +175,16 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     def __init__(self, tableName, datasetType, host, db,
             port=3306, user=None, **kwargs):
+        """Create the IngestSources task, including connecting to the
+        database.
+        
+        @param tableName (str)   Name of the database table to create.
+        @param datasetType (str) Type of the dataset to ingest.
+        @param host (str)        Name of the database host machine.
+        @param db (str)          Name of the database to ingest into.
+        @param port (int)        Port number on the database host.
+        @param user (str)        User name to use for the database."""
+
         super(IngestSourcesTask, self).__init__(**kwargs)
         try:
             self.db = MySQLdb.connect(host=host, port=port, user=user, db=db)
@@ -187,10 +197,12 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         self.datasetType = datasetType
 
     def _executeSql(self, sql):
+        """Execute a SQL query with no expectation of result."""
         self.log.info("executeSql: " + sql)
         self.db.query(sql)
 
     def _getSqlScalar(self, sql):
+        """Execute a SQL query and return a single scalar result."""
         cur = self.db.cursor()
         self.log.info("getSqlScalar: " + sql)
         rows = cur.execute(sql)
@@ -204,14 +216,20 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     @pipeBase.timeMethod
     def run(self, dataRef):
+        """Ingest a SourceCatalog specified by the data reference."""
         cat = dataRef.get(self.datasetType)
         self.runCatalog(cat)
 
     def runFile(self, fileName):
+        """Ingest a SourceCatalog specified by a filename."""
         cat = afwTable.SourceCatalog.readFits(fileName)
         self.runCatalog(cat)
 
     def runCatalog(self, cat):
+        """Ingest a SourceCatalog by converting it to a (large) INSERT or
+        REPLACE statement, executing that statement, and committing the
+        result."""
+
         tableName = self.db.escape_string(self.tableName)
         self._checkTable(tableName, cat)
         if self.config.allowReplace:
@@ -244,6 +262,11 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         self.db.commit()
 
     def _checkTable(self, tableName, cat):
+        """Check to make sure a table exists by selecting a row from it.  If
+        the row contains the unique id of the first item in the input
+        SourceCatalog, assume that the rest are present as well.  If the table
+        does not exist, create it."""
+
         sampleId = cat[0][self.config.idColumnName]
         count = 0
         try:
@@ -263,6 +286,7 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 name=self.config.idColumnName, id=sampleId))
 
     def _createTable(self, tableName, schema):
+        """Create a table.  The unique id column is given a key."""
         sql = "CREATE TABLE IF NOT EXISTS `%s` (" % (tableName,)
         sql += ", ".join([self._columnDef(col) for col in schema])
         sql += ", UNIQUE(%s)" % (self.config.idColumnName,)
@@ -270,6 +294,10 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         self._executeSql(sql)
 
     def _columnDef(self, col, includeTypes=True):
+        """Return the column definition for a given schema column, which may
+        be composed of multiple database columns (separated by commas).  If
+        includeTypes is True (the default), include the SQL type for the
+        column as for a CREATE TABLE statement."""
         formatter = columnFormatters[col.field.getTypeString()]
         baseName = self._canonicalizeName(col.field.getName())
         columnType = " " + formatter.getSqlType() if includeTypes else ""
@@ -277,4 +305,5 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
             for columnName in formatter.getColumnNames(baseName)])
 
     def _canonicalizeName(self, colName):
+        """Return a SQL-compatible version of the schema column name."""
         return re.sub(r'\.', '_', colName)

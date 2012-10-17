@@ -161,11 +161,12 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
             return
         task.writeConfig(parsedCmd.dataRefList[0])
         for dataRef in parsedCmd.dataRefList:
+            catalog = dataRef.get(parsedCmd.datasetType)
             if parsedCmd.doraise:
-                task.run(dataRef)
+                task.run(catalog)
             else:
                 try:
-                    task.run(dataRef)
+                    task.run(catalog)
                 except Exception, e:
                     self.log.log(self.log.FATAL, "Failed on dataId=%s: %s" %
                             (dataRef.dataId, e))
@@ -173,8 +174,7 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                         traceback.print_exc(file=sys.stderr)
         task.writeMetadata(parsedCmd.dataRefList[0])
 
-    def __init__(self, tableName, datasetType, host, db,
-            port=3306, user=None, **kwargs):
+    def __init__(self, tableName, host, db, port=3306, user=None, **kwargs):
         """Create the IngestSources task, including connecting to the
         database.
         
@@ -194,7 +194,6 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
             self.db = MySQLdb.connect(host=host, port=port,
                     user=user, passwd=passwd, db=db)
         self.tableName = tableName
-        self.datasetType = datasetType
 
     def _executeSql(self, sql):
         """Execute a SQL query with no expectation of result."""
@@ -214,18 +213,13 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         self.log.info("Result: " + str(row))
         return row[0]
 
-    @pipeBase.timeMethod
-    def run(self, dataRef):
-        """Ingest a SourceCatalog specified by the data reference."""
-        cat = dataRef.get(self.datasetType)
-        self.runCatalog(cat)
-
     def runFile(self, fileName):
         """Ingest a SourceCatalog specified by a filename."""
         cat = afwTable.SourceCatalog.readFits(fileName)
-        self.runCatalog(cat)
+        self.run(cat)
 
-    def runCatalog(self, cat):
+    @pipeBase.timeMethod
+    def run(self, cat):
         """Ingest a SourceCatalog by converting it to a (large) INSERT or
         REPLACE statement, executing that statement, and committing the
         result."""

@@ -203,6 +203,14 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                     user=user, passwd=passwd, db=db)
         self.tableName = tableName
 
+    def _getConfigName(self):
+        """Config dataset name includes dataset type being ingested."""
+        return self._DefaultName + "_" + self.datasetType + "_config"
+
+    def _getMetadataName(self):
+        """Metadata dataset name includes dataset type being ingested."""
+        return self._DefaultName + "_" + self.datasetType + "_config"
+
     def _executeSql(self, sql):
         """Execute a SQL query with no expectation of result."""
         self.log.logdebug("executeSql: " + sql)

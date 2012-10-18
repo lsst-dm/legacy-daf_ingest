@@ -1,6 +1,5 @@
 import MySQLdb
 import math
-import re
 
 import lsst.afw.table as afwTable
 import lsst.daf.base as dafBase
@@ -320,4 +319,4 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     def _canonicalizeName(self, colName):
         """Return a SQL-compatible version of the schema column name."""
-        return re.sub(r'\.', '_', colName)
+        return colName.replace('.', '_')

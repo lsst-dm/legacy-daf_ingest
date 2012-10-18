@@ -121,6 +121,10 @@ class IngestSourcesConfig(pexConfig.Config):
             "key = normal SQL column name, value = desired SQL column name",
             keytype=str, itemtype=str,
             default={"coord_ra": "ra", "coord_dec": "decl"})
+    extraColumns = pexConfig.Field(
+            "Extra column definitions, comma-separated, to put into the"
+            " CREATE TABLE statement if the table is being created",
+            str, default="")
 
 class IngestSourcesTask(pipeBase.CmdLineTask):
     """Task to ingest a SourceCatalog of arbitrary schema into a database
@@ -202,20 +206,20 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     def _executeSql(self, sql):
         """Execute a SQL query with no expectation of result."""
-        self.log.info("executeSql: " + sql)
+        self.log.logdebug("executeSql: " + sql)
         self.db.query(sql)
 
     def _getSqlScalar(self, sql):
         """Execute a SQL query and return a single scalar result."""
         cur = self.db.cursor()
-        self.log.info("getSqlScalar: " + sql)
+        self.log.logdebug("getSqlScalar: " + sql)
         rows = cur.execute(sql)
         if rows != 1:
             raise RuntimeError(
                     "Wrong number of rows (%d) for scalar query: %s" %
                     (rows, sql))
         row = cur.fetchone()
-        self.log.info("Result: " + str(row))
+        self.log.logdebug("Result: " + str(row))
         return row[0]
 
     def runFile(self, fileName):
@@ -285,9 +289,13 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 name=self.config.idColumnName, id=sampleId))
 
     def _createTable(self, tableName, schema):
-        """Create a table.  The unique id column is given a key."""
+        """Create a table.  Use column definitions based on the provided table
+        schema, adding in any extra columns specified in the config.  The
+        unique id column is given a key."""
         sql = "CREATE TABLE IF NOT EXISTS `%s` (" % (tableName,)
         sql += ", ".join([self._columnDef(col) for col in schema])
+        if self.config.extraColumns != "":
+            sql += ", " + self.config.extraColumns
         sql += ", UNIQUE(%s)" % (self.config.idColumnName,)
         sql += ");"
         self._executeSql(sql)

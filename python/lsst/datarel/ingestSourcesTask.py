@@ -116,6 +116,11 @@ class IngestSourcesConfig(pexConfig.Config):
     idColumnName = pexConfig.Field(
             "Name of unique identifier column",
             str, default="id")
+    remap = pexConfig.DictField(
+            "Column name remapping. "
+            "key = normal SQL column name, value = desired SQL column name",
+            keytype=str, itemtype=str,
+            default={"coord_ra": "ra", "coord_dec": "decl"})
 
 class IngestSourcesTask(pipeBase.CmdLineTask):
     """Task to ingest a SourceCatalog of arbitrary schema into a database
@@ -295,8 +300,15 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         formatter = columnFormatters[col.field.getTypeString()]
         baseName = self._canonicalizeName(col.field.getName())
         columnType = " " + formatter.getSqlType() if includeTypes else ""
-        return ", ".join(["%s%s" % (columnName, columnType)
+        return ", ".join(["%s%s" % (self._remapColumn(columnName), columnType)
             for columnName in formatter.getColumnNames(baseName)])
+
+    def _remapColumn(self, colName):
+        """Remap a column name according to the remap dictionary in the
+        config."""
+        if colName in self.config.remap:
+            return self.config.remap[colName]
+        return colName
 
     def _canonicalizeName(self, colName):
         """Return a SQL-compatible version of the schema column name."""

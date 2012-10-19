@@ -1,5 +1,7 @@
 import MySQLdb
 import math
+import sys
+import traceback
 
 import lsst.afw.table as afwTable
 import lsst.daf.base as dafBase
@@ -116,7 +118,7 @@ class IngestSourcesConfig(pexConfig.Config):
             "Maximum length of a query string."
             " None means use a non-standard, database-specific way to get"
             " the maximum.",
-            int, default=None)
+            int, optional=True, default=None)
     idColumnName = pexConfig.Field(
             "Name of unique identifier column",
             str, default="id")
@@ -124,11 +126,12 @@ class IngestSourcesConfig(pexConfig.Config):
             "Column name remapping. "
             "key = normal SQL column name, value = desired SQL column name",
             keytype=str, itemtype=str,
+            optional=True,
             default={"coord_ra": "ra", "coord_dec": "decl"})
     extraColumns = pexConfig.Field(
             "Extra column definitions, comma-separated, to put into the"
             " CREATE TABLE statement if the table is being created",
-            str, default="")
+            str, optional=True, default="")
 
 class IngestSourcesTask(pipeBase.CmdLineTask):
     """Task to ingest a SourceCatalog of arbitrary schema into a database
@@ -166,11 +169,11 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         multiprocessing.  Note that the config and metadata are written using
         the first data id given, not each of them."""
 
+        cls._DefaultName += "_" + parsedCmd.datasetType
         task = cls(tableName=parsedCmd.tableName,
-                datasetType=parsedCmd.datasetType,
                 host=parsedCmd.host, db=parsedCmd.db,
                 port=parsedCmd.port, user=parsedCmd.user)
-        if len(parsedCmd.dataRefList) == 0:
+        if parsedCmd.dataRefList is None or len(parsedCmd.dataRefList) == 0:
             return
         task.writeConfig(parsedCmd.dataRefList[0])
         for dataRef in parsedCmd.dataRefList:
@@ -181,9 +184,9 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 try:
                     task.run(catalog)
                 except Exception, e:
-                    self.log.log(self.log.FATAL, "Failed on dataId=%s: %s" %
+                    task.log.fatal("Failed on dataId=%s: %s" %
                             (dataRef.dataId, e))
-                    if not isinstance(e, TaskError):
+                    if not isinstance(e, pipeBase.TaskError):
                         traceback.print_exc(file=sys.stderr)
         task.writeMetadata(parsedCmd.dataRefList[0])
 
@@ -192,7 +195,6 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         database.
         
         @param tableName (str)   Name of the database table to create.
-        @param datasetType (str) Type of the dataset to ingest.
         @param host (str)        Name of the database host machine.
         @param db (str)          Name of the database to ingest into.
         @param port (int)        Port number on the database host.
@@ -216,14 +218,6 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 WHERE variable_name = 'max_allowed_packet';"""))
         else:
             self.maxQueryLen = self.config.maxQueryLen
-
-    def _getConfigName(self):
-        """Config dataset name includes dataset type being ingested."""
-        return self._DefaultName + "_" + self.datasetType + "_config"
-
-    def _getMetadataName(self):
-        """Metadata dataset name includes dataset type being ingested."""
-        return self._DefaultName + "_" + self.datasetType + "_config"
 
     def _executeSql(self, sql):
         """Execute a SQL query with no expectation of result."""
@@ -250,9 +244,9 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     @pipeBase.timeMethod
     def run(self, cat):
-        """Ingest a SourceCatalog by converting it to a (large) INSERT or
-        REPLACE statement, executing that statement, and committing the
-        result."""
+        """Ingest a SourceCatalog by converting it to one or more (large)
+        INSERT or REPLACE statements, executing those statements, and
+        committing the result."""
 
         tableName = self.db.escape_string(self.tableName)
         self._checkTable(tableName, cat)
@@ -324,7 +318,7 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         unique id column is given a key."""
         sql = "CREATE TABLE IF NOT EXISTS `%s` (" % (tableName,)
         sql += ", ".join([self._columnDef(col) for col in schema])
-        if self.config.extraColumns != "":
+        if self.config.extraColumns is not None and self.config.extraColumns != "":
             sql += ", " + self.config.extraColumns
         sql += ", UNIQUE(%s)" % (self.config.idColumnName,)
         sql += ");"

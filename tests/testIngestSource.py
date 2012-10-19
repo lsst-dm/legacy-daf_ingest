@@ -63,7 +63,7 @@ class IngestSourcesTest(unittest.TestCase):
         # First run the task.
         config = IngestSourcesConfig()
         config.extraColumns = "htmid20 INT, otherColumn DOUBLE DEFAULT 2.0"
-        config.maxQueryLen = 1000000
+        config.maxQueryLen = 100000
         task = IngestSourcesTask(self.tableName, self.host, self.db,
                 config=config)
         task.runFile("tests/data/src.fits")

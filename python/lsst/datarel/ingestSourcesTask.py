@@ -112,6 +112,11 @@ class IngestSourcesConfig(pexConfig.Config):
     allowReplace = pexConfig.Field(
             "Allow replacement of existing rows with the same source IDs",
             bool, default=False)
+    maxQueryLen = pexConfig.Field(
+            "Maximum length of a query string."
+            " None means use a non-standard, database-specific way to get"
+            " the maximum.",
+            int, default=None)
     idColumnName = pexConfig.Field(
             "Name of unique identifier column",
             str, default="id")
@@ -195,13 +200,22 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
         super(IngestSourcesTask, self).__init__(**kwargs)
         try:
+            # See if we can connect without a password (e.g. via my.cnf)
             self.db = MySQLdb.connect(host=host, port=port, user=user, db=db)
         except:
+            # Fallback to DbAuth
             user = dafPersist.DbAuth.username(host, str(port))
             passwd = dafPersist.DbAuth.password(host, str(port))
             self.db = MySQLdb.connect(host=host, port=port,
                     user=user, passwd=passwd, db=db)
         self.tableName = tableName
+        if self.config.maxQueryLen is None:
+            self.maxQueryLen = int(self._getSqlScalar("""
+                SELECT variable_value
+                FROM information_schema.session_variables
+                WHERE variable_name = 'max_allowed_packet';"""))
+        else:
+            self.maxQueryLen = self.config.maxQueryLen
 
     def _getConfigName(self):
         """Config dataset name includes dataset type being ingested."""
@@ -242,33 +256,42 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
         tableName = self.db.escape_string(self.tableName)
         self._checkTable(tableName, cat)
-        if self.config.allowReplace:
-            sql = "REPLACE"
-        else:
-            sql = "INSERT"
-        sql += " INTO `%s` (" % (tableName,)
-        keys = []
-        firstCol = True
-        for col in cat.schema:
-            formatter = columnFormatters[col.field.getTypeString()]
-            keys.append((col.key, formatter))
-            if firstCol:
-                firstCol = False
+        pos = 0
+        while pos < len(cat):
+            if self.config.allowReplace:
+                sql = "REPLACE"
             else:
-                sql += ", "
-            sql += self._columnDef(col, includeTypes=False)
-        sql += ") VALUES "
-        firstSource = True
-        for source in cat:
-            if firstSource:
-                firstSource = False
-                sql += "("
-            else:
-                sql += "), ("
-            sql += ", ".join([formatter.formatValue(source.get(key))
-                for (key, formatter) in keys])
-        sql += ");"
-        self._executeSql(sql)
+                sql = "INSERT"
+            sql += " INTO `%s` (" % (tableName,)
+            keys = []
+            firstCol = True
+            for col in cat.schema:
+                formatter = columnFormatters[col.field.getTypeString()]
+                keys.append((col.key, formatter))
+                if firstCol:
+                    firstCol = False
+                else:
+                    sql += ", "
+                sql += self._columnDef(col, includeTypes=False)
+            sql += ") VALUES "
+            initialPos = pos
+            maxValueLen = self.maxQueryLen - len(sql)
+            while pos < len(cat):
+                source = cat[pos]
+                value = "("
+                value += ", ".join([formatter.formatValue(source.get(key))
+                    for (key, formatter) in keys])
+                value += "), "
+                maxValueLen -= len(value)
+                if maxValueLen < 0:
+                    break
+                else:
+                    sql += value
+                    pos += 1
+            if pos == initialPos:
+                # Have not made progress
+                raise RuntimeError("Single row too large to insert")
+            self._executeSql(sql[:-2] + ";")
         self.db.commit()
 
     def _checkTable(self, tableName, cat):

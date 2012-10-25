@@ -134,8 +134,46 @@ class IngestSourcesConfig(pexConfig.Config):
             str, optional=True, default="")
 
 class IngestSourcesTask(pipeBase.CmdLineTask):
-    """Task to ingest a SourceCatalog of arbitrary schema into a database
-    table."""
+    """Task to ingest a SourceCatalog of arbitrary schema into a database table.
+    
+    This task connects to a database using connection information given
+    through command line arguments or __init__ parameters.  It attempts to use
+    a .mysql.cnf file if present (by not specifying a password) and falls back
+    to using credentials obtained via the DbAuth interface if not.
+
+    If run from the command line, it will then ingest each catalog of Sources
+    specified by a data id and dataset type.  There are also two methods
+    (run() and runFile()) that can be manually called to ingest catalogs,
+    either by passing the catalog explicitly or by passing the name of a FITS
+    file containing the catalog.
+
+    The ingestion process creates the destination table in the database if it
+    doesn't exist.  The schema is translated from the source catalog's schema.
+    Columns can be renamed using the remap configuration parameter.  Extra
+    columns (e.g. ones to be filled in later by spatial indexing code) may be
+    added to the table via the extraColumns configuration parameter.
+
+    If the table does exist, one row of the input (the first) is checked to
+    see if it already exists in the destination table.  If it does, the
+    ingestion fails unless the allowReplace configuration parameter is set to
+    True.
+
+    The database table must contain a unique identifier column, named in the
+    idColumnName configuration parameter.
+
+    Rows are inserted into the database via INSERT statements.  As many rows
+    as possible are packed into each INSERT to maximize throughput.  The limit
+    on INSERT statement length is either set by configuration or determined by
+    querying the database (in a MySQL-specific way).
+
+    The columnFormatters dictionary is used to determine how to format each
+    type of column in the source catalog.  If new column types are added to
+    afw::table and are used in Source catalogs, they should also be added
+    here.  While lambdas are used for the formatting functions for
+    compactness, they can be any callable (and so can handle more complex
+    logic than can be embedded in a lambda -- e.g. checking a column's units
+    to see if it needs to be converted from radians to degrees).
+    """
 
     ConfigClass = IngestSourcesConfig
     _DefaultName = "ingestSources"
@@ -165,9 +203,9 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         """Override the default method for running the parsed command.
         Necessary because the task needs to be instantiated with more than
         just the data id and because we want to connect to the database only
-        once for all data ids specified.  Prevents the use of
-        multiprocessing.  Note that the config and metadata are written using
-        the first data id given, not each of them."""
+        once for all data ids specified.  Prevents the use of multiprocessing.
+        Note that the config and metadata are written using the first data id
+        given, not each of them."""
 
         cls._DefaultName += "_" + parsedCmd.datasetType
         task = cls(tableName=parsedCmd.tableName,
@@ -211,6 +249,9 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
             self.db = MySQLdb.connect(host=host, port=port,
                     user=user, passwd=passwd, db=db)
         self.tableName = tableName
+
+        # Determine the maximum query length (MySQL-specific) if not
+        # configured.
         if self.config.maxQueryLen is None:
             self.maxQueryLen = int(self._getSqlScalar("""
                 SELECT variable_value

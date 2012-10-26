@@ -199,7 +199,9 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         """Extend the default argument parser with database-specific
         arguments and the dataset type for the Sources to be read.""" 
         parser = pipeBase.ArgumentParser(name=cls._DefaultName,
-                datasetType=None) # Use None to accept all data id keys
+                datasetType=pipeBase.DatasetArgument())
+                # Use DatasetArgument to require dataset type be specified on
+                # the command line
         parser.add_argument("-H", "--host", dest="host", required=True,
                 help="Database hostname")
         parser.add_argument("-D", "--database", dest="db", required=True,

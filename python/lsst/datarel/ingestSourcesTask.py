@@ -149,17 +149,26 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     The ingestion process creates the destination table in the database if it
     doesn't exist.  The schema is translated from the source catalog's schema.
+    The database table must contain a unique identifier column, named in the
+    idColumnName configuration parameter.  The only index provided is a unique
+    one on this id field.  (Additional ones can be created later, of course.)
     Columns can be renamed using the remap configuration parameter.  Extra
     columns (e.g. ones to be filled in later by spatial indexing code) may be
     added to the table via the extraColumns configuration parameter.
+
+    Note that "nullable integer" columns are not provided.  There is no way to
+    represent these explicitly in the source catalog, and translating 0 to
+    NULL seems to have little value and might be error-prone.  (An option
+    could be provided to do this if it turns out to be necessary.)
+
+    Also note that covariances and moments are assumed to be in pixel space
+    (or something else) and not angular space and so do not need
+    radians-to-degrees conversion.
 
     If the table does exist, one row of the input (the first) is checked to
     see if it already exists in the destination table.  If it does, the
     ingestion fails unless the allowReplace configuration parameter is set to
     True.
-
-    The database table must contain a unique identifier column, named in the
-    idColumnName configuration parameter.
 
     Rows are inserted into the database via INSERT statements.  As many rows
     as possible are packed into each INSERT to maximize throughput.  The limit

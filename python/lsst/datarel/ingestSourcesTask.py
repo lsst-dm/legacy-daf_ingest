@@ -173,7 +173,14 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
     Rows are inserted into the database via INSERT statements.  As many rows
     as possible are packed into each INSERT to maximize throughput.  The limit
     on INSERT statement length is either set by configuration or determined by
-    querying the database (in a MySQL-specific way).
+    querying the database (in a MySQL-specific way).  This may not be as
+    efficient in its use of the database as converting to CSV and doing a bulk
+    load, but it eliminates the use of (often shared) disk resources.  The use
+    of INSERTs (committed once at the end) may not be fully parallelizable
+    (particularly due to the unique id index), but tests seem to indicate that
+    it is at least not much slower to execute many such INSERTs in parallel
+    compared with executing them all sequentially.  This remains an area for
+    future optimization.
 
     The columnFormatters dictionary is used to determine how to format each
     type of column in the source catalog.  If new column types are added to
@@ -191,7 +198,8 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
     def _makeArgumentParser(cls):
         """Extend the default argument parser with database-specific
         arguments and the dataset type for the Sources to be read.""" 
-        parser = pipeBase.ArgumentParser(name=cls._DefaultName)
+        parser = pipeBase.ArgumentParser(name=cls._DefaultName,
+                datasetType="src")
         parser.add_argument("-H", "--host", dest="host", required=True,
                 help="Database hostname")
         parser.add_argument("-D", "--database", dest="db", required=True,

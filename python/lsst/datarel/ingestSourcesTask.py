@@ -199,7 +199,7 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         """Extend the default argument parser with database-specific
         arguments and the dataset type for the Sources to be read.""" 
         parser = pipeBase.ArgumentParser(name=cls._DefaultName,
-                datasetType="src")
+                datasetType=None) # Use None to accept all data id keys
         parser.add_argument("-H", "--host", dest="host", required=True,
                 help="Database hostname")
         parser.add_argument("-D", "--database", dest="db", required=True,
@@ -210,9 +210,6 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 help="Database port number (optional)", default=3306)
         parser.add_argument("-t", "--table", dest="tableName", required=True,
                 help="Table to ingest into")
-        parser.add_argument("-d", "--dataset-type", dest="datasetType",
-                required=True,
-                help="Dataset type of Sources to ingest")
         return parser
 
     @classmethod
@@ -227,7 +224,8 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         cls._DefaultName += "_" + parsedCmd.datasetType
         task = cls(tableName=parsedCmd.tableName,
                 host=parsedCmd.host, db=parsedCmd.db,
-                port=parsedCmd.port, user=parsedCmd.user)
+                port=parsedCmd.port, user=parsedCmd.user,
+                config=parsedCmd.config, log=parsedCmd.log)
         if parsedCmd.dataRefList is None or len(parsedCmd.dataRefList) == 0:
             return
         task.writeConfig(parsedCmd.dataRefList[0])

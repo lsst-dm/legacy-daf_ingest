@@ -142,10 +142,24 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
     to using credentials obtained via the DbAuth interface if not.
 
     If run from the command line, it will then ingest each catalog of Sources
-    specified by a data id and dataset type.  There are also two methods
-    (run() and runFile()) that can be manually called to ingest catalogs,
-    either by passing the catalog explicitly or by passing the name of a FITS
-    file containing the catalog.
+    specified by a data id and dataset type.  A sample command line might look
+    like:
+        $DATAREL_DIR/bin/ingest/ingestSources.py
+                {repository path}
+                --host lsst-db.ncsa.illinois.edu
+                --database {user}_S12_sdss_u_s2012prod_{runid}
+                --table DiaSources
+                --datasettype goodSeeingDiff_src
+                --id run=... camcol=... filter=... field=...
+    As usual for tasks, multiple --id options may be specified, or ranges and
+    lists of values can be specified for data id keys.  Note that the "-j" or
+    "--processes" option is not supported for this task, but multiple
+    independent tasks may be run at the same time (although they may not give
+    any speedup, depending on the database).
+    
+    There are also two methods (run() and runFile()) that can be manually
+    called to ingest catalogs, either by passing the catalog explicitly or by
+    passing the name of a FITS file containing the catalog.
 
     The ingestion process creates the destination table in the database if it
     doesn't exist.  The schema is translated from the source catalog's schema.
@@ -219,9 +233,11 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         """Override the default method for running the parsed command.
         Necessary because the task needs to be instantiated with more than
         just the data id and because we want to connect to the database only
-        once for all data ids specified.  Prevents the use of multiprocessing.
-        Note that the config and metadata are written using the first data id
-        given, not each of them."""
+        once for all data ids specified.  Prevents the use of the Python
+        multiprocessing module and thus the "-j/--processes" option since we
+        cannot/don't want to pickle the database connection.  Note that the
+        config and metadata are written using the first data id given, not
+        each of them."""
 
         cls._DefaultName += "_" + parsedCmd.datasetType
         task = cls(tableName=parsedCmd.tableName,

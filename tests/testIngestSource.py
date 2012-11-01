@@ -50,15 +50,20 @@ class IngestSourcesTest(unittest.TestCase):
                     passwd=DbAuth.password(self.host, str(port)), db=self.db)
         except:
             print >>sys.stderr, "*** Could not connect to database, skipping test."
-            sys.exit(0)
+            self.conn = None
 
     def tearDown(self):
         # Clean up by removing the database table.
-        self.conn.query("DROP TABLE %s;" % (self.tableName,))
+        if self.conn is not None:
+            self.conn.query("DROP TABLE %s;" % (self.tableName,))
 
     
     def testIngest(self):
         """Test the ingest task."""
+
+        # Skip if no database connection available
+        if self.conn is None:
+            return
 
         # First run the task.
         config = IngestSourcesConfig()

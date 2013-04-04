@@ -2,7 +2,7 @@
 
 from lsst.datarel import runStage
 from lsst.pex.harness.IOStage import InputStage, OutputStage
-import lsst.afw.detection as afwDetection
+import lsst.meas.algorithms as measAlg
 import eups
 import math
 import os
@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-psf = afwDetection.createPsf("DoubleGaussian", 21, 21,
+psf = measAlg.DoubleGaussianPsf(21, 21,
         5/(2*math.sqrt(2*math.log(2))), 1, 0.1)
 clip = {
     'jobIdentity': {
@@ -75,7 +75,7 @@ clip = runStage(InputStage,
     """, clip)
 
 assert clip.has_key('psf2')
-psf2 = clip.get('psf2')
+psf2 = measAlg.DoubleGaussianPsf.swigConvert(clip.get('psf2'))
 assert psf2.getKernel().getHeight() == psf.getKernel().getHeight()
 assert psf2.getKernel().getWidth() == psf.getKernel().getWidth()
 assert psf2.getKernel().getCtr() == psf.getKernel().getCtr()

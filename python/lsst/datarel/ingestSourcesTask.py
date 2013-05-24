@@ -1,5 +1,6 @@
 import MySQLdb
 import math
+import re
 import sys
 import traceback
 
@@ -107,7 +108,7 @@ columnFormatters = dict(
                 x + "_xy_xy", x + "_xy_yy", x + "_yy_yy"),
             lambda v: _formatList("%.17g",
                 (v[0, 0], v[0, 1], v[0, 2], v[1, 1], v[1, 2], v[2, 2])))
-        )
+    )
 
 class IngestSourcesConfig(pexConfig.Config):
     """Configuration for the IngestSourcesTask."""
@@ -132,6 +133,38 @@ class IngestSourcesConfig(pexConfig.Config):
             "Extra column definitions, comma-separated, to put into the"
             " CREATE TABLE statement if the table is being created",
             str, optional=True, default="")
+
+class IngestSourcesTaskRunner(pipeBase.TaskRunner):
+    def run(self, parsedCmd):
+        """Override the default method for running the parsed command.
+        Necessary because the task needs to be instantiated with more than
+        just the data id and because we want to connect to the database only
+        once for all data ids specified.  Prevents the use of the Python
+        multiprocessing module and thus the "-j/--processes" option since we
+        cannot/don't want to pickle the database connection."""
+
+        self.TaskClass._DefaultName += "_" + parsedCmd.datasetType
+        task = self.TaskClass(config=self.config, log=self.log,
+                tableName=parsedCmd.tableName,
+                host=parsedCmd.host,
+                db=parsedCmd.db,
+                port=parsedCmd.port,
+                user=parsedCmd.user)
+        task.writeConfig(parsedCmd.dataRefList[0])
+        for ref in self.getTargetList(parsedCmd):
+            catalog = ref.get(parsedCmd.datasetType)
+            if parsedCmd.doraise:
+                task.run(catalog)
+            else:
+                try:
+                    task.run(catalog)
+                except Exception, e:
+                    task.log.fatal("Failed on dataId=%s: %s" %
+                            (ref.dataId, e))
+                    if not isinstance(e, pipeBase.TaskError):
+                        traceback.print_exc(file=sys.stderr)
+        task.writeMetadata(parsedCmd.dataRefList[0])
+
 
 class IngestSourcesTask(pipeBase.CmdLineTask):
     """Task to ingest a SourceCatalog of arbitrary schema into a database table.
@@ -207,6 +240,7 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     ConfigClass = IngestSourcesConfig
     _DefaultName = "ingestSources"
+    RunnerClass = IngestSourcesTaskRunner
 
     @classmethod
     def _makeArgumentParser(cls):
@@ -227,39 +261,6 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         parser.add_argument("-t", "--table", dest="tableName", required=True,
                 help="Table to ingest into")
         return parser
-
-    @classmethod
-    def runParsedCmd(cls, parsedCmd):
-        """Override the default method for running the parsed command.
-        Necessary because the task needs to be instantiated with more than
-        just the data id and because we want to connect to the database only
-        once for all data ids specified.  Prevents the use of the Python
-        multiprocessing module and thus the "-j/--processes" option since we
-        cannot/don't want to pickle the database connection.  Note that the
-        config and metadata are written using the first data id given, not
-        each of them."""
-
-        cls._DefaultName += "_" + parsedCmd.datasetType
-        task = cls(tableName=parsedCmd.tableName,
-                host=parsedCmd.host, db=parsedCmd.db,
-                port=parsedCmd.port, user=parsedCmd.user,
-                config=parsedCmd.config, log=parsedCmd.log)
-        if parsedCmd.dataRefList is None or len(parsedCmd.dataRefList) == 0:
-            return
-        task.writeConfig(parsedCmd.dataRefList[0])
-        for dataRef in parsedCmd.dataRefList:
-            catalog = dataRef.get(parsedCmd.datasetType)
-            if parsedCmd.doraise:
-                task.run(catalog)
-            else:
-                try:
-                    task.run(catalog)
-                except Exception, e:
-                    task.log.fatal("Failed on dataId=%s: %s" %
-                            (dataRef.dataId, e))
-                    if not isinstance(e, pipeBase.TaskError):
-                        traceback.print_exc(file=sys.stderr)
-        task.writeMetadata(parsedCmd.dataRefList[0])
 
     def __init__(self, tableName, host, db, port=3306, user=None, **kwargs):
         """Create the IngestSources task, including connecting to the
@@ -334,6 +335,13 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
             keys = []
             firstCol = True
             for col in cat.schema:
+                if col.field.getTypeString() not in columnFormatters:
+                    self.log.warn(
+                            "Skipping complex column: {name} ({type})".format(
+                                name=col.field.getName(),
+                                type=col.field.getTypeString()))
+
+                    continue
                 formatter = columnFormatters[col.field.getTypeString()]
                 keys.append((col.key, formatter))
                 if firstCol:
@@ -391,7 +399,8 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         schema, adding in any extra columns specified in the config.  The
         unique id column is given a key."""
         sql = "CREATE TABLE IF NOT EXISTS `%s` (" % (tableName,)
-        sql += ", ".join([self._columnDef(col) for col in schema])
+        sql += ", ".join([self._columnDef(col) for col in schema if
+            col.field.getTypeString() in columnFormatters])
         if self.config.extraColumns is not None and self.config.extraColumns != "":
             sql += ", " + self.config.extraColumns
         sql += ", UNIQUE(%s)" % (self.config.idColumnName,)
@@ -418,4 +427,4 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     def _canonicalizeName(self, colName):
         """Return a SQL-compatible version of the schema column name."""
-        return colName.replace('.', '_')
+        return re.sub(r'[^\w]', '_', colName)

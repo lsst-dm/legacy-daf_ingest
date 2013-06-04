@@ -32,6 +32,7 @@ import lsst.daf.base as dafBase
 import lsst.daf.persistence as dafPersistence
 import lsst.afw.coord as afwCoord
 import lsst.afw.image as afwImage
+import lsst.afw.geom as afwGeom
 import lsst.meas.algorithms as measAlg
 
 from lsst.datarel.csvFileWriter import CsvFileWriter
@@ -139,7 +140,10 @@ class CsvGenerator(object):
         # try to get PSF
         havePsf = False
         try:
-            psf = butler.get('psf', dataId=dataId, immediate=True)
+            #get access to the psf as fast as possible: can load one pixel in 1/4 time to load full calexp
+            miniBbox = afwGeom.Box2I(afwGeom.Point2I(0,0), afwGeom.Extent2I(1,1))
+            exp = butler.get('calexp_sub', bbox=miniBbox, dataId=dataId, imageOrgin="LOCAL")
+            psf = exp.getPsf()
             havePsf = psf != None
         except:
             pass

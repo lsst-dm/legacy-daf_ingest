@@ -1,5 +1,6 @@
 import MySQLdb
 import math
+import re
 import sys
 import traceback
 
@@ -107,7 +108,7 @@ columnFormatters = dict(
                 x + "_xy_xy", x + "_xy_yy", x + "_yy_yy"),
             lambda v: _formatList("%.17g",
                 (v[0, 0], v[0, 1], v[0, 2], v[1, 1], v[1, 2], v[2, 2])))
-        )
+    )
 
 class IngestSourcesConfig(pexConfig.Config):
     """Configuration for the IngestSourcesTask."""
@@ -133,15 +134,41 @@ class IngestSourcesConfig(pexConfig.Config):
             " CREATE TABLE statement if the table is being created",
             str, optional=True, default="")
 
+class IngestSourcesTaskRunner(pipeBase.TaskRunner):
+    @staticmethod
+    def getTargetList(parsedCmd):
+        """Override the target list to add additional run() method
+        parameters."""
+        return pipeBase.TaskRunner.getTargetList(parsedCmd,
+                dstype=parsedCmd.dstype,
+                tableName=parsedCmd.tableName,
+                host=parsedCmd.host,
+                db=parsedCmd.db,
+                port=parsedCmd.port,
+                user=parsedCmd.user)
+
+    def precall(self, parsedCmd):
+        """Override the precall to not write schemas, not require writing of
+        configs, and set the task's name appropriately."""
+        self.TaskClass._DefaultName += "_" + parsedCmd.dstype
+        task = self.TaskClass(config=self.config, log=self.log)
+        try:
+            task.writeConfig(parsedCmd.butler, clobber=self.clobberConfig)
+        except Exception, e:
+            # Often no mapping for config, but in any case just skip
+            task.log.warn("Could not persist config: %s" % (e,))
+        return True
+
+
 class IngestSourcesTask(pipeBase.CmdLineTask):
     """Task to ingest a SourceCatalog of arbitrary schema into a database table.
     
     This task connects to a database using connection information given
-    through command line arguments or __init__ parameters.  It attempts to use
+    through command line arguments or run() parameters.  It attempts to use
     a .mysql.cnf file if present (by not specifying a password) and falls back
     to using credentials obtained via the DbAuth interface if not.
 
-    If run from the command line, it will then ingest each catalog of Sources
+    If run from the command line, it will ingest each catalog of Sources
     specified by a data id and dataset type.  A sample command line might look
     like:
         $DATAREL_DIR/bin/ingest/ingestSources.py
@@ -149,26 +176,27 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 --host lsst-db.ncsa.illinois.edu
                 --database {user}_S12_sdss_u_s2012prod_{runid}
                 --table DiaSources
-                --datasettype goodSeeingDiff_src
+                --dstype goodSeeingDiff_src
                 --id run=... camcol=... filter=... field=...
     As usual for tasks, multiple --id options may be specified, or ranges and
-    lists of values can be specified for data id keys.  Note that the "-j" or
-    "--processes" option is not supported for this task, but multiple
-    independent tasks may be run at the same time (although they may not give
-    any speedup, depending on the database).
-    
-    There are also two methods (run() and runFile()) that can be manually
+    lists of values can be specified for data id keys.
+
+    There are also two methods (ingest() and runFile()) that can be manually
     called to ingest catalogs, either by passing the catalog explicitly or by
-    passing the name of a FITS file containing the catalog.
+    passing the name of a FITS file containing the catalog.  Both, like run(),
+    require database connection information.
 
     The ingestion process creates the destination table in the database if it
     doesn't exist.  The schema is translated from the source catalog's schema.
     The database table must contain a unique identifier column, named in the
     idColumnName configuration parameter.  The only index provided is a unique
     one on this id field.  (Additional ones can be created later, of course.)
-    Columns can be renamed using the remap configuration parameter.  Extra
-    columns (e.g. ones to be filled in later by spatial indexing code) may be
-    added to the table via the extraColumns configuration parameter.
+    Columns can be renamed using the remap configuration parameter.  The names
+    to be remapped have been canonicalized (for now by changing any non-word
+    characters to underscores) and may have additional subfield tags appended
+    (such as "_ra" or "_y").  Extra columns (e.g. ones to be filled in later
+    by spatial indexing code) may be added to the table via the extraColumns
+    configuration parameter.
 
     Note that "nullable integer" columns are not provided.  There is no way to
     represent these explicitly in the source catalog, and translating 0 to
@@ -207,15 +235,13 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     ConfigClass = IngestSourcesConfig
     _DefaultName = "ingestSources"
+    RunnerClass = IngestSourcesTaskRunner
 
     @classmethod
     def _makeArgumentParser(cls):
         """Extend the default argument parser with database-specific
         arguments and the dataset type for the Sources to be read.""" 
-        parser = pipeBase.ArgumentParser(name=cls._DefaultName,
-                datasetType=pipeBase.DatasetArgument())
-                # Use DatasetArgument to require dataset type be specified on
-                # the command line
+        parser = pipeBase.ArgumentParser(name=cls._DefaultName)
         parser.add_argument("-H", "--host", dest="host", required=True,
                 help="Database hostname")
         parser.add_argument("-D", "--database", dest="db", required=True,
@@ -226,52 +252,32 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 help="Database port number (optional)", default=3306)
         parser.add_argument("-t", "--table", dest="tableName", required=True,
                 help="Table to ingest into")
+        parser.add_id_argument("--id", pipeBase.DatasetArgument("dstype"),
+                help="Source dataset data id to ingest")
+                # Use DatasetArgument to require dataset type be specified on
+                # the command line
         return parser
 
-    @classmethod
-    def runParsedCmd(cls, parsedCmd):
-        """Override the default method for running the parsed command.
-        Necessary because the task needs to be instantiated with more than
-        just the data id and because we want to connect to the database only
-        once for all data ids specified.  Prevents the use of the Python
-        multiprocessing module and thus the "-j/--processes" option since we
-        cannot/don't want to pickle the database connection.  Note that the
-        config and metadata are written using the first data id given, not
-        each of them."""
+    def runFile(self, fileName, tableName, host, db, port=3306, user=None):
+        """Ingest a SourceCatalog specified by a filename."""
+        cat = afwTable.SourceCatalog.readFits(fileName)
+        self.ingest(cat, tableName, host, db, port, user)
 
-        cls._DefaultName += "_" + parsedCmd.datasetType
-        task = cls(tableName=parsedCmd.tableName,
-                host=parsedCmd.host, db=parsedCmd.db,
-                port=parsedCmd.port, user=parsedCmd.user,
-                config=parsedCmd.config, log=parsedCmd.log)
-        if parsedCmd.dataRefList is None or len(parsedCmd.dataRefList) == 0:
-            return
-        task.writeConfig(parsedCmd.dataRefList[0])
-        for dataRef in parsedCmd.dataRefList:
-            catalog = dataRef.get(parsedCmd.datasetType)
-            if parsedCmd.doraise:
-                task.run(catalog)
-            else:
-                try:
-                    task.run(catalog)
-                except Exception, e:
-                    task.log.fatal("Failed on dataId=%s: %s" %
-                            (dataRef.dataId, e))
-                    if not isinstance(e, pipeBase.TaskError):
-                        traceback.print_exc(file=sys.stderr)
-        task.writeMetadata(parsedCmd.dataRefList[0])
-
-    def __init__(self, tableName, host, db, port=3306, user=None, **kwargs):
-        """Create the IngestSources task, including connecting to the
-        database.
+    def run(self, dataRef, dstype, tableName, host, db, port=3306, user=None):
+        """Ingest a SourceCatalog specified by a dataref and dataset type."""
+        self.ingest(dataRef.get(dstype), tableName, host, db, port, user)
         
+    @pipeBase.timeMethod
+    def ingest(self, cat, tableName, host, db, port=3306, user=None):
+        """Ingest a SourceCatalog passed as an object.
+
+        @param cat (SourceCatalog) Catalog to ingest.
         @param tableName (str)   Name of the database table to create.
         @param host (str)        Name of the database host machine.
         @param db (str)          Name of the database to ingest into.
         @param port (int)        Port number on the database host.
         @param user (str)        User name to use for the database."""
 
-        super(IngestSourcesTask, self).__init__(**kwargs)
         try:
             # See if we can connect without a password (e.g. via my.cnf)
             self.db = MySQLdb.connect(host=host, port=port, user=user, db=db)
@@ -293,31 +299,6 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         else:
             self.maxQueryLen = self.config.maxQueryLen
 
-    def _executeSql(self, sql):
-        """Execute a SQL query with no expectation of result."""
-        self.log.logdebug("executeSql: " + sql)
-        self.db.query(sql)
-
-    def _getSqlScalar(self, sql):
-        """Execute a SQL query and return a single scalar result."""
-        cur = self.db.cursor()
-        self.log.logdebug("getSqlScalar: " + sql)
-        rows = cur.execute(sql)
-        if rows != 1:
-            raise RuntimeError(
-                    "Wrong number of rows (%d) for scalar query: %s" %
-                    (rows, sql))
-        row = cur.fetchone()
-        self.log.logdebug("Result: " + str(row))
-        return row[0]
-
-    def runFile(self, fileName):
-        """Ingest a SourceCatalog specified by a filename."""
-        cat = afwTable.SourceCatalog.readFits(fileName)
-        self.run(cat)
-
-    @pipeBase.timeMethod
-    def run(self, cat):
         """Ingest a SourceCatalog by converting it to one or more (large)
         INSERT or REPLACE statements, executing those statements, and
         committing the result."""
@@ -334,6 +315,13 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
             keys = []
             firstCol = True
             for col in cat.schema:
+                if col.field.getTypeString() not in columnFormatters:
+                    self.log.warn(
+                            "Skipping complex column: {name} ({type})".format(
+                                name=col.field.getName(),
+                                type=col.field.getTypeString()))
+
+                    continue
                 formatter = columnFormatters[col.field.getTypeString()]
                 keys.append((col.key, formatter))
                 if firstCol:
@@ -361,6 +349,24 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
                 raise RuntimeError("Single row too large to insert")
             self._executeSql(sql[:-2] + ";")
         self.db.commit()
+
+    def _executeSql(self, sql):
+        """Execute a SQL query with no expectation of result."""
+        self.log.logdebug("executeSql: " + sql)
+        self.db.query(sql)
+
+    def _getSqlScalar(self, sql):
+        """Execute a SQL query and return a single scalar result."""
+        cur = self.db.cursor()
+        self.log.logdebug("getSqlScalar: " + sql)
+        rows = cur.execute(sql)
+        if rows != 1:
+            raise RuntimeError(
+                    "Wrong number of rows (%d) for scalar query: %s" %
+                    (rows, sql))
+        row = cur.fetchone()
+        self.log.logdebug("Result: " + str(row))
+        return row[0]
 
     def _checkTable(self, tableName, cat):
         """Check to make sure a table exists by selecting a row from it.  If
@@ -391,7 +397,8 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
         schema, adding in any extra columns specified in the config.  The
         unique id column is given a key."""
         sql = "CREATE TABLE IF NOT EXISTS `%s` (" % (tableName,)
-        sql += ", ".join([self._columnDef(col) for col in schema])
+        sql += ", ".join([self._columnDef(col) for col in schema if
+            col.field.getTypeString() in columnFormatters])
         if self.config.extraColumns is not None and self.config.extraColumns != "":
             sql += ", " + self.config.extraColumns
         sql += ", UNIQUE(%s)" % (self.config.idColumnName,)
@@ -418,4 +425,4 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
 
     def _canonicalizeName(self, colName):
         """Return a SQL-compatible version of the schema column name."""
-        return colName.replace('.', '_')
+        return re.sub(r'[^\w]', '_', colName)

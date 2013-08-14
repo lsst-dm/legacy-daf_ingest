@@ -69,9 +69,8 @@ class IngestSourcesTest(unittest.TestCase):
         config = IngestSourcesConfig()
         config.extraColumns = "htmid20 INT, otherColumn DOUBLE DEFAULT 2.0"
         config.maxQueryLen = 100000
-        task = IngestSourcesTask(self.tableName, self.host, self.db,
-                config=config)
-        task.runFile("tests/data/src.fits")
+        task = IngestSourcesTask(config=config)
+        task.runFile("tests/data/src.fits", self.tableName, self.host, self.db)
 
         # Check that we actually loaded the rows into the table.
         cur = self.conn.cursor()

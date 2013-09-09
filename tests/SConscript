@@ -3,10 +3,6 @@ from lsst.sconsUtils import scripts, log
 
 import eups
 
-ignoreList = ["crSplitStagesImSimTest.py", "crSplitStagesTest.py"]
-
-if not eups.productDir("obs_lsstSim"):
-    log.warn("Ignoring some tests because obs_lsstSim is not setup.")
-    ignoreList.append("ioStages.py")
-
+ignoreList = ["crSplitStagesImSimTest.py", "crSplitStagesTest.py",
+        "ioStages.py"]
 scripts.BasicSConscript.tests(ignoreList=ignoreList)

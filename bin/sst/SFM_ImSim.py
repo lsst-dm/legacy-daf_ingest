@@ -34,7 +34,7 @@ def sfmProcess(root=None, outRoot=None, registry=None,
             inButler, outButler)
 
     calexp = inButler.get("calexp", **keys)
-    psf = inButler.get("psf", **keys)
+    psf = calexp.getPsf()
     apCorr = inButler.get("apCorr", **keys)
 
     clip = sfmPipe(calexp, psf, apCorr)

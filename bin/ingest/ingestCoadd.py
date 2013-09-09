@@ -50,6 +50,7 @@ from lsst.datarel.mysqlExecutor import MysqlExecutor
 from lsst.datarel.ingest import makeArgumentParser, makeRules
 from lsst.datarel.schema import makeMysqlCsvConfig, coaddSourceTableSql
 from lsst.datarel.datasetScanner import getMapperClass, DatasetScanner
+from lsst.datarel.utils import getDataset, getPsf
 
 if not 'SCISQL_DIR' in os.environ:
     print >>sys.stderr, 'Please setup the scisql package and try again'
@@ -80,20 +81,6 @@ def coaddExposureTable(coaddName):
 def coaddSourceTable(coaddName):
     """Return source table name, given a coadd name."""
     return coaddName[0].upper() + coaddName[1:] + 'Source'
-
-def _getDataset(butler, dataset, dataId, strict, warn):
-    try:
-        ds = butler.get(dataset, dataId=dataId, immediate=True)
-    except:
-        ds = None
-    if ds == None:
-        msg = '{} : Failed to retrieve {} dataset'.format(dataId, dataset)
-        if strict:
-            raise RuntimeError(msg)
-        elif warn:
-            print >>sys.stderr, '*** Skipping ' + msg
-    return ds
-
 
 class CsvGenerator(object):
     def __init__(self, namespace, compress=True):
@@ -195,8 +182,10 @@ class CsvGenerator(object):
                 else:
                     raise RuntimeError(msg)
         # try to get PSF - not - may not always be available, e.g. if PSF matching was turned off.
-        initPsf = _getDataset(butler, coaddName + 'Coadd_initPsf', dataId, strict=False, warn=False)
-        psf = _getDataset(butler, coaddName + 'Coadd_psf', dataId, strict=False, warn=False)
+        # the PSF is in the coadd and we don't want want the coadd, but there is presently no way
+        # to just get metadata, so load one pixel of the coadd
+        initPsf = getPsf(butler, coaddName + "Coadd", dataId=dataId, strict=False, warn=False)
+        psf = getPsf(butler, coaddName + 'Coadd_calexp', dataId=dataId, strict=False, warn=False)
         # read image metadata and extract WCS/geometry metadata
         md = afwImage.readMetadata(filename)
 
@@ -251,12 +240,12 @@ class CsvGenerator(object):
             matchedFwhm, measuredFwhm, path
         ])
         # Retrieve coadd sources and processCoadd config
-        sources = _getDataset(butler, coaddName + 'Coadd_src', dataId,
-                              strict=self.namespace.strict, warn=True)
+        sources = getDataset(butler, coaddName + 'Coadd_src', dataId=dataId,
+                             strict=self.namespace.strict, warn=True)
         if sources == None:
             return
-        sfmConfig = _getDataset(butler, coaddName + '_processCoadd_config',
-                                dataId, strict=self.namespace.strict, warn=True)
+        sfmConfig = getDataset(butler, coaddName + '_processCoadd_config', dataId=dataId,
+                               strict=self.namespace.strict, warn=True)
         if sfmConfig == None:
             return
 

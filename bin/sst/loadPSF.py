@@ -22,8 +22,9 @@
 
 import lsst.daf.persistence as dafPersist
 from lsst.obs.cfht import CfhtMapper
+from lsst.datarel.utils import getPsf
 
 bf = dafPersist.ButlerFactory(mapper=CfhtMapper(root="."))
 butler = bf.create()
-psf = butler.get("psf", visit=788965, filter="r", ccd=6)
+psf = getPsf(butler, dataset="calexp", dataId=dict(visit=788965, filter="r", ccd=6), strict=True)
 print psf.getKernel().toString()

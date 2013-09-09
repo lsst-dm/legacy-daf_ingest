@@ -39,6 +39,7 @@ from lsst.datarel.csvFileWriter import CsvFileWriter
 from lsst.datarel.mysqlExecutor import MysqlExecutor
 from lsst.datarel.ingest import makeArgumentParser, makeRules
 from lsst.datarel.datasetScanner import getMapperClass, DatasetScanner
+from lsst.datarel.utils import getPsf
 
 # Hack to be able to read multiShapelet configs
 try:
@@ -138,22 +139,7 @@ class CsvGenerator(object):
                 else:
                     raise RuntimeError(msg)
         # try to get PSF
-        havePsf = False
-        try:
-            #get access to the psf as fast as possible: can load one pixel in 1/4 time to load full calexp
-            miniBbox = afwGeom.Box2I(afwGeom.Point2I(0,0), afwGeom.Extent2I(1,1))
-            exp = butler.get('calexp_sub', bbox=miniBbox, dataId=dataId, imageOrgin="LOCAL")
-            psf = exp.getPsf()
-            havePsf = psf != None
-        except:
-            pass
-        if not havePsf:
-            msg = '{} : PSF missing or corrupt'.format(dataId)
-            if not self.namespace.strict:
-                print >>sys.stderr, '*** Skipping ' + msg
-                return
-            else:
-                raise RuntimeError(msg)
+        psf = getPsf(butler, "calexp", dataId=dataId, strict=self.namespace.strict, warn=True)
         # read image metadata and extract WCS/geometry metadata
         md = afwImage.readMetadata(filename)
         x0 = -md.get('LTV1') if md.exists('LTV1') else 0

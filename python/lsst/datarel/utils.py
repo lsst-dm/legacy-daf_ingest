@@ -24,6 +24,7 @@ from optparse import OptionParser
 import os
 import sys
 
+import lsst.afw.geom as afwGeom
 import lsst.pex.policy as pexPolicy
 import lsst.daf.persistence as dafPersist
 from lsst.pex.harness.simpleStageTester import SimpleStageTester
@@ -352,6 +353,54 @@ def cfhtSetup(root, outRoot, registry, calibRoot, inButler, outButler):
             root=outRoot, registry=registry))
         outButler = obf.create() 
     return (inButler, outButler)
+
+def getDataset(butler, dataset, dataId, strict, warn):
+    """Get a dataset from a repository with an optional exception or warning if not found
+
+    @param[in] butler: data butler
+    @param[in] dataset: name of desired dataset
+    @param[in] dataId: data ID dict
+    @param[in] strict: if True then raise RuntimeError if dataset not found
+    @param[in] warn: if True and strict False then print a warning to stderr if dataset not found
+    
+    @raise RuntimeError if dataset not found and strict true
+    """
+    try:
+        ds = butler.get(dataset, dataId=dataId, immediate=True)
+    except:
+        ds = None
+    if ds == None:
+        msg = '{} : Failed to retrieve {} dataset'.format(dataId, dataset)
+        if strict:
+            raise RuntimeError(msg)
+        elif warn:
+            print >>sys.stderr, '*** Skipping ' + msg
+    return ds
+
+def getPsf(butler, dataset, dataId, strict, warn):
+    """Get the PSF from a repository without reading (very much of) the exposure
+    
+    @param[in] butler: data butler
+    @param[in] dataset: name of desired dataset
+    @param[in] dataId: data ID dict of exposure containing desired PSF
+    @param[in] strict: if True then raise RuntimeError if psf not found
+    @param[in] warn: if True and strict False then print a warning to stderr if psf not found
+    
+    @raise RuntimeError if exposure not found (regardless of strict)
+    @raise RuntimeError if exposure has no PSF and strict true
+    """
+    # there is not yet a way to read just the PSF, so read a 1x1 subregion of the exposure
+    tinyBBox = afwGeom.Box2I(afwGeom.Point2I(0,0), afwGeom.Extent2I(1,1))
+    tinyExposure = butler.get(dataset + "_sub", bbox=tinyBBox, imageOrigin="LOCAL", immediate=True)
+    psf = tinyExposure.getPsf()
+    if psf is None:
+        msg = '%s : %s exposure had no PSF' % (dataId, dataset)
+        psf = None
+        if strict:
+            raise RuntimeError(msg)
+        elif warn:
+            print >>sys.stderr, '*** Skipping ' + msg
+    return psf
 
 def lsstSimSetup(root, outRoot, registry, calibRoot, inButler, outButler):
     if inButler is None:

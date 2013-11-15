@@ -43,7 +43,11 @@ from __future__ import with_statement
 from optparse import OptionParser
 import os
 import shutil
-import sqlite as sqlite3
+try:
+    import sqlite3
+except ImportError:
+    # try external pysqlite package; deprecated
+    import sqlite as sqlite3
 
 def rowGenerator(inputData):
     """Interpret the job office text file specified by the inputData pathname,

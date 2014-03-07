@@ -1,14 +1,14 @@
-setupRequired(ap >= 4.6.0.0)
-setupRequired(ctrl_orca >= 4.6.0.0)
-setupRequired(pipe_tasks >= 4.8.0.0)
+setupRequired(ap)
+setupRequired(ctrl_orca)
+setupRequired(pipe_tasks)
 
-# setupOptional(obs_cfht >= 4.6.0.0)
-setupOptional(obs_lsstSim >= 4.6.0.0)
-setupOptional(meas_extensions_multiShapelet >= 5.1.0.0)
+# setupOptional(obs_cfht)
+setupOptional(obs_lsstSim)
+setupOptional(meas_extensions_multiShapelet)
 setupOptional(astrometry_net_data)
 setupOptional(matplotlib)	# used by some debugging routines
-setupOptional(cat >= 4.6.0.0)   # for database ingest
-setupOptional(scisql >= 0.1)    # for database ingest
+setupOptional(cat)
+setupOptional(scisql)
 
 envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envAppend(PATH, ${PRODUCT_DIR}/bin/sst)

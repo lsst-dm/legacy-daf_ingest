@@ -391,7 +391,7 @@ def getPsf(butler, dataset, dataId, strict, warn):
     """
     # there is not yet a way to read just the PSF, so read a 1x1 subregion of the exposure
     tinyBBox = afwGeom.Box2I(afwGeom.Point2I(0,0), afwGeom.Extent2I(1,1))
-    tinyExposure = butler.get(dataset + "_sub", bbox=tinyBBox, imageOrigin="LOCAL", immediate=True)
+    tinyExposure = butler.get(dataset + "_sub", dataId=dataId, bbox=tinyBBox, imageOrigin="LOCAL", immediate=True)
     psf = tinyExposure.getPsf()
     if psf is None:
         msg = '%s : %s exposure had no PSF' % (dataId, dataset)

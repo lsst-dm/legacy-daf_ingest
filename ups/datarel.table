@@ -4,7 +4,6 @@ setupRequired(pipe_tasks)
 
 # setupOptional(obs_cfht)
 setupOptional(obs_lsstSim)
-setupOptional(meas_extensions_multiShapelet)
 setupOptional(astrometry_net_data)
 setupOptional(matplotlib)	# used by some debugging routines
 setupOptional(cat)

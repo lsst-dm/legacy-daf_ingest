@@ -9,6 +9,6 @@ setupOptional(matplotlib)	# used by some debugging routines
 setupOptional(cat)
 setupOptional(scisql)
 
-envAppend(PYTHONPATH, ${PRODUCT_DIR}/python)
-envAppend(PATH, ${PRODUCT_DIR}/bin/sst)
-envAppend(PYTHONPATH, ${PRODUCT_DIR}/bin/sst)
+envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
+envPrepend(PATH, ${PRODUCT_DIR}/bin/sst)
+envPrepend(PYTHONPATH, ${PRODUCT_DIR}/bin/sst)

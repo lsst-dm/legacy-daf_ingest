@@ -37,7 +37,7 @@ from math import *
 import pdb
 import unittest
 
-import eups
+import lsst.utils
 import lsst.utils.tests as utilsTests
 import lsst.pex.harness.Clipboard as pexClipboard
 import lsst.pex.policy as pexPolicy
@@ -119,7 +119,8 @@ class CrSplitStagesImSimTestCase(unittest.TestCase):
         omask <<= mask
 
     def setUp(self):
-        filename = os.path.join(eups.productDir("afwdata"), "ImSim",
+        afwdataDir = lsst.utils.getPackageDir("afwdata")
+        filename = os.path.join(afwdataDir, "ImSim",
                 "postISR", "v85751839-fr", "s0", "R23", "S11", "C00.fits")
 
         bbox = afwGeom.Box2I(afwGeom.Point2I(0,0), afwGeom.Extent2I(512, 512))
@@ -210,9 +211,11 @@ def suite():
 
     suites = []
 
-    if not eups.productDir("afwdata"):
+    try:
+        lsst.utils.getPackageDir("afwdata")
+    except Exception:
         print >> sys.stderr, "afwdata is not setting up; skipping test"
-    else:        
+    else:
         suites += unittest.makeSuite(CrSplitStagesImSimTestCase)
 
     suites += unittest.makeSuite(utilsTests.MemoryTestCase)

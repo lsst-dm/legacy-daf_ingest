@@ -1,6 +1,7 @@
 setupRequired(ap)
 setupRequired(ctrl_orca)
 setupRequired(pipe_tasks)
+setupRequired(utils)
 
 # setupOptional(obs_cfht)
 setupOptional(obs_lsstSim)

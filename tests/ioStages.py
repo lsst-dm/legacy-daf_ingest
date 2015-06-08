@@ -3,7 +3,6 @@
 from lsst.datarel import runStage
 from lsst.pex.harness.IOStage import InputStage, OutputStage
 import lsst.meas.algorithms as measAlg
-import eups
 import math
 import os
 import subprocess

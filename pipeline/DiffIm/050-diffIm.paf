@@ -1,9 +1,0 @@
-inputKeys: {
-   templateExposure: "templateExposure"
-   scienceExposure: "scienceExposure"
-}
-outputKeys: {
-   differenceExposure: "differenceExposure"
-   psfMatchingKernel: "psfMatchingKernel"
-   backgroundFunction: "backgroundFunction"
-}

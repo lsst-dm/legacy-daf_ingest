@@ -2,6 +2,6 @@
 from lsst.sconsUtils import scripts, log
 
 # Turn off all pex_harness-based tests (which is currently everything)
-ignoreList = ["crSplitStagesImSimTest.py", "crSplitStagesTest.py", "ioStages.py", "testGetPsf.py", "testIngestSource.py", "vigCorr.py"]
+ignoreList = ["testIngestSource.py"]
 
 scripts.BasicSConscript.tests(ignoreList=ignoreList)

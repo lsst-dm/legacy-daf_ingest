@@ -1,7 +1,0 @@
-inputKeys: {
-   scienceExposure: "scienceExposure"
-   diaSourceList: "diaSourceList"
-}
-outputKeys: {
-   maskedExposure: "maskedExposure"
-}

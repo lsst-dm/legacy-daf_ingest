@@ -1,8 +1,0 @@
-#<?cfg paf policy ?>
-# ImgChar wcsDetermination.paf
-inputExposureKey: visitExposure
-inputSourceSetKey: sourceSet
-outputWcsKey: measuredWcs
-outputMatchListKey: matchList
-numBrightStars: 150
-defaultFilterName: mag

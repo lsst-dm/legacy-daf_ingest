@@ -1,6 +1,0 @@
-inputKeys: {
-   exposureToMatch: "scienceExposure"
-}
-outputKeys: {
-   diaSourceIds: "diaSourceIds"
-}

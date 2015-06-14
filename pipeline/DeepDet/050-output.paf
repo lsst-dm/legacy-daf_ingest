@@ -1,9 +1,0 @@
-AdditionalData: "deepDetectionsPathName=triggerDeepDetEvent.deepDetectionsPathName"
-OutputItems: {
-   deepDetections: {
-      StoragePolicy: {
-         Storage: "BoostStorage"
-         Location: "%(output)/%(deepDetectionsPathName)"
-      }
-   }
-}

@@ -1,5 +1,0 @@
-#<?cfg paf policy ?>
-#
-pipelineEvent:  SAJob
-datasets.dataReadyEvent:  srcAvailable
-

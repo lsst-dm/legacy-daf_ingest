@@ -1,14 +1,10 @@
+setupRequired(afw)
+setupRequired(daf_base)
+setupRequired(daf_persistence)
+setupRequired(pipe_base)
+setupRequired(pex_config)
 setupRequired(ap)
-setupRequired(ctrl_orca)
-setupRequired(pipe_tasks)
-setupRequired(utils)
-
-# setupOptional(obs_cfht)
-setupOptional(obs_lsstSim)
-setupOptional(astrometry_net_data)
-setupOptional(matplotlib)	# used by some debugging routines
-setupOptional(cat)
-setupOptional(scisql)
+setupRequired(mysqlpython)
 
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envPrepend(PATH, ${PRODUCT_DIR}/bin/sst)

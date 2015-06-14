@@ -1,7 +1,0 @@
-#<?cfg paf policy ?>
-inputKeys: {
-   exposureList: "exposureList"
-}
-outputKeys: {
-   assembledCcdExposure: "isrExposure"
-}

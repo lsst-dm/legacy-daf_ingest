@@ -20,7 +20,3 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 from .version import *
-from fixupStage import *
-from objectListStage import *
-from utils import *
-from vigCorrStage import *

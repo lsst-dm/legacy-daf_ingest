@@ -1,7 +1,0 @@
-#<?cfg paf policy ?>
-
-subtractBackground: true
-backgroundPolicy: {
-    binsize: 2048
-    undersamplestyle: "REDUCE_INTERP_ORDER"
-}

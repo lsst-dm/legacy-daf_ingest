@@ -1,8 +1,0 @@
-inputKeys: {
-   exposure: "differenceExposure"
-}
-outputKeys: {
-   positiveDetection: "positiveFootprintSet"
-   negativeDetection: "negativeFootprintSet"
-   psf: "detectionPsf"
-}

@@ -364,7 +364,7 @@ def sourceTableSql(schema, dbMappingConfig, sourceAssocConfig):
                     materialized equivalent.
 
     @param schema               lsst.afw.table.Schema for sources
-    @param dbMappingConfig      lsst.datarel.DbMappingConfig
+    @param dbMappingConfig      lsst.daf.ingest.DbMappingConfig
     @param sourceAssocConfig    lsst.ap.tasks.sourceAssoc.SourceAssocConfig
     """
     # Generate SQL for run specific table
@@ -490,7 +490,7 @@ def objectTableSql(schema, dbMappingConfig, sourceAssocConfig, filters):
                     materialized equivalent.
 
     @param schema               lsst.afw.table.Schema for objects (source clusters)
-    @param dbMappingConfig      lsst.datarel.DbMappingConfig
+    @param dbMappingConfig      lsst.daf.ingest.DbMappingConfig
     @param sourceAssocConfig    lsst.ap.tasks.sourceAssoc.SourceAssocConfig
     @param filters              Iterable over the filter names included in the
                                 canonical Object table.

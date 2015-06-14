@@ -45,11 +45,11 @@ try:
 except:
     pass
 
-from lsst.datarel.csvFileWriter import CsvFileWriter
-from lsst.datarel.mysqlExecutor import MysqlExecutor
-from lsst.datarel.ingest import makeArgumentParser, makeRules
-from lsst.datarel.schema import makeMysqlCsvConfig, forcedSourceTableSql
-from lsst.datarel.datasetScanner import getMapperClass, DatasetScanner
+from lsst.daf.ingest.csvFileWriter import CsvFileWriter
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor
+from lsst.daf.ingest.ingest import makeArgumentParser, makeRules
+from lsst.daf.ingest.schema import makeMysqlCsvConfig, forcedSourceTableSql
+from lsst.daf.ingest.datasetScanner import getMapperClass, DatasetScanner
 
 if not 'SCISQL_DIR' in os.environ:
     print >>sys.stderr, 'Please setup the scisql package and try again'

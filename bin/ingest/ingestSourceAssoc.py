@@ -38,10 +38,10 @@ import lsst.ap.cluster as apCluster
 import lsst.ap.utils as apUtils
 from lsst.ap.tasks.sourceAssoc import SourceAssocConfig
 
-from lsst.datarel.ingest import makeArgumentParser, makeRules
-from lsst.datarel.schema import makeMysqlCsvConfig, sourceTableSql, objectTableSql, DbMappingConfig
-from lsst.datarel.mysqlExecutor import MysqlExecutor
-from lsst.datarel.datasetScanner import getMapperClass, DatasetScanner
+from lsst.daf.ingest.ingest import makeArgumentParser, makeRules
+from lsst.daf.ingest.schema import makeMysqlCsvConfig, sourceTableSql, objectTableSql, DbMappingConfig
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor
+from lsst.daf.ingest.datasetScanner import getMapperClass, DatasetScanner
 
 
 Task = collections.namedtuple(

@@ -30,8 +30,8 @@ import sys
 import lsst.ap.match as apMatch
 import lsst.ap.utils as apUtils
 
-from lsst.datarel.ingest import makeArgumentParser
-from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
+from lsst.daf.ingest.ingest import makeArgumentParser
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor, addDbOptions
 
 if not 'AP_DIR' in os.environ:
     print >>sys.stderr, "Please setup the ap package and try again"

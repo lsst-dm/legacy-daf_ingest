@@ -34,8 +34,8 @@ from lsst.obs.cfht import CfhtMapper
 import lsst.afw.coord as afwCoord
 import lsst.afw.image as afwImage
 
-from lsst.datarel.csvFileWriter import CsvFileWriter
-from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
+from lsst.daf.ingest.csvFileWriter import CsvFileWriter
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor, addDbOptions
 
 
 if not 'SCISQL_DIR' in os.environ:

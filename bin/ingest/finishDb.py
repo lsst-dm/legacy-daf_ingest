@@ -26,7 +26,7 @@ import argparse
 import os
 import string
 
-from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor, addDbOptions
 from prepareDb import loadTables
 import transposeMetadata
 

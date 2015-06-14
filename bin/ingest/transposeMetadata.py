@@ -28,7 +28,7 @@ import argparse
 import MySQLdb as sql
 from lsst.daf.persistence import DbAuth
 
-from lsst.datarel.mysqlExecutor import addDbOptions
+from lsst.daf.ingest.mysqlExecutor import addDbOptions
 
 renames = { 'DEC': 'DECL',
             'OUTFILE': 'OUTFILE_'

@@ -20,6 +20,6 @@
 # the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-from lsst.datarel.ingestSourcesTask import IngestSourcesTask
+from lsst.daf.ingest.ingestSourcesTask import IngestSourcesTask
 
 IngestSourcesTask.parseAndRun()

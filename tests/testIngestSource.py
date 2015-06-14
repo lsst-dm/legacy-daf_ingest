@@ -30,7 +30,7 @@ import time
 
 import lsst.utils.tests as utilsTests
 
-from lsst.datarel.ingestSourcesTask import IngestSourcesTask, IngestSourcesConfig
+from lsst.daf.ingest.ingestSourcesTask import IngestSourcesTask, IngestSourcesConfig
 from lsst.daf.persistence import DbAuth
 
 class IngestSourcesTest(unittest.TestCase):

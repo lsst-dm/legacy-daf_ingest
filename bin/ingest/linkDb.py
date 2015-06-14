@@ -24,7 +24,7 @@
 
 import argparse
 
-from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor, addDbOptions
 
 def main():
     parser = argparse.ArgumentParser(description=

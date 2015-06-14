@@ -25,7 +25,7 @@ from __future__ import with_statement
 import argparse
 import os
 
-from lsst.datarel.mysqlExecutor import MysqlExecutor, addDbOptions
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor, addDbOptions
 
 loadTables = {
     "lsstsim": ["Source",
@@ -71,7 +71,7 @@ def main():
     parser = argparse.ArgumentParser(description=
         "Program which creates an LSST run database and instantiates the LSST "
         "schema therein. Indexes on tables which will be loaded by the various "
-        "datarel ingest scripts are disabled. Once loading has finished, the "
+        "daf.ingest ingest scripts are disabled. Once loading has finished, the "
         "finishDb.py script should be run to re-enable them.")
     addDbOptions(parser)
     parser.add_argument("--camera", dest="camera", default="lsstSim",

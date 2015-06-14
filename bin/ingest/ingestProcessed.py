@@ -35,11 +35,11 @@ import lsst.afw.image as afwImage
 import lsst.afw.geom as afwGeom
 import lsst.meas.algorithms as measAlg
 
-from lsst.datarel.csvFileWriter import CsvFileWriter
-from lsst.datarel.mysqlExecutor import MysqlExecutor
-from lsst.datarel.ingest import makeArgumentParser, makeRules
-from lsst.datarel.datasetScanner import getMapperClass, DatasetScanner
-from lsst.datarel.utils import getPsf
+from lsst.daf.ingest.csvFileWriter import CsvFileWriter
+from lsst.daf.ingest.mysqlExecutor import MysqlExecutor
+from lsst.daf.ingest.ingest import makeArgumentParser, makeRules
+from lsst.daf.ingest.datasetScanner import getMapperClass, DatasetScanner
+from lsst.daf.ingest.utils import getPsf
 
 # Hack to be able to read multiShapelet configs
 try:

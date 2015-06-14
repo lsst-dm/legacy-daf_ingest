@@ -1,3 +1,3 @@
 # -*- python -*-
 from lsst.sconsUtils import scripts
-scripts.BasicSConstruct("datarel")
+scripts.BasicSConstruct("daf_ingest")

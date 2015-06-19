@@ -1,9 +1,0 @@
-inputKeys: {
-   skyMapImage: "skyMapImage"
-}
-parameters: {
-   doIncludedRectangle: true
-}
-outputKeys: {
-   coaddExposure: "detectionExposure"
-}

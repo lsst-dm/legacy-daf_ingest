@@ -1,9 +1,0 @@
-execute: {
-  shutdownTopic: "workflowShutdown"
-  eventBrokerHost: "lsst8.ncsa.uiuc.edu"
-}
-framework: {
-  exec: "$DATAREL_DIR/pipeline/PT1Pipe/joboffice-ImSim.sh"
-  type: "standard"
-  environment: "$DATAREL_DIR/bin/runOrca/imsim-setupForOrcaUse.sh"
-}

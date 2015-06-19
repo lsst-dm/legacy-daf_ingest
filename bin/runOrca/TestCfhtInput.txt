@@ -1,4 +1,0 @@
->intids visit ccd amp
-#D2
-raw  visit=793310 ccd=0 amp=0
-raw  visit=793310 ccd=0 amp=1

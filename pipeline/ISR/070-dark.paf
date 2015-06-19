@@ -1,9 +1,0 @@
-#<?cfg paf policy ?>
-# isrDark.paf
-inputKeys: {
-   exposure: "isrExposure"
-   darkexposure: "darkExposure"
-}
-outputKeys: {
-   darkSubtractedExposure: "isrExposure"
-}

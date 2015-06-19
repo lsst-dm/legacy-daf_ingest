@@ -1,5 +1,0 @@
-#<?cfg paf policy?>
-# ImgChar wcsVerification.paf
-
-inputExposureKey: visitExposure
-sourceMatchSetKey: matchList

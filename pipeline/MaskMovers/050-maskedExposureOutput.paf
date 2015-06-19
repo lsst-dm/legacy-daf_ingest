@@ -1,9 +1,0 @@
-AdditionalData: "outputPathName=triggerMaskMoversEvent.outputPathName"
-OutputItems: {
-   maskedExposure: {
-      StoragePolicy: {
-         Storage: "FitsStorage"
-         Location: "%(output)/%(outputPathName)"
-      }
-   }
-}

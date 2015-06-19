@@ -1,4 +1,0 @@
-#<?cfg paf policy ?>
-# ImgChar photoCal.paf
-sourceMatchSetKey: matchList
-outputValueKey: photometricMagnitudeObject

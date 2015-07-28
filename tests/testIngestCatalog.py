@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-# 
+#
 # LSST Data Management System
-# Copyright 2008, 2009, 2010 LSST Corporation.
-# 
+#
+# Copyright 2008-2015  AURA/LSST.
+#
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
 #
@@ -11,15 +12,15 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
-# You should have received a copy of the LSST License Statement and 
-# the GNU General Public License along with this program.  If not, 
-# see <http://www.lsstcorp.org/LegalNotices/>.
+#
+# You should have received a copy of the LSST License Statement and
+# the GNU General Public License along with this program.  If not,
+# see <https://www.lsstcorp.org/LegalNotices/>.
 #
 
 import unittest
@@ -30,10 +31,10 @@ import time
 
 import lsst.utils.tests as utilsTests
 
-from lsst.datarel.ingestSourcesTask import IngestSourcesTask, IngestSourcesConfig
+from lsst.daf.ingest.ingestCatalogTask import IngestCatalogTask, IngestCatalogConfig
 from lsst.daf.persistence import DbAuth
 
-class IngestSourcesTest(unittest.TestCase):
+class IngestCatalogTest(unittest.TestCase):
     """
     Test for ingesting sources into a database table.
     """
@@ -66,10 +67,10 @@ class IngestSourcesTest(unittest.TestCase):
             return
 
         # First run the task.
-        config = IngestSourcesConfig()
+        config = IngestCatalogConfig()
         config.extraColumns = "htmid20 INT, otherColumn DOUBLE DEFAULT 2.0"
         config.maxQueryLen = 100000
-        task = IngestSourcesTask(config=config)
+        task = IngestCatalogTask(config=config)
         task.runFile("tests/data/src.fits", self.tableName, self.host, self.db)
 
         # Check that we actually loaded the rows into the table.
@@ -121,7 +122,7 @@ def suite():
     utilsTests.init()
 
     suites = []
-    suites += unittest.makeSuite(IngestSourcesTest)
+    suites += unittest.makeSuite(IngestCatalogTest)
     suites += unittest.makeSuite(utilsTests.MemoryTestCase)
     return unittest.TestSuite(suites)
 

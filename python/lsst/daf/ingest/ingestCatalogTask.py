@@ -110,8 +110,8 @@ columnFormatters = dict(
                 (v[0, 0], v[0, 1], v[0, 2], v[1, 1], v[1, 2], v[2, 2])))
     )
 
-class IngestSourcesConfig(pexConfig.Config):
-    """Configuration for the IngestSourcesTask."""
+class IngestCatalogConfig(pexConfig.Config):
+    """Configuration for the IngestCatalogTask."""
     allowReplace = pexConfig.Field(
             "Allow replacement of existing rows with the same source IDs",
             bool, default=False)
@@ -134,7 +134,7 @@ class IngestSourcesConfig(pexConfig.Config):
             " CREATE TABLE statement if the table is being created",
             str, optional=True, default="")
 
-class IngestSourcesTaskRunner(pipeBase.TaskRunner):
+class IngestCatalogTaskRunner(pipeBase.TaskRunner):
     @staticmethod
     def getTargetList(parsedCmd):
         """Override the target list to add additional run() method
@@ -160,7 +160,7 @@ class IngestSourcesTaskRunner(pipeBase.TaskRunner):
         return True
 
 
-class IngestSourcesTask(pipeBase.CmdLineTask):
+class IngestCatalogTask(pipeBase.CmdLineTask):
     """Task to ingest a SourceCatalog of arbitrary schema into a database table.
     
     This task connects to a database using connection information given
@@ -171,7 +171,7 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
     If run from the command line, it will ingest each catalog of Sources
     specified by a data id and dataset type.  A sample command line might look
     like:
-        $DATAREL_DIR/bin/ingest/ingestSources.py
+        $DATAREL_DIR/bin/ingestCatalog.py
                 {repository path}
                 --host lsst-db.ncsa.illinois.edu
                 --database {user}_S12_sdss_u_s2012prod_{runid}
@@ -233,9 +233,9 @@ class IngestSourcesTask(pipeBase.CmdLineTask):
     to see if it needs to be converted from radians to degrees).
     """
 
-    ConfigClass = IngestSourcesConfig
-    _DefaultName = "ingestSources"
-    RunnerClass = IngestSourcesTaskRunner
+    ConfigClass = IngestCatalogConfig
+    _DefaultName = "ingestCatalog"
+    RunnerClass = IngestCatalogTaskRunner
 
     @classmethod
     def _makeArgumentParser(cls):

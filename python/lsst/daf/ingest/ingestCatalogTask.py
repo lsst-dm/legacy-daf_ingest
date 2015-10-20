@@ -370,7 +370,7 @@ class IngestCatalogTask(pipeBase.CmdLineTask):
             "--user", dest="user",
             help="Database username (optional)", default=None)
         parser.add_argument(
-            "--port", dest="port",
+            "--port", dest="port", type=int,
             help="Database port number (optional)", default=3306)
         parser.add_argument(
             "--table", dest="tableName", required=True,
@@ -441,7 +441,7 @@ class IngestCatalogTask(pipeBase.CmdLineTask):
         except:
             # Fallback to DbAuth
             kwargs["user"] = DbAuth.username(host, str(port))
-            kwargs["password"] = DbAuth.password(host, str(port))
+            kwargs["passwd"] = DbAuth.password(host, str(port))
             return MySQLdb.connect(**kwargs)
 
     def _executeSql(self, conn, sql):

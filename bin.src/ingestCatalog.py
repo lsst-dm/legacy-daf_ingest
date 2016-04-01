@@ -21,6 +21,6 @@
 # the GNU General Public License along with this program.  If not,
 # see <https://www.lsstcorp.org/LegalNotices/>.
 #
-from lsst.daf.ingest.ingestCatalogTask import IngestCatalogTask
+from lsst.daf.ingest.ingestCatalog import IngestCatalogTask
 
 IngestCatalogTask.parseAndRun()

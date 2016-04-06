@@ -3,6 +3,7 @@ setupRequired(daf_persistence)
 setupRequired(pex_config)
 setupRequired(pipe_base)
 setupRequired(afw)
+setupRequired(sphgeom)
 
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envPrepend(PATH, ${PRODUCT_DIR}/bin)

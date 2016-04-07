@@ -6,6 +6,7 @@ config.log
 doc/*.tag
 doc/html
 doc/doxygen.conf
+doc/xml
 python/lsst/daf/ingest/version.py
 tests/.tests
 ups/*.cfgc

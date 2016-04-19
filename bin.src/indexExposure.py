@@ -2,7 +2,7 @@
 #
 # LSST Data Management System
 #
-# Copyright 2008-2015  AURA/LSST.
+# Copyright 2016  AURA/LSST.
 #
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
@@ -21,6 +21,6 @@
 # the GNU General Public License along with this program.  If not,
 # see <https://www.lsstcorp.org/LegalNotices/>.
 #
-from lsst.daf.ingest.ingestCatalogTask import IngestCatalogTask
+from lsst.daf.ingest.indexExposure import IndexExposureTask
 
-IngestCatalogTask.parseAndRun()
+IndexExposureTask.parseAndRun()

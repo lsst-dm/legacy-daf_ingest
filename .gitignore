@@ -1,6 +1,7 @@
 *.pyc
 .sconf_temp
 .sconsign.dblite
+_build.*
 bin/
 config.log
 doc/*.tag
@@ -9,4 +10,5 @@ doc/doxygen.conf
 doc/xml
 python/lsst/daf/ingest/version.py
 tests/.tests
+tests/.cache
 ups/*.cfgc

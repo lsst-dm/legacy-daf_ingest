@@ -39,7 +39,7 @@ import lsst.daf.base as daf_base
 import lsst.afw.image as afw_image
 import lsst.pipe.base as pipe_base
 import lsst.sphgeom as sphgeom
-from lsst.pex.logging import getDefaultLog
+from lsst.log import Log
 from lsst.daf.ingest.indexExposure import (
     create_exposure_tables,
     find_intersecting_exposures,
@@ -106,7 +106,7 @@ class IndexExposureTest(unittest.TestCase):
         # Avoid the command line parser.
         parsed_cmd = pipe_base.Struct(
             config=config,
-            log=getDefaultLog(),
+            log=Log.getDefaultLogger(),
             doraise=True,
             clobberConfig=False,
             noBackupConfig=False,

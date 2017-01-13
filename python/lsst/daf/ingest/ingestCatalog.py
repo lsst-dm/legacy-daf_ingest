@@ -358,7 +358,7 @@ class IngestCatalogRunner(pipe_base.TaskRunner):
         task = self.TaskClass(config=self.config, log=self.log)
         try:
             task.writeConfig(parsed_cmd.butler, clobber=self.clobberConfig)
-        except Exception, e:
+        except Exception as e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
         return True

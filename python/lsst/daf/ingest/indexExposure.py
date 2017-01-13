@@ -341,7 +341,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         task = self.makeTask()
         try:
             task.writeConfig(parsed_cmd.butler, clobber=self.clobberConfig)
-        except Exception, e:
+        except Exception as e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
         create_exposure_tables(parsed_cmd.database,
@@ -379,7 +379,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         result = None
         try:
             result = task.run(data_ref, **kwargs)
-        except Exception, e:
+        except Exception as e:
             if self.doRaise:
                 raise
             if hasattr(data_ref, "dataId"):

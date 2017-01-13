@@ -4,7 +4,7 @@ setupRequired(pex_config)
 setupRequired(pipe_base)
 setupRequired(afw)
 setupRequired(sphgeom)
-setupRequired(pex_logging)
+setupRequired(log)
 
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
 envPrepend(PATH, ${PRODUCT_DIR}/bin)

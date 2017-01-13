@@ -43,6 +43,7 @@ import MySQLdb
 import math
 import re
 import struct
+import codecs
 
 import lsst.afw.table as afw_table
 from lsst.daf.persistence import DbAuth
@@ -135,7 +136,7 @@ def _format_array(format_char, array):
         https://docs.python.org/library/struct.html#format-characters
     """
     byte_string = struct.pack("<" + str(len(array)) + format_char, *array)
-    return "x'" + byte_string.encode("hex_codec") + "'"
+    return b"x'" + codecs.encode(byte_string, "hex_codec") + b"'"
 
 
 def _sql_type_for_string(field):

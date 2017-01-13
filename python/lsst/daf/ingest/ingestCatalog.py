@@ -543,7 +543,7 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
                     max_query_len = int(cursor.fetchone()[0])
             else:
                 max_query_len = self.config.max_query_len
-            self.log.logdebug("max_query_len: {}".format(max_query_len))
+            self.log.debug("max_query_len: %d", max_query_len)
             self._create_table(conn, table_name, cat.schema)
             if view_name is not None:
                 self._create_view(conn, table_name, view_name, cat.schema)
@@ -566,7 +566,7 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
 
     def _execute_sql(self, conn, sql):
         """Execute a SQL query with no expectation of a result."""
-        self.log.logdebug(sql)
+        self.log.debug(sql)
         conn.query(sql)
 
     def _schema_items(self, schema):
@@ -574,15 +574,13 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
         for item in schema:
             field = item.field
             if field.getTypeString() not in field_formatters:
-                self.log.warn(
-                    "Skipping field {}: type {} not supported".format(
-                        field.getName(), field.getTypeString()))
+                self.log.warn("Skipping field %s: type %s not supported",
+                              field.getName(), field.getTypeString())
             else:
                 column = self._column_name(field.getName())
                 if len(column) > self.config.max_column_len:
-                    self.log.warn(
-                        "Skipping field {}: column name {} too long".format(
-                            field.getName(), column))
+                    self.log.warn("Skipping field %s: column name %d too long",
+                                  field.getName(), column)
                 else:
                     yield item
 
@@ -667,7 +665,7 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
             else:
                 self.log.warn(
                     "No field matches the configured unique ID field name "
-                    "({})".format(self.config.id_field_name))
+                    "(%s)", self.config.id_field_name)
         sql += "\n)"
         self._execute_sql(conn, sql)
 
@@ -694,8 +692,8 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
             for a in aliases:
                 alias = self._column_name(a)
                 if len(alias) > self.config.max_column_len:
-                    self.log.warn("Skipping alias {} for {}: "
-                                  "alias too long".format(alias, column))
+                    self.log.warn("Skipping alias %s for %d: "
+                                  "alias too long", alias, column)
                     continue
                 sql += ",\n\t{} AS {}".format(column, alias)
         sql += "\nFROM "

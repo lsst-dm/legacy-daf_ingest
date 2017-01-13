@@ -57,7 +57,7 @@ import lsst.afw.geom as afw_geom
 import lsst.afw.image as afw_image
 import lsst.pex.config as pex_config
 import lsst.pipe.base as pipe_base
-from lsst.pex.logging import getDefaultLog
+from lsst.log import Log
 from lsst.sphgeom import Angle, ConvexPolygon, DISJOINT, UnitVector3d
 
 
@@ -370,11 +370,11 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         """
         data_ref, kwargs = args
         if self.log is None:
-            self.log = getDefaultLog()
+            self.log = Log.getDefaultLogger()
         if hasattr(data_ref, "dataId"):
-            self.log.addLabel(str(data_ref.dataId))
+            self.log.MDC("LABEL", str(data_ref.dataId))
         elif isinstance(data_ref, (list, tuple)):
-            self.log.addLabel(str([ref.dataId for ref in data_ref if hasattr(ref, "dataId")]))
+            self.log.MDC("LABEL", str([ref.dataId for ref in data_ref if hasattr(ref, "dataId")]))
         task = self.makeTask(args=args)
         result = None
         try:
@@ -532,8 +532,8 @@ class IndexExposureTask(pipe_base.CmdLineTask):
         # Pad the box by a configurable amount and bail if the result is empty.
         pixel_bbox.grow(self.config.pad_pixels)
         if pixel_bbox.isEmpty():
-            self.log.warning("skipping exposure indexing for dataId={}: "
-                             "empty bounding box".format(data_id))
+            self.log.warn("skipping exposure indexing for dataId=%s: "
+                          "empty bounding box", data_id)
             return
         corners = []
         for c in pixel_bbox.getCorners():
@@ -544,9 +544,9 @@ class IndexExposureTask(pipe_base.CmdLineTask):
             c = (c.getLongitude().asRadians(), c.getLatitude().asRadians())
             # Bail if any coordinate is not finite.
             if any(math.isinf(x) or math.isnan(x) for x in c):
-                self.log.warning("skipping exposure indexing for dataId={}: "
-                                 "NaN or Inf in bounding box sky coordinate(s)"
-                                 " - bad WCS?".format(data_id))
+                self.log.warn("skipping exposure indexing for dataId=%s: "
+                              "NaN or Inf in bounding box sky coordinate(s)"
+                              " - bad WCS?", data_id)
                 return
             # Convert from sky coordinates to unit vectors.
             corners.append(UnitVector3d(Angle.fromRadians(c[0]),

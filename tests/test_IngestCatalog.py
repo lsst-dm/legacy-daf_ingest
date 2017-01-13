@@ -35,7 +35,7 @@ import os
 import struct
 import uuid
 
-import lsst.utils.tests as utils_tests
+import lsst.utils.tests
 import lsst.afw.table as afw_table
 
 from lsst.afw.geom import Angle
@@ -236,19 +236,14 @@ class IngestCatalogTest(unittest.TestCase):
             self.assertEqual(rows[0][0], 2)
 
 
-def suite():
-    """Return a suite containing all the test cases in this module."""
-    utils_tests.init()
-    suites = []
-    suites += unittest.makeSuite(IngestCatalogTest)
-    suites += unittest.makeSuite(utils_tests.MemoryTestCase)
-    return unittest.TestSuite(suites)
+class MemoryTester(lsst.utils.tests.MemoryTestCase):
+    pass
 
 
-def run(should_exit=False):
-    """Run the tests."""
-    utils_tests.run(suite(), should_exit)
+def setup_module(module):
+    lsst.utils.tests.init()
 
 
 if __name__ == "__main__":
-    run(True)
+    lsst.utils.tests.init()
+    unittest.main()

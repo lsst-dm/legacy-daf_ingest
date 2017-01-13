@@ -34,7 +34,7 @@ except:
 import random
 import sqlite3
 
-import lsst.utils.tests as utils_tests
+import lsst.utils.tests
 import lsst.daf.base as daf_base
 import lsst.afw.image as afw_image
 import lsst.pipe.base as pipe_base
@@ -192,19 +192,14 @@ class IndexExposureTest(unittest.TestCase):
         return results
 
 
-def suite():
-    """Return a suite containing all the test cases in this module."""
-    utils_tests.init()
-    suites = []
-    suites += unittest.makeSuite(IndexExposureTest)
-    suites += unittest.makeSuite(utils_tests.MemoryTestCase)
-    return unittest.TestSuite(suites)
+class MemoryTester(lsst.utils.tests.MemoryTestCase):
+    pass
 
 
-def run(should_exit=False):
-    """Run the tests."""
-    utils_tests.run(suite(), should_exit)
+def setup_module(module):
+    lsst.utils.tests.init()
 
 
 if __name__ == "__main__":
-    run(True)
+    lsst.utils.tests.init()
+    unittest.main()

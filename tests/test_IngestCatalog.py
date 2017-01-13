@@ -25,6 +25,8 @@
 """Unit tests for the catalog ingestion task."""
 
 from __future__ import division
+from builtins import zip
+from builtins import range
 
 import unittest
 
@@ -90,7 +92,7 @@ class IngestCatalogTest(unittest.TestCase):
             av="var.array",
             vla="av",
         )
-        for source, target in aliases.iteritems():
+        for source, target in aliases.items():
             schema.getAliasMap().set(source, target)
         # Create two rows of fake data...
         self.rows = (

@@ -31,7 +31,6 @@ queries are supported by maintaining an `R*Tree`_ index over exposures.
 
 .. |allow_replace| replace::  :attr:`~.IndexExposureConfig.allow_replace`
 .. |configuration| replace::  :class:`configuration <.IndexExposureConfig>`
-.. |defer_writes|  replace::  :attr:`~.IndexExposureConfig.defer_writes`
 .. |encoded|       replace::  :meth:`encoded <lsst.sphgeom.Region.encode>`
 .. |exposure|      replace::  :class:`exposure <lsst.afw.image.ExposureF>`
 .. |metadata|      replace::  :class:`metadata <lsst.daf.base.PropertySet>`
@@ -274,6 +273,11 @@ def find_intersecting_exposures(database, region):
     return results
 
 
+def getDatabase(self, butler):
+    """Return the database filename"""
+    return butler.get("singleFrameDatabase_filename")[0]
+
+
 class IndexExposureConfig(pex_config.Config):
     """Configuration for :class:`.IndexExposureTask`."""
 
@@ -286,17 +290,6 @@ class IndexExposureConfig(pex_config.Config):
         "List of initialization statements (e.g. PRAGMAs) to run when the "
         "SQLite 3 database is first created. Useful for performance tuning.",
         str, default=[]
-    )
-
-    defer_writes = pex_config.Field(
-        "If False, then exposure information is inserted directly into the "
-        "database by IndexExposureTask. Otherwise, all exposure index "
-        "information is collected by IndexExposureRunner and inserted after "
-        "task processing is complete. This avoids an implicit serialization "
-        "point in task processing (SQLite 3 does not support concurrent "
-        "database writes), and amortizes the overhead of connecting and "
-        "running a transaction over many inserts.",
-        bool, default=True
     )
 
     pad_pixels = pex_config.Field(
@@ -322,7 +315,6 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         return pipe_base.TaskRunner.getTargetList(
             parsed_cmd,
             dstype=parsed_cmd.dstype,
-            database=parsed_cmd.database
         )
 
     def precall(self, parsed_cmd):
@@ -344,21 +336,19 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         except Exception, e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
-        create_exposure_tables(parsed_cmd.database,
-                               self.config.init_statements)
         return True
 
     def run(self, parsed_cmd):
         """Run the task on all targets.
 
-        If the |defer_writes| configuration parameter is ``True``, then
+        If the '--defer_writes' command-line argument is specified, then
         exposure information is stored after all targets have finished
         running.
         """
-        results = pipe_base.TaskRunner.run(self, parsed_cmd)
-        if self.config.defer_writes:
-            store_exposure_info(
-                parsed_cmd.database, self.config.allow_replace, results)
+        results = pipe_base.TaskRunner.run(self, parsed_cmd, doWrite=not parsed_cmd.deferWrites)
+        if parsed_cmd.deferWrites:
+            database = getDatabase(parsed_cmd.butler)
+            store_exposure_info(database, self.config.allow_replace, results)
 
     def __call__(self, args):
         """Run the task on a single target.
@@ -440,13 +430,6 @@ class IndexExposureTask(pipe_base.CmdLineTask):
     is negative) the pixel space bounding box for an exposure before it is
     converted to a spherical bounding polygon.
 
-    Finally, set |defer_writes| to ``False`` to execute SQLite database writes
-    directly from the task. Normally, database writes are executed by
-    :class:`.IndexTaskRunner` after all bounding polygons have been computed.
-    This allows for parallel task execution and speeds up database writes (since
-    many rows can be inserted in a single transaction, and since SQLite 3 does
-    not support concurrent writers).
-
     Examples
     --------
 
@@ -457,7 +440,6 @@ class IndexExposureTask(pipe_base.CmdLineTask):
 
         $DAF_INGEST_DIR/bin/indexExposure.py \
                 $LSST_DM_STACK_DEMO_DIR/output \
-                --database calexp.sqlite3 \
                 --dstype calexp_md \
                 --id filter=g
 
@@ -470,27 +452,33 @@ class IndexExposureTask(pipe_base.CmdLineTask):
 
     @classmethod
     def _makeArgumentParser(cls):
-        """Extend the default argument parser.
-
-        Arguments specifying the output SQLite database and exposure dataset
-        type are added in.
-        """
+        """Extend the default argument parser."""
         parser = pipe_base.ArgumentParser(name=cls._DefaultName)
-        parser.add_argument(
-            '--database', dest='database', required=True,
-            help='SQLite 3 database file name')
         # Use DatasetArgument to require dataset type be specified on
         # the command line
         parser.add_id_argument(
             '--id', pipe_base.DatasetArgument('dstype'),
             help='Dataset data id to index')
+        parser.add_argument(
+            '--defer-writes', dest='deferWrites', default=False, action="store_true",
+            help=("Collect all information and insert once (avoids implicit serialization "
+                  "point because SQLite3 does not support concurrent writes)"))
         return parser
 
-    def run(self, data_ref, dstype, database):
-        """Index an exposure specified by a data ref and dataset type."""
-        return self.index(data_ref.get(dstype), data_ref.dataId, database)
+    def __init__(self, butler, *args, **kwargs):
+        # This is naughty: fooling around in the butler's space.
+        # But the butler currently doesn't handle SQLite3 databases, so we have to.
+        # This is subject to race conditions; as usual, if there are race problems,
+        # the user is encouraged to run this Task once without any inputs.
+        if not butler.datasetExists("singleFrameDatabase"):
+            create_exposure_tables(getDatabase(butler), self.config.init_statements)
 
-    def index(self, exposure_or_metadata, data_id, database):
+    def run(self, data_ref, dstype, doWrite=True):
+        """Index an exposure specified by a data ref and dataset type."""
+        database = getDatabase(data_ref.getButler())
+        return self.index(data_ref.get(dstype), data_ref.dataId, database, doWrite=doWrite)
+
+    def index(self, exposure_or_metadata, data_id, database, doWrite=True):
         """Spatially index an |exposure| or |metadata| object.
 
         Parameters
@@ -505,6 +493,11 @@ class IndexExposureTask(pipe_base.CmdLineTask):
 
         database : sqlite3.Connection or str
             A connection to (or filename of) a SQLite 3 database.
+
+        doWrite : `bool`
+            Actually write to the database? If the write is deferred, the
+            caller may do it themselves using the `store_exposure_info`
+            function.
 
         Returns
         -------
@@ -560,6 +553,6 @@ class IndexExposureTask(pipe_base.CmdLineTask):
         poly = ConvexPolygon(corners)
         # Finally, persist or return the exposure information.
         info = ExposureInfo(pickle.dumps(data_id), poly.encode())
-        if self.config.defer_writes:
-            return info
-        store_exposure_info(database, self.config.allow_replace, info)
+        if not doWrite:
+            store_exposure_info(database, self.config.allow_replace, info)
+        return info

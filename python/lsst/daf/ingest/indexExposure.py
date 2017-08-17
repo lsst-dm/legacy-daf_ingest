@@ -520,11 +520,7 @@ class IndexExposureTask(pipe_base.CmdLineTask):
             # (x0, y0) is the location of the sub-image origin (the bottom-left
             # corner) relative to the origin of the parent, whereas LTVi encode
             # the origin of the parent relative to the origin of the subimage.
-            pixel_bbox = afw_geom.Box2I(
-                afw_geom.Point2I(-md.get('LTV1') if md.exists('LTV1') else 0,
-                                 -md.get('LTV2') if md.exists('LTV2') else 0),
-                afw_geom.Extent2I(md.get('NAXIS1'), md.get('NAXIS2'))
-            )
+            pixel_bbox = afw_image.bboxFromMetadata(md)
             wcs = afw_image.makeWcs(md, False)
         else:
             pixel_bbox = exposure_or_metadata.getBBox()

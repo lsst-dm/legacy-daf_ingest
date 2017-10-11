@@ -37,11 +37,13 @@ field aliases.
 .. |schema|        replace::  :class:`schema <lsst.afw.table.Schema>`
 .. |task|          replace::  :class:`~lsst.pipe.base.Task`
 """
+from builtins import object
 from contextlib import closing
 import MySQLdb
 import math
 import re
 import struct
+import codecs
 
 import lsst.afw.table as afw_table
 from lsst.daf.persistence import DbAuth
@@ -134,7 +136,7 @@ def _format_array(format_char, array):
         https://docs.python.org/library/struct.html#format-characters
     """
     byte_string = struct.pack("<" + str(len(array)) + format_char, *array)
-    return "x'" + byte_string.encode("hex_codec") + "'"
+    return b"x'" + codecs.encode(byte_string, "hex_codec") + b"'"
 
 
 def _sql_type_for_string(field):
@@ -358,7 +360,7 @@ class IngestCatalogRunner(pipe_base.TaskRunner):
         task = self.TaskClass(config=self.config, log=self.log)
         try:
             task.writeConfig(parsed_cmd.butler, clobber=self.clobberConfig)
-        except Exception, e:
+        except Exception as e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
         return True
@@ -645,7 +647,7 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
         for name in names:
             equivalence_classes.setdefault(name.lower(), []).append(name)
         clashes = ',\n'.join('\t{' + ', '.join(c) + '}'
-                             for c in equivalence_classes.itervalues() if len(c) > 1)
+                             for c in equivalence_classes.values() if len(c) > 1)
         if clashes:
             raise RuntimeError(
                 "Schema contains columns that differ only by non-word "
@@ -684,7 +686,7 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
         # list.
         #
         # For now, construct an invalid view and fail in this case.
-        mappings = sorted((s, t) for (s, t) in schema.getAliasMap().iteritems())
+        mappings = sorted((s, t) for (s, t) in schema.getAliasMap().items())
         for item in self._schema_items(schema):
             field_name = item.field.getName()
             aliases = sorted(aliases_for(field_name, mappings))

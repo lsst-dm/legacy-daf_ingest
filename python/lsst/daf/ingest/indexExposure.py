@@ -41,6 +41,9 @@ queries are supported by maintaining an `R*Tree`_ index over exposures.
 .. |runner|        replace::  :class:`runner <.IndexExposureRunner>`
 .. |task|          replace::  :class:`~lsst.pipe.base.Task`
 """
+from future import standard_library
+standard_library.install_aliases()
+from past.builtins import unicode
 
 from collections import namedtuple
 import math
@@ -93,7 +96,7 @@ def quote_sqlite3_identifier(s):
         raise RuntimeError('The NUL character is not legal '
                            'in SQLite 3 identifiers')
     # Quote the identifier. Embedded quotes are escaped by doubling them up.
-    return '"' + ident.replace('"', '""') + '"'
+    return b'"' + ident.replace(b'"', b'""') + b'"'
 
 
 def create_exposure_tables(database, init_statements=[]):
@@ -341,7 +344,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         task = self.makeTask()
         try:
             task.writeConfig(parsed_cmd.butler, clobber=self.clobberConfig)
-        except Exception, e:
+        except Exception as e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
         create_exposure_tables(parsed_cmd.database,
@@ -379,7 +382,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         result = None
         try:
             result = task.run(data_ref, **kwargs)
-        except Exception, e:
+        except Exception as e:
             if self.doRaise:
                 raise
             if hasattr(data_ref, "dataId"):

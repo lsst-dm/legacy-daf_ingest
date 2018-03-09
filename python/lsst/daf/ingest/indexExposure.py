@@ -177,8 +177,8 @@ def store_exposure_info(database, allow_replace, exposure_info):
             # In Python 2, the sqlite3 module maps between Python buffer
             # objects and BLOBs. When migrating to Python 3, the buffer()
             # calls should be removed (sqlite3 maps bytes objects to BLOBs).
-            pickled_data_id = buffer(info.data_id)
-            encoded_polygon = buffer(info.boundary)
+            pickled_data_id = memoryview(info.data_id)
+            encoded_polygon = memoryview(info.boundary)
             bbox = ConvexPolygon.decode(info.boundary).getBoundingBox3d()
             if allow_replace:
                 # See if there is already an entry for the given data id.
@@ -268,9 +268,9 @@ def find_intersecting_exposures(database, region):
         # objects, and so a conversion to str is necessary. In Python 3,
         # BLOBs are mapped to bytes directly, and the str() calls must
         # be removed.
-        poly = ConvexPolygon.decode(str(row[1]))
+        poly = ConvexPolygon.decode(row[1])
         if region.relate(poly) != DISJOINT:
-            results.append(ExposureInfo(pickle.loads(str(row[0])), poly))
+            results.append(ExposureInfo(pickle.loads(row[0]), poly))
     return results
 
 
@@ -341,7 +341,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         task = self.makeTask()
         try:
             task.writeConfig(parsed_cmd.butler, clobber=self.clobberConfig)
-        except Exception, e:
+        except Exception as e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
         create_exposure_tables(parsed_cmd.database,
@@ -379,7 +379,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         result = None
         try:
             result = task.run(data_ref, **kwargs)
-        except Exception, e:
+        except Exception as e:
             if self.doRaise:
                 raise
             if hasattr(data_ref, "dataId"):

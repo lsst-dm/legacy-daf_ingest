@@ -124,7 +124,7 @@ class IndexExposureTest(unittest.TestCase):
             runner.run(parsed_cmd)
         # Now, verify the contents of the database. First, check that
         # data ids are recoverable.
-        data_ids = sorted(pickle.loads(str(r[0])) for r in database.execute(
+        data_ids = sorted(pickle.loads(r[0]) for r in database.execute(
             "SELECT pickled_data_id FROM exposure"))
         self.assertEqual(data_ids, [0, 1])
         # Next, run a spatial query and check that it returns the
@@ -147,7 +147,7 @@ class IndexExposureTest(unittest.TestCase):
         task = IndexExposureTask(config=IndexExposureConfig())
         random.seed(31415926)
         results = []
-        for data_id in xrange(1000):
+        for data_id in range(1000):
             ra = random.uniform(0.0, 360.0)
             dec = math.degrees(math.asin(random.uniform(-1.0, 1.0)))
             props = daf_base.PropertySet()
@@ -183,9 +183,9 @@ class IndexExposureTest(unittest.TestCase):
         results = []
         query = "SELECT pickled_data_id, encoded_polygon FROM exposure"
         for row in conn.execute(query):
-            poly = sphgeom.ConvexPolygon.decode(str(row[1]))
+            poly = sphgeom.ConvexPolygon.decode(row[1])
             if region.relate(poly) != sphgeom.DISJOINT:
-                results.append(pickle.loads(str(row[0])))
+                results.append(pickle.loads(row[0]))
         results.sort()
         return results
 

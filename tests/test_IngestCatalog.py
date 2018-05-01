@@ -24,6 +24,9 @@
 
 from __future__ import division
 
+from builtins import zip
+from builtins import str
+from builtins import range
 import unittest
 
 from contextlib import closing
@@ -88,7 +91,7 @@ class IngestCatalogTest(unittest.TestCase):
             av="var.array",
             vla="av",
         )
-        for source, target in aliases.iteritems():
+        for source, target in aliases.items():
             schema.getAliasMap().set(source, target)
         # Create two rows of fake data...
         self.rows = (
@@ -100,18 +103,18 @@ class IngestCatalogTest(unittest.TestCase):
                 np.array([-2147483648, 2147483647], dtype=np.int32),
                 np.array([1.0, 2.0], dtype=np.float32),
                 np.array([math.pi, math.e], dtype=np.float64),
-                np.array(range(0), dtype=np.uint16),
-                np.array(range(1), dtype=np.int32),
-                np.array(range(3), dtype=np.float32),
-                np.array(range(4), dtype=np.float64),
+                np.array(list(range(0)), dtype=np.uint16),
+                np.array(list(range(1)), dtype=np.int32),
+                np.array(list(range(3)), dtype=np.float32),
+                np.array(list(range(4)), dtype=np.float64),
             ),
             (
                 65535, 2147483647, 9223372036854775807, 2.0, math.e,
                 True, Angle(2.0), "",
-                np.array(range(2), dtype=np.uint16),
-                np.array(range(2), dtype=np.int32),
-                np.array(range(2), dtype=np.float32),
-                np.array(range(2), dtype=np.float64),
+                np.array(list(range(2)), dtype=np.uint16),
+                np.array(list(range(2)), dtype=np.int32),
+                np.array(list(range(2)), dtype=np.float32),
+                np.array(list(range(2)), dtype=np.float64),
                 np.array([], dtype=np.uint16),
                 np.array([], dtype=np.int32),
                 np.array([], dtype=np.float32),

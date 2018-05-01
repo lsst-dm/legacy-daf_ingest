@@ -42,10 +42,13 @@ queries are supported by maintaining an `R*Tree`_ index over exposures.
 .. |task|          replace::  :class:`~lsst.pipe.base.Task`
 """
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from collections import namedtuple
 import math
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except:
     import pickle
 import sqlite3
@@ -83,7 +86,7 @@ def quote_sqlite3_identifier(s):
     work for table and column names. Without proper quoting, they present
     an opportunity for SQL injection.
     """
-    if isinstance(s, unicode):
+    if isinstance(s, str):
         # Convert to a UTF-8 string
         ident = s.encode('utf-8')
     else:
@@ -341,7 +344,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         task = self.makeTask()
         try:
             task.writeConfig(parsed_cmd.butler, clobber=self.clobberConfig)
-        except Exception, e:
+        except Exception as e:
             # Often no mapping for config, but in any case just skip
             task.log.warn("Could not persist config: %s" % (e,))
         create_exposure_tables(parsed_cmd.database,
@@ -379,7 +382,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         result = None
         try:
             result = task.run(data_ref, **kwargs)
-        except Exception, e:
+        except Exception as e:
             if self.doRaise:
                 raise
             if hasattr(data_ref, "dataId"):

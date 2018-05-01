@@ -22,11 +22,16 @@
 #
 """Unit tests for the exposure indexing task."""
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 import unittest
 
 import math
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except:
     import pickle
 import random
@@ -147,7 +152,7 @@ class IndexExposureTest(unittest.TestCase):
         task = IndexExposureTask(config=IndexExposureConfig())
         random.seed(31415926)
         results = []
-        for data_id in xrange(1000):
+        for data_id in range(1000):
             ra = random.uniform(0.0, 360.0)
             dec = math.degrees(math.asin(random.uniform(-1.0, 1.0)))
             props = daf_base.PropertySet()

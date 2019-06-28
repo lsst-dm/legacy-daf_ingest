@@ -359,6 +359,7 @@ class IndexExposureRunner(pipe_base.TaskRunner):
         if self.config.defer_writes:
             store_exposure_info(
                 parsed_cmd.database, self.config.allow_replace, results)
+        return []
 
     def __call__(self, args):
         """Run the task on a single target.

@@ -47,6 +47,7 @@ import lsst.afw.table as afw_table
 from lsst.daf.persistence import DbAuth
 import lsst.pex.config as pex_config
 import lsst.pipe.base as pipe_base
+from lsst.utils.timer import timeMethod
 
 
 __all__ = (
@@ -498,7 +499,7 @@ class IngestCatalogTask(pipe_base.CmdLineTask):
         self.ingest(data_ref.get(dstype), table_name, host, db,
                     port, user, view_name)
 
-    @pipe_base.timeMethod
+    @timeMethod
     def ingest(self, cat, table_name, host, db,
                port=3306, user=None, view_name=None):
         """Ingest an |afw catalog| passed as an object.
